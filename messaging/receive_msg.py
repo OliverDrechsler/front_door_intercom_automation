@@ -145,7 +145,7 @@ class TelegramMessages(Configuration):
                             self.logger.info(
                                 "Door opened for 5 Sec. ")
                         else:
-                            self.logger.info("do not open door because no Raspberry Pi detected"
+                            self.logger.info("do not open door because no Raspberry Pi")
 
                     else:
                         send_msg.telegram_send_message(
