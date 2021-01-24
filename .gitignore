@@ -1,0 +1,12 @@
+.vscode/
+*.pyc
+__pycache__/
+*.jpynb
+jpynb/
+config.*
+*config.*
+*config.json
+*.DS_Store
+.DS_Store
+fidia2.py
+fidia3.py
