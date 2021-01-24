@@ -1,0 +1,38 @@
+telegram:
+  token: "telegram_bot_token_code_here"
+  chat_number: "-GroupChatNumber"
+  allowed_user_ids:
+    - "123456789"
+    - "987654321"
+
+otp:
+  password: "Base32CodePasswordHere"
+  length: 6
+  # will be changed to use passlib for sha512
+  # please use than maxim lenght of 9 instaed 10 
+  # because of passlib limitation here https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken
+  # Caution Due to a limitation of the HOTP algorithm, the 10th digit can only take on values 0 .. 2, and thus offers very little extra security.
+  interval: 30
+
+GPIO:
+  door_bell_port: 1
+  door_opener_port: 2
+
+blink:
+  username: "blink_account_email_address_here"
+  password: "blink_account_password_here"
+  name: "Blink_Camera_name_here"
+  config_file: "blink_config.json"
+
+picam:
+  url: "http://IP:8000"
+  image_width: "640"
+  image_hight: "480"
+  image_filename: "foto.jpg"
+  exposure: "auto"
+  rotation: "0"
+  iso: "0"
+
+common:
+  image_path: "/tmp/foto.jpg"
+  camera_type: "blink"  # "blink" or "picam" careful - case senitive

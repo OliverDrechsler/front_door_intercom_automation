@@ -1,0 +1,10 @@
+[Unit]
+Description=Front Door Intercom Automation
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/front-door_intercom_automation/fdia2.py
+
+[Install]
+WantedBy=multi-user.target

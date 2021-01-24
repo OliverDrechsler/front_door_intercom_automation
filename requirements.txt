@@ -1,0 +1,9 @@
+pyyaml
+threading
+logging
+gpiozero
+RPi.GPIO
+onetimepass
+urllib3
+requests
+telepot
