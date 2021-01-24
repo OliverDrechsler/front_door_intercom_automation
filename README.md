@@ -1,7 +1,20 @@
 # front door intercom automation
-# receive photo notification on front door bell - open via telegram one time password
-
-Front-Door  automation via telegram to get rings and opening the door with otp and camera photos
+## Ring at front door receive photo notification and open via telegram one-time password
 
 **Under development see `dev` branch**
 
+It works but dev is still in progress
+
+Missing: 
+
+- documentation
+- unit tests
+- fix ci pipeline stuff
+- change one time password to sha512 ... under dev actually
+- rework receive_msg.py handle_received_message method to be more pythonic
+- docu hardware build and cirurit layouts.... with pic's
+
+**other repo ToDo's**
+
+- PiCam API had some ToDo's
+- dev iPhone and Apple Watch App to open door
