@@ -48,22 +48,24 @@ class Door(Configuration):
         :return: Nothing
         :rtype: None
         """
+        if self.is_raspberry_pi:
+            button = Button(self.door_bell)
 
-        button = Button(self.door_bell)
         self.logger.debug("starting endless loop watching door bell ring")
         while True:
             time.sleep(0.01)
-            if button.is_pressed:
-                time.sleep(0.1)
+            if self.is_raspberry_pi:     
                 if button.is_pressed:
-                    self.logger.info("Door bell ringing")
-                    send_msg.telegram_send_message(
-                        self.bot,
-                        self.telegram_chat_nr,
-                        "Die Haustür hat geklingelt!" +
-                        str(datetime.datetime.now()))
-                    self.choose_camera()
-                    time.sleep(5)
+                    time.sleep(0.1)
+                    if button.is_pressed:
+                        self.logger.info("Door bell ringing")
+                        send_msg.telegram_send_message(
+                            self.bot,
+                            self.telegram_chat_nr,
+                            "Die Haustür hat geklingelt!" +
+                            str(datetime.datetime.now()))
+                        self.choose_camera()
+                        time.sleep(5)
     
     def choose_camera(self) -> None:
         """

@@ -140,9 +140,12 @@ class TelegramMessages(Configuration):
                             self.bot, 
                             self.telegram_chat_nr, 
                             "Passwort ist richtig. Ich öffne die Tür")
-                        opener.open_door(self.door_summer)
-                        self.logger.info(
-                            "Door opened for 5 Sec. ")
+                        if self.is_raspberry_pi:
+                            opener.open_door(self.door_summer)
+                            self.logger.info(
+                                "Door opened for 5 Sec. ")
+                        else:
+                            self.logger.info("do not open door because no Raspberry Pi detected"
 
                     else:
                         send_msg.telegram_send_message(
