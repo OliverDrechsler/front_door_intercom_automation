@@ -12,6 +12,7 @@ import re
 import os
 import time
 import urllib3
+import json
 
 
 logger = logging.getLogger('fdia_telegram')
@@ -45,6 +46,7 @@ class TelegramMessages(Configuration):
         self.bot = bot
         self.blink = blink_instance
         self.auth = blink_auth_instance
+        self.blink_json_data = {}
 
     def handle_received_message(self, msg: dict) -> None:
         """
@@ -79,6 +81,19 @@ class TelegramMessages(Configuration):
                             blink_cam.blink_snapshot(self.blink, 
                                 self.blink_name, 
                                 self.common_image_path)
+                            
+                            self.blink_json_load()
+                            is_equal = self.auth.login_attributes == self.blink_json_data
+                            if not is_equal:
+                                self.logger.debug("blink config json dict differs from running config")
+                                self.logger.debug("blink config object dict = {0}".format(self.auth.login_attributes))
+                                self.logger.debug("blink config file = {0}".format(self.blink_json_data))
+                                blink_cam.save_blink_config(
+                                    self.blink, 
+                                    self.blink_config_file)
+                            else:
+                                self.logger.debug("blink config json object is same as in config file")
+
                             self.logger.info("send snapshot photo")
                             send_msg.telegram_send_photo(
                                 self.bot, 
@@ -95,9 +110,19 @@ class TelegramMessages(Configuration):
                                 token=match.group(0), 
                                 blink=self.blink, 
                                 auth=self.auth)
-                            blink_cam.save_blink_config(
-                                self.blink, 
-                                self.blink_config_file)
+                            
+                            self.blink_json_load()
+                            is_equal = self.auth.login_attributes == self.blink_json_data
+                            if not is_equal:
+                                self.logger.debug("blink config json dict differs from running config")
+                                self.logger.debug("blink config object dict = {0}".format(self.auth.login_attributes))
+                                self.logger.debug("blink config file = {0}".format(self.blink_json_data))
+                                blink_cam.save_blink_config(
+                                    self.blink, 
+                                    self.blink_config_file)
+                            else:
+                                self.logger.debug("blink config json object is same as in config file")
+
                         send_msg.telegram_send_message(
                             self.bot, 
                             self.telegram_chat_nr, 
@@ -135,4 +160,14 @@ class TelegramMessages(Configuration):
                     "chat_id " + str(self.chat_id) +
                     " not allowed in config")
 
+    def blink_json_load(self) -> None:
+        """Load blink json credentials from file."""
+        try:
+            with open(self.blink_config_file, "r") as json_file:
+                self.blink_json_data = json.load(json_file)
+        except FileNotFoundError:
+            self.logger.error("Could not find %s", self.blink_config_file)
+        except json.decoder.JSONDecodeError:
+            self.logger.error("File %s has improperly formatted json", self.blink_config_file)
+        return None
 
