@@ -1,13 +1,9 @@
 pyyaml
-threading
-logging
 gpiozero
 RPi.GPIO
 onetimepass
-hashlib
 urllib3
 requests
 telepot
 blinkpy
-pprint
 
