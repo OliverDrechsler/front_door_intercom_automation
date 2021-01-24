@@ -1,5 +1,5 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/oliverdrechsler/front_door_intercom_automation/badge)](https://www.codefactor.io/repository/github/oliverdrechsler/front_door_intercom_automation)
-
+![CI pipeline](https://github.com/OliverDrechsler/front_door_intercom_automation/workflows/FDIa/badge.svg)
 # front door intercom automation
 ## Ring at front door receive photo notification and open via telegram one-time password
 
