@@ -3,5 +3,5 @@
 
 Front-Door  automation via telegram to get rings and opening the door with otp and camera photos
 
-**Under development see dev branch**
+**Under development see `dev branch**
 
