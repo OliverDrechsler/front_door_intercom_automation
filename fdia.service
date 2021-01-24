@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/home/pi/front-door_intercom_automation/fdia2.py
+ExecStart=/home/pi/front-door_intercom_automation/fdia.py
 
 [Install]
 WantedBy=multi-user.target
