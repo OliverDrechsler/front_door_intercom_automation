@@ -8,5 +8,5 @@ config.*
 *config.json
 *.DS_Store
 .DS_Store
-fidia2.py
-fidia3.py
+fdia2.py
+fdia3.py
