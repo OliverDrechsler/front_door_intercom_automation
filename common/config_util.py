@@ -26,6 +26,7 @@ class Configuration:
         self.otp_password = self.config["otp"]['password']
         self.otp_length = self.config["otp"]['length']
         self.otp_interval = self.config["otp"]['interval']
+        self.hash_type = self.config["otp"]['hash_type']
         self.door_bell = self.config["GPIO"]['door_bell_port']
         self.door_summer = self.config["GPIO"]['door_opener_port']
         self.blink_username = self.config["blink"]["username"]

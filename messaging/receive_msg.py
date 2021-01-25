@@ -55,12 +55,13 @@ class TelegramMessages(Configuration):
         :param msg: telegram received message dictionary
         :type msg: dict
         """
-        self.logger.info("handle_received_message")
         (self.content_type, 
          self.chat_type, 
          self.chat_id) = telepot.glance(msg)
+        self.logger.debug(f"receiving a message {self.content_type} in chat id {self.chat_id}")
 
         if self.content_type == 'text':
+            self.logger.info(f"received message = {msg['text']}")
             self.from_name = msg['from']['first_name']
             self.from_id = msg['from']['id']
             self.text = msg['text']
@@ -129,11 +130,13 @@ class TelegramMessages(Configuration):
                             "Blink token received " + match.group(0))
 
                     # elif otp.verify_otp(self.text, self.otp_password, self.otp_length, self.otp_interval):
-                    elif otp.verify_otp(
+                    # elif otp.verify_otp(
+                    elif otp.verify_totp_code(
                             self.text, 
                             self.otp_password, 
                             self.otp_length, 
-                            self.otp_interval):
+                            self.otp_interval,
+                            self.hash_type):
                         self.logger.info(
                             "correct password received " + self.text)
                         send_msg.telegram_send_message(
