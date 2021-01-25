@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+from __future__ import annotations
 from common import config_util
 from camera import blink_cam, picam
 from door import bell

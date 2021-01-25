@@ -1,3 +1,4 @@
+from __future__ import annotations
 import telepot
 import urllib3
 import logging

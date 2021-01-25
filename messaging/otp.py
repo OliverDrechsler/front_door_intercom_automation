@@ -1,3 +1,4 @@
+from __future__ import annotations
 import onetimepass as otp
 import hashlib
 
