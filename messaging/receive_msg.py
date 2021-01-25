@@ -40,9 +40,9 @@ class TelegramMessages(Configuration):
         :param blink_auth_instance: blink cam auth class instance object
         :type blink_auth_instance: object
         """
+        Configuration.__init__(self)
         self.logger = logging.getLogger('fdia_telegram')
         self.logger.info("reading config")
-        Configuration.__init__(self)
         self.bot = bot
         self.blink = blink_instance
         self.auth = blink_auth_instance
@@ -140,8 +140,8 @@ class TelegramMessages(Configuration):
                             self.bot, 
                             self.telegram_chat_nr, 
                             "Passwort ist richtig. Ich öffne die Tür")
-                        if self.is_raspberry_pi:
-                            opener.open_door(self.door_summer)
+                        if self.run_on_raspberry:
+                            opener.open_door(self.door_summer, self.run_on_raspberry)
                             self.logger.info(
                                 "Door opened for 5 Sec. ")
                         else:

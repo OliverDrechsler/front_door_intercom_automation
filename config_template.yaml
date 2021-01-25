@@ -36,3 +36,4 @@ picam:
 common:
   image_path: "/tmp/foto.jpg"
   camera_type: "blink"  # "blink" or "picam" careful - case senitive
+  run_on_raspberry: True

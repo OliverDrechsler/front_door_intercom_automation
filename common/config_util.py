@@ -40,7 +40,7 @@ class Configuration:
         self.picam_exposure = self.config["picam"]["exposure"]
         self.picam_rotation = self.config["picam"]["rotation"]
         self.picam_iso = self.config["picam"]["iso"]
-        self.is_raspberry_pi = self.check_is_raspberry_pi()
+        self.run_on_raspberry = self.config["common"]["run_on_raspberry"]
 
     def read_config(self, config_file: str) -> None:
         """
@@ -68,36 +68,3 @@ class Configuration:
         else:
             self.logger.info("a config files does not exist - using config template")
             self.config_file = (os.path.abspath('') + '/config_template.yaml')
-
-    def check_is_raspberry_pi(self,) -> bool:
-        """Checks if it runs on a Raspberry PI.
-
-        :return: returns a boolean
-        :rtype: bool
-        """
-        try:
-            with io.open('/proc/cpuinfo', 'r') as cpuinfo:
-                found = False
-                for line in cpuinfo:
-                    if line.startswith('Hardware'):
-                        found = True
-                        label, value = line.strip().split(':', 1)
-                        value = value.strip()
-                        if value not in (
-                            'BCM2708',
-                            'BCM2709',
-                            'BCM2711',
-                            'BCM2835',
-                            'BCM2836'
-                        ):
-                            self.logger.debug("This system does not appear to be a Raspberry Pi")
-                            return False
-                if not found:
-                    self.logger.debug("Unable to determine if this system is a Raspberry Pi")
-                    return False
-
-        except IOError:
-            self.logger.debug("Unable to open `/proc/cpuinfo`.")
-            return False
-
-        return True

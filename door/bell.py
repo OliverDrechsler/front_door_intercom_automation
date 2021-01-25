@@ -4,8 +4,10 @@ from camera import blink_cam, picam
 from messaging import send_msg
 import logging
 import time
-from gpiozero import Button
-
+try:
+    from gpiozero import Button
+except:
+    pass
 
 import datetime
 config = Configuration()
@@ -30,9 +32,9 @@ class Door(Configuration):
         :return: Nothing adds class instance attribues
         :rtype: None
         """
+        Configuration.__init__(self)
         self.logger = logging.getLogger('door-bell')
         self.logger.info("reading config")
-        Configuration.__init__(self)
         self.bot = bot
         self.blink = blink_instance
         self.auth = blink_auth_instance
@@ -48,13 +50,13 @@ class Door(Configuration):
         :return: Nothing
         :rtype: None
         """
-        if self.is_raspberry_pi:
+        if self.run_on_raspberry:
             button = Button(self.door_bell)
 
         self.logger.debug("starting endless loop watching door bell ring")
         while True:
             time.sleep(0.01)
-            if self.is_raspberry_pi:     
+            if self.run_on_raspberry:
                 if button.is_pressed:
                     time.sleep(0.1)
                     if button.is_pressed:
