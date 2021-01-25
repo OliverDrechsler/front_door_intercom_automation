@@ -41,7 +41,7 @@ class Door(Configuration):
 
     def ring(self) -> None:
         """
-        Watcher for door bell ring.
+        Endless watch loop for door bell ring.
 
         :param self.door_bell: class attribute door_bell_port
         :type self.door_bell: int
@@ -51,12 +51,10 @@ class Door(Configuration):
         :rtype: None
         """
         if self.run_on_raspberry:
+            self.logger.debug("RPI: start endless loop doorbell monitoring")
             button = Button(self.door_bell)
-
-        self.logger.debug("starting endless loop watching door bell ring")
-        while True:
-            time.sleep(0.01)
-            if self.run_on_raspberry:
+            while True:
+                time.sleep(0.01)
                 if button.is_pressed:
                     time.sleep(0.1)
                     if button.is_pressed:
@@ -68,7 +66,12 @@ class Door(Configuration):
                             str(datetime.datetime.now()))
                         self.choose_camera()
                         time.sleep(5)
+        else:
+            self.logger.debug("NOT on RPI: start empty endless loop")
+            while True:
+                time.sleep(60)
     
+
     def choose_camera(self) -> None:
         """
         Call choosen camera type from config file to take a foto.
