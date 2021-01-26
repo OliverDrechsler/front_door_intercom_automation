@@ -70,7 +70,45 @@ class Door(Configuration):
             self.logger.debug("NOT on RPI: start empty endless loop")
             while True:
                 time.sleep(60)
-    
+
+    def blink_json_load(self) -> bool:
+        """Load blink json credentials from file.
+        
+        :return: success status
+        :rtype: boolean
+        """
+        try:
+            with open(self.blink_config_file, "r") as json_file:
+                self.blink_json_data = json.load(json_file)
+            return True
+        except FileNotFoundError:
+            self.logger.error("Could not find %s", self.blink_config_file)
+        except json.decoder.JSONDecodeError:
+            self.logger.error("File %s has improperly formatted json", self.blink_config_file)
+        return False
+
+    def blink_compare_config(self) -> bool:
+        """
+        Compares Blink actual class config with blink config file
+        and stores it in case of difference.
+        Blink will daily update the device token.
+        Therefore we have to update the config file
+
+        :return: success status
+        :rtype: boolean
+        """
+        self.blink_json_load()
+        if self.auth.login_attributes != self.blink_json_data:
+            self.logger.debug("saved blink config file differs from running config")
+            self.logger.debug("blink config object = {0}".format(self.auth.login_attributes))
+            self.logger.debug("blink config file   = {0}".format(self.blink_json_data))
+            blink_cam.save_blink_config(
+                self.blink, 
+                self.blink_config_file)
+            return True
+        else:
+            self.logger.debug("saved blink config file == running config")
+            return False
 
     def choose_camera(self) -> None:
         """
@@ -86,7 +124,7 @@ class Door(Configuration):
         elif self.common_camera_type == "picam":
             self.picam_take_photo()
 
-    def blink_take_photo(self) -> None:
+    def blink_take_photo(self) -> bool:
         """
         Use Blink camera to take a foto.
 
@@ -98,8 +136,8 @@ class Door(Configuration):
         :type self.telegram_token: string
         :param self.telegram_chat_nr: telegramchat group id send message to
         :type self.telegram_chat_nr: string
-        :return: Nothing
-        :rtype: None
+        :return: success status
+        :rtype: boolean
         """
         try:
             # request_take_foto()
@@ -109,14 +147,18 @@ class Door(Configuration):
                 self.blink, 
                 self.blink_name, 
                 self.common_image_path)
+            
+            self.blink_compare_config()
+            
             send_msg.telegram_send_photo(
                 self.bot, 
                 self.telegram_chat_nr, 
                 self.common_image_path)
+            return True
         except:
-            pass
+            return False
         
-    def picam_take_photo(self) -> None:
+    def picam_take_photo(self) -> bool:
         """
         Use PiCam camera to take a foto.
 
@@ -140,8 +182,8 @@ class Door(Configuration):
         :type self.telegram_token: string
         :param self.telegram_chat_nr: telegramchat group id send message to
         :type self.telegram_chat_nr: string
-        :return: Nothing
-        :rtype: None
+        :return: success status
+        :rtype: boolean
         """
         try:
             self.logger.info("trigger to take a snapshot")
@@ -162,5 +204,6 @@ class Door(Configuration):
                 self.bot, 
                 self.telegram_chat_nr, 
                 self.common_image_path)
+            return True
         except:
-            pass
+            return False
