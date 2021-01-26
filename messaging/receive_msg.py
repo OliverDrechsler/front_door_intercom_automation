@@ -171,7 +171,7 @@ class TelegramMessages(Configuration):
         elif self.common_camera_type == "picam":
             self.picam_take_photo()
 
-    def blink_take_photo(self, try=1: int) -> bool:
+    def blink_take_photo(self, retry=1) -> bool:
         """
         take a photo via blink cam
 
@@ -199,13 +199,13 @@ class TelegramMessages(Configuration):
         except:
             self.logger.info("blink cam take snapshot - error occured")
             
-            if try < 2:
+            if retry < 2:
                 self.logger.info("second try with picam now")
-                self.picam_take_photo(try=2)
+                self.picam_take_photo(retry=2)
             
             return False
 
-    def picam_take_photo(self, try=1: int) -> bool:
+    def picam_take_photo(self, retry=1) -> bool:
         """
         Use PiCam camera to take a foto.
 
@@ -257,9 +257,9 @@ class TelegramMessages(Configuration):
         except:
             self.logger.info("PiCam take snapshot - error occured")
             
-            if try < 2:
+            if retry < 2:
                 self.logger.info("second try with blink now")
-                self.blink_take_photo(try=2)
+                self.blink_take_photo(retry=2)
             
             return False
 

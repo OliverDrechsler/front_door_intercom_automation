@@ -124,7 +124,7 @@ class Door(Configuration):
         elif self.common_camera_type == "picam":
             self.picam_take_photo()
 
-    def blink_take_photo(self) -> bool:
+    def blink_take_photo(self, retry=1) -> bool:
         """
         Use Blink camera to take a foto.
 
@@ -156,9 +156,16 @@ class Door(Configuration):
                 self.common_image_path)
             return True
         except:
+            self.logger.info("blink cam take snapshot - error occured")
+            
+            if retry < 2:
+                self.logger.info("second try with picam now")
+                self.picam_take_photo(retry=2)
+            
             return False
+
         
-    def picam_take_photo(self) -> bool:
+    def picam_take_photo(self, retry=1) -> bool:
         """
         Use PiCam camera to take a foto.
 
@@ -206,4 +213,10 @@ class Door(Configuration):
                 self.common_image_path)
             return True
         except:
+            self.logger.info("PiCam take snapshot - error occured")
+            
+            if retry < 2:
+                self.logger.info("second try with blink now")
+                self.blink_take_photo(retry=2)
+            
             return False
