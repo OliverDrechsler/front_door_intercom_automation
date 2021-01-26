@@ -8,15 +8,15 @@ import time
 
 logger = logging.getLogger('door-opener')
 
-def open_door(door_opener_port: int, run_on_raspberry: bool) -> None:
+def open_door(door_opener_port: int, run_on_raspberry: bool) -> bool:
     """Put Raspberry Pi GPIO port on high - voltage
 
     :param door_opener_port: RPi GPIO Port Number
     :type door_opener_port: int
     :param run_on_raspberry: if code runs on a RPi, defaults to True
     :type run_on_raspberry: bool
-    :return: Nothing
-    :rtype: None
+    :return: success status
+    :rtype: boolean
     """
     if run_on_raspberry:
         logger.info("opening the door")
@@ -25,5 +25,7 @@ def open_door(door_opener_port: int, run_on_raspberry: bool) -> None:
         GPIO.output(door_opener_port, GPIO.HIGH)
         time.sleep(5)
         GPIO.output(door_opener_port, GPIO.LOW)
+        return True
     else:
         logger.info("not running on raspberry pi - will not open the door")
+        return False
