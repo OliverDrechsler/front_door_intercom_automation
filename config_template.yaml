@@ -28,13 +28,13 @@ blink:
   config_file: "blink_config.json"
 
 picam:
-  url: "http://IP:8000"
-  image_width: "640"
-  image_hight: "480"
+  url: "http://IP:8000/foto/"
+  image_width: 640
+  image_hight: 480
   image_filename: "foto.jpg"
   exposure: "auto"
-  rotation: "0"
-  iso: "0"
+  rotation: 0
+  iso: 0
 
 common:
   image_path: "/tmp/foto.jpg"
