@@ -1,3 +1,4 @@
+from __future__ import annotations
 import requests
 import logging
 import os
@@ -36,6 +37,7 @@ def request_take_foto(
     :rtype: int
     """
     logger.info("start take a snapshot")
+    logger.debug(f"post url={picam_url}")
     payload = {
         "rotation": picam_rotation,
         "width": picam_image_width,
@@ -44,10 +46,12 @@ def request_take_foto(
         "exposure": picam_exposure,
         "iso": picam_iso
     }
+    logger.debug(payload)
     headers = {'content-type': 'application/json'}
+    logger.debug(headers)
     r = requests.post(picam_url,
-                      data=json.dumps(payload), headers=headers)
-    logger.debug("make a snapshot ended with status {}".format(r.status_code))
+        data=json.dumps(payload), headers=headers)
+    logger.debug("make a snapshot ended with http status {}".format(r.status_code))
     logger.info("end take snapshot")
     return r.status_code
 

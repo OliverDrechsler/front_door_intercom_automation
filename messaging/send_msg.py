@@ -1,3 +1,4 @@
+from __future__ import annotations
 import telepot
 import urllib3
 import logging
@@ -29,6 +30,7 @@ def telegram_send_message(bot: object, telegram_chat_nr: str, message: str) -> b
         bot.sendMessage(telegram_chat_nr, message)
         logger.info("send message : " + message)
         return True
+
     except:
         time.sleep(5)
         try:
@@ -38,10 +40,10 @@ def telegram_send_message(bot: object, telegram_chat_nr: str, message: str) -> b
             bot.sendMessage(telegram_chat_nr, message)
             logger.info("send message second try : " + message)
             return True
+
         except:
-            pass
             return False
-        pass
+
         return False
 
 
@@ -69,6 +71,7 @@ def telegram_send_photo(bot: object, telegram_chat_nr: str, common_image_path: s
         if os.path.exists(common_image_path):
             os.remove(common_image_path)
         return True
+        
     except:
         logger.info("send a foto: Error occured")
         if os.path.exists(common_image_path):

@@ -9,10 +9,13 @@ otp:
   password: "Base32CodePasswordHere"
   length: 6
   # will be changed to use passlib for sha512
-  # please use than maxim lenght of 9 instaed 10 
-  # because of passlib limitation here https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken
-  # Caution Due to a limitation of the HOTP algorithm, the 10th digit can only take on values 0 .. 2, and thus offers very little extra security.
+  # Caution Due to a limitation of the HOTP algorithm, 
+  # the 10th digit can only take on values 0 .. 2, 
+  # and thus offers very little extra security.
+  # Please use maxim lenght of 9 instead 10 
+  # limitation see here https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken        
   interval: 30
+  hash_type: hashlib.sha1
 
 GPIO:
   door_bell_port: 1
@@ -25,14 +28,15 @@ blink:
   config_file: "blink_config.json"
 
 picam:
-  url: "http://IP:8000"
-  image_width: "640"
-  image_hight: "480"
+  url: "http://IP:8000/foto/"
+  image_width: 640
+  image_hight: 480
   image_filename: "foto.jpg"
   exposure: "auto"
-  rotation: "0"
-  iso: "0"
+  rotation: 0
+  iso: 0
 
 common:
   image_path: "/tmp/foto.jpg"
   camera_type: "blink"  # "blink" or "picam" careful - case senitive
+  run_on_raspberry: True

@@ -4,8 +4,10 @@ from camera import blink_cam, picam
 from messaging import send_msg
 import logging
 import time
-from gpiozero import Button
-
+try:
+    from gpiozero import Button
+except:
+    pass
 
 import datetime
 config = Configuration()
@@ -30,16 +32,16 @@ class Door(Configuration):
         :return: Nothing adds class instance attribues
         :rtype: None
         """
+        Configuration.__init__(self)
         self.logger = logging.getLogger('door-bell')
         self.logger.info("reading config")
-        Configuration.__init__(self)
         self.bot = bot
         self.blink = blink_instance
         self.auth = blink_auth_instance
 
     def ring(self) -> None:
         """
-        Watcher for door bell ring.
+        Endless watch loop for door bell ring.
 
         :param self.door_bell: class attribute door_bell_port
         :type self.door_bell: int
@@ -48,13 +50,11 @@ class Door(Configuration):
         :return: Nothing
         :rtype: None
         """
-        if self.is_raspberry_pi:
+        if self.run_on_raspberry:
+            self.logger.debug("RPI: start endless loop doorbell monitoring")
             button = Button(self.door_bell)
-
-        self.logger.debug("starting endless loop watching door bell ring")
-        while True:
-            time.sleep(0.01)
-            if self.is_raspberry_pi:     
+            while True:
+                time.sleep(0.01)
                 if button.is_pressed:
                     time.sleep(0.1)
                     if button.is_pressed:
@@ -66,7 +66,50 @@ class Door(Configuration):
                             str(datetime.datetime.now()))
                         self.choose_camera()
                         time.sleep(5)
-    
+        else:
+            self.logger.debug("NOT on RPI: start empty endless loop")
+            while True:
+                time.sleep(60)
+
+    def blink_json_load(self) -> bool:
+        """Load blink json credentials from file.
+        
+        :return: success status
+        :rtype: boolean
+        """
+        try:
+            with open(self.blink_config_file, "r") as json_file:
+                self.blink_json_data = json.load(json_file)
+            return True
+        except FileNotFoundError:
+            self.logger.error("Could not find %s", self.blink_config_file)
+        except json.decoder.JSONDecodeError:
+            self.logger.error("File %s has improperly formatted json", self.blink_config_file)
+        return False
+
+    def blink_compare_config(self) -> bool:
+        """
+        Compares Blink actual class config with blink config file
+        and stores it in case of difference.
+        Blink will daily update the device token.
+        Therefore we have to update the config file
+
+        :return: success status
+        :rtype: boolean
+        """
+        self.blink_json_load()
+        if self.auth.login_attributes != self.blink_json_data:
+            self.logger.debug("saved blink config file differs from running config")
+            self.logger.debug("blink config object = {0}".format(self.auth.login_attributes))
+            self.logger.debug("blink config file   = {0}".format(self.blink_json_data))
+            blink_cam.save_blink_config(
+                self.blink, 
+                self.blink_config_file)
+            return True
+        else:
+            self.logger.debug("saved blink config file == running config")
+            return False
+
     def choose_camera(self) -> None:
         """
         Call choosen camera type from config file to take a foto.
@@ -81,7 +124,7 @@ class Door(Configuration):
         elif self.common_camera_type == "picam":
             self.picam_take_photo()
 
-    def blink_take_photo(self) -> None:
+    def blink_take_photo(self, retry=1) -> bool:
         """
         Use Blink camera to take a foto.
 
@@ -93,8 +136,8 @@ class Door(Configuration):
         :type self.telegram_token: string
         :param self.telegram_chat_nr: telegramchat group id send message to
         :type self.telegram_chat_nr: string
-        :return: Nothing
-        :rtype: None
+        :return: success status
+        :rtype: boolean
         """
         try:
             # request_take_foto()
@@ -104,14 +147,28 @@ class Door(Configuration):
                 self.blink, 
                 self.blink_name, 
                 self.common_image_path)
+            
+            self.blink_compare_config()
+            
             send_msg.telegram_send_photo(
                 self.bot, 
                 self.telegram_chat_nr, 
                 self.common_image_path)
+            return True
         except:
-            pass
+            self.logger.info("blink cam take snapshot - error occured")
+            send_msg.telegram_send_message(
+                self.bot, 
+                self.telegram_chat_nr, 
+                "Blink Cam take snapshot - error occured")            
+            if retry < 2:
+                self.logger.info("second try with picam now")
+                self.picam_take_photo(retry=2)
+            
+            return False
+
         
-    def picam_take_photo(self) -> None:
+    def picam_take_photo(self, retry=1) -> bool:
         """
         Use PiCam camera to take a foto.
 
@@ -135,27 +192,39 @@ class Door(Configuration):
         :type self.telegram_token: string
         :param self.telegram_chat_nr: telegramchat group id send message to
         :type self.telegram_chat_nr: string
-        :return: Nothing
-        :rtype: None
+        :return: success status
+        :rtype: boolean
         """
         try:
             self.logger.info("trigger to take a snapshot")
-            picam.request_take_foto(
-                self.picam_url, 
-                self.picam_image_width, 
-                self.picam_image_hight, 
-                self.picam_image_filename, 
-                self.picam_exposure,
-                self.picam_rotation,
-                self.picam_iso)
-            picam.request_download_foto(
-                self.picam_url,
-                self.picam_image_filename,
-                self.common_image_path
-                )
+            if picam.request_take_foto(
+                    self.picam_url, 
+                    self.picam_image_width, 
+                    self.picam_image_hight, 
+                    self.picam_image_filename, 
+                    self.picam_exposure,
+                    self.picam_rotation,
+                    self.picam_iso) != 200:
+                raise NameError('HTTP Status not 200')
+            if picam.request_download_foto(
+                    self.picam_url,
+                    self.picam_image_filename,
+                    self.common_image_path
+                    ) != 200:
+                raise NameError('HTTP Status not 200')
             send_msg.telegram_send_photo(
                 self.bot, 
                 self.telegram_chat_nr, 
                 self.common_image_path)
+            return True
         except:
-            pass
+            self.logger.info("PiCam take snapshot - error occured")
+            send_msg.telegram_send_message(
+                self.bot, 
+                self.telegram_chat_nr, 
+                "PiCam take snapshot - error occured")            
+            if retry < 2:
+                self.logger.info("second try with blink now")
+                self.blink_take_photo(retry=2)
+            
+            return False
