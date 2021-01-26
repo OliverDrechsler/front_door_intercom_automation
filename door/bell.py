@@ -157,7 +157,10 @@ class Door(Configuration):
             return True
         except:
             self.logger.info("blink cam take snapshot - error occured")
-            
+            send_msg.telegram_send_message(
+                self.bot, 
+                self.telegram_chat_nr, 
+                "Blink Cam take snapshot - error occured")            
             if retry < 2:
                 self.logger.info("second try with picam now")
                 self.picam_take_photo(retry=2)
@@ -194,19 +197,21 @@ class Door(Configuration):
         """
         try:
             self.logger.info("trigger to take a snapshot")
-            picam.request_take_foto(
-                self.picam_url, 
-                self.picam_image_width, 
-                self.picam_image_hight, 
-                self.picam_image_filename, 
-                self.picam_exposure,
-                self.picam_rotation,
-                self.picam_iso)
-            picam.request_download_foto(
-                self.picam_url,
-                self.picam_image_filename,
-                self.common_image_path
-                )
+            if picam.request_take_foto(
+                    self.picam_url, 
+                    self.picam_image_width, 
+                    self.picam_image_hight, 
+                    self.picam_image_filename, 
+                    self.picam_exposure,
+                    self.picam_rotation,
+                    self.picam_iso) != 200:
+                raise NameError('HTTP Status not 200')
+            if picam.request_download_foto(
+                    self.picam_url,
+                    self.picam_image_filename,
+                    self.common_image_path
+                    ) != 200:
+                raise NameError('HTTP Status not 200')
             send_msg.telegram_send_photo(
                 self.bot, 
                 self.telegram_chat_nr, 
@@ -214,7 +219,10 @@ class Door(Configuration):
             return True
         except:
             self.logger.info("PiCam take snapshot - error occured")
-            
+            send_msg.telegram_send_message(
+                self.bot, 
+                self.telegram_chat_nr, 
+                "PiCam take snapshot - error occured")            
             if retry < 2:
                 self.logger.info("second try with blink now")
                 self.blink_take_photo(retry=2)
