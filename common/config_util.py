@@ -54,19 +54,36 @@ class Configuration:
         :rtype: None
         """
         self.logger.debug("reading config {0} file info dict".format(config_file))
-        with open(file=config_file, mode='r') as file:
-            self.config = yaml.load(file, Loader=yaml.SafeLoader)
+        try:
+            with open(file=config_file, mode='r') as file:
+                self.config = yaml.load(file, Loader=yaml.SafeLoader)
+        except FileNotFoundError:
+            self.logger.error("Could not find %s", self.config_file)
+        except:
+            self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
 
     def define_config_file(self) -> None:
         """
-        Checks and defines Config yaml path.
+        Checks and defines Config yaml file path.
 
-        :return: adds a new class path attribute.
+        :return: adds a new class path attribute for the config file.
         :rtype: None
         """
-        self.logger.info("checking if config.yaml file exists")
-        if os.path.isfile(os.path.abspath('') + '/config.yaml'):
-            self.config_file = (os.path.abspath('') + '/config.yaml')
+        self.logger.debug("checking if config.yaml file exists")
+
+        if os.path.isfile(
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__))) + '/config.yaml'):
+            self.config_file = (os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__))) + '/config.yaml')
+            return True
         else:
-            self.logger.info("a config files does not exist - using config template")
-            self.config_file = (os.path.abspath('') + '/config_template.yaml')
+            self.logger.info("No config.yaml file detected. Using temeplate one.")
+            self.config_file = (os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__))) + '/config_template.yaml')
+            return False
+        
+        raise(NameError("No config file found!"))
