@@ -36,7 +36,7 @@ def request_take_foto(
     :return: http request status code
     :rtype: int
     """
-    logger.info("start take a snapshot")
+    logger.info("take a PiCam snapshot")
     logger.debug(f"post url={picam_url}")
     payload = {
         "rotation": picam_rotation,
@@ -52,7 +52,6 @@ def request_take_foto(
     r = requests.post(picam_url,
         data=json.dumps(payload), headers=headers)
     logger.debug("make a snapshot ended with http status {}".format(r.status_code))
-    logger.info("end take snapshot")
     return r.status_code
 
 
@@ -71,7 +70,7 @@ def request_download_foto(
     :return: http request status code
     :rtype: int
     """
-    logger.info("start downloading foto")
+    logger.info("downloading PiCam foto")
     if os.path.exists(local_image_path):
         logger.debug("deleting already existing file before hand")
         os.remove(local_image_path)
@@ -83,5 +82,5 @@ def request_download_foto(
     logger.debug(
         "downloading foto ended with status {}".format(
             response.status_code))
-    logger.info("end downloading foto")
+    logger.debug("end downloading foto")
     return response.status_code

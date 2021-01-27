@@ -1,12 +1,14 @@
 from __future__ import annotations
 import onetimepass as otp
 import hashlib
+import logging
 from passlib.totp import TOTP
 
+logger = logging.getLogger('TOTP')
 
 def verify_otp(to_verify: int, my_secret: str, length: int, interval: int, hash_type: str) -> bool:
     """
-    Verify given onetimepassword  matches
+    Verify given onetimepassword  matches using library otp
 
     :param to_verify: given time-based one time password 
     :type to_verify: int
@@ -19,6 +21,7 @@ def verify_otp(to_verify: int, my_secret: str, length: int, interval: int, hash_
     :return: result of totp matches
     :rtype: bool
     """
+    logger.debug("verify totp with library otp")
     return otp.valid_totp(
         token=to_verify, secret=my_secret, token_length=length, interval_length=interval,
         digest_method=hash_type)
@@ -26,7 +29,7 @@ def verify_otp(to_verify: int, my_secret: str, length: int, interval: int, hash_
 
 def verify_totp_code(to_verify: str, my_secret: str, length: int, interval: int, hash_type: str) -> bool:
     """
-    Verify given time-based one time password with passlib
+    Verify given time-based one time password using library passlib
 
     :param to_verify: given time-based one time password 
     :type to_verify: str
@@ -46,6 +49,7 @@ def verify_totp_code(to_verify: str, my_secret: str, length: int, interval: int,
     :return: result of totp matches
     :rtype: bool
     """
+    logger.debug("verify totp with library passlib")
     totp = TOTP(key=my_secret, digits=length, period=interval, alg=hash_type)
     if totp.generate().token == str(to_verify):
         return True

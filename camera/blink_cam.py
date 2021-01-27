@@ -22,15 +22,14 @@ def start_blink_session(blink_config_file: str, blink_username, blink_password) 
     :rtype blink: class
     :rtype auth: class
     """
-    logger.info("create blink instance")
     blink = Blink(refresh_rate=3)
 
     if os.path.exists(blink_config_file):
-        logger.info("using existing config")
+        logger.info("using existing blink_config.json")
         auth = Auth(json_load(blink_config_file), no_prompt=True)
         authentication_success = True
     else:
-        logger.info("on existing config found - 2FA authentication token required")
+        logger.info("no blink_config.json found - 2FA authentication token required")
         auth = Auth({"username": blink_username, "password": blink_password}, no_prompt=True)
         authentication_success = None
 
@@ -38,10 +37,10 @@ def start_blink_session(blink_config_file: str, blink_username, blink_password) 
     opts = {"retries": 10, "backoff": 2}
     blink.auth.session = blink.auth.create_session(opts=opts)
     try:
-        logger.debug("start blink instance")
+        logger.info("start blink session")
         blink.start()
     except Exception as err:
-        logger.info("exception occured: {0}".format(err))
+        logger.info("blink session exception occured: {0}".format(err))
         pass
 
     return authentication_success, blink, auth
@@ -59,7 +58,7 @@ def blink_snapshot(blink: object, blink_name: str, image_path: str) -> None:
     :return: Nothing
     :rtype: None
     """
-    logger.info("i'll try to take a snapshot from cam {0} and store it here {1}".format(
+    logger.info("i'll take a snapshot from cam {0} and store it here {1}".format(
         blink_name, 
         image_path))
 
@@ -135,8 +134,9 @@ def delete_blink_config(blink: object,auth: object, blink_config_file: str) -> b
     """
     if os.path.exists(blink_config_file):
         os.remove(blink_config_file)
-        logger.info("deleted blink config file")
+        logger.debug("deleted blink config file")
     logger.debug("deleting blink and auth class instances")
     del blink
     del auth
+    logger.info("deleted blink class instances and config")
     return True
