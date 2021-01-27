@@ -15,7 +15,7 @@ import urllib3
 import json
 
 
-logger = logging.getLogger('fdia_telegram')
+logger = logging.getLogger('telegram thread')
 
 def force_independent_connection(req, **user_kw):
     return None
@@ -42,7 +42,7 @@ class TelegramMessages(Configuration):
         """
         Configuration.__init__(self)
         self.logger = logging.getLogger('fdia_telegram')
-        self.logger.info("reading config")
+        self.logger.debug("reading config")
         self.bot = bot
         self.blink = blink_instance
         self.auth = blink_auth_instance
@@ -57,6 +57,7 @@ class TelegramMessages(Configuration):
         :return: success status
         :rtype: boolean
         """
+        self.logger.info("received a telegram message")
         (self.content_type, 
          self.chat_type, 
          self.chat_id) = telepot.glance(msg)
@@ -73,31 +74,36 @@ class TelegramMessages(Configuration):
         
         if str(self.chat_id) == str(self.telegram_chat_nr):
             self.logger.info(
-                "allowed: chat_id " + str(self.chat_id) +
-                " in config")
+                "chat msg allowed: chat_group_id " + str(self.chat_id) +
+                " is in config")
         else:
             self.logger.info(
-                "denied: chat_id " + str(self.chat_id) +
-                " not in config")
+                "chat msg denied: chat_id " + str(self.chat_id) +
+                " is not in config")
             return False
     
         if str(self.from_id) in self.allowed_user_ids:
             self.logger.info(
-                "allowed: from_id " + str(self.from_id) +
-                " & from user " + self.from_name + " is in config")        
+                "chat msg allowed: user " + self.from_name + 
+                " with from_id " + str(self.from_id) +
+                " is in config")        
         else:
             self.logger.info(
-                "denied: from_id " + str(self.from_id) +
-                " & from user " + self.from_name + " is NOT in config")
+                "chat msg denied: from user " + self.from_name + 
+                " with from_id " + str(self.from_id) +
+                " is NOT in config")
             return False
 
         if "foto" in self.text.lower():
+            self.logger.debug("text match foto found")
             self.request_foto()
             return True
         elif "blink" in self.text.lower():
+            self.logger.debug("text match blink found")
             self.request_add_blink_2FA()
             return True
         else: 
+            self.logger.debug("text not matched checking for totp code")
             self.check_received_msg_has_code_number()
             return True
         
@@ -137,6 +143,7 @@ class TelegramMessages(Configuration):
             blink_cam.save_blink_config(
                 self.blink, 
                 self.blink_config_file)
+            self.logger.info("updated blink config file")
             return True
         else:
             self.logger.debug("saved blink config file == running config")
@@ -149,7 +156,7 @@ class TelegramMessages(Configuration):
         :return: Nothing
         :rtype: None
         """
-        logger.info(
+        logger.debug(
             "Foto request received")
         send_msg.telegram_send_message(self.bot, 
             self.telegram_chat_nr, 
@@ -166,9 +173,12 @@ class TelegramMessages(Configuration):
         :return: Nothing
         :rtype: None
         """
+        self.logger.debug("choose camera")
         if self.common_camera_type == "blink":
+            self.logger.debug("blink cam choosen")
             self.blink_take_photo()
         elif self.common_camera_type == "picam":
+            self.logger.debug("PiCam choosen")
             self.picam_take_photo()
 
     def blink_take_photo(self, retry=1) -> bool:
@@ -183,27 +193,26 @@ class TelegramMessages(Configuration):
         try:
             # request_take_foto()
             # request_download_foto()
-            self.logger.info("take a snapshot")
+            self.logger.debug("take a Blink Cam snapshot")
             blink_cam.blink_snapshot(self.blink, 
                 self.blink_name, 
                 self.common_image_path)
             
             self.blink_compare_config()
 
-            self.logger.info("send snapshot photo")
             send_msg.telegram_send_photo(
                 self.bot, 
                 self.telegram_chat_nr, 
                 self.common_image_path)
             return True
         except:
-            self.logger.info("blink cam take snapshot - error occured")
+            self.logger.info("Blink cam take snapshot - error occured")
             send_msg.telegram_send_message(
                 self.bot, 
                 self.telegram_chat_nr, 
                 "Blink Cam take snapshot - error occured")
             if retry < 2:
-                self.logger.info("second try with picam now")
+                self.logger.info("second try with PiCam now")
                 self.picam_take_photo(retry=2)
             
             return False
@@ -238,7 +247,7 @@ class TelegramMessages(Configuration):
         :rtype: boolean
         """
         try:
-            self.logger.info("trigger to take a snapshot")
+            self.logger.debug("take a PiCam snapshot")
             if picam.request_take_foto(
                     self.picam_url, 
                     self.picam_image_width, 
@@ -260,13 +269,13 @@ class TelegramMessages(Configuration):
                 self.common_image_path)
             return True
         except:
-            self.logger.info("PiCam take snapshot - error occured")
+            self.logger.debug("PiCam take snapshot - error occured")
             send_msg.telegram_send_message(
                 self.bot, 
                 self.telegram_chat_nr, 
                 "PiCam take snapshot - error occured")
             if retry < 2:
-                self.logger.info("second try with blink now")
+                self.logger.info("second try with Blink Cam now")
                 self.blink_take_photo(retry=2)
             
             return False
@@ -279,19 +288,20 @@ class TelegramMessages(Configuration):
         :rtype: boolean
         """
         match = re.search("(?<=^blink.)\d{6}", self.text, re.IGNORECASE)
-        send_msg.telegram_send_message(
-            self.bot, 
-            self.telegram_chat_nr, 
-            "Blink token received " + match.group(0))
-
         if match:
+            self.logger.info(f"blink token received - will save config")
+            send_msg.telegram_send_message(
+                self.bot, 
+                self.telegram_chat_nr, 
+                "Blink token received " + match.group(0))
             blink_cam.add_2fa_blink_token(
                 token=match.group(0), 
                 blink=self.blink, 
                 auth=self.auth)
             self.blink_compare_config()
             return True
-
+        
+        self.logger.debug("no blink token detected")
         return False
     
     def check_received_msg_has_code_number(self) -> bool:

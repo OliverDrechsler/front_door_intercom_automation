@@ -12,8 +12,8 @@ import logging
 import threading
 import time
 
-format = "%(asctime)s - %(name)s - %(funcName)s: %(message)s"
-logging.basicConfig(format=format, level=logging.DEBUG,
+format = "%(asctime)s  -  %(name)s  -  %(funcName)s :        %(message)s"
+logging.basicConfig(format=format, level=logging.INFO,
                     datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger('fdia')
 
@@ -53,7 +53,7 @@ def thread_setup_receive_messages(bot: object, blink: object, auth: object) -> N
     """
     logger.debug("create telegram class instance")
     telegram_messages = receive_msg.TelegramMessages(bot, blink, auth)
-    logger.info("thread start watching received Telegram messages")
+    logger.info("start Telegram Bot receiving messages")
     MessageLoop(
         bot, 
         telegram_messages.handle_received_message).run_as_thread()
@@ -85,7 +85,7 @@ def main():
     logger.debug("calling - thread_setup_receive_messages - function")
     thread_setup_receive_messages(bot, blink, auth)
 
-    logger.info("thread start door bell watch")
+    logger.info("start thread monitoring door bell")
     door_bell_watcher.start()
 
 
