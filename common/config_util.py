@@ -33,7 +33,7 @@ class Configuration:
         self.blink_username = self.config["blink"]["username"]
         self.blink_password = self.config["blink"]["password"]
         self.blink_name = self.config["blink"]["name"]
-        self.blink_config_file = self.base_path + self.config["blink"]["config_file"])
+        self.blink_config_file = self.base_path + self.config["blink"]["config_file"]
         self.common_image_path = self.config["common"]["image_path"]
         self.common_camera_type = self.config["common"]["camera_type"]
         self.picam_url = self.config["picam"]["url"]
