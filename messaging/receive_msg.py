@@ -1,7 +1,7 @@
 from __future__ import annotations
 from common.config_util import Configuration
 from door import opener
-from camera import blink_cam, picam
+from camera import blink_cam, picam, cam_common
 from . import otp
 from . import send_msg
 from pprint import pprint
@@ -109,45 +109,6 @@ class TelegramMessages(Configuration):
         
         return False
         
-    def blink_json_load(self) -> bool:
-        """Load blink json credentials from file.
-        
-        :return: success status
-        :rtype: boolean
-        """
-        try:
-            with open(self.blink_config_file, "r") as json_file:
-                self.blink_json_data = json.load(json_file)
-            return True
-        except FileNotFoundError:
-            self.logger.error("Could not find %s", self.blink_config_file)
-        except json.decoder.JSONDecodeError:
-            self.logger.error("File %s has improperly formatted json", self.blink_config_file)
-        return False
-
-    def blink_compare_config(self) -> bool:
-        """
-        Compares Blink actual class config with blink config file
-        and stores it in case of difference.
-        Blink will daily update the device token.
-        Therefore we have to update the config file
-
-        :return: success status
-        :rtype: boolean
-        """
-        self.blink_json_load()
-        if self.auth.login_attributes != self.blink_json_data:
-            self.logger.debug("saved blink config file differs from running config")
-            self.logger.debug("blink config object = {0}".format(self.auth.login_attributes))
-            self.logger.debug("blink config file   = {0}".format(self.blink_json_data))
-            blink_cam.save_blink_config(
-                self.blink, 
-                self.blink_config_file)
-            self.logger.info("updated blink config file")
-            return True
-        else:
-            self.logger.debug("saved blink config file == running config")
-            return False
 
     def request_foto(self) -> None:
         """
@@ -162,123 +123,7 @@ class TelegramMessages(Configuration):
             self.telegram_chat_nr, 
             "ich werde ein foto senden")
         
-        self.choose_camera()
-
-    def choose_camera(self) -> None:
-        """
-        Call choosen camera type from config file to take a foto.
-
-        :param self.common_camera_type: camera type from config file
-        :rtype self.common_camera_type: string
-        :return: Nothing
-        :rtype: None
-        """
-        self.logger.debug("choose camera")
-        if self.common_camera_type == "blink":
-            self.logger.debug("blink cam choosen")
-            self.blink_take_photo()
-        elif self.common_camera_type == "picam":
-            self.logger.debug("PiCam choosen")
-            self.picam_take_photo()
-
-    def blink_take_photo(self, retry=1) -> bool:
-        """
-        take a photo via blink cam
-
-        :param try: number of try to take a photo - default=1
-        :type try: int
-        :return: success status
-        :rtype: boolean
-        """
-        try:
-            # request_take_foto()
-            # request_download_foto()
-            self.logger.debug("take a Blink Cam snapshot")
-            blink_cam.blink_snapshot(self.blink, 
-                self.blink_name, 
-                self.common_image_path)
-            
-            self.blink_compare_config()
-
-            send_msg.telegram_send_photo(
-                self.bot, 
-                self.telegram_chat_nr, 
-                self.common_image_path)
-            return True
-        except:
-            self.logger.info("Blink cam take snapshot - error occured")
-            send_msg.telegram_send_message(
-                self.bot, 
-                self.telegram_chat_nr, 
-                "Blink Cam take snapshot - error occured")
-            if retry < 2:
-                self.logger.info("second try with PiCam now")
-                self.picam_take_photo(retry=2)
-            
-            return False
-
-    def picam_take_photo(self, retry=1) -> bool:
-        """
-        Use PiCam camera to take a foto.
-
-        :param try: number of try to take a photo - default=1
-        :type try: int
-        :param self.picam_url: PiCam URL to call REST API
-        :type self.picam_url: string
-        :param self.picam_image_width: foto width
-        :type self.picam_image_width: int
-        :param self.picam_image_hight: foto hight
-        :type self.picam_image_hight: int
-        :param self.picam_image_filename: PiCam foto filename
-        :type self.picam_image_filename: string
-        :param self.picam_exposure: auto, night....
-        :type self.picam_exposure: string
-        :param self.picam_rotation: picture rotation in degrees
-        :type self.picam_rotation: int
-        :param self.picam_iso: foto iso number
-        :type self.picam_iso: int
-        :param self.common_image_path: local image file path
-        :type self.common_image_path: string
-        :param self.telegram_token: telegram authentication token
-        :type self.telegram_token: string
-        :param self.telegram_chat_nr: telegramchat group id send message to
-        :type self.telegram_chat_nr: string
-        :return: success status
-        :rtype: boolean
-        """
-        try:
-            self.logger.debug("take a PiCam snapshot")
-            if picam.request_take_foto(
-                    self.picam_url, 
-                    self.picam_image_width, 
-                    self.picam_image_hight, 
-                    self.picam_image_filename, 
-                    self.picam_exposure,
-                    self.picam_rotation,
-                    self.picam_iso) != 200:
-                raise NameError('HTTP Status not 200')
-            if picam.request_download_foto(
-                    self.picam_url,
-                    self.picam_image_filename,
-                    self.common_image_path
-                    ) != 200:
-                raise NameError('HTTP Status not 200')
-            send_msg.telegram_send_photo(
-                self.bot, 
-                self.telegram_chat_nr, 
-                self.common_image_path)
-            return True
-        except:
-            self.logger.debug("PiCam take snapshot - error occured")
-            send_msg.telegram_send_message(
-                self.bot, 
-                self.telegram_chat_nr, 
-                "PiCam take snapshot - error occured")
-            if retry < 2:
-                self.logger.info("second try with Blink Cam now")
-                self.blink_take_photo(retry=2)
-            
-            return False
+        cam_common.choose_camera(self.auth, self.blink, self)
 
     def request_add_blink_2FA(self) -> bool:
         """
@@ -298,7 +143,7 @@ class TelegramMessages(Configuration):
                 token=match.group(0), 
                 blink=self.blink, 
                 auth=self.auth)
-            self.blink_compare_config()
+            blink_cam.blink_compare_config(self.auth, self.blink, self)
             return True
         
         self.logger.debug("no blink token detected")
