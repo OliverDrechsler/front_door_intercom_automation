@@ -18,6 +18,7 @@ class Configuration:
         :rtype: None
         """
         self.logger = logging.getLogger('config')
+        self.get_base_path()
         self.define_config_file()
         self.read_config(self.config_file)
         self.telegram_token = self.config["telegram"]['token']
@@ -32,7 +33,7 @@ class Configuration:
         self.blink_username = self.config["blink"]["username"]
         self.blink_password = self.config["blink"]["password"]
         self.blink_name = self.config["blink"]["name"]
-        self.blink_config_file = str(os.path.abspath('') + "/" + self.config["blink"]["config_file"])
+        self.blink_config_file = self.base_path + self.config["blink"]["config_file"])
         self.common_image_path = self.config["common"]["image_path"]
         self.common_camera_type = self.config["common"]["camera_type"]
         self.picam_url = self.config["picam"]["url"]
@@ -43,6 +44,14 @@ class Configuration:
         self.picam_rotation = self.config["picam"]["rotation"]
         self.picam_iso = self.config["picam"]["iso"]
         self.run_on_raspberry = self.config["common"]["run_on_raspberry"]
+
+    def get_base_path(self) -> None:
+        """
+        Get from fdia base path. This normally one folder
+        up from the config_util.py
+        """
+        self.base_path = os.path.dirname(os.path.dirname(
+                            os.path.abspath(__file__))) + "/"
 
     def read_config(self, config_file: str) -> None:
         """
@@ -71,19 +80,12 @@ class Configuration:
         """
         self.logger.debug("checking if config.yaml file exists")
 
-        if os.path.isfile(
-            os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__))) + '/config.yaml'):
-            self.config_file = (os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__))) + '/config.yaml')
+        if os.path.isfile(self.base_path + 'config.yaml'):
+            self.config_file = (self.base_path + 'config.yaml')
             return True
         else:
             self.logger.info("No config.yaml file detected. Using temeplate one.")
-            self.config_file = (os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__))) + '/config_template.yaml')
+            self.config_file = (self.base_path + 'config_template.yaml')
             return False
         
         raise(NameError("No config file found!"))
