@@ -33,6 +33,7 @@
   - [How to install / python requirements](#how-to-install--python-requirements)
   - [How to run project code as a systemd service](#how-to-run-project-code-as-a-systemd-service)
   - [How to run unit-tests](#how-to-run-unit-tests)
+  - [Build pipeline checks](#build-pipeline-checks)
   - [ToDo's:](#todos)
   
 ## Short description
@@ -160,6 +161,7 @@ see [doc/telegram_bot_setup.md](doc/telegram_bot_setup.md)
 
 ## How to run unit-tests
 
+## Build pipeline checks
 
 ## ToDo's: 
 
