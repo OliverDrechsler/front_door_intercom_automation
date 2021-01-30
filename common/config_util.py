@@ -18,6 +18,7 @@ class Configuration:
         :rtype: None
         """
         self.logger = logging.getLogger('config')
+        self.get_base_path()
         self.define_config_file()
         self.read_config(self.config_file)
         self.telegram_token = self.config["telegram"]['token']
@@ -32,7 +33,7 @@ class Configuration:
         self.blink_username = self.config["blink"]["username"]
         self.blink_password = self.config["blink"]["password"]
         self.blink_name = self.config["blink"]["name"]
-        self.blink_config_file = str(os.path.abspath('') + "/" + self.config["blink"]["config_file"])
+        self.blink_config_file = self.base_path + self.config["blink"]["config_file"]
         self.common_image_path = self.config["common"]["image_path"]
         self.common_camera_type = self.config["common"]["camera_type"]
         self.picam_url = self.config["picam"]["url"]
@@ -44,6 +45,14 @@ class Configuration:
         self.picam_iso = self.config["picam"]["iso"]
         self.run_on_raspberry = self.config["common"]["run_on_raspberry"]
 
+    def get_base_path(self) -> None:
+        """
+        Get from fdia base path. This normally one folder
+        up from the config_util.py
+        """
+        self.base_path = os.path.dirname(os.path.dirname(
+                            os.path.abspath(__file__))) + "/"
+
     def read_config(self, config_file: str) -> None:
         """
         Reads config.yaml file into variables.
@@ -54,19 +63,29 @@ class Configuration:
         :rtype: None
         """
         self.logger.debug("reading config {0} file info dict".format(config_file))
-        with open(file=config_file, mode='r') as file:
-            self.config = yaml.load(file, Loader=yaml.SafeLoader)
+        try:
+            with open(file=config_file, mode='r') as file:
+                self.config = yaml.load(file, Loader=yaml.SafeLoader)
+        except FileNotFoundError:
+            self.logger.error("Could not find %s", self.config_file)
+        except:
+            self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
 
     def define_config_file(self) -> None:
         """
-        Checks and defines Config yaml path.
+        Checks and defines Config yaml file path.
 
-        :return: adds a new class path attribute.
+        :return: adds a new class path attribute for the config file.
         :rtype: None
         """
-        self.logger.info("checking if config.yaml file exists")
-        if os.path.isfile(os.path.abspath('') + '/config.yaml'):
-            self.config_file = (os.path.abspath('') + '/config.yaml')
+        self.logger.debug("checking if config.yaml file exists")
+
+        if os.path.isfile(self.base_path + 'config.yaml'):
+            self.config_file = (self.base_path + 'config.yaml')
+            return True
         else:
-            self.logger.info("a config files does not exist - using config template")
-            self.config_file = (os.path.abspath('') + '/config_template.yaml')
+            self.logger.info("No config.yaml file detected. Using temeplate one.")
+            self.config_file = (self.base_path + 'config_template.yaml')
+            return False
+        
+        raise(NameError("No config file found!"))
