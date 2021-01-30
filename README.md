@@ -91,10 +91,10 @@ The telegram bot has a command feature, where you can send the new 2FA token to 
 
 - door bell detection board:
 
-* Strip grid circuit board of Epoxy – 100 x 100 mit 2,54mm
-* Optocoupler (PC817)
-* to get correct voltage of 1,2V for Optocoupler, a resistor of 330 Ohm (8 Volt), 560 Ohm (12 Volt) or 1,2 Kiloohm (24 Volt) 
-* Raspberry Pi Hutschienen-Netzteil (Mean Well MDR-20-15) für den Einbau in den Sicherungskasten
+  * Strip grid circuit board of Epoxy – 100 x 100 mit 2,54mm
+  * Optocoupler (PC817)
+  * to get correct voltage of 1,2V for Optocoupler, a resistor of 330 Ohm (8 Volt), 560 Ohm (12 Volt) or 1,2 Kiloohm (24 Volt) 
+  * Raspberry Pi Hutschienen-Netzteil (Mean Well MDR-20-15) für den Einbau in den Sicherungskasten
 
 - door opener board with relais:
 
