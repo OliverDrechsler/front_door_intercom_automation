@@ -1,31 +1,40 @@
-# 1 create bot
+## Quick Guide to setup a telegram bot and group 
+
+- [Quick Guide to setup a telegram bot and group](#quick-guide-to-setup-a-telegram-bot-and-group)
+- [1. Open bothfather channel](#1-open-bothfather-channel)
+- [2. Create new bot](#2-create-new-bot)
+- [3. Create a chat group](#3-create-a-chat-group)
+- [4. Change bot setting](#4-change-bot-setting)
+- [4. Change bot permissions to get group messages](#4-change-bot-permissions-to-get-group-messages)
+- [5. Run python bot command to get chat group details](#5-run-python-bot-command-to-get-chat-group-details)
+
+## 1. Open bothfather channel
 send massage to @botfather
 ```
 /start
 ```
 
-# create new bot
+## 2. Create new bot
 ```
 /newbot
 ```
-answer botname
-`olmi_auto`
+answer with botname
+`fdia`
 answer bot name with bot at end
-`olmi_auto_bot`
+`fdia_bot`
 
-# create a chat group
+## 3. Create a chat group
 
- create a chat group in telegram
- adn add bot
+ create a chat group in telegram and add new bot
 
- # change bot setting
+ ## 4. Change bot setting
 
  ```
  /setjoingroups
  ```
  select group from selcections menu/ insert bot name
 
- # change bot permissions to get group messages
+ ## 4. Change bot permissions to get group messages
 
 ```
 /setprivacy
@@ -33,7 +42,7 @@ answer bot name with bot at end
 * select bot from choosable menu or add bot name
 * new select `disable` to get and read all messages
 
-# run python bot command to get chat group details
+## 5. Run python bot command to get chat group details
 
 ```python
 import sys
