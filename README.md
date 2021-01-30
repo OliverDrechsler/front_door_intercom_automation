@@ -111,6 +111,36 @@ The telegram bot has a command feature, where you can send the new 2FA token to 
 
 ## Code tree structure
 
+```
+├── LICENSE
+├── README.md
+├── blink_config.json        # Blink Camera config file. If not exist it be will created.
+├── camera                   # Camera's package folder
+│   ├── __init__.py
+│   ├── blink_cam.py         # Amazon's Blink Camera modules
+│   ├── cam_common.py        # a common module and to decide which cam gets used
+│   └── picam.py             # a module to access my PiCam API Project vi REST-API
+├── common                   # Common package folder for configuration modules
+│   ├── __init__.py
+│   └── config_util.py       # Common config module / class 
+├── config.yaml              # main config file if not found it will use config_template.yaml
+├── config_template.yaml     # a config template file to build your on config file
+├── doc                      # further documentations
+│   └── telegram_bot_setup.md # quick guid to setup a telegram bot
+├── door                     # door package folder
+│   ├── __init__.py
+│   ├── bell.py              # bell monitoring module
+│   └── opener.py            # door opening module
+├── fdia.py                  # Main Script / Program
+├── fdia.service             # sample systemd service config file
+├── get_otp_token.py         # OLD: generate a totp password with otp lib and sha1
+├── messaging                # telegram package folder
+│   ├── __init__.py
+│   ├── otp.py               # verify totp password module
+│   ├── receive_msg.py       # telegram bot module to receive messages
+│   └── send_msg.py          # telegram send message module
+└── requirements.txt         # required python libraries to install 
+```
 ## Config Files
 ### Main config file description
 
