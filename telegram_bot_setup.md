@@ -1,12 +1,12 @@
-## Quick Guide to setup a telegram bot and group 
+# Quick Guide to setup a telegram bot and privat group chat
 
-- [Quick Guide to setup a telegram bot and group](#quick-guide-to-setup-a-telegram-bot-and-group)
-- [1. Open bothfather channel](#1-open-bothfather-channel)
-- [2. Create new bot](#2-create-new-bot)
-- [3. Create a chat group](#3-create-a-chat-group)
-- [4. Change bot setting](#4-change-bot-setting)
-- [4. Change bot permissions to get group messages](#4-change-bot-permissions-to-get-group-messages)
-- [5. Run python bot command to get chat group details](#5-run-python-bot-command-to-get-chat-group-details)
+- [Quick Guide to setup a telegram bot and privat group chat](#quick-guide-to-setup-a-telegram-bot-and-privat-group-chat)
+  - [1. Open bothfather channel](#1-open-bothfather-channel)
+  - [2. Create new bot](#2-create-new-bot)
+  - [3. Create a chat group](#3-create-a-chat-group)
+  - [4. Change bot setting](#4-change-bot-setting)
+  - [4. Change bot permissions to get group messages](#4-change-bot-permissions-to-get-group-messages)
+  - [5. Run python bot command to get chat group details](#5-run-python-bot-command-to-get-chat-group-details)
 
 ## 1. Open bothfather channel
 send massage to @botfather
