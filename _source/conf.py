@@ -15,13 +15,13 @@ import sys
 sys.path.insert(0, os.path.abspath('../'))
 
 html_theme = 'python_docs_theme_technopathy'
-html_context = {'github_user_name': 'your_username', 'github_repo_name': 'your_repository','project_name': 'project'}
+html_context = {'github_user_name': 'OliverDrechsler', 'github_repo_name': 'front_door_intercom_automation','project_name': 'Front Door intercom automation'}
 
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'front door intercom automation'
+project = 'Front door intercom automation'
 copyright = '2020, Oliver Drechsler'
 author = 'Oliver Drechsler'
 
