@@ -40,7 +40,7 @@
   
 ## Short description
 
-One Raspberry Pi is connected to a BTCino front-door intercom.  
+One Raspberry Pi is connected to a BTIcino front-door intercom.  
 It detects when the door bell rings.  
 Requests either from a Raspberry PI (Zero) with Camera a photo  
 or from a Blink Cam (depends on defined configuration in config.yaml).  
@@ -64,7 +64,7 @@ either use one of these camera or both
 - one Paspberry Pi Zero with Camera see git project [https://github.com/OliverDrechsler/PiCam_API](https://github.com/OliverDrechsler/PiCam_API)
 - one Blink Camera
 
-The main Raspberry Pi is connected via wire to the BTCino front-door intercom.   
+The main Raspberry Pi is connected via wire to the BTIcino front-door intercom.   
 When the front door rings, the RPi detects it and starts  
 to take a photo (depends on config file) either from PiCam API or from a Blink Cam.  
 Then the RPi sends a telegram message about the door ringing to a privat chat.  
@@ -184,7 +184,7 @@ see [doc/telegram_bot_setup.md](doc/telegram_bot_setup.md)
 - [ ] pictures how i build the hardware
 - [ ] pictures and docu how i mounted RPi Zero with Cam
 - [ ] pictures and docu how i mounted blink cam
-- [ ] pictures and docu how mounted the RPi close to BTCino frond-door intercom in the control cabinet
+- [ ] pictures and docu how mounted the RPi close to BTIcino frond-door intercom in the control cabinet
 
 **other repo ToDo's**
 
