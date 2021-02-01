@@ -169,7 +169,7 @@ The telegram bot has a command feature, where you can send the new 2FA token to 
 ## Telegram
 ### How to setup a telegram bot
 
-see [doc/telegram_bot_setup.md](doc/telegram_bot_setup.md)
+see [telegram_bot_setup](telegram_bot_setup.md)
 ### Telegram Bot Commands
 
 ## Time-based one time passwords info and recommendations

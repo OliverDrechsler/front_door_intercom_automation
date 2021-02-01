@@ -67,3 +67,21 @@ html_static_path = ['_static']
 
 
 # -- Extension configuration -------------------------------------------------
+
+
+from os import getenv
+
+sphinx_md_useGitHubURL = True
+baseBranch = "master"
+commitSHA = getenv('GITHUB_SHA')
+githubBaseURL = 'https://github.com/' + (getenv('GITHUB_REPOSITORY') or 'OliverDrechsler/front_door_intercom_automation') + '/'
+githubFileURL = githubBaseURL + "blob/"
+githubDirURL = githubBaseURL + "tree/"
+if commitSHA:
+    githubFileURL = githubFileURL + commitSHA + "/"
+    githubDirURL = githubDirURL + commitSHA + "/"
+else:
+    githubFileURL = githubFileURL + baseBranch + "/"
+    githubDirURL = githubDirURL + baseBranch + "/"
+sphinx_md_githubFileURL = githubFileURL
+sphinx_md_githubDirURL = githubDirURL
