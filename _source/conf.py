@@ -14,6 +14,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
+
 html_theme = 'python_docs_theme_technopathy'
 html_context = {'github_user_name': 'OliverDrechsler', 'github_repo_name': 'front_door_intercom_automation','project_name': 'Front Door intercom automation'}
 
@@ -27,7 +28,6 @@ author = 'Oliver Drechsler'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -59,6 +59,7 @@ exclude_patterns = ['fdia2', 'fdia3', 'get_otp_token']
 #
 #html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
+# html_theme = 'classic'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

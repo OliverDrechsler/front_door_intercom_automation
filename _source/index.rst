@@ -18,6 +18,8 @@ Welcome to Front door intercom automation's documentation!
 
    Advanced API documentation <modules.rst>
 
+   View Code on GitHub <https://github.com/OliverDrechsler/front_door_intercom_automation>
+
 
 Indices and tables
 ==================
