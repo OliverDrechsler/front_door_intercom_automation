@@ -6,7 +6,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg)](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&metric=alert_status)](https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation)
   
-**[View on Github Pages](https://github.com/OliverDrechsler/front_door_intercom_automation)**  
+**[View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
   
 # Front-door intercom automation
 
