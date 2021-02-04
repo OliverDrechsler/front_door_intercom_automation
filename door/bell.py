@@ -58,7 +58,7 @@ class Door(Configuration):
             while True:
                 time.sleep(0.01)
                 if button.is_pressed:
-                    time.sleep(0.04)
+                    time.sleep(0.01)
                     if button.is_pressed:
                         self.logger.info("Door bell ringing")
                         send_msg.telegram_send_message(
