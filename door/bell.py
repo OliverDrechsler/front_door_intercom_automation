@@ -56,18 +56,16 @@ class Door(Configuration):
             self.logger.debug("RPI: start endless loop doorbell monitoring")
             button = Button(self.door_bell)
             while True:
-                time.sleep(0.01)
+                time.sleep(0.001)
                 if button.is_pressed:
-                    time.sleep(0.01)
-                    if button.is_pressed:
-                        self.logger.info("Door bell ringing")
-                        send_msg.telegram_send_message(
-                            self.bot,
-                            self.telegram_chat_nr,
-                            "Die Haustür hat geklingelt!" +
-                            str(datetime.datetime.now()))
-                        cam_common.choose_camera(self.auth, self.blink, self)
-                        time.sleep(5)
+                    self.logger.info("Door bell ringing")
+                    send_msg.telegram_send_message(
+                        self.bot,
+                        self.telegram_chat_nr,
+                        "Die Haustür hat geklingelt!" +
+                        str(datetime.datetime.now()))
+                    cam_common.choose_camera(self.auth, self.blink, self)
+                    time.sleep(5)
         else:
             self.logger.debug("NOT on RPI: start empty endless loop")
             while True:
