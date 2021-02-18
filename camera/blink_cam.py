@@ -182,10 +182,10 @@ def blink_compare_config(auth: object, blink: object, config_class_instance: obj
         logger.debug("saved blink config file differs from running config")
         logger.debug("blink config object = {0}".format(auth.login_attributes))
         logger.debug("blink config file   = {0}".format(blink_json_data))
+        logger.info("will update blink config file")
         save_blink_config(
             blink, 
             config_class_instance.blink_config_file)
-        logger.info("updated blink config file")
         return True
     else:
         logger.debug("saved blink config file == running config")
