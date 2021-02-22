@@ -14,3 +14,4 @@ fdia3.py
 get_otp_token.py
 _build/
 .coverage
+coverage.xml
