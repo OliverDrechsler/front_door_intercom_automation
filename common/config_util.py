@@ -6,6 +6,19 @@ import io
 
 logger = logging.getLogger('config')
 
+class YamlReadError(Exception):
+    """Exception raised for config yaml file read error.
+
+    Attributes:
+        message -- explanation of the error
+    """
+    def __init__(self, message="A YAML config file readerror is occured during parsing file"):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f'{self.message}'
+
 class Configuration:
     """Reads gerneral yaml Config file into class."""
 
@@ -18,9 +31,9 @@ class Configuration:
         :rtype: None
         """
         self.logger = logging.getLogger('config')
-        self.get_base_path()
-        self.define_config_file()
-        self.read_config(self.config_file)
+        self.base_path = self.get_base_path()
+        self.config_file = self.define_config_file()
+        self.config = self.read_config(self.config_file)
         self.telegram_token = self.config["telegram"]['token']
         self.telegram_chat_nr = self.config["telegram"]['chat_number']
         self.allowed_user_ids = self.config["telegram"]['allowed_user_ids']
@@ -50,7 +63,7 @@ class Configuration:
         Get from fdia base path. This normally one folder
         up from the config_util.py
         """
-        self.base_path = os.path.dirname(os.path.dirname(
+        return os.path.dirname(os.path.dirname(
                             os.path.abspath(__file__))) + "/"
 
     def read_config(self, config_file: str) -> None:
@@ -65,11 +78,13 @@ class Configuration:
         self.logger.debug("reading config {0} file info dict".format(config_file))
         try:
             with open(file=config_file, mode='r') as file:
-                self.config = yaml.load(file, Loader=yaml.SafeLoader)
+                return yaml.load(file, Loader=yaml.SafeLoader)
         except FileNotFoundError:
             self.logger.error("Could not find %s", self.config_file)
+            raise FileNotFoundError("Could not find config file")
         except:
             self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
+            raise YamlReadError("a YAML error is occured during parsing file")
 
     def define_config_file(self) -> None:
         """
@@ -81,11 +96,11 @@ class Configuration:
         self.logger.debug("checking if config.yaml file exists")
 
         if os.path.isfile(self.base_path + 'config.yaml'):
-            self.config_file = (self.base_path + 'config.yaml')
-            return True
+            return (self.base_path + 'config.yaml')
         else:
             self.logger.info("No config.yaml file detected. Using temeplate one.")
-            self.config_file = (self.base_path + 'config_template.yaml')
-            return False
+            if not os.path.exists(self.base_path + 'config_template.yaml'):
+                raise (NameError("No config file found!"))
+            return (self.base_path + 'config_template.yaml')
         
-        raise(NameError("No config file found!"))
+        
