@@ -45,22 +45,24 @@ CONFIG_DICT = {
 class FDIaTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.patcher_logger = patch('logging.getLogger', 
-                                autospec=True)
         self.patcher_os_isfile = patch('common.config_util.os.path.isfile', 
                                     return_value = False)
         self.patcher_os_path = patch('common.config_util.os.path.exists',
                                     return_value = False)
-        self.mock_logger = self.patcher_logger.start()
-        self.mock_os_isfile = self.patcher_os_isfile.start()
-        self.instance_configuration = Configuration()
 
+        self.mock_os_isfile = self.patcher_os_isfile.start()
+        # self.patcher_logger = patch('logging.getLogger', 
+        #                         autospec=True)
+        # self.mock_logger = self.patcher_logger.start()
+        with self.assertLogs('config', level='DEBUG') as self.dl_log:
+            self.instance_configuration = Configuration()
+        
     def tearDown(self):
-        self.patcher_logger.stop()
+        # self.patcher_logger.stop()
         self.patcher_os_isfile.stop()
 
     def test_Configuration(self):
-        self.mock_logger.assert_called()
+        # self.mock_logger.assert_called()
         self.mock_os_isfile.assert_called()
         self.assertEqual (self.instance_configuration.telegram_token,"telegram_bot_token_code_here")
         self.assertEqual (self.instance_configuration.telegram_chat_nr, "-GroupChatNumber")
@@ -86,13 +88,21 @@ class FDIaTestCase(unittest.TestCase):
         self.assertEqual (self.instance_configuration.picam_iso, 0)
         self.assertEqual (self.instance_configuration.run_on_raspberry, True)
         self.assertEqual (self.instance_configuration.config, CONFIG_DICT)
+        expected_log = [
+            'DEBUG:config:checking if config.yaml file exists', 
+            'INFO:config:No config.yaml file detected. Using temeplate one.', 
+            'DEBUG:config:reading config {} file info dict'.format(self.instance_configuration.base_path + 'config_template.yaml')
+        ]
+        self.assertEqual(self.dl_log.output, expected_log)
 
     def test_define_config_file_with_exception(self):
         self.patcher_os_path.start()
         self.assertEqual(self.instance_configuration.config_file, self.instance_configuration.base_path + 'config_template.yaml')
-        with pytest.raises(NameError) as excinfo:
+        with self.assertRaises(NameError):
             self.instance_configuration.define_config_file()
-        excinfo.match("No config file found!")
+        # with pytest.raises(NameError) as excinfo:
+        #     self.instance_configuration.define_config_file()
+        # excinfo.match("No config file found!")
         self.patcher_os_path.stop()
 
     def test_read_config_file_exception(self):
