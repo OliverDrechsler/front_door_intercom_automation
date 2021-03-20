@@ -13,7 +13,7 @@ import threading
 import time
 
 format = "%(asctime)s  -  %(name)s  -  %(funcName)s :        %(message)s"
-logging.basicConfig(format=format, level=logging.INFO,
+logging.basicConfig(format=format, level=logging.DEBUG,
                     datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger('fdia')
 
