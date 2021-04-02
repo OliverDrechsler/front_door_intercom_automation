@@ -1,6 +1,6 @@
 telegram:
   token: "telegram_bot_token_code_here"
-  chat_number: "-GroupChatNumber"
+  chat_number: "-4321"
   allowed_user_ids:
     - "123456789"
     - "987654321"

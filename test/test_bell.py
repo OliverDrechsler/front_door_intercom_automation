@@ -2,49 +2,13 @@ import unittest
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
 from door.bell import Door 
-
-
-CONFIG_DICT = {
-            'telegram': {
-                'token': 'telegram_bot_token_code_here',
-                'chat_number': '-GroupChatNumber', 
-                'allowed_user_ids': ['123456789', '987654321']
-                }, 
-            'otp': {
-                'password': 'Base32CodePasswordHere', 
-                'length': 6, 
-                'interval': 30, 
-                'hash_type': 'hashlib.sha1'
-                }, 
-            'GPIO': {
-                'door_bell_port': 1, 
-                'door_opener_port': 2
-                }, 
-            'blink': {
-                'username': 'blink_account_email_address_here', 
-                'password': 'blink_account_password_here', 
-                'name': 'Blink_Camera_name_here', 
-                'config_file': 'blink_config.json'
-                }, 
-            'picam': {
-                'url': 'http://IP:8000/foto/', 
-                'image_width': 640, 
-                'image_hight': 480, 
-                'image_filename': 'foto.jpg', 
-                'exposure': 'auto', 
-                'rotation': 0, 
-                'iso': 0
-                }, 
-            'common': {
-                'image_path': '/tmp/foto.jpg', 
-                'camera_type': 'blink', 
-                'run_on_raspberry': True
-                }
-            }
-
+import json
 
 class DoorTestCase(unittest.TestCase):
     def setUp(self):
+        with open('test/expected_conf.json') as json_file:
+            self.CONFIG_DICT = json.load(json_file)
+
         self.patcher_os_isfile = patch('common.config_util.os.path.isfile', 
                                     return_value = False)
         self.patcher_os_path = patch('common.config_util.os.path.exists',
@@ -75,17 +39,18 @@ class DoorTestCase(unittest.TestCase):
     def tearDown(self):
         # self.patcher_logger.stop()
         self.patcher_os_isfile.stop()
-
+        self.patch_time.stop()
+        self.patch_button.stop()
+        self.patch_send_msg.stop()
+        self.patch_choose_camera.stop()
 
     def test_Door_config(self):
-        
-
         # self.mock_logger.assert_called()
         self.mock_os_isfile.assert_called()
         self.assertEqual (self.instance_door.bot,self.bot)
         self.assertEqual (self.instance_door.blink, self.blink)
         self.assertEqual (self.instance_door.auth, self.auth)
-        self.assertEqual (self.instance_door.config, CONFIG_DICT)
+        self.assertEqual (self.instance_door.config, self.CONFIG_DICT)
         expected_log = ['DEBUG:door-bell:reading config']
         self.assertEqual(self.dl_log.output, expected_log)
 

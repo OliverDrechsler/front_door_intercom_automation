@@ -2,49 +2,14 @@ import unittest
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
 from common.config_util import Configuration, YamlReadError
-
-CONFIG_DICT = {
-            'telegram': {
-                'token': 'telegram_bot_token_code_here',
-                'chat_number': '-GroupChatNumber', 
-                'allowed_user_ids': ['123456789', '987654321']
-                }, 
-            'otp': {
-                'password': 'Base32CodePasswordHere', 
-                'length': 6, 
-                'interval': 30, 
-                'hash_type': 'hashlib.sha1'
-                }, 
-            'GPIO': {
-                'door_bell_port': 1, 
-                'door_opener_port': 2
-                }, 
-            'blink': {
-                'username': 'blink_account_email_address_here', 
-                'password': 'blink_account_password_here', 
-                'name': 'Blink_Camera_name_here', 
-                'config_file': 'blink_config.json'
-                }, 
-            'picam': {
-                'url': 'http://IP:8000/foto/', 
-                'image_width': 640, 
-                'image_hight': 480, 
-                'image_filename': 'foto.jpg', 
-                'exposure': 'auto', 
-                'rotation': 0, 
-                'iso': 0
-                }, 
-            'common': {
-                'image_path': '/tmp/foto.jpg', 
-                'camera_type': 'blink', 
-                'run_on_raspberry': True
-                }
-            }
-
+import json
 
 class FDIaTestCase(unittest.TestCase):
 
     def setUp(self):
+        with open('test/expected_conf.json') as json_file:
+            self.CONFIG_DICT = json.load(json_file)
+
         self.patcher_os_isfile = patch('common.config_util.os.path.isfile', 
                                     return_value = False)
         self.patcher_os_path = patch('common.config_util.os.path.exists',
@@ -65,7 +30,7 @@ class FDIaTestCase(unittest.TestCase):
         # self.mock_logger.assert_called()
         self.mock_os_isfile.assert_called()
         self.assertEqual (self.instance_configuration.telegram_token,"telegram_bot_token_code_here")
-        self.assertEqual (self.instance_configuration.telegram_chat_nr, "-GroupChatNumber")
+        self.assertEqual (self.instance_configuration.telegram_chat_nr, "-4321")
         self.assertEqual (self.instance_configuration.allowed_user_ids, ['123456789', '987654321'])
         self.assertEqual (self.instance_configuration.otp_password, 'Base32CodePasswordHere')
         self.assertEqual (self.instance_configuration.otp_length, 6)
@@ -87,7 +52,7 @@ class FDIaTestCase(unittest.TestCase):
         self.assertEqual (self.instance_configuration.picam_rotation, 0)
         self.assertEqual (self.instance_configuration.picam_iso, 0)
         self.assertEqual (self.instance_configuration.run_on_raspberry, True)
-        self.assertEqual (self.instance_configuration.config, CONFIG_DICT)
+        self.assertEqual (self.instance_configuration.config, self.CONFIG_DICT)
         expected_log = [
             'DEBUG:config:checking if config.yaml file exists', 
             'INFO:config:No config.yaml file detected. Using temeplate one.', 

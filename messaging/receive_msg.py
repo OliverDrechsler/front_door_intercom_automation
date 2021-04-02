@@ -159,7 +159,8 @@ class TelegramMessages(Configuration):
         bracket1 = "{"
         bracket2 = "}"
         regex_search = "^\d{0}{1}{2}$".format(bracket1, self.otp_length, bracket2)
-        self.logger.debug(f"regex search string {regex_search}")
+        #self.logger.debug(f"regex search string {regex_search}")
+        self.logger.debug("regex search string")
         match = re.search(regex_search, self.text, re.IGNORECASE)
         if match:
             self.verify_totp_code_in_msg()
