@@ -5,6 +5,7 @@ from messaging.receive_msg import TelegramMessages
 from messaging.send_msg import telegram_send_message
 import json
 
+
 class TelegramMessagesTestCase(unittest.TestCase):
     def setUp(self):
         with open('test/expected_conf.json') as json_file:
@@ -101,7 +102,6 @@ class TelegramMessagesTestCase(unittest.TestCase):
         self.mock_send_msg.assert_called()
         self.mock_choose_camera.assert_called()
 
-            
     def test_receive_msg_unallowed_user(self):
         with open('test/mocked_received_msg.json') as json_file:
             self.mocked_received_msg = json.load(json_file)
