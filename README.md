@@ -198,7 +198,6 @@ see [telegram_bot_setup](telegram_bot_setup.md)
 
 ## Time-based one time passwords info and recommendations
 
-
 ## ToDo's: 
 
 - [ ] write unit tests
