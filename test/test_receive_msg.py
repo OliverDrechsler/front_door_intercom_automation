@@ -5,7 +5,6 @@ from messaging.receive_msg import TelegramMessages
 from messaging.send_msg import telegram_send_message
 import json
 
-
 class TelegramMessagesTestCase(unittest.TestCase):
     def setUp(self):
         with open('test/expected_conf.json') as json_file:
@@ -49,7 +48,6 @@ class TelegramMessagesTestCase(unittest.TestCase):
         self.patch_blink2FA.stop()
         self.patch_blink_compare_config.stop()
 
-
     def test_telegram_messages_config(self):    
         self.mock_os_isfile.assert_called()
         self.assertEqual (self.instance_TelegramMessages.bot,self.bot)
@@ -79,7 +77,6 @@ class TelegramMessagesTestCase(unittest.TestCase):
         self.assertEqual(str(self.instance_TelegramMessages.chat_id), self.instance_TelegramMessages.telegram_chat_nr)
         self.assertIn(str(self.instance_TelegramMessages.from_id), self.instance_TelegramMessages.allowed_user_ids)
         self.mock_verify_totp_code.assert_not_called()
-
 
     def test_receive_msg_text_allowed_user_and_group_with_foto_text(self):
         with open('test/mocked_received_msg.json') as json_file:
