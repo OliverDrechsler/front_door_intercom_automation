@@ -218,5 +218,3 @@ see [telegram_bot_setup](telegram_bot_setup.md)
   - open door through one button via  
         telegram message with AES + totp code encryption  
   - geofencing feature for asking to open the door 
-
-
