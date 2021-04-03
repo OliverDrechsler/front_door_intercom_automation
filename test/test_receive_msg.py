@@ -133,8 +133,6 @@ class TelegramMessagesTestCase(unittest.TestCase):
         self.assertEqual(self.log5.output, expected_log5)
         self.assertNotEqual(str(self.instance_TelegramMessages.chat_id), self.instance_TelegramMessages.telegram_chat_nr)
 
-#    def test_receive_msg_none_text_allowed_user_and_group(self):
-
     def test_receive_msg_text_allowed_user_and_group_with_blink_2FA_code_text(self):
         with open('test/mocked_received_msg.json') as json_file:
             self.mocked_received_msg = json.load(json_file)
@@ -154,6 +152,8 @@ class TelegramMessagesTestCase(unittest.TestCase):
         self.assertEqual(str(self.instance_TelegramMessages.chat_id), self.instance_TelegramMessages.telegram_chat_nr)
         self.mock_blink2FA.assert_called()
         self.mock_blink_compare_config.assert_called()
+
+    # def test_receive_msg_none_text_allowed_user_and_group(self):
 
     # def test_receive_msg_text_allowed_user_and_group_with_totp_code_text(self):
         
