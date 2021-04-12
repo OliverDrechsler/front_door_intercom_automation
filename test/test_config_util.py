@@ -16,26 +16,21 @@ class FDIaTestCase(unittest.TestCase):
                                     return_value = False)
 
         self.mock_os_isfile = self.patcher_os_isfile.start()
-        # self.patcher_logger = patch('logging.getLogger', 
-        #                         autospec=True)
-        # self.mock_logger = self.patcher_logger.start()
         with self.assertLogs('config', level='DEBUG') as self.dl_log:
             self.instance_configuration = Configuration()
         
     def tearDown(self):
-        # self.patcher_logger.stop()
         self.patcher_os_isfile.stop()
 
     def test_Configuration(self):
-        # self.mock_logger.assert_called()
         self.mock_os_isfile.assert_called()
         self.assertEqual (self.instance_configuration.telegram_token,"telegram_bot_token_code_here")
         self.assertEqual (self.instance_configuration.telegram_chat_nr, "-4321")
         self.assertEqual (self.instance_configuration.allowed_user_ids, ['123456789', '987654321'])
-        self.assertEqual (self.instance_configuration.otp_password, 'Base32CodePasswordHere')
-        self.assertEqual (self.instance_configuration.otp_length, 6)
+        self.assertEqual (self.instance_configuration.otp_password, 'KBAVGU2XJ5JEI===')
+        self.assertEqual (self.instance_configuration.otp_length, 9)
         self.assertEqual (self.instance_configuration.otp_interval, 30)
-        self.assertEqual (self.instance_configuration.hash_type, "hashlib.sha1")
+        self.assertEqual (self.instance_configuration.hash_type, "sha512")
         self.assertEqual (self.instance_configuration.door_bell, 1)
         self.assertEqual (self.instance_configuration.door_summer, 2)
         self.assertEqual (self.instance_configuration.blink_username, 'blink_account_email_address_here')

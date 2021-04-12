@@ -3,6 +3,7 @@ import yaml
 import os
 import logging
 import io
+import base64
 
 logger = logging.getLogger('config')
 
@@ -103,4 +104,23 @@ class Configuration:
                 raise (NameError("No config file found!"))
             return (self.base_path + 'config_template.yaml')
         
+    def base32_encode_totp_password(self, new_password):
+        """
+        Encodes a new provided password into BASE32 string
+
+        :param new_password: new provided TOTP ASCII password
+        :type new_password: string
+        """
+        return (base64.b32encode(new_password.upper().encode("UTF-8"))).decode("UTF-8")
+    
+    def write_yaml_config(self, new_password):
+        """Writes or updates the config.yaml file with the new provided TOTP password
+
+        :param new_password: new provided TOTP ASCII password
+        :type new_password: string
+        """
+        with open(self.base_path + 'config.yaml', 'w') as yaml_file:
+            self.config["otp"]['password'] = self.base32_encode_totp_password(new_password)
+            yaml.dump(self.config, yaml_file, default_flow_style=False)
+            
         

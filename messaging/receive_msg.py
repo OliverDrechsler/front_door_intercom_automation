@@ -121,7 +121,7 @@ class TelegramMessages(Configuration):
             "Foto request received")
         send_msg.telegram_send_message(self.bot, 
             self.telegram_chat_nr, 
-            "ich werde ein foto senden")
+            "I will send a foto!")
         
         cam_common.choose_camera(self.auth, self.blink, self)
 
@@ -187,15 +187,12 @@ class TelegramMessages(Configuration):
             send_msg.telegram_send_message(
                 self.bot, 
                 self.telegram_chat_nr, 
-                "Passwort ist richtig. Ich öffne die Tür")
+                "Code accepted.")
             
-            if self.run_on_raspberry:
-                opener.open_door(self.door_summer, self.run_on_raspberry)
-                self.logger.info(
-                    "Door opened for 5 Sec. ")
-            else:
-                self.logger.info("do not open door because not running on a Raspberry Pi")
             
+            opener.open_door(self.door_summer, self.run_on_raspberry)
+            self.logger.info(
+                "Door opened for 5 Sec.")            
             return True
 
         else: 

@@ -136,10 +136,10 @@ class TelegramMessagesTestCase(unittest.TestCase):
         self.mocked_received_msg['text'] = "blink 356632"
         expected_log6 = [
             'INFO:fdia_telegram:received a telegram message', 
-            'DEBUG:fdia_telegram:receiving a message text in chat id -4321', 
+            f"DEBUG:fdia_telegram:receiving a message text in chat id {self.CONFIG_DICT['telegram']['chat_number']}", 
             'INFO:fdia_telegram:received message = blink 356632',
-            'INFO:fdia_telegram:chat msg allowed: chat_group_id -4321 is in config', 
-            'INFO:fdia_telegram:chat msg allowed: user FirstName with from_id 123456789 is in config', 
+            f"INFO:fdia_telegram:chat msg allowed: chat_group_id {self.CONFIG_DICT['telegram']['chat_number']} is in config", 
+            f"INFO:fdia_telegram:chat msg allowed: user FirstName with from_id {self.CONFIG_DICT['telegram']['allowed_user_ids'][0]} is in config", 
             'DEBUG:fdia_telegram:text match blink found', 
             'INFO:fdia_telegram:blink token received - will save config'
             ]

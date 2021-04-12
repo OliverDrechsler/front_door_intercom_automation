@@ -44,8 +44,8 @@ class DoorTestCase(unittest.TestCase):
         self.patch_send_msg.stop()
         self.patch_choose_camera.stop()
 
-    def test_Door_config(self):
-        # self.mock_logger.assert_called()
+    def test_edge_case_ring_not_running_on_RPi_eq_test_mode(self, test=True):
+
         self.mock_os_isfile.assert_called()
         self.assertEqual (self.instance_door.bot,self.bot)
         self.assertEqual (self.instance_door.blink, self.blink)
@@ -54,28 +54,13 @@ class DoorTestCase(unittest.TestCase):
         expected_log = ['DEBUG:door-bell:reading config']
         self.assertEqual(self.dl_log.output, expected_log)
 
-
-    def test_ring(self, test=True):
-        
         log1 = [
-            'INFO:door-bell:start monitoring door bell',
-            'DEBUG:door-bell:RPI: start endless loop doorbell monitoring',
-            'INFO:door-bell:Door bell ringing'
-        ]
-        with self.assertLogs('door-bell', level='DEBUG') as self.ring_log:
-            self.instance_door.ring(test=True)
-        self.assertEqual(self.ring_log.output, log1)
-        self.mock_button.assert_called()
-        self.mock_send_msg.assert_called()
-        self.mock_choose_camera.assert_called()
-        log2 = [
             'INFO:door-bell:start monitoring door bell',
             'DEBUG:door-bell:NOT on RPI: start empty endless loop',
         ]
-
         self.instance_door.run_on_raspberry = False
         with self.assertLogs('door-bell', level='DEBUG') as self.ring_log:
             self.instance_door.ring(test=True)
-        self.assertEqual(self.ring_log.output, log2)
+        self.assertEqual(self.ring_log.output, log1)
 
 

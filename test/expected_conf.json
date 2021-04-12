@@ -8,10 +8,10 @@
         ]
         }, 
     "otp": {
-        "password": "Base32CodePasswordHere", 
-        "length": 6, 
+        "password": "KBAVGU2XJ5JEI===", 
+        "length": 9, 
         "interval": 30, 
-        "hash_type": "hashlib.sha1"
+        "hash_type": "sha512"
         }, 
     "GPIO": {
         "door_bell_port": 1, 

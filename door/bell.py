@@ -64,7 +64,7 @@ class Door(Configuration):
                     send_msg.telegram_send_message(
                         self.bot,
                         self.telegram_chat_nr,
-                        "Die Haustür hat geklingelt!" +
+                        "Ding Dong!" +
                         str(datetime.datetime.now()))
                     cam_common.choose_camera(self.auth, self.blink, self)
                     time.sleep(5)
