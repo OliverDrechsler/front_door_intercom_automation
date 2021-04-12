@@ -1,0 +1,19 @@
+{
+    "message_id": 123, 
+    "from": {
+        "id": 123456789, 
+        "is_bot": false, 
+        "first_name": "FirstName", 
+        "last_name": "LastName", 
+        "username": "FullName", 
+        "language_code": "de"
+    }, 
+    "chat": {
+        "id": -4321, 
+        "title": "pytest unitesting", 
+        "type": "group", 
+        "all_members_are_administrators": true
+    }, 
+    "date": 1617354921, 
+    "text": "test4"
+    }

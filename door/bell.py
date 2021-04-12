@@ -40,12 +40,14 @@ class Door(Configuration):
         self.blink = blink_instance
         self.auth = blink_auth_instance
 
-    def ring(self) -> None:
+    def ring(self, test=False) -> None:
         """
         Endless watch loop for door bell ring.
 
         :param self.door_bell: class attribute door_bell_port
         :type self.door_bell: int
+        :param test: define code test mode
+        :type test: boolean
         :param self.telegram_token:
         :param self.telegram_chat_nr:
         :return: Nothing
@@ -62,11 +64,15 @@ class Door(Configuration):
                     send_msg.telegram_send_message(
                         self.bot,
                         self.telegram_chat_nr,
-                        "Die Haustür hat geklingelt!" +
+                        "Ding Dong!" +
                         str(datetime.datetime.now()))
                     cam_common.choose_camera(self.auth, self.blink, self)
                     time.sleep(5)
+                if test:
+                    break
         else:
             self.logger.debug("NOT on RPI: start empty endless loop")
             while True:
                 time.sleep(60)
+                if test:
+                    break

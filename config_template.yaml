@@ -1,33 +1,42 @@
 telegram:
   token: "telegram_bot_token_code_here"
-  chat_number: "-GroupChatNumber"
+  chat_number: "-4321"
   allowed_user_ids:
     - "123456789"
     - "987654321"
 
 otp:
-  password: "Base32CodePasswordHere"
-  length: 6
+  # base32 encoded password here
+  # password: "Base32CodePasswordHere"
+  password: "KBAVGU2XJ5JEI==="
   # will be changed to use passlib for sha512
   # Caution Due to a limitation of the HOTP algorithm, 
   # the 10th digit can only take on values 0 .. 2, 
   # and thus offers very little extra security.
   # Please use maxim lenght of 9 instead 10 
   # limitation see here https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken        
+  # standard length = 6 , max length = 10 (9 = sha512)
+  length: 9
+  # time interval of totp code, default is 30 seconds
   interval: 30
-  hash_type: hashlib.sha1
+  # possible time based one time passwaord hash's are: sha1 (default), sha256, sha512
+  hash_type: sha512
 
 GPIO:
   door_bell_port: 1
   door_opener_port: 2
 
 blink:
+  # blink account name here 
   username: "blink_account_email_address_here"
+  # blink account password
   password: "blink_account_password_here"
+  # blink camera name here, not group
   name: "Blink_Camera_name_here"
   config_file: "blink_config.json"
 
 picam:
+  # PiCam API https://github.com/OliverDrechsler/PiCam_API
   url: "http://IP:8000/foto/"
   image_width: 640
   image_hight: 480
@@ -39,4 +48,6 @@ picam:
 common:
   image_path: "/tmp/foto.jpg"
   camera_type: "blink"  # "blink" or "picam" careful - case senitive
+  # run code on RPi or on another system
+  # other system = no door bell detect and opener will work
   run_on_raspberry: True

@@ -1,6 +1,7 @@
 .vscode/
 *.pyc
-__pycache__/
+*__pycache__/*
+__pycache__
 *.jpynb
 *.ipynb
 jpynb/
@@ -13,3 +14,6 @@ fdia2.py
 fdia3.py
 get_otp_token.py
 _build/
+.coverage
+coverage.xml
+htmlcov/
