@@ -5,6 +5,7 @@
 [![Python 3](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/python-3-shield.svg)](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/)
 [![Known Vulnerabilities](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg)](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&metric=alert_status)](https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation)
+[![codecov](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg)](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation)
   
 **[View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
   
