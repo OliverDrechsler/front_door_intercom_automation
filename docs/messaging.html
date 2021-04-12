@@ -183,23 +183,28 @@
 <div class="section" id="module-messaging.otp">
 <span id="messaging-otp-module"></span><h2>messaging.otp module<a class="headerlink" href="#module-messaging.otp" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="messaging.otp.verify_otp">
-<code class="sig-prename descclassname">messaging.otp.</code><code class="sig-name descname">verify_otp</code><span class="sig-paren">(</span><em class="sig-param">to_verify: int</em>, <em class="sig-param">my_secret: str</em>, <em class="sig-param">length: int</em>, <em class="sig-param">interval: int</em>, <em class="sig-param">hash_type: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#messaging.otp.verify_otp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Verify given onetimepassword  matches using library otp</p>
+<dt id="messaging.otp.generate_totp_code">
+<code class="sig-prename descclassname">messaging.otp.</code><code class="sig-name descname">generate_totp_code</code><span class="sig-paren">(</span><em class="sig-param">my_secret: str</em>, <em class="sig-param">length: int</em>, <em class="sig-param">interval: int</em>, <em class="sig-param">hash_type: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#messaging.otp.generate_totp_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify given time-based one time password using library passlib</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>to_verify</strong> (<em>int</em>) – given time-based one time password</p></li>
 <li><p><strong>my_secret</strong> (<em>str</em>) – my local stored secret</p></li>
-<li><p><strong>length</strong> (<em>int</em>) – time-based one time password length</p></li>
+<li><p><strong>length</strong> (<em>int</em>) – time-based one time password length 
+Caution Due to a limitation of the HOTP algorithm, 
+the 10th digit can only take on values 0 .. 2, 
+and thus offers very little extra security.
+Please use maxim lenght of 9 instead 10 
+limitation see here <a class="reference external" href="https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken">https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken</a></p></li>
 <li><p><strong>interval</strong> (<em>int</em>) – totp interval in sec</p></li>
+<li><p><strong>hash_type</strong> (<em>str</em>) – hash code type to be used sha1, sha256 or sha512</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>result of totp matches</p>
+<dd class="field-even"><p>totp code</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>

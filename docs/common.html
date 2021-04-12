@@ -187,6 +187,17 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Reads gerneral yaml Config file into class.</p>
 <dl class="method">
+<dt id="common.config_util.Configuration.base32_encode_totp_password">
+<code class="sig-name descname">base32_encode_totp_password</code><span class="sig-paren">(</span><em class="sig-param">new_password</em><span class="sig-paren">)</span><a class="headerlink" href="#common.config_util.Configuration.base32_encode_totp_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encodes a new provided password into BASE32 string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_password</strong> (<em>string</em>) – new provided TOTP ASCII password</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="common.config_util.Configuration.define_config_file">
 <code class="sig-name descname">define_config_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#common.config_util.Configuration.define_config_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks and defines Config yaml file path.</p>
@@ -224,6 +235,28 @@ up from the config_util.py</p>
 </dl>
 </dd></dl>
 
+<dl class="method">
+<dt id="common.config_util.Configuration.write_yaml_config">
+<code class="sig-name descname">write_yaml_config</code><span class="sig-paren">(</span><em class="sig-param">new_password</em><span class="sig-paren">)</span><a class="headerlink" href="#common.config_util.Configuration.write_yaml_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes or updates the config.yaml file with the new provided TOTP password</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_password</strong> (<em>string</em>) – new provided TOTP ASCII password</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="common.config_util.YamlReadError">
+<em class="property">exception </em><code class="sig-prename descclassname">common.config_util.</code><code class="sig-name descname">YamlReadError</code><span class="sig-paren">(</span><em class="sig-param">message='A YAML config file readerror is occured during parsing file'</em><span class="sig-paren">)</span><a class="headerlink" href="#common.config_util.YamlReadError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised for config yaml file read error.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>message – explanation of the error</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

@@ -94,7 +94,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#hardware">Hardware</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#hardware-circuit-components">Hardware circuit components</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#rpi-hardware">RPi Hardware</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#how-to-build-circuit">How to build circuit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-build-circuit">How to build circuit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#selfmade-circuit-board-connected-to-bticino-intercom">selfmade circuit board connected to BTIcino Intercom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#channel-relay-board-for-door-opener">2 channel relay board for door opener</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#my-build-pictures">My build pictures</a></li>
 </ul>
 </li>
@@ -201,6 +205,7 @@
 <a class="reference external" href="https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/"><img alt="Python 3" src="https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/python-3-shield.svg" /></a>
 <a class="reference external" href="https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation"><img alt="Known Vulnerabilities" src="https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg" /></a>
 <a class="reference external" href="https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation"><img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&amp;metric=alert_status" /></a></p>
+<p><strong><a class="reference external" href="https://oliverdrechsler.github.io/front_door_intercom_automation/">View on Github Pages</a></strong></p>
 <div class="section" id="front-door-intercom-automation">
 <h1>Front-door intercom automation<a class="headerlink" href="#front-door-intercom-automation" title="Permalink to this headline">¶</a></h1>
 <p><strong>While ring at front door receive photo message and open the door via telegram one-time password</strong></p>
@@ -216,7 +221,12 @@
 <ul>
 <li><p><a class="reference external" href="#hardware-circuit-components">Hardware circuit components</a></p></li>
 <li><p><a class="reference external" href="#rpi-hardware">RPi Hardware</a></p></li>
-<li><p><a class="reference external" href="#how-to-build-circuit">How to build circuit</a></p></li>
+<li><p><a class="reference external" href="#how-to-build-circuit">How to build circuit</a></p>
+<ul>
+<li><p><a class="reference external" href="#selfmade-circuit-board-connected-to-bticino-intercom">selfmade circuit board connected to BTIcino Intercom</a></p></li>
+<li><p><a class="reference external" href="#2-channel-relay-board-for-door-opener">2 channel relay board for door opener</a></p></li>
+</ul>
+</li>
 <li><p><a class="reference external" href="#my-build-pictures">My build pictures</a></p></li>
 </ul>
 </li>
@@ -280,8 +290,8 @@
 <div class="section" id="mobile-device-apps">
 <h2>Mobile Device Apps<a class="headerlink" href="#mobile-device-apps" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Telegram</p></li>
-<li><p>OTP</p></li>
+<li><p><a class="reference external" href="https://apps.apple.com/de/app/telegram-messenger/id686449807">Telegram Messagenger for free in AppStore</a></p></li>
+<li><p><a class="reference external" href="https://apps.apple.com/de/app/otp-auth/id659877384">OTP Auth App for free in AppStore</a></p></li>
 </ul>
 </div>
 <div class="section" id="hardware">
@@ -297,7 +307,11 @@
 <li><p>Raspberry Pi Hutschienen-Netzteil (Mean Well MDR-20-15) für den Einbau in den Sicherungskasten</p></li>
 </ul>
 </li>
-<li><p>door opener board with relais:</p></li>
+<li><p>door opener board with relais:</p>
+<ul>
+<li><p>saintsmart 2 channel 5V</p></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="rpi-hardware">
@@ -309,6 +323,17 @@
 </div>
 <div class="section" id="how-to-build-circuit">
 <h3>How to build circuit<a class="headerlink" href="#how-to-build-circuit" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="selfmade-circuit-board-connected-to-bticino-intercom">
+<h4>selfmade circuit board connected to BTIcino Intercom<a class="headerlink" href="#selfmade-circuit-board-connected-to-bticino-intercom" title="Permalink to this headline">¶</a></h4>
+<p>to describe<br /><em><strong>BTICino wiring diagram</strong></em><br /><img alt="BTICino wiring diagram" src="RPi-BTIcino.png" /></p>
+</div>
+<div class="section" id="channel-relay-board-for-door-opener">
+<h4>2 channel relay board for door opener<a class="headerlink" href="#channel-relay-board-for-door-opener" title="Permalink to this headline">¶</a></h4>
+<p>to describe<br /><em><strong>saintsmart 2-Channel 5V Relay Module</strong></em><br /><img alt="saintsmart 2-Channel 5V Relay Module" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&amp;usqp=CAU" /></p>
+<p><a class="reference external" href="https://www.sainsmart.com/products/2-channel-5v-relay-module">shop where to buy saintsmart relay</a></p>
+<p><em><strong>Jumper and wiring layout</strong></em>
+<a class="reference external" href="https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules">wiring layout at stackexchange</a></p>
+</div>
 </div>
 <div class="section" id="my-build-pictures">
 <h3>My build pictures<a class="headerlink" href="#my-build-pictures" title="Permalink to this headline">¶</a></h3>

@@ -5,6 +5,9 @@
 [![Python 3](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/python-3-shield.svg)](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/)
 [![Known Vulnerabilities](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg)](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&metric=alert_status)](https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation)
+  
+**[View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
+  
 # Front-door intercom automation
 
 **While ring at front door receive photo message and open the door via telegram one-time password**
@@ -21,6 +24,8 @@
     - [Hardware circuit components](#hardware-circuit-components)
     - [RPi Hardware](#rpi-hardware)
     - [How to build circuit](#how-to-build-circuit)
+      - [selfmade circuit board connected to BTIcino Intercom](#selfmade-circuit-board-connected-to-bticino-intercom)
+      - [2 channel relay board for door opener](#2-channel-relay-board-for-door-opener)
     - [My build pictures](#my-build-pictures)
   - [Code tree structure](#code-tree-structure)
   - [Config Files](#config-files)
@@ -91,8 +96,8 @@ The telegram bot has a command feature, where you can send the new 2FA token to 
 
 ## Mobile Device Apps
 
-* Telegram
-* OTP 
+* [Telegram Messagenger for free in AppStore](https://apps.apple.com/de/app/telegram-messenger/id686449807) 
+* [OTP Auth App for free in AppStore](https://apps.apple.com/de/app/otp-auth/id659877384) 
 ## Hardware
 ### Hardware circuit components
 
@@ -105,12 +110,31 @@ The telegram bot has a command feature, where you can send the new 2FA token to 
 
 - door opener board with relais:
 
+  * saintsmart 2 channel 5V 
+
 ### RPi Hardware
 
 - Raspberry Pi B+ with both circuits connected
 - Raspberry Pi Zero with camera
 
 ### How to build circuit 
+
+#### selfmade circuit board connected to BTIcino Intercom
+
+to describe  
+***BTICino wiring diagram***  
+![BTICino wiring diagram](RPi-BTIcino.png)
+
+#### 2 channel relay board for door opener
+
+to describe  
+***saintsmart 2-Channel 5V Relay Module***  
+![saintsmart 2-Channel 5V Relay Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU)
+  
+[shop where to buy saintsmart relay](https://www.sainsmart.com/products/2-channel-5v-relay-module)
+
+***Jumper and wiring layout***
+[wiring layout at stackexchange](https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules)
 
 ### My build pictures 
 
@@ -194,5 +218,4 @@ see [telegram_bot_setup](telegram_bot_setup.md)
   - open door through one button via  
         telegram message with AES + totp code encryption  
   - geofencing feature for asking to open the door 
-
 
