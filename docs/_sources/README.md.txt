@@ -201,10 +201,10 @@ see [telegram_bot_setup](telegram_bot_setup.md)
 
 ## ToDo's: 
 
-- [ ] write unit tests
+- [x] write unit tests
 - [ ] documentation
-- [ ] generate code api docu via sphinx and add it to readthedocs.org
-- [ ] docu and pictures about circurit layout and wiring
+- [x] generate code api docu via sphinx and add it to readthedocs.org
+- [x] docu and pictures about circurit layout and wiring
 - [ ] pictures how i build the hardware
 - [ ] pictures and docu how i mounted RPi Zero with Cam
 - [ ] pictures and docu how i mounted blink cam
