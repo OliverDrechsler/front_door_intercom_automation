@@ -37,7 +37,7 @@ def telegram_send_message(bot: object, telegram_chat_nr: str, message: str) -> b
             telepot.api._onetime_pool_spec = (
                 urllib3.PoolManager,
                 dict(num_pools=1, maxsize=1, retries=9, timeout=30))
-            resilt = bot.sendMessage(telegram_chat_nr, message)
+            result = bot.sendMessage(telegram_chat_nr, message)
             logger.info("send message second try : " + message)
             return bool(result)
 
