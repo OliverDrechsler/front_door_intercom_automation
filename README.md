@@ -202,10 +202,9 @@ see [telegram_bot_setup](telegram_bot_setup.md)
 
 ## ToDo's: 
 
-- [x] write unit tests
-- [ ] documentation
-- [x] generate code api docu via sphinx and add it to readthedocs.org
-- [x] docu and pictures about circurit layout and wiring
+- [ ] write full documentation
+- [ ] add precommit checks (lint,bandit and pytest)
+- [ ] add fdia.py command line args to generate config and set new password
 - [ ] pictures how i build the hardware
 - [ ] pictures and docu how i mounted RPi Zero with Cam
 - [ ] pictures and docu how i mounted blink cam
