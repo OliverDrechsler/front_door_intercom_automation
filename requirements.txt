@@ -1,9 +1,9 @@
 pyyaml
 gpiozero
-RPi.GPIO
 urllib3
 requests
 telepot
 blinkpy
 passlib
 pytest
+RPi.GPIO

@@ -1,0 +1,10 @@
+Python Modulename;Version Nr.;License Type
+pyyaml; 5.3.1; MIT
+gpiozero; 1.5.1; BSD License
+urllib3; 1.24.3; MIT
+requests; 2.25.0; Apache 2.0
+telepot; 12.7; MIT
+blinkpy; 0.18.0.dev0; MIT
+passlib; 1.7.4; BSD
+pytest; 5.4.3; MIT license
+RPi.GPIO; 0.7.0; MIT license
