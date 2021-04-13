@@ -183,7 +183,7 @@ class TelegramMessages(Configuration):
                 self.otp_interval,
                 self.hash_type):
             self.logger.info(
-                "correct password received " + self.text)
+                self.text + " TOTP code correct")
             send_msg.telegram_send_message(
                 self.bot, 
                 self.telegram_chat_nr, 
@@ -197,9 +197,9 @@ class TelegramMessages(Configuration):
 
         else: 
             self.logger.info(
-                "wrong password received " + self.text)
+                "wrong totp code received " + self.text)
             send_msg.telegram_send_message(
                 self.bot, 
                 self.telegram_chat_nr, 
-                "Passwort ist falsch")
+                "TOTP code is wrong")
             return False

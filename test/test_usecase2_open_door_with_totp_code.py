@@ -64,7 +64,7 @@ class TelegramMessagesTestCase(unittest.TestCase):
             'DEBUG:fdia_telegram:text not matched checking for totp code', 
             'DEBUG:fdia_telegram:regex search string', 
             'DEBUG:TOTP:verify totp with library passlib', 
-            f"INFO:fdia_telegram:correct password received {new_totp}", 
+            f"INFO:fdia_telegram:{new_totp} TOTP code correct", 
             'INFO:send_telegram_msg:send message : Code accepted.',
             'INFO:door-opener:not running on raspberry pi - will not open the door', 
             'INFO:fdia_telegram:Door opened for 5 Sec.'

@@ -10,7 +10,7 @@ try:
 except:
     pass
 
-import datetime
+from datetime import datetime
 config = Configuration()
 
 logger = logging.getLogger('door-bell')
@@ -61,11 +61,11 @@ class Door(Configuration):
                 time.sleep(0.001)
                 if button.is_pressed:
                     self.logger.info("Door bell ringing")
+                    now = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
                     send_msg.telegram_send_message(
                         self.bot,
                         self.telegram_chat_nr,
-                        "Ding Dong!" +
-                        str(datetime.datetime.now()))
+                        "Ding Dong! " + now)
                     cam_common.choose_camera(self.auth, self.blink, self)
                     time.sleep(5)
                 if test:
