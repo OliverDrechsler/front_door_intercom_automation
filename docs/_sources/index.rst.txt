@@ -6,6 +6,8 @@
 Welcome to Front door intercom automation's documentation!
 ==========================================================
 
+While ring at front door receive photo message and open the door via telegram one-time password
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -20,6 +22,7 @@ Welcome to Front door intercom automation's documentation!
 
    View Code on GitHub <https://github.com/OliverDrechsler/front_door_intercom_automation>
 
+   Imprint / Impressum on GitHub <https://github.com/OliverDrechsler/Impressum>
 
 Indices and tables
 ==================

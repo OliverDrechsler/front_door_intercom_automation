@@ -131,6 +131,7 @@
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">Copyright</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Advanced API documentation</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/Impressum">Imprint / Impressum on GitHub</a></li>
 </ul>
 
             
@@ -204,13 +205,15 @@
 <a class="reference external" href="https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/"><img alt="Updates" src="https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/shield.svg" /></a>
 <a class="reference external" href="https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/"><img alt="Python 3" src="https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/python-3-shield.svg" /></a>
 <a class="reference external" href="https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation"><img alt="Known Vulnerabilities" src="https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg" /></a>
-<a class="reference external" href="https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation"><img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&amp;metric=alert_status" /></a></p>
-<p><strong><a class="reference external" href="https://oliverdrechsler.github.io/front_door_intercom_automation/">View on Github Pages</a></strong></p>
+<a class="reference external" href="https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation"><img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&amp;metric=alert_status" /></a>
+<a class="reference external" href="https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation"><img alt="codecov" src="https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg" /></a></p>
 <div class="section" id="front-door-intercom-automation">
 <h1>Front-door intercom automation<a class="headerlink" href="#front-door-intercom-automation" title="Permalink to this headline">¶</a></h1>
 <p><strong>While ring at front door receive photo message and open the door via telegram one-time password</strong></p>
 <p><em>Under development see <code class="docutils literal notranslate"><span class="pre">dev</span></code> branch</em></p>
-<p><em><strong>It works but dev is still in progress</strong></em></p>
+<p><em><strong>It works but dev is still in progress also see todos list</strong></em></p>
+<p><strong><a class="reference external" href="https://oliverdrechsler.github.io/front_door_intercom_automation/">📚 View on Github Pages</a></strong></p>
+<p><em><strong><a class="reference external" href="https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html">📚 API Docu on Github Pages</a></strong></em></p>
 <ul class="simple">
 <li><p><a class="reference external" href="#front-door-intercom-automation">Front-door intercom automation</a></p>
 <ul>
@@ -262,11 +265,11 @@
 </ul>
 <div class="section" id="short-description">
 <h2>Short description<a class="headerlink" href="#short-description" title="Permalink to this headline">¶</a></h2>
-<p>One Raspberry Pi is connected to a BTIcino front-door intercom.<br />It detects when the door bell rings.<br />Requests either from a Raspberry PI (Zero) with Camera a photo<br />or from a Blink Cam (depends on defined configuration in config.yaml).<br />Sends a door bell ring notification via telegram message to a privat<br />group and attachs the photo.<br />The house owner can respond with a time-based one time password in the<br />privat chat to open the door.</p>
+<p>One Raspberry Pi is connected to a BTIcino front-door intercom.<br />It detects when the door bell rings.<br />Requests either from a Raspberry PI (Zero) with Camera a photo<br />or from a Blink Cam (depends on defined configuration in config.yaml).<br />Sends a door bell ring photo notification via telegram message to a privat<br />group and attachs the photo.<br />The house owner can respond with a time-based one time password in the<br />privat chat to open the door.</p>
 </div>
 <div class="section" id="long-description">
 <h2>Long description<a class="headerlink" href="#long-description" title="Permalink to this headline">¶</a></h2>
-<p>Starting point was an article <a class="reference external" href="https://www.heise.de/select/ct/2017/17/1502995489716437">Überallkingel at heise.de</a>.<br />I’d got then the idea, when my kidz will come home from school i would like to have a chance to open the door tem. Now you must know that i don’t want to give a key mey kidz anymore, because it will get lost(that was the case in the past).<br />Athe the beginning i startet it with RPi’s (one as a Cam and one connected to house intercom).<br />Later i decided to have infra red cam for night vison and i got during an amazon black week sale a cheap blink cam. That’s why i support my own small <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API">Flask API - PiCam API</a> Project as well the Blink Cams in general.</p>
+<p>Starting point was an article <a class="reference external" href="https://www.heise.de/select/ct/2017/17/1502995489716437">Überallkingel at heise.de</a>.<br />At beginning i startet it with RPi’s (one as a Cam and one connected to BTIcino house intercom).<br />Later i decided to have infra red cam for night vison and i got during an amazon black week sale a cheap blink cam. That’s why i support my own small <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API">Flask API - PiCam API</a> Project as well the Blink Cams in general.</p>
 <p>This Project consists of</p>
 <ul class="simple">
 <li><p>one Raspberry Pi B+ which runs this project files</p></li>
@@ -285,7 +288,7 @@
 <li><p>adding blink cam 2 factor authentication code</p></li>
 </ul>
 <p>The totp (time-based one time password) is compatible to each public available TOTP provider.<br />It also support sha1(not recommended), sha256 (sha2) and sha512 (sha3).<br />I recommend to use sha512.<br />In future there will be an additional AES encrytption added.</p>
-<p>Because Blink renews frequently their device token you will more often receive<br />a new 2FA token via mail. Normally the blink instance will try to renew the token itself.<br />The telegram bot has a command feature, where you can send the new 2FA token to system.</p>
+<p>The telegram bot has a command feature, where you can send the new 2FA token to system. In case of first time login or renew/relogin required.</p>
 </div>
 <div class="section" id="mobile-device-apps">
 <h2>Mobile Device Apps<a class="headerlink" href="#mobile-device-apps" title="Permalink to this headline">¶</a></h2>
@@ -323,6 +326,7 @@
 </div>
 <div class="section" id="how-to-build-circuit">
 <h3>How to build circuit<a class="headerlink" href="#how-to-build-circuit" title="Permalink to this headline">¶</a></h3>
+<p>t.b.d.</p>
 <div class="section" id="selfmade-circuit-board-connected-to-bticino-intercom">
 <h4>selfmade circuit board connected to BTIcino Intercom<a class="headerlink" href="#selfmade-circuit-board-connected-to-bticino-intercom" title="Permalink to this headline">¶</a></h4>
 <p>to describe<br /><em><strong>BTICino wiring diagram</strong></em><br /><img alt="BTICino wiring diagram" src="RPi-BTIcino.png" /></p>
@@ -337,13 +341,12 @@
 </div>
 <div class="section" id="my-build-pictures">
 <h3>My build pictures<a class="headerlink" href="#my-build-pictures" title="Permalink to this headline">¶</a></h3>
+<p>t.b.d.</p>
 </div>
 </div>
 <div class="section" id="code-tree-structure">
 <h2>Code tree structure<a class="headerlink" href="#code-tree-structure" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── LICENSE
-├── README.md
-├── blink_config.json        # Blink Camera config file. If not exist it be will created.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>│
 ├── camera                   # Camera&#39;s package folder
 │   ├── __init__.py
 │   ├── blink_cam.py         # Amazon&#39;s Blink Camera modules
@@ -352,10 +355,7 @@
 ├── common                   # Common package folder for configuration modules
 │   ├── __init__.py
 │   └── config_util.py       # Common config module / class 
-├── config.yaml              # main config file if not found it will use config_template.yaml
-├── config_template.yaml     # a config template file to build your on config file
-├── doc                      # further documentations
-│   └── telegram_bot_setup.md # quick guid to setup a telegram bot
+├── docs                     # Github Pages sphinx docu better read here https://oliverdrechsler.github.io/front_door_intercom_automation/
 ├── door                     # door package folder
 │   ├── __init__.py
 │   ├── bell.py              # bell monitoring module
@@ -368,35 +368,64 @@
 │   ├── otp.py               # verify totp password module
 │   ├── receive_msg.py       # telegram bot module to receive messages
 │   └── send_msg.py          # telegram send message module
+├── LICENSE                  # Software LICENSE
+├── requirements_licenses.txt # used libraries licenes
+├── README.md                # This readme file
+├── blink_config.json        # Blink Camera config file. If not exist it be will created.
+├── config.yaml              # main config file if not found it will use config_template.yaml
+├── config_template.yaml     # a config template file to build your on config file
+├── telegram_bot_setup.md    # quick guid to setup a telegram bot
 └── requirements.txt         # required python libraries to install 
 </pre></div>
 </div>
 </div>
 <div class="section" id="config-files">
 <h2>Config Files<a class="headerlink" href="#config-files" title="Permalink to this headline">¶</a></h2>
+<p>config_template.yaml is a template config file and must be adjusted to your needs.
+Copy config_template.yaml to config.yaml into project root folder</p>
 <div class="section" id="main-config-file-description">
 <h3>Main config file description<a class="headerlink" href="#main-config-file-description" title="Permalink to this headline">¶</a></h3>
+<p>t.b.d.
+Also see inside config_template.yaml</p>
 </div>
 <div class="section" id="blink-cam-config-file-description">
 <h3>Blink Cam config file description<a class="headerlink" href="#blink-cam-config-file-description" title="Permalink to this headline">¶</a></h3>
+<p>t.b.d.</p>
 </div>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="how-to-install-python-requirements">
 <h3>How to install / python requirements<a class="headerlink" href="#how-to-install-python-requirements" title="Permalink to this headline">¶</a></h3>
+<p>FDIA needs root permission to access GPIO Pin.
+If this is not wanted you have to adjust right to:</p>
+<ul class="simple">
+<li><p>/dev/gpiomem</p></li>
+<li><p>/sys/class/gpio…
+but its you consult google for it…</p></li>
+</ul>
+<p>Python 3, pip3 and git cli is required.<br />Clone repo to your RPi.
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:OliverDrechsler/front_door_intercom_automation.git</span></code></p>
+<p>now run pip3 to install python requirments
+<code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">requirements.txt</span></code></p>
 </div>
 <div class="section" id="how-to-run-project-code-as-a-systemd-service">
 <h3>How to run project code as a systemd service<a class="headerlink" href="#how-to-run-project-code-as-a-systemd-service" title="Permalink to this headline">¶</a></h3>
+<p>Adjust file <code class="docutils literal notranslate"><span class="pre">fdia.service</span></code> to your path.
+To run fdia as a service on startup with root permissions<br />copy <code class="docutils literal notranslate"><span class="pre">fdia.service</span></code>to <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/</span></code>to your RPi systemd deamon folder.
+Run <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">daemon-reload</span></code> and <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">fdia</span></code>to start it as a service</p>
 </div>
 </div>
 <div class="section" id="how-to">
 <h2>How to<a class="headerlink" href="#how-to" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="how-to-run-unit-tests">
 <h3>How to run unit-tests<a class="headerlink" href="#how-to-run-unit-tests" title="Permalink to this headline">¶</a></h3>
+<p>t.b.d.
+<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pytest</span></code></p>
 </div>
 <div class="section" id="build-pipeline-checks">
 <h3>Build pipeline checks<a class="headerlink" href="#build-pipeline-checks" title="Permalink to this headline">¶</a></h3>
+<p>t.b.d.</p>
 </div>
 </div>
 <div class="section" id="telegram">
@@ -407,22 +436,27 @@
 </div>
 <div class="section" id="telegram-bot-commands">
 <h3>Telegram Bot Commands<a class="headerlink" href="#telegram-bot-commands" title="Permalink to this headline">¶</a></h3>
+<p>t.b.d.</p>
 </div>
 </div>
 <div class="section" id="time-based-one-time-passwords-info-and-recommendations">
 <h2>Time-based one time passwords info and recommendations<a class="headerlink" href="#time-based-one-time-passwords-info-and-recommendations" title="Permalink to this headline">¶</a></h2>
+<p>t.b.d.</p>
 </div>
 <div class="section" id="todo-s">
 <h2>ToDo’s:<a class="headerlink" href="#todo-s" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>[x] write unit tests</p></li>
-<li><p>[ ] documentation</p></li>
-<li><p>[x] generate code api docu via sphinx and add it to readthedocs.org</p></li>
-<li><p>[x] docu and pictures about circurit layout and wiring</p></li>
+<li><p>[ ] write full documentation</p></li>
+<li><p>[ ] added aes encryption to send otp password with aes encrypt additionally</p></li>
+<li><p>[ ] add precommit checks (lint,bandit and pytest)</p></li>
+<li><p>[ ] add setup.py install script</p></li>
+<li><p>[ ] add fdia.py command line args to generate config and set new password</p></li>
 <li><p>[ ] pictures how i build the hardware</p></li>
 <li><p>[ ] pictures and docu how i mounted RPi Zero with Cam</p></li>
 <li><p>[ ] pictures and docu how i mounted blink cam</p></li>
 <li><p>[ ] pictures and docu how mounted the RPi close to BTIcino frond-door intercom in the control cabinet</p></li>
+<li><p>[ ] pictures door bell photo notification</p></li>
+<li><p>[ ] picture door bell open message</p></li>
 </ul>
 <p><strong>other repo ToDo’s</strong></p>
 <ul class="simple">
