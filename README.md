@@ -263,4 +263,4 @@ t.b.d.
 
    <a href="https://github.com/OliverDrechsler/Impressum#readme" onclick="popup=window.open('https://github.com/OliverDrechsler/Impressum#readme','Imprintpopup','width=580,height=635'); return false;">click here to see Imprint / Impressum</a>
 
-   <a href="https://github.com/OliverDrechsler/DSGVO#readme" onclick="popup=window.open('https://github.com/OliverDrechsler/DSGVO#readme','DSGVOpopup','width=580,height=635'); return false;">click here to see GDPDR / DSGVO</a>git 
+   <a href="https://github.com/OliverDrechsler/DSGVO#readme" onclick="popup=window.open('https://github.com/OliverDrechsler/DSGVO#readme','DSGVOpopup','width=580,height=635'); return false;">click here to see GDPDR / DSGVO</a>
