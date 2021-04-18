@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>camera package &mdash; Front door intercom automation 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="common package" href="common.html" />
+    <link rel="prev" title="front-door_intercom_automation" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Front door intercom automation
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="telegram_bot_setup.html">How to create a telegram bot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">Copyright</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Advanced API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">camera package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camera.blink_cam">camera.blink_cam module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camera.cam_common">camera.cam_common module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camera.picam">camera.picam module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-camera">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="door.html">door package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html">fdia module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_otp_token.html">get_otp_token module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messaging.html">messaging package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Front door intercom automation</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">front-door_intercom_automation</a> &raquo;</li>
+        
+      <li>camera package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/camera.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="camera-package">
+<h1>camera package<a class="headerlink" href="#camera-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-camera.blink_cam">
+<span id="camera-blink-cam-module"></span><h2>camera.blink_cam module<a class="headerlink" href="#module-camera.blink_cam" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="camera.blink_cam.add_2fa_blink_token">
+<code class="sig-prename descclassname">camera.blink_cam.</code><code class="sig-name descname">add_2fa_blink_token</code><span class="sig-paren">(</span><em class="sig-param">token: str</em>, <em class="sig-param">blink: object</em>, <em class="sig-param">auth: object</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#camera.blink_cam.add_2fa_blink_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a required 2FA token to blink session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>str</em>) – required 2FA token</p></li>
+<li><p><strong>blink</strong> (<em>class instance</em>) – blink class instance</p></li>
+<li><p><strong>auth</strong> (<em>class instance</em>) – blink auth class instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success True</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.blink_cam.blink_compare_config">
+<code class="sig-prename descclassname">camera.blink_cam.</code><code class="sig-name descname">blink_compare_config</code><span class="sig-paren">(</span><em class="sig-param">auth: object</em>, <em class="sig-param">blink: object</em>, <em class="sig-param">config_class_instance: object</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#camera.blink_cam.blink_compare_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares Blink actual class config with blink config file
+and stores it in case of difference.
+Blink will daily update the device token.
+Therefore we have to update the config file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Params auth</dt>
+<dd class="field-odd"><p>blink auth class instance</p>
+</dd>
+<dt class="field-even">Params blink</dt>
+<dd class="field-even"><p>blibk class instance</p>
+</dd>
+<dt class="field-odd">Params config_class_instance</dt>
+<dd class="field-odd"><p>config class instance object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success status</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.blink_cam.blink_json_load">
+<code class="sig-prename descclassname">camera.blink_cam.</code><code class="sig-name descname">blink_json_load</code><span class="sig-paren">(</span><em class="sig-param">blink_config_file: str</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#camera.blink_cam.blink_json_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load blink json credentials from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Params blink_config_file</dt>
+<dd class="field-odd"><p>blink config file name</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>blink_json_data dict object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.blink_cam.blink_snapshot">
+<code class="sig-prename descclassname">camera.blink_cam.</code><code class="sig-name descname">blink_snapshot</code><span class="sig-paren">(</span><em class="sig-param">blink: object</em>, <em class="sig-param">blink_name: str</em>, <em class="sig-param">image_path: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#camera.blink_cam.blink_snapshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new blink cam snapshot and downloads it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blink</strong> (<em>class instance</em>) – blink class instance</p></li>
+<li><p><strong>blink_name</strong> (<em>string</em>) – blink camera name</p></li>
+<li><p><strong>image_path</strong> (<em>str</em>) – local image file path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.blink_cam.delete_blink_config">
+<code class="sig-prename descclassname">camera.blink_cam.</code><code class="sig-name descname">delete_blink_config</code><span class="sig-paren">(</span><em class="sig-param">blink: object</em>, <em class="sig-param">auth: object</em>, <em class="sig-param">blink_config_file: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#camera.blink_cam.delete_blink_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a blink config file and existing class instances</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blink</strong> (<em>class instance</em>) – blink class instance</p></li>
+<li><p><strong>auth</strong> (<em>class instance</em>) – auth class instance</p></li>
+<li><p><strong>blink_config_file</strong> (<em>str</em>) – blink session config file path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success True</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.blink_cam.save_blink_config">
+<code class="sig-prename descclassname">camera.blink_cam.</code><code class="sig-name descname">save_blink_config</code><span class="sig-paren">(</span><em class="sig-param">blink: object</em>, <em class="sig-param">blink_config_file: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#camera.blink_cam.save_blink_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves an existing blink session into a config file.</p>
+<p>This save a bink session for reuse on device with already authenticated token
+into a config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blink</strong> (<em>class instance</em>) – blink class instance</p></li>
+<li><p><strong>blink_config_file</strong> (<em>str</em>) – blink config file path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success True</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.blink_cam.start_blink_session">
+<code class="sig-prename descclassname">camera.blink_cam.</code><code class="sig-name descname">start_blink_session</code><span class="sig-paren">(</span><em class="sig-param">blink_config_file: str</em>, <em class="sig-param">blink_username</em>, <em class="sig-param">blink_password) -&gt; (bool</em>, <em class="sig-param">object</em>, <em class="sig-param">object</em><span class="sig-paren">)</span><a class="headerlink" href="#camera.blink_cam.start_blink_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a blink cam session</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blink_config_file</strong> (<em>string</em>) – blink session config file path</p></li>
+<li><p><strong>blink_username</strong> (<em>string</em>) – blink username</p></li>
+<li><p><strong>blink_password</strong> (<em>string</em>) – blink password</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>authentication_success for existing session or 2FA token required, blink instance, auth instance</p>
+</dd>
+<dt class="field-odd">Rtype authentication_success</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+<dt class="field-even">Rtype blink</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+<dt class="field-odd">Rtype auth</dt>
+<dd class="field-odd"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-camera.cam_common">
+<span id="camera-cam-common-module"></span><h2>camera.cam_common module<a class="headerlink" href="#module-camera.cam_common" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="camera.cam_common.blink_take_photo">
+<code class="sig-prename descclassname">camera.cam_common.</code><code class="sig-name descname">blink_take_photo</code><span class="sig-paren">(</span><em class="sig-param">auth: object</em>, <em class="sig-param">blink: object</em>, <em class="sig-param">config_class_instance: object</em>, <em class="sig-param">retry=1</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#camera.cam_common.blink_take_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Blink camera to take a foto.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth</strong> (<em>class instance object</em>) – blink cam authentication class instance</p></li>
+<li><p><strong>blink</strong> (<em>class instance object</em>) – blink cam class instance</p></li>
+<li><p><strong>config_class_instance</strong> (<em>class instance object</em>) – config class instance object</p></li>
+<li><p><strong>retry</strong> (<em>int</em>) – retry count if take photo error occurs, default = 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success status</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.cam_common.choose_camera">
+<code class="sig-prename descclassname">camera.cam_common.</code><code class="sig-name descname">choose_camera</code><span class="sig-paren">(</span><em class="sig-param">auth: object</em>, <em class="sig-param">blink: object</em>, <em class="sig-param">config_class_instance: object</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#camera.cam_common.choose_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call choosen camera type from config file to take a foto.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth</strong> (<em>class instance object</em>) – blink cam authentication class instance</p></li>
+<li><p><strong>blink</strong> (<em>class instance object</em>) – blink cam class instance</p></li>
+<li><p><strong>config_class_instance</strong> (<em>class instance object</em>) – config class instance object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nothing</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.cam_common.picam_take_photo">
+<code class="sig-prename descclassname">camera.cam_common.</code><code class="sig-name descname">picam_take_photo</code><span class="sig-paren">(</span><em class="sig-param">auth: object</em>, <em class="sig-param">blink: object</em>, <em class="sig-param">config_class_instance: object</em>, <em class="sig-param">retry=1</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#camera.cam_common.picam_take_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use PiCam camera to take a foto.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auth</strong> (<em>class instance object</em>) – blink cam authentication class instance</p></li>
+<li><p><strong>blink</strong> (<em>class instance object</em>) – blink cam class instance</p></li>
+<li><p><strong>config_class_instance</strong> (<em>class instance object</em>) – config class instance object</p></li>
+<li><p><strong>retry</strong> (<em>int</em>) – retry count if take photo error occurs, default = 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>success status</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-camera.picam">
+<span id="camera-picam-module"></span><h2>camera.picam module<a class="headerlink" href="#module-camera.picam" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="camera.picam.request_download_foto">
+<code class="sig-prename descclassname">camera.picam.</code><code class="sig-name descname">request_download_foto</code><span class="sig-paren">(</span><em class="sig-param">picam_url: str</em>, <em class="sig-param">picam_image_filename: str</em>, <em class="sig-param">local_image_path: str</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#camera.picam.request_download_foto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a Photo via GET request from PiCAM REST-API</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>picam_url</strong> (<em>str</em>) – PiCam URL with protocol</p></li>
+<li><p><strong>picam_image_filename</strong> (<em>str</em>) – image filename to store at PiCam</p></li>
+<li><p><strong>local_image_path</strong> (<em>str</em>) – local image path with filename</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>http request status code</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="camera.picam.request_take_foto">
+<code class="sig-prename descclassname">camera.picam.</code><code class="sig-name descname">request_take_foto</code><span class="sig-paren">(</span><em class="sig-param">picam_url: str</em>, <em class="sig-param">picam_image_width: int</em>, <em class="sig-param">picam_image_hight: int</em>, <em class="sig-param">picam_image_filename: str</em>, <em class="sig-param">picam_exposure: str</em>, <em class="sig-param">picam_rotation: int</em>, <em class="sig-param">picam_iso: int</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#camera.picam.request_take_foto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take a photo from PiCam</p>
+<p>This creates a new snapshot via PiCam REST-API with a
+POST request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>picam_url</strong> (<em>str</em>) – PiCam URL with protocol</p></li>
+<li><p><strong>picam_image_width</strong> (<em>int</em>) – image width size</p></li>
+<li><p><strong>picam_image_hight</strong> (<em>int</em>) – image hight size</p></li>
+<li><p><strong>picam_image_filename</strong> (<em>str</em>) – image filename to store at PiCam</p></li>
+<li><p><strong>picam_exposure</strong> (<em>str</em>) – PiCam camera expore mode auto,night,…</p></li>
+<li><p><strong>picam_rotation</strong> (<em>int</em>) – Image rotation degrees</p></li>
+<li><p><strong>picam_iso</strong> (<em>int</em>) – image iso mode</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>http request status code</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-camera">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-camera" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="common.html" class="btn btn-neutral float-right" title="common package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="front-door_intercom_automation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Oliver Drechsler.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
