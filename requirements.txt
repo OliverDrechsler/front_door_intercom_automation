@@ -1,5 +1,5 @@
 pyyaml==5.4.1
-gpiozero
+gpiozero==1.6.2
 urllib3
 requests
 telepot
