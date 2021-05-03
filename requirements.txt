@@ -5,5 +5,5 @@ requests==2.25.1
 telepot==12.7
 blinkpy==0.17.1
 passlib==1.7.4
-pytest
+pytest==6.2.3
 RPi.GPIO
