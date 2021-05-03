@@ -3,7 +3,7 @@ gpiozero==1.6.2
 urllib3==1.26.4
 requests==2.25.1
 telepot==12.7
-blinkpy
+blinkpy==0.17.1
 passlib
 pytest
 RPi.GPIO
