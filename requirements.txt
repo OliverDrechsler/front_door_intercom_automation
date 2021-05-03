@@ -4,6 +4,6 @@ urllib3==1.26.4
 requests==2.25.1
 telepot==12.7
 blinkpy==0.17.1
-passlib
+passlib==1.7.4
 pytest
 RPi.GPIO
