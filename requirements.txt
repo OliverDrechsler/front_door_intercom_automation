@@ -1,7 +1,7 @@
 pyyaml==5.4.1
 gpiozero==1.6.2
 urllib3==1.26.6
-requests==2.25.1
+requests==2.26.0
 telepot==12.7
 blinkpy==0.17.1
 passlib==1.7.4
