@@ -27,7 +27,7 @@ def choose_camera(auth: object, blink: object, config_class_instance: object) ->
         blink_take_photo(auth, blink, config_class_instance)
     elif config_class_instance.common_camera_type == "picam":
         logger.debug("PiCam choosen")
-        picam_take_photo(auth, blink, config_class_instance,)
+        picam_take_photo(auth, blink, config_class_instance)
 
 def blink_take_photo(auth: object, blink: object, config_class_instance: object, retry=1) -> bool:
     """
@@ -114,5 +114,5 @@ def picam_take_photo(auth: object, blink: object, config_class_instance: object,
             "PiCam take snapshot - error occured")            
         if retry < 2:
             logger.info("second try with blink now")
-            config_class_instance.blink_take_photo(auth, blink, config_class_instance, retry=2)
+            blink_take_photo(auth, blink, config_class_instance, retry=2)
         return False

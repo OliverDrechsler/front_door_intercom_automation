@@ -98,9 +98,17 @@ class TelegramMessages(Configuration):
             self.logger.debug("text match foto found")
             self.request_foto()
             return True
-        elif "blink" in self.text.lower():
+        elif "blink " in self.text.lower():
             self.logger.debug("text match blink found")
             self.request_add_blink_2FA()
+            return True
+        elif "blinkcam" in self.text.lower():
+            self.logger.debug("text match blink cam foto found")
+            cam_common.blink_take_photo(self.auth, self.blink, self)
+            return True
+        elif "picam" in self.text.lower():
+            self.logger.debug("text match PiCam foto found")
+            cam_common.picam_take_photo(self.auth, self.blink, self)
             return True
         else: 
             self.logger.debug("text not matched checking for totp code")
