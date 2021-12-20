@@ -27,7 +27,7 @@ class FDIaTestCase(unittest.TestCase):
         self.assertEqual (self.instance_configuration.telegram_token,"telegram_bot_token_code_here")
         self.assertEqual (self.instance_configuration.telegram_chat_nr, "-4321")
         self.assertEqual (self.instance_configuration.allowed_user_ids, ['123456789', '987654321'])
-        self.assertEqual (self.instance_configuration.otp_password, 'KBAVGU2XJ5JEI===')
+        self.assertEqual (self.instance_configuration.otp_password, 'KRSXG5CQIASCIVZQOJCA====')
         self.assertEqual (self.instance_configuration.otp_length, 9)
         self.assertEqual (self.instance_configuration.otp_interval, 30)
         self.assertEqual (self.instance_configuration.hash_type, "sha512")

@@ -8,7 +8,7 @@
         ]
         }, 
     "otp": {
-        "password": "KBAVGU2XJ5JEI===", 
+        "password": "KRSXG5CQIASCIVZQOJCA====", 
         "length": 9, 
         "interval": 30, 
         "hash_type": "sha512"
