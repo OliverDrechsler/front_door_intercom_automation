@@ -8,7 +8,7 @@ telegram:
 otp:
   # base32 encoded password here
   # password: "Base32CodePasswordHere"
-  password: "KBAVGU2XJ5JEI==="
+  password: "KRSXG5CQIASCIVZQOJCA===="
   # will be changed to use passlib for sha512
   # Caution Due to a limitation of the HOTP algorithm, 
   # the 10th digit can only take on values 0 .. 2, 
