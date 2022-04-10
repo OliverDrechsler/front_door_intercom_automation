@@ -81,6 +81,7 @@ class DoorTestCase(unittest.TestCase):
             "INFO:door-bell:Door bell ringing",
             f"INFO:send_telegram_msg:send message : Ding Dong! {self.now}",
             "DEBUG:cam_common:choose camera",
+            f"DEBUG:cam_common:Daylight detection is enabled {self.instance_door.enable_detect_daylight}",
             "DEBUG:cam_common:blink cam choosen",
             "INFO:cam_common:take a Blink Cam snapshot",
             "INFO:blink_cam:i'll take a snapshot from cam Blink_Camera_name_here and store it here /tmp/foto.jpg",

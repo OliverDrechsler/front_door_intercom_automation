@@ -89,6 +89,7 @@ class TelegramMessagesTestCase(unittest.TestCase):
             "DEBUG:telegram thread:Foto request received",
             "INFO:send_telegram_msg:send message : I will send a foto!",
             "DEBUG:cam_common:choose camera",
+            f"DEBUG:cam_common:Daylight detection is enabled {self.instance_TelegramMessages.enable_detect_daylight}",
             "DEBUG:cam_common:blink cam choosen",
             "INFO:cam_common:take a Blink Cam snapshot",
             "INFO:blink_cam:i'll take a snapshot from cam Blink_Camera_name_here and store it here /tmp/foto.jpg",

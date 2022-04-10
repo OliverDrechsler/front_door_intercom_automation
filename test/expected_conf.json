@@ -33,6 +33,7 @@
         "iso": 0
         }, 
     "common": {
+        "enable_detect_daylight": false,
         "image_path": "/tmp/foto.jpg", 
         "camera_type": "blink", 
         "run_on_raspberry": true

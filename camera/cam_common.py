@@ -1,6 +1,9 @@
 from blinkpy.blinkpy import Blink
 from blinkpy.auth import Auth
 from blinkpy.helpers.util import json_load
+from datetime import datetime, timezone
+from astral.sun import sun
+from astral import LocationInfo
 from camera import blink_cam, picam
 from messaging import send_msg
 import logging
@@ -9,7 +12,28 @@ import logging
 logger = logging.getLogger("cam_common")
 
 
-def choose_camera(auth: object, blink: object, config_class_instance: object) -> None:
+def daylight_detected(config_class_instance: object) -> bool:
+    """detect daylight if config param is set
+
+    :param config_class_instance: config class instance object
+    :type config_class_instance: class instance object
+    :return: _description_
+    :rtype: bool
+    """
+    logger.debug("Daylight detection is enabled " +
+                 f"{config_class_instance.enable_detect_daylight}")
+    if (config_class_instance.enable_detect_daylight):
+        loc = LocationInfo("Berlin", "Germany", "Europe/Berlin")
+        time_now = datetime.now(timezone.utc)
+        s = sun(loc.observer, date=time_now, tzinfo=loc.timezone)
+        daylight = (s['sunrise'] <= time_now <= (s['sunset']))
+        logger.info(f"Is daylight detected: {daylight}")
+        return daylight
+    return False
+
+
+def choose_camera(auth: object, blink: object, 
+                  config_class_instance: object) -> bool:
     """
     Call choosen camera type from config file to take a foto.
 
@@ -19,18 +43,19 @@ def choose_camera(auth: object, blink: object, config_class_instance: object) ->
     :type blink: class instance object
     :param config_class_instance: config class instance object
     :type config_class_instance: class instance object
-    :return: Nothing
-    :rtype: None
+    :return: success boolean
+    :rtype: bool
     """
     logger.debug("choose camera")
+    if(daylight_detected(config_class_instance)):
+        return picam_take_photo(auth, blink, config_class_instance)
+
     if config_class_instance.common_camera_type == "blink":
         logger.debug("blink cam choosen")
-        result = blink_take_photo(auth, blink, config_class_instance)
-        return bool(result)
+        return blink_take_photo(auth, blink, config_class_instance)
     elif config_class_instance.common_camera_type == "picam":
         logger.debug("PiCam choosen")
-        result = picam_take_photo(auth, blink, config_class_instance)
-        return bool(result)
+        return picam_take_photo(auth, blink, config_class_instance)
 
 
 def blink_take_photo(
@@ -38,6 +63,7 @@ def blink_take_photo(
 ) -> bool:
     """
     Use Blink camera to take a foto.
+    If failed retry with PiCam
 
     :param auth: blink cam authentication class instance
     :type auth: class instance object
@@ -84,6 +110,7 @@ def picam_take_photo(
 ) -> bool:
     """
     Use PiCam camera to take a foto.
+    If failed retry with blink cam
 
     :param auth: blink cam authentication class instance
     :type auth: class instance object

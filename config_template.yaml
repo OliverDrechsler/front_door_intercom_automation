@@ -46,6 +46,7 @@ picam:
   iso: 0
 
 common:
+  enable_detect_daylight: False
   image_path: "/tmp/foto.jpg"
   camera_type: "blink"  # "blink" or "picam" careful - case senitive
   # run code on RPi or on another system
