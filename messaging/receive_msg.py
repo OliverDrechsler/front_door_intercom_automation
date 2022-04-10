@@ -79,8 +79,8 @@ class TelegramMessages(Configuration):
         if (check_result):
             result = self.switch_condition(self.text.lower())
             return bool(result)
-        else:
-            return check_result
+        
+        return check_result
 
     def switch_condition(self, given_string, default="self.no_match"):
         """Received message text switch case action
