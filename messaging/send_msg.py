@@ -8,7 +8,8 @@ import os
 logger = logging.getLogger('send_telegram_msg')
 
 
-def telegram_send_message(bot: object, telegram_chat_nr: str, message: str) -> bool:
+def telegram_send_message(bot: object, telegram_chat_nr: str,
+                          message: str) -> bool:
     """
     Send a telegram message to chat group with number
 
@@ -47,7 +48,8 @@ def telegram_send_message(bot: object, telegram_chat_nr: str, message: str) -> b
         return False
 
 
-def telegram_send_photo(bot: object, telegram_chat_nr: str, common_image_path: str,) -> bool:
+def telegram_send_photo(bot: object, telegram_chat_nr: str,
+                        common_image_path: str,) -> bool:
     """
      Send a telegram photo to chat group with number
 
@@ -66,12 +68,13 @@ def telegram_send_photo(bot: object, telegram_chat_nr: str, common_image_path: s
         telepot.api._onetime_pool_spec = (
             urllib3.PoolManager,
             dict(num_pools=1, maxsize=1, retries=60, timeout=1))
-        result = bot.sendPhoto(telegram_chat_nr, photo=open(common_image_path, 'rb'))
+        result = bot.sendPhoto(telegram_chat_nr, photo=open(common_image_path,
+                                                            'rb'))
         logger.info("send a foto: success")
         if os.path.exists(common_image_path):
             os.remove(common_image_path)
         return bool(result)
-        
+
     except:
         logger.info("send a foto: Error occured")
         if os.path.exists(common_image_path):

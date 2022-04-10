@@ -6,7 +6,8 @@ from passlib.totp import TOTP
 
 logger = logging.getLogger('TOTP')
 
-# def verify_otp(to_verify: int, my_secret: str, length: int, interval: int, hash_type: str) -> bool:
+# def verify_otp(to_verify: int, my_secret: str, length: int, interval: int,
+#                hash_type: str) -> bool:
 #     """
 #     Verify given onetimepassword  matches using library otp
 
@@ -22,12 +23,14 @@ logger = logging.getLogger('TOTP')
 #     :rtype: bool
 #     """
 #     logger.debug("verify totp with library otp")
-#     return otp.valid_totp(
-#         token=to_verify, secret=my_secret, token_length=length, interval_length=interval,
-#         digest_method=hash_type)
+#     return otp.valid_totp(token=to_verify, secret=my_secret,
+#                           token_length=length,
+#                           interval_length=interval,
+#                           digest_method=hash_type)
 
 
-def verify_totp_code(to_verify: str, my_secret: str, length: int, interval: int, hash_type: str) -> bool:
+def verify_totp_code(to_verify: str, my_secret: str, length: int, 
+                     interval: int, hash_type: str) -> bool:
     """
     Verify given time-based one time password using library passlib
 
@@ -40,7 +43,8 @@ def verify_totp_code(to_verify: str, my_secret: str, length: int, interval: int,
         the 10th digit can only take on values 0 .. 2, 
         and thus offers very little extra security.
         Please use maxim lenght of 9 instead 10 
-        limitation see here https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken        
+        limitation see here:
+        https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken        
     :type length: int
     :param interval: totp interval in sec
     :type interval: int
@@ -56,7 +60,9 @@ def verify_totp_code(to_verify: str, my_secret: str, length: int, interval: int,
     else:
         return False
 
-def generate_totp_code(my_secret: str, length: int, interval: int, hash_type: str) -> bool:
+
+def generate_totp_code(my_secret: str, length: int, interval: int,
+                       hash_type: str) -> bool:
     """
     Generate a new time-based one time password using library passlib
 
@@ -67,7 +73,8 @@ def generate_totp_code(my_secret: str, length: int, interval: int, hash_type: st
         the 10th digit can only take on values 0 .. 2, 
         and thus offers very little extra security.
         Please use maxim lenght of 9 instead 10 
-        limitation see here https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken        
+        limitation see here:
+        https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken        
     :type length: int
     :param interval: totp interval in sec
     :type interval: int

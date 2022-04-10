@@ -6,14 +6,14 @@ import json
 
 logger = logging.getLogger('PiCam')
 
-def request_take_foto(
-    picam_url: str, 
-    picam_image_width: int, 
-    picam_image_hight: int, 
-    picam_image_filename: str, 
-    picam_exposure: str, 
-    picam_rotation: int, 
-    picam_iso: int) -> int:
+
+def request_take_foto(picam_url: str,
+                      picam_image_width: int,
+                      picam_image_hight: int,
+                      picam_image_filename: str,
+                      picam_exposure: str,
+                      picam_rotation: int,
+                      picam_iso: int) -> int:
     """Take a photo from PiCam
 
     This creates a new snapshot via PiCam REST-API with a
@@ -50,15 +50,15 @@ def request_take_foto(
     headers = {'content-type': 'application/json'}
     logger.debug(headers)
     r = requests.post(picam_url,
-        data=json.dumps(payload), headers=headers)
-    logger.debug("make a snapshot ended with http status {}".format(r.status_code))
+                      data=json.dumps(payload), headers=headers)
+    logger.debug("make a snapshot ended with http status {}"
+                 .format(r.status_code))
     return r.status_code
 
 
-def request_download_foto(
-    picam_url: str,
-    picam_image_filename: str,
-    local_image_path: str) -> int:
+def request_download_foto(picam_url: str,
+                          picam_image_filename: str,
+                          local_image_path: str) -> int:
     """Downloads a Photo via GET request from PiCAM REST-API
 
     :param picam_url: PiCam URL with protocol

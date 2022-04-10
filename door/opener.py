@@ -8,6 +8,7 @@ import time
 
 logger = logging.getLogger('door-opener')
 
+
 def open_door(door_opener_port: int, run_on_raspberry: bool) -> bool:
     """Put Raspberry Pi GPIO port on high - voltage
 

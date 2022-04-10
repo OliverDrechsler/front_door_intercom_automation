@@ -15,17 +15,20 @@ config = Configuration()
 
 logger = logging.getLogger('door-bell')
 
+
 class Door(Configuration):
-    """Front door subclass of configuration config watches the door bell and triggers
+    """Front door subclass of configuration config watches the door bell and
+        triggers
        sends telegram message and camera photo.
     """
 
-    def __init__(self, bot: object, blink_instance: object, blink_auth_instance: object) -> None:
+    def __init__(self, bot: object, blink_instance: object,
+                 blink_auth_instance: object) -> None:
         """
         Initial class definition.
         
-        Reads from parent class config.yaml file its configuration into class attribute
-        config dict and from there into multiple attributes.
+        Reads from parent class config.yaml file its configuration into class
+        attribute config dict and from there into multiple attributes.
         :param blink_instance: blink class instance object
         :type blink_instance: class object
         :param telegram_instance: telegram bot class instance

@@ -7,18 +7,21 @@ import base64
 
 logger = logging.getLogger('config')
 
+
 class YamlReadError(Exception):
     """Exception raised for config yaml file read error.
 
     Attributes:
         message -- explanation of the error
     """
-    def __init__(self, message="A YAML config file readerror is occured during parsing file"):
+    def __init__(self, message="A YAML config file readerror" +
+                 " is occured during parsing file"):
         self.message = message
         super().__init__(self.message)
 
     def __str__(self):
         return f'{self.message}'
+
 
 class Configuration:
     """Reads gerneral yaml Config file into class."""
@@ -73,10 +76,12 @@ class Configuration:
 
         :params config_file: the config file to be read
         :type config_file: string
-        :return: Noting - adds class attribute self.config dictionary from config yaml file
+        :return: Noting - adds class attribute self.config dictionary
+          from config yaml file
         :rtype: None
         """
-        self.logger.debug("reading config {0} file info dict".format(config_file))
+        self.logger.debug("reading config {0} file info dict"
+                          .format(config_file))
         try:
             with open(file=config_file, mode='r') as file:
                 return yaml.load(file, Loader=yaml.SafeLoader)
@@ -99,7 +104,8 @@ class Configuration:
         if os.path.isfile(self.base_path + 'config.yaml'):
             return (self.base_path + 'config.yaml')
         else:
-            self.logger.info("No config.yaml file detected. Using temeplate one.")
+            self.logger.info("No config.yaml file detected. Using" + 
+                             " temeplate one.")
             if not os.path.exists(self.base_path + 'config_template.yaml'):
                 raise (NameError("No config file found!"))
             return (self.base_path + 'config_template.yaml')

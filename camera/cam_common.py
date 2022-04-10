@@ -8,7 +8,9 @@ import logging
 
 logger = logging.getLogger('cam_common')
 
-def choose_camera(auth: object, blink: object, config_class_instance: object) -> None:
+
+def choose_camera(auth: object, blink: object, 
+                  config_class_instance: object) -> None:
     """
     Call choosen camera type from config file to take a foto.
 
@@ -31,7 +33,9 @@ def choose_camera(auth: object, blink: object, config_class_instance: object) ->
         result = picam_take_photo(auth, blink, config_class_instance)
         return bool(result)
 
-def blink_take_photo(auth: object, blink: object, config_class_instance: object, retry=1) -> bool:
+
+def blink_take_photo(auth: object, blink: object, 
+                     config_class_instance: object, retry=1) -> bool:
     """
     Use Blink camera to take a foto.
 
@@ -71,7 +75,9 @@ def blink_take_photo(auth: object, blink: object, config_class_instance: object,
             picam_take_photo(auth, blink, config_class_instance, retry=2)
         return False
 
-def picam_take_photo(auth: object, blink: object, config_class_instance: object, retry=1) -> bool:
+
+def picam_take_photo(auth: object, blink: object,
+                     config_class_instance: object, retry=1) -> bool:
     """
     Use PiCam camera to take a foto.
 
