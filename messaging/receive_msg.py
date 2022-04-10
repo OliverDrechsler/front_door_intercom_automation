@@ -166,9 +166,9 @@ class TelegramMessages(Configuration):
             self.from_id = msg["from"]["id"]
             self.text = msg["text"]
             return self.check_chat_id()
-        else:
-            self.logger.info("received message is NOT a text message")
-            return False
+        
+        self.logger.info("received message is NOT a text message")
+        return False
 
     def check_chat_id(self) -> bool:
         """check if chat_id from received message matches configured one
@@ -182,12 +182,12 @@ class TelegramMessages(Configuration):
                 " is in config"
             )
             return self.check_from_id()
-        else:
-            self.logger.info(
-                "chat msg denied: chat_id " + str(self.chat_id) +
-                " is not in config"
-            )
-            return False
+
+        self.logger.info(
+            "chat msg denied: chat_id " + str(self.chat_id) +
+            " is not in config"
+        )
+        return False
 
     def check_from_id(self) -> bool:
         """check if from_id from received message matches configured one
@@ -204,15 +204,15 @@ class TelegramMessages(Configuration):
                 + " is in config"
             )
             return True
-        else:
-            self.logger.info(
-                "chat msg denied: from user "
-                + self.from_name
-                + " with from_id "
-                + str(self.from_id)
-                + " is NOT in config"
-            )
-            return False
+
+        self.logger.info(
+            "chat msg denied: from user "
+            + self.from_name
+            + " with from_id "
+            + str(self.from_id)
+            + " is NOT in config"
+        )
+        return False
 
     def request_foto(self) -> bool:
         """
