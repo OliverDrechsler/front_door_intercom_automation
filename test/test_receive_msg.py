@@ -87,7 +87,8 @@ class TelegramMessagesTestCase(unittest.TestCase):
             'DEBUG:fdia_telegram:receiving a message text in chat id -4321', 
             'INFO:fdia_telegram:received message = foto', 
             'INFO:fdia_telegram:chat msg allowed: chat_group_id -4321 is in config', 
-            'INFO:fdia_telegram:chat msg allowed: user FirstName with from_id 123456789 is in config', 
+            'INFO:fdia_telegram:chat msg allowed: user FirstName with from_id 123456789 is in config',
+            'DEBUG:fdia_telegram:search_key: foto in message: foto',
             'DEBUG:fdia_telegram:text match foto found'
             ]
         with self.assertLogs('fdia_telegram', level='DEBUG') as self.log3:
@@ -140,6 +141,7 @@ class TelegramMessagesTestCase(unittest.TestCase):
             'INFO:fdia_telegram:received message = blink 356632',
             f"INFO:fdia_telegram:chat msg allowed: chat_group_id {self.CONFIG_DICT['telegram']['chat_number']} is in config", 
             f"INFO:fdia_telegram:chat msg allowed: user FirstName with from_id {self.CONFIG_DICT['telegram']['allowed_user_ids'][0]} is in config", 
+            'DEBUG:fdia_telegram:search_key: blink in message: blink 356632',
             'DEBUG:fdia_telegram:text match blink found', 
             'INFO:fdia_telegram:blink token received - will save config'
             ]

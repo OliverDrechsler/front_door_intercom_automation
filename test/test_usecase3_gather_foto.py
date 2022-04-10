@@ -79,6 +79,7 @@ class TelegramMessagesTestCase(unittest.TestCase):
             'INFO:fdia_telegram:received message = foto', 
             f"INFO:fdia_telegram:chat msg allowed: chat_group_id {self.CONFIG_DICT['telegram']['chat_number']} is in config", 
             f"INFO:fdia_telegram:chat msg allowed: user FirstName with from_id {self.CONFIG_DICT['telegram']['allowed_user_ids'][0]} is in config", 
+            'DEBUG:fdia_telegram:search_key: foto in message: foto',
             'DEBUG:fdia_telegram:text match foto found', 
             'DEBUG:telegram thread:Foto request received', 
             'INFO:send_telegram_msg:send message : I will send a foto!', 
