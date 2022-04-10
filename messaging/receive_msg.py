@@ -27,7 +27,7 @@ telepot.api._which_pool = force_independent_connection
 class TelegramMessages(Configuration):
     """Telegram receive messages class"""
 
-    switch_condition_actions = {
+    switch_actions = {
         "foto": "self.rcv_msg_foto",
         "blink": "self.rcv_msg_blink",
         "blinkcam": "self.rcv_msg_blinkcam",
@@ -63,11 +63,11 @@ class TelegramMessages(Configuration):
         :return: boolean
         :rtype: bool
         """
-        for key in  self.switch_condition_actions.keys():
+        for key in  self.switch_actions.keys():
             if key in given_string:
-                self.switch_condition.last_match = key
+                # self.switch_condition.last_match = key
                 # print (f"search_key: {key} in message: {given_string}")
-                eval(self.switch_condition_actions.get(key) + "()")
+                eval(self.switch_actions.get(key) + "()")
                 return True
 
         eval(default + "()")
