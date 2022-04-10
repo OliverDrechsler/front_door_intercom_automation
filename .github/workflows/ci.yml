@@ -48,7 +48,7 @@ jobs:
       - name: black - static security code check
         run: |
           pip install black
-          black --check --verbose camera/.
+          black --verbose camera/.
           echo "ErrorLevel: $?"
           black --check --verbose common/.
           echo "ErrorLevel: $?"
