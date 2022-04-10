@@ -24,10 +24,12 @@ def choose_camera(auth: object, blink: object, config_class_instance: object) ->
     logger.debug("choose camera")
     if config_class_instance.common_camera_type == "blink":
         logger.debug("blink cam choosen")
-        blink_take_photo(auth, blink, config_class_instance)
+        result = blink_take_photo(auth, blink, config_class_instance)
+        return bool(result)
     elif config_class_instance.common_camera_type == "picam":
         logger.debug("PiCam choosen")
-        picam_take_photo(auth, blink, config_class_instance)
+        result = picam_take_photo(auth, blink, config_class_instance)
+        return bool(result)
 
 def blink_take_photo(auth: object, blink: object, config_class_instance: object, retry=1) -> bool:
     """

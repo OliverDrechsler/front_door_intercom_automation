@@ -66,13 +66,13 @@ class TelegramMessages(Configuration):
             if key in given_string:
                 # self.switch_condition.last_match = key
                 self.logger.debug(f"search_key: {key} in message: {given_string}")
-                eval(self.switch_actions.get(key) + "()")
-                return True
-        eval(default + "()")
-        return False
+                result = eval(self.switch_actions.get(key) + "()")
+                return bool(result)
+        result = eval(default + "()")
+        return bool(result)
 
 
-    def rcv_msg_foto(self) -> bool:
+    def rcv_msg_foto(self):
         """
         foto switch case condition detect from received message
 
@@ -80,8 +80,8 @@ class TelegramMessages(Configuration):
         :rtype: bool
         """
         self.logger.debug("text match foto found")
-        self.request_foto()
-        return True
+        result = self.request_foto()
+        return bool(result)
 
     def rcv_msg_blink(self) -> bool:
         """
@@ -91,8 +91,8 @@ class TelegramMessages(Configuration):
         :rtype: bool
         """
         self.logger.debug("text match blink found")
-        self.request_add_blink_2FA()
-        return True
+        result = self.request_add_blink_2FA()
+        return bool(result)
 
     def rcv_msg_blinkcam(self) -> bool:
         """
@@ -102,8 +102,8 @@ class TelegramMessages(Configuration):
         :rtype: bool
         """
         self.logger.debug("text match blink cam foto found")
-        cam_common.blink_take_photo(self.auth, self.blink, self)
-        return True
+        result = cam_common.blink_take_photo(self.auth, self.blink, self)
+        return bool(result)
 
     def rcv_msg_picam(self) -> bool:
         """
@@ -113,8 +113,8 @@ class TelegramMessages(Configuration):
         :rtype: bool
         """
         self.logger.debug("text match PiCam foto found")
-        cam_common.picam_take_photo(self.auth, self.blink, self)
-        return True
+        result = cam_common.picam_take_photo(self.auth, self.blink, self)
+        return bool(result)
 
     def no_match(self) -> bool:
         """
@@ -124,8 +124,8 @@ class TelegramMessages(Configuration):
         :rtype: bool
         """
         self.logger.debug("text not matched checking for totp code")
-        self.check_received_msg_has_code_number()
-        return True
+        result = self.check_received_msg_has_code_number()
+        return bool(result)
 
 
     def handle_received_message(self, msg: dict) -> bool:
@@ -174,7 +174,8 @@ class TelegramMessages(Configuration):
                 " is NOT in config")
             return False
 
-        self.switch_condition(self.text.lower())        
+        result = self.switch_condition(self.text.lower())
+        return bool(result)
 
     def request_foto(self) -> None:
         """
@@ -185,11 +186,12 @@ class TelegramMessages(Configuration):
         """
         logger.debug(
             "Foto request received")
-        send_msg.telegram_send_message(self.bot, 
+        result = send_msg.telegram_send_message(self.bot, 
             self.telegram_chat_nr, 
             "I will send a foto!")
         
         cam_common.choose_camera(self.auth, self.blink, self)
+        return bool(result)
 
     def request_add_blink_2FA(self) -> bool:
         """
@@ -198,7 +200,7 @@ class TelegramMessages(Configuration):
         :return: success status
         :rtype: boolean
         """
-        match = re.search("(?<=^blink.)\d{6}", self.text, re.IGNORECASE)
+        match = re.search(r'(?<=^blink.)\d{6}', self.text, re.IGNORECASE)
         if match:
             self.logger.info(f"blink token received - will save config")
             send_msg.telegram_send_message(
@@ -224,7 +226,7 @@ class TelegramMessages(Configuration):
         """
         bracket1 = "{"
         bracket2 = "}"
-        regex_search = "^\d{0}{1}{2}$".format(bracket1, self.otp_length, bracket2)
+        regex_search = r"^\d{0}{1}{2}$".format(bracket1, self.otp_length, bracket2)
         #self.logger.debug(f"regex search string {regex_search}")
         self.logger.debug("regex search string")
         match = re.search(regex_search, self.text, re.IGNORECASE)
