@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - run: pip install nox==2019.11.9
+      - run: pip install nox==2022.1.7
       - run: pip install poetry==1.1.13
       # - run: nox
       - name: Install dependencies
@@ -48,7 +48,7 @@ jobs:
       - name: black - static security code check
         run: |
           pip install black
-          black
+          black --check --verbose .
 
       - name: Wemake Python Stylguide
         uses: wemake-services/wemake-python-styleguide@0.13.4
