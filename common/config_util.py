@@ -53,6 +53,7 @@ class Configuration:
         self.blink_password = self.config["blink"]["password"]
         self.blink_name = self.config["blink"]["name"]
         self.blink_config_file = self.base_path + self.config["blink"]["config_file"]
+        self.enable_detect_daylight = self.config["common"]["enable_detect_daylight"]
         self.common_image_path = self.config["common"]["image_path"]
         self.common_camera_type = self.config["common"]["camera_type"]
         self.picam_url = self.config["picam"]["url"]
@@ -105,11 +106,11 @@ class Configuration:
 
         if os.path.isfile(self.base_path + "config.yaml"):
             return self.base_path + "config.yaml"
-        else:
-            self.logger.info("No config.yaml file detected. Using" + " temeplate one.")
-            if not os.path.exists(self.base_path + "config_template.yaml"):
-                raise (NameError("No config file found!"))
-            return self.base_path + "config_template.yaml"
+
+        self.logger.info("No config.yaml file detected. Using" + " temeplate one.")
+        if not os.path.exists(self.base_path + "config_template.yaml"):
+            raise (NameError("No config file found!"))
+        return self.base_path + "config_template.yaml"
 
     def base32_encode_totp_password(self, new_password):
         """

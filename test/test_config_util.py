@@ -55,6 +55,7 @@ class FDIaTestCase(unittest.TestCase):
             self.instance_configuration.blink_config_file,
             self.instance_configuration.base_path + "blink_config.json",
         )
+        self.assertEqual(self.instance_configuration.enable_detect_daylight, False)
         self.assertEqual(self.instance_configuration.common_image_path, "/tmp/foto.jpg")
         self.assertEqual(self.instance_configuration.common_camera_type, "blink")
         self.assertEqual(self.instance_configuration.picam_url, "http://IP:8000/foto/")
