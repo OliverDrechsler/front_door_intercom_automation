@@ -5,7 +5,7 @@ import logging
 import io
 import base64
 
-logger = logging.getLogger('config')
+logger = logging.getLogger("config")
 
 
 class YamlReadError(Exception):
@@ -14,13 +14,15 @@ class YamlReadError(Exception):
     Attributes:
         message -- explanation of the error
     """
-    def __init__(self, message="A YAML config file readerror" +
-                 " is occured during parsing file"):
+
+    def __init__(
+        self, message="A YAML config file readerror" + " is occured during parsing file"
+    ):
         self.message = message
         super().__init__(self.message)
 
     def __str__(self):
-        return f'{self.message}'
+        return f"{self.message}"
 
 
 class Configuration:
@@ -34,19 +36,19 @@ class Configuration:
         :return: Nothing adds class instance attribues
         :rtype: None
         """
-        self.logger = logging.getLogger('config')
+        self.logger = logging.getLogger("config")
         self.base_path = self.get_base_path()
         self.config_file = self.define_config_file()
         self.config = self.read_config(self.config_file)
-        self.telegram_token = self.config["telegram"]['token']
-        self.telegram_chat_nr = self.config["telegram"]['chat_number']
-        self.allowed_user_ids = self.config["telegram"]['allowed_user_ids']
-        self.otp_password = self.config["otp"]['password']
-        self.otp_length = self.config["otp"]['length']
-        self.otp_interval = self.config["otp"]['interval']
-        self.hash_type = self.config["otp"]['hash_type']
-        self.door_bell = self.config["GPIO"]['door_bell_port']
-        self.door_summer = self.config["GPIO"]['door_opener_port']
+        self.telegram_token = self.config["telegram"]["token"]
+        self.telegram_chat_nr = self.config["telegram"]["chat_number"]
+        self.allowed_user_ids = self.config["telegram"]["allowed_user_ids"]
+        self.otp_password = self.config["otp"]["password"]
+        self.otp_length = self.config["otp"]["length"]
+        self.otp_interval = self.config["otp"]["interval"]
+        self.hash_type = self.config["otp"]["hash_type"]
+        self.door_bell = self.config["GPIO"]["door_bell_port"]
+        self.door_summer = self.config["GPIO"]["door_opener_port"]
         self.blink_username = self.config["blink"]["username"]
         self.blink_password = self.config["blink"]["password"]
         self.blink_name = self.config["blink"]["name"]
@@ -67,8 +69,7 @@ class Configuration:
         Get from fdia base path. This normally one folder
         up from the config_util.py
         """
-        return os.path.dirname(os.path.dirname(
-                            os.path.abspath(__file__))) + "/"
+        return os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/"
 
     def read_config(self, config_file: str) -> None:
         """
@@ -80,16 +81,17 @@ class Configuration:
           from config yaml file
         :rtype: None
         """
-        self.logger.debug("reading config {0} file info dict"
-                          .format(config_file))
+        self.logger.debug("reading config {0} file info dict".format(config_file))
         try:
-            with open(file=config_file, mode='r') as file:
+            with open(file=config_file, mode="r") as file:
                 return yaml.load(file, Loader=yaml.SafeLoader)
         except FileNotFoundError:
             self.logger.error("Could not find %s", self.config_file)
             raise FileNotFoundError("Could not find config file")
         except:
-            self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
+            self.logger.error(
+                "a YAML error is occured during parsing file %s ", self.config_file
+            )
             raise YamlReadError("a YAML error is occured during parsing file")
 
     def define_config_file(self) -> None:
@@ -101,15 +103,14 @@ class Configuration:
         """
         self.logger.debug("checking if config.yaml file exists")
 
-        if os.path.isfile(self.base_path + 'config.yaml'):
-            return (self.base_path + 'config.yaml')
+        if os.path.isfile(self.base_path + "config.yaml"):
+            return self.base_path + "config.yaml"
         else:
-            self.logger.info("No config.yaml file detected. Using" + 
-                             " temeplate one.")
-            if not os.path.exists(self.base_path + 'config_template.yaml'):
+            self.logger.info("No config.yaml file detected. Using" + " temeplate one.")
+            if not os.path.exists(self.base_path + "config_template.yaml"):
                 raise (NameError("No config file found!"))
-            return (self.base_path + 'config_template.yaml')
-        
+            return self.base_path + "config_template.yaml"
+
     def base32_encode_totp_password(self, new_password):
         """
         Encodes a new provided password into BASE32 string
@@ -118,15 +119,15 @@ class Configuration:
         :type new_password: string
         """
         return (base64.b32encode(new_password.upper().encode("UTF-8"))).decode("UTF-8")
-    
+
     def write_yaml_config(self, new_password):
         """Writes or updates the config.yaml file with the new provided TOTP password
 
         :param new_password: new provided TOTP ASCII password
         :type new_password: string
         """
-        with open(self.base_path + 'config.yaml', 'w') as yaml_file:
-            self.config["otp"]['password'] = self.base32_encode_totp_password(new_password)
+        with open(self.base_path + "config.yaml", "w") as yaml_file:
+            self.config["otp"]["password"] = self.base32_encode_totp_password(
+                new_password
+            )
             yaml.dump(self.config, yaml_file, default_flow_style=False)
-            
-        

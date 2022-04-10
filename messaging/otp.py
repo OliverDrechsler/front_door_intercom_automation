@@ -1,21 +1,22 @@
 from __future__ import annotations
+
 # import onetimepass as otp
 import hashlib
 import logging
 from passlib.totp import TOTP
 
-logger = logging.getLogger('TOTP')
+logger = logging.getLogger("TOTP")
 
 # def verify_otp(to_verify: int, my_secret: str, length: int, interval: int,
 #                hash_type: str) -> bool:
 #     """
 #     Verify given onetimepassword  matches using library otp
 
-#     :param to_verify: given time-based one time password 
+#     :param to_verify: given time-based one time password
 #     :type to_verify: int
 #     :param my_secret: my local stored secret
 #     :type my_secret: str
-#     :param length: time-based one time password length 
+#     :param length: time-based one time password length
 #     :type length: int
 #     :param interval: totp interval in sec
 #     :type interval: int
@@ -29,8 +30,9 @@ logger = logging.getLogger('TOTP')
 #                           digest_method=hash_type)
 
 
-def verify_totp_code(to_verify: str, my_secret: str, length: int, 
-                     interval: int, hash_type: str) -> bool:
+def verify_totp_code(
+    to_verify: str, my_secret: str, length: int, interval: int, hash_type: str
+) -> bool:
     """
     Verify given time-based one time password using library passlib
 
@@ -61,8 +63,9 @@ def verify_totp_code(to_verify: str, my_secret: str, length: int,
         return False
 
 
-def generate_totp_code(my_secret: str, length: int, interval: int,
-                       hash_type: str) -> bool:
+def generate_totp_code(
+    my_secret: str, length: int, interval: int, hash_type: str
+) -> bool:
     """
     Generate a new time-based one time password using library passlib
 

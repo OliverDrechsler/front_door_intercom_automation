@@ -15,23 +15,25 @@ import urllib3
 import json
 
 
-logger = logging.getLogger('telegram thread')
+logger = logging.getLogger("telegram thread")
 
 
 def force_independent_connection(req, **user_kw):
     return None
 
 
-telepot.api._pools = {'default': urllib3.PoolManager(
-    num_pools=3, maxsize=10, retries=9, timeout=30), }
+telepot.api._pools = {
+    "default": urllib3.PoolManager(num_pools=3, maxsize=10, retries=9, timeout=30),
+}
 telepot.api._which_pool = force_independent_connection
 
 
 class TelegramMessages(Configuration):
     """Telegram receive messages class"""
 
-    def __init__(self, bot: object, blink_instance: object,
-                 blink_auth_instance: object) -> None:
+    def __init__(
+        self, bot: object, blink_instance: object, blink_auth_instance: object
+    ) -> None:
         """
         Initial Telegram receive class instance setup
 
@@ -43,7 +45,7 @@ class TelegramMessages(Configuration):
         :type blink_auth_instance: object
         """
         Configuration.__init__(self)
-        self.logger = logging.getLogger('fdia_telegram')
+        self.logger = logging.getLogger("fdia_telegram")
         self.logger.debug("reading config")
         self.bot = bot
         self.blink = blink_instance
@@ -53,7 +55,7 @@ class TelegramMessages(Configuration):
             "foto": "self.rcv_msg_foto",
             "blink": "self.rcv_msg_blink",
             "blinkcam": "self.rcv_msg_blinkcam",
-            "picam": "self.rcv_msg_picam"
+            "picam": "self.rcv_msg_picam",
         }
 
     def switch_condition(self, given_string, default="self.no_match"):
@@ -68,8 +70,7 @@ class TelegramMessages(Configuration):
         """
         for key in self.switch_actions.keys():
             if key in given_string:
-                self.logger.debug(f"search_key: {key} in message: " +
-                                  f"{given_string}")
+                self.logger.debug(f"search_key: {key} in message: " + f"{given_string}")
                 result = eval(self.switch_actions.get(key) + "()")
                 return bool(result)
         result = eval(default + "()")
@@ -141,41 +142,46 @@ class TelegramMessages(Configuration):
         :rtype: boolean
         """
         self.logger.info("received a telegram message")
-        (self.content_type, 
-         self.chat_type, 
-         self.chat_id) = telepot.glance(msg)
-        self.logger.debug(f"receiving a message {self.content_type}" +
-                          f" in chat id {self.chat_id}")
+        (self.content_type, self.chat_type, self.chat_id) = telepot.glance(msg)
+        self.logger.debug(
+            f"receiving a message {self.content_type}" + f" in chat id {self.chat_id}"
+        )
 
-        if self.content_type == 'text':
+        if self.content_type == "text":
             self.logger.info(f"received message = {msg['text']}")
-            self.from_name = msg['from']['first_name']
-            self.from_id = msg['from']['id']
-            self.text = msg['text']
+            self.from_name = msg["from"]["first_name"]
+            self.from_id = msg["from"]["id"]
+            self.text = msg["text"]
         else:
             self.logger.info("received message is NOT a text message")
             return False
-        
+
         if str(self.chat_id) == str(self.telegram_chat_nr):
             self.logger.info(
-                "chat msg allowed: chat_group_id " + str(self.chat_id) +
-                " is in config")
+                "chat msg allowed: chat_group_id " + str(self.chat_id) + " is in config"
+            )
         else:
             self.logger.info(
-                "chat msg denied: chat_id " + str(self.chat_id) +
-                " is not in config")
+                "chat msg denied: chat_id " + str(self.chat_id) + " is not in config"
+            )
             return False
-    
+
         if str(self.from_id) in self.allowed_user_ids:
             self.logger.info(
-                "chat msg allowed: user " + self.from_name + 
-                " with from_id " + str(self.from_id) +
-                " is in config")        
+                "chat msg allowed: user "
+                + self.from_name
+                + " with from_id "
+                + str(self.from_id)
+                + " is in config"
+            )
         else:
             self.logger.info(
-                "chat msg denied: from user " + self.from_name + 
-                " with from_id " + str(self.from_id) +
-                " is NOT in config")
+                "chat msg denied: from user "
+                + self.from_name
+                + " with from_id "
+                + str(self.from_id)
+                + " is NOT in config"
+            )
             return False
 
         result = self.switch_condition(self.text.lower())
@@ -188,11 +194,10 @@ class TelegramMessages(Configuration):
         :return: 
         :rtype: bool
         """
-        logger.debug(
-            "Foto request received")
-        result = send_msg.telegram_send_message(self.bot, 
-                                                self.telegram_chat_nr, 
-                                                "I will send a foto!")
+        logger.debug("Foto request received")
+        result = send_msg.telegram_send_message(
+            self.bot, self.telegram_chat_nr, "I will send a foto!"
+        )
 
         cam_common.choose_camera(self.auth, self.blink, self)
         return bool(result)
@@ -204,17 +209,17 @@ class TelegramMessages(Configuration):
         :return: success status
         :rtype: boolean
         """
-        match = re.search(r'(?<=^blink.)\d{6}', self.text, re.IGNORECASE)
+        match = re.search(r"(?<=^blink.)\d{6}", self.text, re.IGNORECASE)
         if match:
             self.logger.info("blink token received - will save config")
             send_msg.telegram_send_message(
-                self.bot, 
+                self.bot,
                 self.telegram_chat_nr,
-                "Blink token received " + match.group(0))
+                "Blink token received " + match.group(0),
+            )
             blink_cam.add_2fa_blink_token(
-                token=match.group(0),
-                blink=self.blink,
-                auth=self.auth)
+                token=match.group(0), blink=self.blink, auth=self.auth
+            )
             blink_cam.blink_compare_config(self.auth, self.blink, self)
             return True
 
@@ -230,8 +235,7 @@ class TelegramMessages(Configuration):
         """
         bracket1 = "{"
         bracket2 = "}"
-        regex_search = r"^\d{0}{1}{2}$".format(bracket1, self.otp_length,
-                                               bracket2)
+        regex_search = r"^\d{0}{1}{2}$".format(bracket1, self.otp_length, bracket2)
         self.logger.debug("regex search string")
         match = re.search(regex_search, self.text, re.IGNORECASE)
         if match:
@@ -249,28 +253,24 @@ class TelegramMessages(Configuration):
         :rtype: boolean
         """
         if otp.verify_totp_code(
-                self.text, 
-                self.otp_password,
-                self.otp_length,
-                self.otp_interval,
-                self.hash_type):
-            self.logger.info(
-                self.text + " TOTP code correct")
+            self.text,
+            self.otp_password,
+            self.otp_length,
+            self.otp_interval,
+            self.hash_type,
+        ):
+            self.logger.info(self.text + " TOTP code correct")
             send_msg.telegram_send_message(
-                self.bot,
-                self.telegram_chat_nr,
-                "Code accepted.")
+                self.bot, self.telegram_chat_nr, "Code accepted."
+            )
 
             opener.open_door(self.door_summer, self.run_on_raspberry)
-            self.logger.info(
-                "Door opened for 5 Sec.")
+            self.logger.info("Door opened for 5 Sec.")
             return True
 
-        else: 
-            self.logger.info(
-                "wrong totp code received " + self.text)
+        else:
+            self.logger.info("wrong totp code received " + self.text)
             send_msg.telegram_send_message(
-                self.bot, 
-                self.telegram_chat_nr,
-                "TOTP code is wrong")
+                self.bot, self.telegram_chat_nr, "TOTP code is wrong"
+            )
             return False

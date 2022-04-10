@@ -5,15 +5,17 @@ from messaging import send_msg
 import logging
 import time
 import json
+
 try:
     from gpiozero import Button
 except:
     pass
 
 from datetime import datetime
+
 config = Configuration()
 
-logger = logging.getLogger('door-bell')
+logger = logging.getLogger("door-bell")
 
 
 class Door(Configuration):
@@ -22,8 +24,9 @@ class Door(Configuration):
        sends telegram message and camera photo.
     """
 
-    def __init__(self, bot: object, blink_instance: object,
-                 blink_auth_instance: object) -> None:
+    def __init__(
+        self, bot: object, blink_instance: object, blink_auth_instance: object
+    ) -> None:
         """
         Initial class definition.
         
@@ -37,7 +40,7 @@ class Door(Configuration):
         :rtype: None
         """
         Configuration.__init__(self)
-        self.logger = logging.getLogger('door-bell')
+        self.logger = logging.getLogger("door-bell")
         self.logger.debug("reading config")
         self.bot = bot
         self.blink = blink_instance
@@ -66,9 +69,8 @@ class Door(Configuration):
                     self.logger.info("Door bell ringing")
                     now = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
                     send_msg.telegram_send_message(
-                        self.bot,
-                        self.telegram_chat_nr,
-                        "Ding Dong! " + now)
+                        self.bot, self.telegram_chat_nr, "Ding Dong! " + now
+                    )
                     cam_common.choose_camera(self.auth, self.blink, self)
                     time.sleep(5)
                 if test:

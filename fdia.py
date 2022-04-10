@@ -13,11 +13,8 @@ import threading
 import time
 
 format = "%(asctime)s  -  %(name)s  -  %(funcName)s :        %(message)s"
-logging.basicConfig(format=format, level=logging.INFO,
-                    datefmt="%Y-%m-%d %H:%M:%S")
-logger = logging.getLogger('fdia')
-
-
+logging.basicConfig(format=format, level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
+logger = logging.getLogger("fdia")
 
 
 def thread_setup_door_bell(bot: object, blink: object, auth: object) -> None:
@@ -54,9 +51,7 @@ def thread_setup_receive_messages(bot: object, blink: object, auth: object) -> N
     logger.debug("create telegram class instance")
     telegram_messages = receive_msg.TelegramMessages(bot, blink, auth)
     logger.info("start Telegram Bot receiving messages")
-    MessageLoop(
-        bot, 
-        telegram_messages.handle_received_message).run_as_thread()
+    MessageLoop(bot, telegram_messages.handle_received_message).run_as_thread()
 
 
 def main():
@@ -66,21 +61,16 @@ def main():
     logger.debug("create config class instance")
     config = config_util.Configuration()
     logger.debug("creating blink instances")
-    (blink_authentication_success, 
-     blink, 
-     auth) = blink_cam.start_blink_session(
-         config.blink_config_file, 
-         config.blink_username, 
-         config.blink_password)
+    (blink_authentication_success, blink, auth) = blink_cam.start_blink_session(
+        config.blink_config_file, config.blink_username, config.blink_password
+    )
     logger.debug("creating telegram bot instance")
     bot = telepot.Bot(config.telegram_token)
 
     logger.debug("preparing door bell watch thread")
     door_bell_watcher = threading.Thread(
-        target=thread_setup_door_bell, args=(
-            bot, 
-            blink, 
-            auth))
+        target=thread_setup_door_bell, args=(bot, blink, auth)
+    )
 
     logger.debug("calling - thread_setup_receive_messages - function")
     thread_setup_receive_messages(bot, blink, auth)

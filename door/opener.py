@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 try:
     import RPi.GPIO as GPIO
 except:
@@ -6,7 +7,7 @@ except:
 import logging
 import time
 
-logger = logging.getLogger('door-opener')
+logger = logging.getLogger("door-opener")
 
 
 def open_door(door_opener_port: int, run_on_raspberry: bool) -> bool:
