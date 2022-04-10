@@ -4,7 +4,7 @@
 name: FDIa
 on:
   push:
-    branches: [master]
+    branches: "*"
   pull_request:
     branches: [master]
 
@@ -19,36 +19,40 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - run: pip install nox==2019.11.9
-      - run: pip install poetry==1.0.5
+      - run: pip install nox==2022.1.7
+      - run: pip install poetry==1.1.13
       # - run: nox
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Lint with flake8
-        run: |
-          pip install flake8
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Run bandit - security lint
+      # - name: Lint with flake8
+      #   run: |
+      #     pip install flake8
+      #     # stop the build if there are Python syntax errors or undefined names
+      #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+      #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Run bandit - lint
         run: |
           pip install bandit
           bandit -s B605 *
         # continue-on-error: true
 
-      - name: Run pylint
-        run: |
-          pip install pylint
-          pylint *
-        continue-on-error: true
-
-      # - name: black check
+      # - name: Run pylint
       #   run: |
-      #     pip install black
-      #     black
+      #     pip install pylint
+      #     pylint *
+      #   continue-on-error: true
+
+      - name: black - static security code check
+        run: |
+          pip install black
+          black --verbose camera/.
+          black --verbose common/.
+          black --verbose door/.
+          black --verbose messaging/.
+          black --verbose fdia.py
 
       - name: Wemake Python Stylguide
         uses: wemake-services/wemake-python-styleguide@0.13.4

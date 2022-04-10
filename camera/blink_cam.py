@@ -7,9 +7,12 @@ import time
 import os
 import json
 
-logger = logging.getLogger('blink_cam')
+logger = logging.getLogger("blink_cam")
 
-def start_blink_session(blink_config_file: str, blink_username, blink_password) -> (bool, object, object):
+
+def start_blink_session(
+    blink_config_file: str, blink_username, blink_password
+) -> (bool, object, object):
     """Starts a blink cam session
 
     :param blink_config_file: blink session config file path
@@ -30,8 +33,12 @@ def start_blink_session(blink_config_file: str, blink_username, blink_password) 
         auth = Auth(json_load(blink_config_file), no_prompt=True)
         authentication_success = True
     else:
-        logger.info("no blink_config.json found - 2FA authentication token required")
-        auth = Auth({"username": blink_username, "password": blink_password}, no_prompt=True)
+        logger.info(
+            "no blink_config.json found - 2FA " + "authentication token required"
+        )
+        auth = Auth(
+            {"username": blink_username, "password": blink_password}, no_prompt=True
+        )
         authentication_success = None
 
     blink.auth = auth
@@ -59,9 +66,11 @@ def blink_snapshot(blink: object, blink_name: str, image_path: str) -> None:
     :return: Nothing
     :rtype: None
     """
-    logger.info("i'll take a snapshot from cam {0} and store it here {1}".format(
-        blink_name, 
-        image_path))
+    logger.info(
+        "i'll take a snapshot from cam {0} and store it here {1}".format(
+            blink_name, image_path
+        )
+    )
 
     try:
         logger.debug("create a camera instance")
@@ -71,10 +80,10 @@ def blink_snapshot(blink: object, blink_name: str, image_path: str) -> None:
         pass
 
     logger.debug("take a snpshot")
-    camera.snap_picture()   # Take a new picture with the camera
+    camera.snap_picture()  # Take a new picture with the camera
     logger.debug("refresh blink server info")
-    time.sleep(3)           # wait for blink class instane refresh invterval to be done
-    blink.refresh()         # refesh Server info
+    time.sleep(3)  # wait for blink class instane refresh invterval to be done
+    blink.refresh()  # refesh Server info
     if os.path.exists(image_path):
         logger.debug("a file already exists and will be deteleted before hand")
         os.remove(image_path)
@@ -106,8 +115,8 @@ def add_2fa_blink_token(token: str, blink: object, auth: object) -> bool:
 def save_blink_config(blink: object, blink_config_file: str) -> bool:
     """Saves an existing blink session into a config file.
 
-    This save a bink session for reuse on device with already authenticated token
-    into a config file.
+    This save a bink session for reuse on device with already
+    authenticated token into a config file.
 
     :param blink: blink class instance
     :type blink: class instance
@@ -121,7 +130,7 @@ def save_blink_config(blink: object, blink_config_file: str) -> bool:
     return True
 
 
-def delete_blink_config(blink: object,auth: object, blink_config_file: str) -> bool:
+def delete_blink_config(blink: object, auth: object, blink_config_file: str) -> bool:
     """Deletes a blink config file and existing class instances
 
     :param blink: blink class instance
@@ -142,6 +151,7 @@ def delete_blink_config(blink: object,auth: object, blink_config_file: str) -> b
     logger.info("deleted blink class instances and config")
     return True
 
+
 def blink_json_load(blink_config_file: str,) -> object:
     """Load blink json credentials from file.
     
@@ -161,7 +171,10 @@ def blink_json_load(blink_config_file: str,) -> object:
         logger.error("File %s has improperly formatted json", blink_config_file)
     return None
 
-def blink_compare_config(auth: object, blink: object, config_class_instance: object) -> bool:
+
+def blink_compare_config(
+    auth: object, blink: object, config_class_instance: object
+) -> bool:
     """
     Compares Blink actual class config with blink config file
     and stores it in case of difference.
@@ -183,9 +196,7 @@ def blink_compare_config(auth: object, blink: object, config_class_instance: obj
         logger.debug("blink config object = {0}".format(auth.login_attributes))
         logger.debug("blink config file   = {0}".format(blink_json_data))
         logger.info("will update blink config file")
-        save_blink_config(
-            blink, 
-            config_class_instance.blink_config_file)
+        save_blink_config(blink, config_class_instance.blink_config_file)
         return True
     else:
         logger.debug("saved blink config file == running config")
