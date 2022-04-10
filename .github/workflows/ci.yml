@@ -49,15 +49,10 @@ jobs:
         run: |
           pip install black
           black --verbose camera/.
-          echo "ErrorLevel: $?"
-          black --check --verbose common/.
-          echo "ErrorLevel: $?"
-          black --check --verbose door/.
-          echo "ErrorLevel: $?"
-          black --check --verbose messaging/.
-          echo "ErrorLevel: $?"
-          black --check --verbose fdia.py
-          echo "ErrorLevel: $?"
+          black--verbose common/.
+          black --verbose door/.
+          black --verbose messaging/.
+          black --verbose fdia.py
 
       - name: Wemake Python Stylguide
         uses: wemake-services/wemake-python-styleguide@0.13.4
