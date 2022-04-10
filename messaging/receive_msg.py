@@ -24,11 +24,16 @@ telepot.api._pools = {'default': urllib3.PoolManager(
     num_pools=3, maxsize=10, retries=9, timeout=30), }
 telepot.api._which_pool = force_independent_connection
 
-
-
 class TelegramMessages(Configuration):
     """Telegram receive messages class"""
 
+    switch_condition_actions = {
+        "foto": "self.rcv_msg_foto",
+        "blink": "self.rcv_msg_blink",
+        "blinkcam": "self.rcv_msg_blinkcam",
+        "picam": "self.rcv_msg_picam"
+    }
+    
     def __init__(self, bot: object, blink_instance: object, blink_auth_instance: object) -> None:
         """
         Initial Telegram receive class instance setup
@@ -47,6 +52,84 @@ class TelegramMessages(Configuration):
         self.blink = blink_instance
         self.auth = blink_auth_instance
         self.blink_json_data = {}
+
+    def switch_condition(self, given_string, default="self.no_match"):
+        """Switch case condition for received message text action
+
+        :param given_string: given text message
+        :type given_string: str
+        :param default: default action for no match
+        :type default: str
+        :return: boolean
+        :rtype: bool
+        """
+        for key in  self.switch_condition_actions.keys():
+            if key in given_string:
+                self.switch_condition.last_match = key
+                # print (f"search_key: {key} in message: {given_string}")
+                eval(self.switch_condition_actions.get(key) + "()")
+                return True
+
+        eval(default + "()")
+        # self.no_match()
+        return False
+
+
+    def rcv_msg_foto(self) -> bool:
+        """
+        foto switch case condition detect from received message
+
+        :return: boolean
+        :rtype: bool
+        """
+        self.logger.debug("text match foto found")
+        self.request_foto()
+        return True
+
+    def rcv_msg_blink(self) -> bool:
+        """
+        take foto switch case condition detect from received message
+
+        :return: boolean
+        :rtype: bool
+        """
+        self.logger.debug("text match blink found")
+        self.request_add_blink_2FA()
+        return True
+
+    def rcv_msg_blinkcam(self) -> bool:
+        """
+        take blinkcam switch case condition detect from received message
+
+        :return: boolean
+        :rtype: bool
+        """
+        self.logger.debug("text match blink cam foto found")
+        cam_common.blink_take_photo(self.auth, self.blink, self)
+        return True
+
+    def rcv_msg_picam(self) -> bool:
+        """
+        take picam switch case condition detect from received message
+
+        :return: boolean
+        :rtype: bool
+        """
+        self.logger.debug("text match PiCam foto found")
+        cam_common.picam_take_photo(self.auth, self.blink, self)
+        return True
+
+    def no_match(self) -> bool:
+        """
+        no mactch - default - check for TOTP code switch case condition detect from received message
+
+        :return: boolean
+        :rtype: bool
+        """
+        self.logger.debug("text not matched checking for totp code")
+        self.check_received_msg_has_code_number()
+        return True
+
 
     def handle_received_message(self, msg: dict) -> bool:
         """
@@ -94,28 +177,30 @@ class TelegramMessages(Configuration):
                 " is NOT in config")
             return False
 
-        if "foto" in self.text.lower():
-            self.logger.debug("text match foto found")
-            self.request_foto()
-            return True
-        elif "blink " in self.text.lower():
-            self.logger.debug("text match blink found")
-            self.request_add_blink_2FA()
-            return True
-        elif "blinkcam" in self.text.lower():
-            self.logger.debug("text match blink cam foto found")
-            cam_common.blink_take_photo(self.auth, self.blink, self)
-            return True
-        elif "picam" in self.text.lower():
-            self.logger.debug("text match PiCam foto found")
-            cam_common.picam_take_photo(self.auth, self.blink, self)
-            return True
-        else: 
-            self.logger.debug("text not matched checking for totp code")
-            self.check_received_msg_has_code_number()
-            return True
+        # if "foto" in self.text.lower():
+        #     self.logger.debug("text match foto found")
+        #     self.request_foto()
+        #     return True
+        # elif "blink " in self.text.lower():
+        #     self.logger.debug("text match blink found")
+        #     self.request_add_blink_2FA()
+        #     return True
+        # elif "blinkcam" in self.text.lower():
+        #     self.logger.debug("text match blink cam foto found")
+        #     cam_common.blink_take_photo(self.auth, self.blink, self)
+        #     return True
+        # elif "picam" in self.text.lower():
+        #     self.logger.debug("text match PiCam foto found")
+        #     cam_common.picam_take_photo(self.auth, self.blink, self)
+        #     return True
+        # else: 
+        #     self.logger.debug("text not matched checking for totp code")
+        #     self.check_received_msg_has_code_number()
+        #     return True
+
+        # # return False
         
-        return False
+        self.switch_condition(self.text.lower())
         
 
     def request_foto(self) -> None:
