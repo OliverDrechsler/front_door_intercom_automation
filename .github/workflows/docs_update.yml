@@ -26,7 +26,7 @@ jobs:
           git clone --depth 1 "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
         shell: bash
       
-      - run: pip install recommonmark sphinx_md
+      - run: pip install recommonmark sphinx_md sphinx-rtd-theme
 
       - name: update gh_pages
         env:
