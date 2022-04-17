@@ -1,4 +1,4 @@
-# execute this workflow automatically when a we push to master
+name: build github_pages
 on:
   push:
     branches: [ master ]
