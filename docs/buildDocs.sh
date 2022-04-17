@@ -1,5 +1,8 @@
 #!/bin/bash
 set -x
+apt-get update
+apt-get -y install git rsync python3-pip python3-sphinx python3-sphinx-rtd-theme
+pip3 install recommonmark sphinx_md sphinx.ext.githubpages sphinx.ext.autodoc sphinx.ext.todo
 pwd
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 make clean  html 
