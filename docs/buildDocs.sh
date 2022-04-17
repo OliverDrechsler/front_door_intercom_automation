@@ -9,7 +9,7 @@ make clean html
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 docroot=`mktemp -d`
-rsync -av "docs/_build/html/" "${docroot}/" 
+rsync -av "_build/html/" "${docroot}/" 
 pushd "${docroot}"
 git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
@@ -23,7 +23,7 @@ cat > README.md <<EOF
 Nothing here only HitHub Pages
 
 EOF
-
+git status
 git add .
 msg="Update Docs for commit ${GITHUB_SHA} made on `date -d"@${SOURCE_DATE_EPOCH}" --iso-8601=seconds` from ${GITHUB_REF} by ${GITHUB_ACTOR}"
 git commit -am "${msg}"
