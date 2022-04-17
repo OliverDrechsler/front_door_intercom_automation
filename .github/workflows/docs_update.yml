@@ -1,0 +1,34 @@
+name: build github_pages
+on:
+  push:
+    branches: [ master ]
+ 
+jobs:
+ 
+  build_docs_job:
+    runs-on: ubuntu-latest
+    # container: debian:buster-slim
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: prepare env
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          apt-get update
+          apt-get install -y git rsync python3-pip python3-sphinx python3-sphinx-rtd-theme
+          git clone --depth 1 "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
+        shell: bash
+      
+      - run: pip install recommonmark sphinx_md
+
+      - name: update gh_pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: "docs/buildDocs.sh"
+        shell: bash
