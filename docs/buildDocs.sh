@@ -13,7 +13,7 @@ rsync -av "docs/_build/html/" "${docroot}/"
 pushd "${docroot}"
 git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-git checkout -b gh-pages
+git checkout -b gh_pages
 touch .nojekyll
  
 # Add README
@@ -27,6 +27,6 @@ EOF
 git add .
 msg="Update Docs for commit ${GITHUB_SHA} made on `date -d"@${SOURCE_DATE_EPOCH}" --iso-8601=seconds` from ${GITHUB_REF} by ${GITHUB_ACTOR}"
 git commit -am "${msg}"
-git push deploy gh-pages --force 
+git push deploy gh_pages --force 
 popd
 exit 0
