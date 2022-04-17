@@ -4,7 +4,7 @@ apt-get update
 apt-get -y install git rsync python3-sphinx python3-sphinx-rtd-theme python3-recommonmark
 pwd
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
-make -C _source html 
+make clean  html 
 ls -lisah
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
