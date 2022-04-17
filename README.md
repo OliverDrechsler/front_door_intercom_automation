@@ -124,7 +124,7 @@ t.b.d.
 
 to describe  
 ***BTICino wiring diagram***  
-![BTICino wiring diagram](RPi-BTIcino.png)
+![BTICino wiring diagram](docs/img/RPi-BTIcino.jpg)
 
 #### 2 channel relay board for door opener
 
