@@ -2,16 +2,28 @@
 name: Release
 
 on:
-  pull_request:
-    types: closed
+  push:
+    branches: "**"
+  # pull_request:
+  #   types: closed
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Tag
-        uses: K-Phoen/semver-release-action@master
+      # - name: Tag
+      #   uses: K-Phoen/semver-release-action@master
+      #   with:
+      #     release_branch: master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: semver-tag
+        uses: gandarez/semver-action@vlatest
         with:
-          release_branch: master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          prefix: ""
+          prerelease_id: "alpha"
+          main_branch_name: "trunk"
+          develop_branch_name: "dev"
+          debug: "true"
+      - name: "Created tag"
+        run: echo "tag ${{ steps.semver-tag.outputs.semver_tag }}"
