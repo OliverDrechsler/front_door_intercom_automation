@@ -22,9 +22,9 @@ While ring at front door receive photo message and open the door via telegram on
 
    View Code on GitHub <https://github.com/OliverDrechsler/front_door_intercom_automation>
 
-   Imprint / Impressum on GitHub <https://github.com/OliverDrechsler/OliverDrechsler/blob/main/IMPRESSUM.md>
+   Imprint / Impressum on GitHub <https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md>
 
-   GDPDR / DSGVO in GitHub <https://github.com/OliverDrechsler/OliverDrechsler/blob/main/DSGVO.md>
+   GDPDR / DSGVO in GitHub <https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md>
 
 Indices and tables
 ==================
