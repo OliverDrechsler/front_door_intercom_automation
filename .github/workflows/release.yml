@@ -10,9 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: fdia
+    # defaults:
+    #   run:
+    #     working-directory: fdia
     steps:
       - uses: actions/checkout@v3
 
@@ -30,7 +30,7 @@ jobs:
           prerelease_id: "alpha"
           main_branch_name: "master"
           develop_branch_name: "dev"
-          repo_dir: "${working-directory}"
+          # repo_dir: "${working-directory}"
           debug: "true"
       - name: "Created tag"
         run: echo "tag ${{ steps.semver-tag.outputs.semver_tag }}"
