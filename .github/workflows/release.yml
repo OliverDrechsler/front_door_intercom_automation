@@ -10,9 +10,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: fdia
     steps:
       - uses: actions/checkout@v2
-      
+
       # - name: Tag
       #   uses: K-Phoen/semver-release-action@master
       #   with:
@@ -22,10 +25,12 @@ jobs:
       - id: semver-tag
         uses: gandarez/semver-action@v1.0.1
         with:
+          bump: "auto"
           prefix: ""
           prerelease_id: "alpha"
           main_branch_name: "master"
           develop_branch_name: "dev"
+          # repo_dir: ""
           debug: "true"
       - name: "Created tag"
         run: echo "tag ${{ steps.semver-tag.outputs.semver_tag }}"
