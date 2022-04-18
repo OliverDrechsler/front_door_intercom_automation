@@ -10,8 +10,6 @@
 
 **While ring at front door receive photo message and open the door via telegram one-time password**
 
-*Under development see `dev` branch*
-
 ***It works but dev is still in progress also see todos list***  
 
 **[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
