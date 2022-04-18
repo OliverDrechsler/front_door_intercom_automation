@@ -3,21 +3,18 @@ name: Release
 
 on:
   push:
-    branches: "**"
-  # pull_request:
-  #   types: closed
+    branches:
+      - master
+  pull_request:
+    types: closed
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: fdia
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          # path: "fdia_repo"
       - id: bump
         uses: zwaldowski/match-label-action@v1
         with:
@@ -26,21 +23,3 @@ jobs:
         with:
           bump: ${{ steps.bump.outputs.match }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Tag
-      #   uses: K-Phoen/semver-release-action@master
-      #   with:
-      #     release_branch: master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - id: semver-tag
-      #   uses: gandarez/semver-action@v1.0.1
-      #   with:
-      #     bump: "auto"
-      #     prefix: ""
-      #     prerelease_id: "alpha"
-      #     main_branch_name: "master"
-      #     develop_branch_name: "dev"
-      #     repo_dir: "${GITHUB_WORKSPACE}/fdia_repo"
-      #     debug: "true"
-      # - name: "Created tag"
-      #   run: echo "tag ${{ steps.semver-tag.outputs.semver_tag }}"
