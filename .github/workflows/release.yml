@@ -2,6 +2,9 @@
 name: Release
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     types: closed
 
@@ -9,11 +12,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Tag
-        uses: K-Phoen/semver-release-action@master
+      - uses: actions/checkout@v3
         with:
-          release_branch: master
-          release_strategy: release
-          tag_format: "%major%.%minor%.%patch%"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - id: bump
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major,minor,patch
+      - uses: zwaldowski/semver-release-action@v1
+        with:
+          bump: ${{ steps.bump.outputs.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
