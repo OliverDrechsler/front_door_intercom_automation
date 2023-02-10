@@ -54,8 +54,8 @@ class TelegramMessages(Configuration):
         self.blink_json_data = {}
         self.switch_actions = {
             "foto": "self.rcv_msg_foto",
-            "blink": "self.rcv_msg_blink",
             "blinkcam": "self.rcv_msg_blinkcam",
+            "blink": "self.rcv_msg_blink",
             "picam": "self.rcv_msg_picam",
         }
 
