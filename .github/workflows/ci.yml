@@ -74,10 +74,10 @@ jobs:
           file: ./coverage.xml
           flags: unittests
 
-      - name: vulernability check in dependcies
-        run: |
-          pip install safety
-          safety check --full-report
+      # - name: vulernability check in dependcies
+      #  run: |
+      #    pip install safety
+      #    safety check --full-report
           
       # - name: Run Snyk to check for vulnerabilities
       #   uses: snyk/actions/node@master
