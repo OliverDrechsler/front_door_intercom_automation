@@ -67,7 +67,7 @@ def blink_snapshot(blink: object, blink_name: str, image_path: str) -> None:
     :rtype: None
     """
     logger.info(
-        "i'll take a snapshot from cam {0} and store it here {1}".format(
+        msg="i'll take a snapshot from cam {0} and store it here {1}".format(
             blink_name, image_path
         )
     )

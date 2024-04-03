@@ -1,7 +1,7 @@
 import unittest
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
-from common.config_util import Configuration, YamlReadError
+from config.config_util import Configuration, YamlReadError
 import json
 
 

@@ -147,7 +147,7 @@ t.b.d.
 │   ├── blink_cam.py         # Amazon's Blink Camera modules
 │   ├── cam_common.py        # a common module and to decide which cam gets used
 │   └── picam.py             # a module to access my PiCam API Project vi REST-API
-├── common                   # Common package folder for configuration modules
+├── config                   # config package folder for configuration modules
 │   ├── __init__.py
 │   └── config_util.py       # Common config module / class 
 ├── docs                     # Github Pages sphinx docu better read here https://oliverdrechsler.github.io/front_door_intercom_automation/

@@ -1,10 +1,9 @@
-from __future__ import annotations
 import requests
 import logging
 import os
 import json
 
-logger = logging.getLogger("PiCam")
+logger: logging.Logger = logging.getLogger(name="PiCam")
 
 
 def request_take_foto(
@@ -38,9 +37,9 @@ def request_take_foto(
     :return: http request status code
     :rtype: int
     """
-    logger.info("take a PiCam snapshot")
-    logger.debug(f"post url={picam_url}")
-    payload = {
+    logger.info(msg="take a PiCam snapshot")
+    logger.debug(msg=f"post url={picam_url}")
+    payload: dict[str, any] = {
         "rotation": picam_rotation,
         "width": picam_image_width,
         "filename": picam_image_filename,
@@ -48,11 +47,11 @@ def request_take_foto(
         "exposure": picam_exposure,
         "iso": picam_iso,
     }
-    logger.debug(payload)
-    headers = {"content-type": "application/json"}
-    logger.debug(headers)
-    r = requests.post(picam_url, data=json.dumps(payload), headers=headers)
-    logger.debug("make a snapshot ended with http status {}".format(r.status_code))
+    logger.debug(msg=payload)
+    headers: dict[str, str] = {"content-type": "application/json"}
+    logger.debug(msg=headers)
+    r: requests.Response = requests.post(url=picam_url, data=json.dumps(obj=payload), headers=headers)
+    logger.debug(msg="make a snapshot ended with http status {}".format(r.status_code))
     return r.status_code
 
 
@@ -70,14 +69,14 @@ def request_download_foto(
     :return: http request status code
     :rtype: int
     """
-    logger.info("downloading PiCam foto")
-    if os.path.exists(local_image_path):
-        logger.debug("deleting already existing file before hand")
-        os.remove(local_image_path)
+    logger.info(msg="downloading PiCam foto")
+    if os.path.exists(path=local_image_path):
+        logger.debug(msg="deleting already existing file before hand")
+        os.remove(path=local_image_path)
 
     with open(local_image_path, "wb") as file:
-        response = requests.get(picam_url + "?filename=" + picam_image_filename)
+        response: requests.Response = requests.get(url=picam_url + "?filename=" + picam_image_filename)
         file.write(response.content)
-    logger.debug("downloading foto ended with status {}".format(response.status_code))
-    logger.debug("end downloading foto")
+    logger.debug(msg="downloading foto ended with status {}".format(response.status_code))
+    logger.debug(msg="end downloading foto")
     return response.status_code

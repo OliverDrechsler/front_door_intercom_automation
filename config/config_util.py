@@ -2,8 +2,11 @@ from __future__ import annotations
 import yaml
 import os
 import logging
-import io
+# import io
 import base64
+# from collections import ChainMap
+import telebot
+
 
 logger = logging.getLogger("config")
 
@@ -40,6 +43,9 @@ class Configuration:
         self.base_path = self.get_base_path()
         self.config_file = self.define_config_file()
         self.config = self.read_config(self.config_file)
+
+        self.bot: telebot.TeleBot = None
+
         self.telegram_token = self.config["telegram"]["token"]
         self.telegram_chat_nr = self.config["telegram"]["chat_number"]
         self.allowed_user_ids = self.config["telegram"]["allowed_user_ids"]

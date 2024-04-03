@@ -2,7 +2,7 @@ import unittest
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
 from camera.picam import request_take_foto, request_download_foto
-from common.config_util import Configuration, YamlReadError
+from config.config_util import Configuration, YamlReadError
 import json
 
 

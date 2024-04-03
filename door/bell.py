@@ -1,21 +1,26 @@
 from __future__ import annotations
-from common.config_util import Configuration
-from camera import blink_cam, picam, cam_common
-from messaging import send_msg
+
+# from gpiozero.input_devices import Button
+from config.config_util import Configuration
+from door import detect_rpi
+from bot import send_msg
+from camera import cam_common
+from blinkpy.blinkpy import Blink
+from blinkpy.auth import Auth
+import telebot
 import logging
 import time
-import json
 
 try:
     from gpiozero import Button
-except:
+except Exception:
     pass
 
 from datetime import datetime
 
 config = Configuration()
 
-logger = logging.getLogger("door-bell")
+logger: logging.Logger = logging.getLogger(name="door-bell")
 
 
 class Door(Configuration):
@@ -25,26 +30,28 @@ class Door(Configuration):
     """
 
     def __init__(
-        self, bot: object, blink_instance: object, blink_auth_instance: object
+        self, bot: object, blink: Blink, auth: Auth
     ) -> None:
         """
         Initial class definition.
         
         Reads from parent class config.yaml file its configuration into class
         attribute config dict and from there into multiple attributes.
-        :param blink_instance: blink class instance object
-        :type blink_instance: class object
-        :param telegram_instance: telegram bot class instance
-        :type telegram_instance: class object
+        :param bot: telegram bot class instance
+        :type telebot.TeleBot: class object
+        :param blink: blink class instance object
+        :type Blink: class object
+        :param auth: auth class instance object
+        :type Auth: class object
         :return: Nothing adds class instance attribues
         :rtype: None
         """
-        Configuration.__init__(self)
-        self.logger = logging.getLogger("door-bell")
-        self.logger.debug("reading config")
-        self.bot = bot
-        self.blink = blink_instance
-        self.auth = blink_auth_instance
+        Configuration.__init__(self=self)
+        self.logger: logging.Logger = logging.getLogger(name="door-bell")
+        self.logger.debug(msg="reading config")
+        self.bot: telebot.TeleBot = bot
+        self.blink: Blink = blink
+        self.auth: Auth = auth
 
     def ring(self, test=False) -> None:
         """
@@ -59,15 +66,15 @@ class Door(Configuration):
         :return: Nothing
         :rtype: None
         """
-        self.logger.info("start monitoring door bell")
-        if self.run_on_raspberry:
-            self.logger.debug("RPI: start endless loop doorbell monitoring")
-            button = Button(self.door_bell)
+        self.logger.info(msg="start monitoring door bell")
+        if detect_rpi.detect_rpi(run_on_raspberry=self.run_on_raspberry):
+            self.logger.debug(msg="RPI: start endless loop doorbell monitoring")
+            button: Button = Button(pin=self.door_bell)
             while True:
                 time.sleep(0.001)
                 if button.is_pressed:
-                    self.logger.info("Door bell ringing")
-                    now = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+                    self.logger.info(msg="Door bell ringing")
+                    now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
                     send_msg.telegram_send_message(
                         self.bot, self.telegram_chat_nr, "Ding Dong! " + now
                     )
@@ -76,7 +83,7 @@ class Door(Configuration):
                 if test:
                     break
         else:
-            self.logger.debug("NOT on RPI: start empty endless loop")
+            self.logger.debug(msg="NOT on RPI: start empty endless loop")
             while True:
                 time.sleep(60)
                 if test:

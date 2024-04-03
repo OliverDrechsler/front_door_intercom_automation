@@ -1,11 +1,8 @@
-from __future__ import annotations
-
 # import onetimepass as otp
-import hashlib
 import logging
 from passlib.totp import TOTP
 
-logger = logging.getLogger("TOTP")
+logger: logging.Logger = logging.getLogger(name="TOTP")
 
 # def verify_otp(to_verify: int, my_secret: str, length: int, interval: int,
 #                hash_type: str) -> bool:
@@ -57,7 +54,7 @@ def verify_totp_code(
     """
     logger.debug("verify totp with library passlib")
     totp = TOTP(key=my_secret, digits=length, period=interval, alg=hash_type)
-    if totp.generate().token == str(to_verify):
+    if totp.generate().token == str(object=to_verify):
         return True
     else:
         return False
@@ -86,6 +83,6 @@ def generate_totp_code(
     :return: totp code
     :rtype: int
     """
-    logger.debug("generate new totp code with library passlib")
+    logger.debug(msg="generate new totp code with library passlib")
     totp = TOTP(key=my_secret, digits=length, period=interval, alg=hash_type)
     return totp.generate().token

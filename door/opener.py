@@ -1,13 +1,12 @@
-from __future__ import annotations
-
-try:
-    import RPi.GPIO as GPIO
-except:
-    pass
 import logging
 import time
+from door import detect_rpi
+try:
+    import RPi.GPIO as GPIO
+except Exception:
+    pass
 
-logger = logging.getLogger("door-opener")
+logger: logging.Logger = logging.getLogger(name="door-opener")
 
 
 def open_door(door_opener_port: int, run_on_raspberry: bool) -> bool:
@@ -20,14 +19,14 @@ def open_door(door_opener_port: int, run_on_raspberry: bool) -> bool:
     :return: success status
     :rtype: boolean
     """
-    if run_on_raspberry:
-        logger.info("opening the door")
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(door_opener_port, GPIO.OUT)
-        GPIO.output(door_opener_port, GPIO.HIGH)
+    if detect_rpi.detect_rpi(run_on_raspberry=run_on_raspberry):
+        logger.info(msg="opening the door")
+        GPIO.setmode(mode=GPIO.BCM)
+        GPIO.setup(channel=door_opener_port, dir=GPIO.OUT)
+        GPIO.output(channel=door_opener_port, state=GPIO.HIGH)
         time.sleep(5)
-        GPIO.output(door_opener_port, GPIO.LOW)
+        GPIO.output(channel=door_opener_port, state=GPIO.LOW)
         return True
     else:
-        logger.info("not running on raspberry pi - will not open the door")
+        logger.info(msg="not running on raspberry pi - will not open the door")
         return False
