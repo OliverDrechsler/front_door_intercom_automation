@@ -8,9 +8,32 @@
     
 # Front-door intercom automation
 
-**While ring at front door receive photo message and open the door via telegram one-time password**
-
-***It works but dev is still in progress also see todos list***  
+**New version is in development with new feature like**  <br>
+<br>
+**- pyth3.12 support**  <br>
+**- WebApp, with browser page and rest api for opening**  <br>
+**- using migration to pyTelegramBotAPI**  <br>
+**- updated blinkpy to asyncio**  <br>
+**- daylight and night vision detect to choose camera**  <br>
+**- multi threading**  <br>
+**- using pyOTP instead passlib**  <br>
+**- detecting Pi Hardware native**  <br>
+<br>  
+**Same solution is in development as JAVA Spring Boot POC too**<br>
+<br>
+**If you want use take lates release [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)**  <br>
+<br>  
+**Otherwise checkout new feature and testing development branch [refactor_and_new_features](https://github.com/OliverDrechsler/front_door_intercom_automation/tree/refactor_and_new_features)**  <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 **[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
 
@@ -147,7 +170,7 @@ t.b.d.
 │   ├── blink_cam.py         # Amazon's Blink Camera modules
 │   ├── cam_common.py        # a common module and to decide which cam gets used
 │   └── picam.py             # a module to access my PiCam API Project vi REST-API
-├── common                   # Common package folder for configuration modules
+├── config                   # config package folder for configuration modules
 │   ├── __init__.py
 │   └── config_util.py       # Common config module / class 
 ├── docs                     # Github Pages sphinx docu better read here https://oliverdrechsler.github.io/front_door_intercom_automation/
