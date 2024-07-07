@@ -7,11 +7,25 @@
 [![codecov](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg)](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation)
     
 # Front-door intercom automation
-
-**While ring at front door receive photo message and open the door via telegram one-time password**
-
-***It works but dev is still in progress also see todos list***  
-
+**New version is in development with new feature like**    
+**- WebApp, with browser page and rest api for opening**  
+**- using migration to pyTelegramBotAPI**  
+**- updated blinkpy to asyncio**  
+**- daylight and night vision detect to choose camera**  
+**- multi threading**  
+**- using pyOTP instead passlib**  
+**- detecting Pi Hardware native**  
+  
+**Same solution is in development as JAVA Spring Boot POC too**   
+  
+**If you want use take lates release [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)**.    
+  
+**Otherwise checkout new feature and testing development branch [refactor_and_new_features](https://github.com/OliverDrechsler/front_door_intercom_automation/tree/refactor_and_new_features)**  
+  
+  
+  
+  
+  
 **[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
 
 ***[📚 API Docu on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html)***  

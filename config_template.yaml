@@ -4,38 +4,50 @@ telegram:
   allowed_user_ids:
     - "123456789"
     - "987654321"
+  active_message_reactions: "config_message_actions.json"
 
 otp:
   # base32 encoded password here
   # password: "Base32CodePasswordHere"
   password: "KRSXG5CQIASCIVZQOJCA===="
-  # will be changed to use passlib for sha512
-  # Caution Due to a limitation of the HOTP algorithm, 
-  # the 10th digit can only take on values 0 .. 2, 
-  # and thus offers very little extra security.
-  # Please use maxim lenght of 9 instead 10 
-  # limitation see here https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#totptoken        
-  # standard length = 6 , max length = 10 (9 = sha512)
+  # standard length = 6 , max length = 10 (9 = sha512) - at least 9 recommanded
   length: 9
   # time interval of totp code, default is 30 seconds
   interval: 30
-  # possible time based one time passwaord hash's are: sha1 (default), sha256, sha512
+  # possible time based one time passwaord hash's are: sha1 (default), sha256, sha512(recommended)
   hash_type: sha512
 
 GPIO:
   door_bell_port: 1
   door_opener_port: 2
+  run_on_raspberry: False
+
+photo_general:
+  # if enabled take precedence over default_camera_type and requires either
+  # blink.night_vision or picam.night_vision enabled. Only one enabled allowed!
+  enable_detect_daylight: False
+  default_camera_type: "blink"  # "blink" or "picam" careful - case senitive
+  image_path: "/tmp/foto.jpg"
 
 blink:
-  # blink account name here 
+  # blink cam enabled ?
+  enabled: True
+  # blink account name here
   username: "blink_account_email_address_here"
   # blink account password
   password: "blink_account_password_here"
   # blink camera name here, not group
   name: "Blink_Camera_name_here"
   config_file: "blink_config.json"
+  # if enabled requires also photo_general.enable_detect_daylight enabled
+  # than it take precedence over default_camera_type.
+  # Only one enabled allowed!
+  # blink.night_vision or picam.night_vision enabled.
+  night_vision: True
 
 picam:
+  # PiCam enabled ?
+  enabled: False
   # PiCam API https://github.com/OliverDrechsler/PiCam_API
   url: "http://IP:8000/foto/"
   image_width: 640
@@ -43,7 +55,12 @@ picam:
   image_filename: "foto.jpg"
   exposure: "auto"
   rotation: 0
-  iso: 0
+  iso: 800
+  # if enabled requires also photo_general.enable_detect_daylight enabled
+  # than it take precedence over default_camera_type.
+  # Only one enabled allowed!
+  # blink.night_vision or picam.night_vision enabled.
+  night_vision: False
 
 common:
   enable_detect_daylight: False
@@ -52,3 +69,15 @@ common:
   # run code on RPi or on another system
   # other system = no door bell detect and opener will work
   run_on_raspberry: True
+
+web:
+  # flask webserver port
+  flask_web_port: 5001
+  # flask secret key
+  flask_secret_key: "my_super_flask_secret_key"
+  # browser cookie key
+  browser_session_cookie_lifetime: 30
+  # flask app login user  for webpage and/or rest api call
+  flask_users:
+    - WebUser1: "password"
+    - WebUser2: "password"

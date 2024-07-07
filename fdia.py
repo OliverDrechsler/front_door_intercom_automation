@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from argparse import ArgumentParser
-from config import config_util
-from camera import blink_cam
-from door import bell
-from bot import receive_msg
-import telebot
+import asyncio
 import logging
+import queue
+import sys
 import threading
 import time
-import sys
+import signal
+
+from argparse import ArgumentParser
+
+import telebot
+
+from bot import receive_msg, send_msg
+from camera import camera
+from config import config_util
+from door import bell
+from door.opener import DoorOpener
+from web.web_door_opener import WebDoorOpener
 
 """Define code logging"""
 default_log_level = logging.INFO
 
-format = "%(asctime)s  -  %(name)s  -  %(funcName)s :        %(message)s"
+format = "%(asctime)s - %(name)s - %(threadName)s - %(funcName)s : %(message)s"
 logging.basicConfig(format=format, level=default_log_level, datefmt="%Y-%m-%d %H:%M:%S")
 logger: logging.Logger = logging.getLogger(name="fdia")
 
@@ -46,57 +54,177 @@ logger.info(msg=f"set logging level to: {actual_log_level}")
 if actual_log_level is not logging.INFO:
     telebot.logger.setLevel(level=actual_log_level)
 
+# Define a global shutdown flag
+shutdown_flag = threading.Event()
 
-def thread_setup_door_bell(bot, blink, auth) -> None:
+def run_web_app(config: config_util.Configuration, loop, message_task_queue: queue.Queue,
+                camera_task_queue_async: asyncio.Queue,
+                door_open_task_queue: queue.Queue):
+    app = WebDoorOpener(config=config,
+                        loop=loop,
+                        message_task_queue=message_task_queue,
+                        camera_task_queue_async=camera_task_queue_async,
+                        door_open_task_queue=door_open_task_queue)
+    app.run()
+
+
+def thread_open_door(config: config_util.Configuration, loop, message_task_queue: queue.Queue,
+                     door_open_task_queue: asyncio.Queue) -> None:
+    logger.debug(msg="create door opener class instance")
+    opener = DoorOpener(config=config, loop=loop, message_task_queue=message_task_queue,
+                        door_open_task_queue=door_open_task_queue)
+    logger.debug(msg="calling door opener start function")
+    opener.start()
+    logger.debug(msg="end door opener loop")
+
+
+def thread_door_bell(config: config_util.Configuration, loop, message_task_queue: queue.Queue,
+                     camera_task_queue_async: asyncio.Queue) -> None:
     """
     Door bell watch thread.
-
-
-    :param bot: Telegram class instance object
-    :type telebot.TeleBot: object
-    :param blink: Blink cam class instance object
-    :type Blink: object
-    :param auth: Blink cam Authentication class instance object
-    :type Auth: object
     """
-    time.sleep(15)
     logger.debug(msg="create door class instance")
-    watch_bell = bell.Door(bot=bot, blink=blink, auth=auth)
+    watch_bell = bell.DoorBell(config=config,
+                               loop=loop,
+                               message_task_queue=message_task_queue,
+                               camera_task_queue_async=camera_task_queue_async)
     logger.debug(msg="calling watch door bell ring function")
     watch_bell.ring()
     logger.debug(msg="end door bell ring watch")
+
+
+def thread_receive_telegram_msg(config: config_util.Configuration, loop,
+                                camera_task_queue_async: asyncio.Queue, door_open_task_queue: queue.Queue):
+    logger.debug(msg="initialize telegram bot instance")
+    bot = telebot.TeleBot(token=config.telegram_token, parse_mode=None)
+    config.bot = bot
+
+    logger.debug(msg="calling - thread_setup_receive_messages - function")
+    logger.debug(msg="create telegram class instance")
+    logger.info(msg="start Telegram Bot receiving messages")
+    receive_bot = receive_msg.ReceivingMessage(bot=bot,
+                                 config=config,
+                                 loop=loop,
+                                 camera_task_queue_async=camera_task_queue_async,
+                                 door_open_task_queue=door_open_task_queue
+                                 )
+    # signal.signal(signal.SIGINT, receive_bot.signal_handler)
+    # signal.signal(signal.SIGTERM, receive_bot.signal_handler)
+    receive_bot.start()
+    receive_bot.stop()
+
+def thread_send_telegram_msg(config: config_util.Configuration, loop, message_task_queue: queue.Queue):
+    logger.debug(msg="initialize telegram bot instance")
+    bot = telebot.TeleBot(token=config.telegram_token, parse_mode=None)
+    config.bot = bot
+    logger.debug(msg="calling - thread_setup_receive_messages - function")
+    logger.debug(msg="create telegram class instance")
+    logger.info(msg="start Telegram Bot receiving messages")
+    send_msg.SendMessage(bot=bot,
+                         config=config,
+                         loop=loop,
+                         message_task_queue=message_task_queue
+                         ).start()
+
+
+async def camera_task(config: config_util.Configuration, loop, camera_task_queue_async: asyncio.Queue, message_task_queue: queue.Queue):
+    logger.info("Starting camera task")
+    cam = camera.Camera(config=config, loop=loop, camera_task_queue_async=camera_task_queue_async, message_task_queue=message_task_queue)
+    while not shutdown_flag.is_set():
+        await cam.start()
+        await asyncio.sleep(0.1)  # Small delay to prevent tight loop
+    logger.info("Camera task shutdown complete")
+
+
+def thread_cameras(config: config_util.Configuration, loop, camera_task_queue_async: asyncio.Queue, message_task_queue: queue.Queue):
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(camera_task(config, loop, camera_task_queue_async, message_task_queue))
+    logger.info("Camera event loop shutdown complete")
+
+
+# def thread_cameras(config: config_util.Configuration, loop, camera_task_queue_async: asyncio.Queue,
+#                    message_task_queue: queue.Queue):
+#     asyncio.set_event_loop(loop)
+#     logger.info("now starting blink thread with asyncio blink session")
+#     loop.run_until_complete(camera.Camera(config=config, loop=loop, camera_task_queue_async=camera_task_queue_async,
+#                                           message_task_queue=message_task_queue).start())
 
 
 def main() -> None:
     """Main Program flow"""
     logger.info(msg="Start Main Program")
 
+    message_task_queue = queue.Queue()
+    door_open_task_queue = queue.Queue()
+    camera_task_queue_async = asyncio.Queue()
+
     logger.debug(msg="create config class instance")
     config = config_util.Configuration()
-    logger.debug(msg="creating blink instances")
-    (blink_authentication_success, blink, auth) = blink_cam.start_blink_session(
-        blink_config_file=config.blink_config_file, blink_username=config.blink_username, blink_password=config.blink_password
-    )
 
-    logger.debug(msg="initialize telegram bot instance")
-    bot = telebot.TeleBot(token=config.telegram_token, parse_mode=None)
-    config.bot = bot
-    
+    logger.debug("creating camera thread with asyncio")
+    loop = asyncio.new_event_loop()
+    camera_thread_async = threading.Thread(target=thread_cameras,
+                                           args=(config, loop, camera_task_queue_async, message_task_queue))
+    logger.info("start camera thread")
+    camera_thread_async.start()
+
+
+    logger.debug("creating Telegram Bot receiving thread")
+
+    receive_msg_thread = threading.Thread(
+        target=thread_receive_telegram_msg, args=(config, loop, camera_task_queue_async, door_open_task_queue))
+    logger.info("start Telegram Bot receiving thread")
+    receive_msg_thread.start()
+
+    logger.debug("creating Telegram Bot send thread")
+    send_msg_thread = threading.Thread(
+        target=thread_send_telegram_msg, args=(config, loop, message_task_queue))
+    logger.info("start Telegram Bot send thread")
+    send_msg_thread.start()
+
     logger.debug(msg="preparing door bell watch thread")
-    door_bell_watcher = threading.Thread(
-        target=thread_setup_door_bell, args=(bot, blink, auth)
+    door_bell_thread = threading.Thread(
+        target=thread_door_bell, args=(config, loop, message_task_queue, camera_task_queue_async)
     )
-
     logger.info(msg="start thread monitoring door bell")
-    door_bell_watcher.start()
+    door_bell_thread.start()
 
-    logger.debug(msg="calling - thread_setup_receive_messages - function")
-    logger.debug(msg="create telegram class instance")
-    logger.info(msg="start Telegram Bot receiving messages")
-    receive_msg.ReceivingMessage(bot=bot,
-                                 config=config,
-                                 blink_instance=blink,
-                                 blink_auth_instance=auth).start()
+    logger.debug(msg="preparing door open thread")
+    door_opener_thread = threading.Thread(
+        target=thread_open_door, args=(config, loop, message_task_queue, door_open_task_queue)
+    )
+    logger.info(msg="start door open thread")
+    door_opener_thread.start()
+
+    logger.debug(msg="preparing flask web door opener")
+    # web_thread = threading.Thread(target=run_web_app, args=((config, bot, blink, auth)))
+    web_thread = threading.Thread(target=run_web_app, args=(
+        config, loop, message_task_queue, camera_task_queue_async, door_open_task_queue))
+    logger.info(msg="start thread flask web door opener")
+    web_thread.start()
+
+    try:
+        while True:
+            time.sleep(0.01)  # Keep the main thread alive
+
+    except KeyboardInterrupt:
+
+        # Signal all threads to shutdown
+        shutdown_flag.set()
+
+        message_task_queue.put(None)  # Signal the threads to exit
+        door_open_task_queue.put(None)  # Signal the threads to exit
+
+        asyncio.run_coroutine_threadsafe(camera_task_queue_async.put(None), loop)  # Signal the threads to exit
+        # asyncio.run_coroutine_threadsafe(asyncio.run(camera_task_queue_async.put(None),loop))
+
+
+        send_msg_thread.join()
+        door_opener_thread.join()
+        camera_thread_async.join()
+        receive_msg_thread.join()
+        door_bell_thread.join()
+        web_thread.join()
 
 
 if __name__ == "__main__":

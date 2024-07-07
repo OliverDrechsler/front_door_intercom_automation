@@ -1,7 +1,7 @@
 import unittest
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
-from door.bell import Door
+from door.bell import DoorBell
 import json
 import datetime
 
@@ -66,7 +66,7 @@ class DoorTestCase(unittest.TestCase):
         """
 
         with self.assertLogs("door-bell", level="DEBUG") as self.dl_log:
-            self.instance_door = Door(self.bot, self.blink, self.auth)
+            self.instance_door = DoorBell(self.bot, self.blink, self.auth)
         instance_door_log = ["DEBUG:door-bell:reading config"]
         self.assertEqual(self.dl_log.output, instance_door_log)
         self.mock_os_isfile.assert_called()

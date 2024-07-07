@@ -1,7 +1,7 @@
 import unittest
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
-from door.bell import Door
+from door.bell import DoorBell
 import json
 
 
@@ -39,7 +39,7 @@ class DoorTestCase(unittest.TestCase):
 
         self.mock_os_isfile = self.patcher_os_isfile.start()
         with self.assertLogs("door-bell", level="DEBUG") as self.dl_log:
-            self.instance_door = Door(self.bot, self.blink, self.auth)
+            self.instance_door = DoorBell(self.bot, self.blink, self.auth)
 
     def tearDown(self):
         # self.patcher_logger.stop()

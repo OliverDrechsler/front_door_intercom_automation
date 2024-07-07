@@ -36,7 +36,7 @@ class TestCodeUnderTest:
         assert config.blink_config_file == "/path/to/config_file.yaml"
         assert config.enable_detect_daylight == True
         assert config.common_image_path == "/path/to/images/"
-        assert config.common_camera_type == "CAMERA_TYPE"
+        assert config.default_camera_type == "CAMERA_TYPE"
         assert config.picam_url == "http://localhost:8000"
         assert config.picam_image_width == 640
         assert config.picam_image_hight == 480

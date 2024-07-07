@@ -19,3 +19,6 @@ coverage.xml
 htmlcov/
 licenses.sh
 blink_config.json
+jpynb/*
+.idea/*
+venv/*

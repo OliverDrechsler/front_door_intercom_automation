@@ -1,15 +1,23 @@
 from __future__ import annotations
-import yaml
-import os
-import logging
+
 # import io
 import base64
+import logging
+import os
+from collections import ChainMap
+from enum import Enum
+
 # from collections import ChainMap
 import telebot
-
+import yaml
 
 logger = logging.getLogger("config")
 
+
+class DefaultCam(str, Enum):
+    """A custom enumeration that is YAML-safe."""
+    PICAM = "picam"
+    BLINK = "BLINK"
 
 class YamlReadError(Exception):
     """Exception raised for config yaml file read error.
@@ -19,7 +27,7 @@ class YamlReadError(Exception):
     """
 
     def __init__(
-        self, message="A YAML config file readerror" + " is occured during parsing file"
+            self, message="A YAML config file readerror" + " is occured during parsing file"
     ):
         self.message = message
         super().__init__(self.message)
@@ -46,30 +54,52 @@ class Configuration:
 
         self.bot: telebot.TeleBot = None
 
-        self.telegram_token = self.config["telegram"]["token"]
+        self.telegram_token: str = self.config["telegram"]["token"]
         self.telegram_chat_nr = self.config["telegram"]["chat_number"]
         self.allowed_user_ids = self.config["telegram"]["allowed_user_ids"]
-        self.otp_password = self.config["otp"]["password"]
-        self.otp_length = self.config["otp"]["length"]
-        self.otp_interval = self.config["otp"]["interval"]
-        self.hash_type = self.config["otp"]["hash_type"]
-        self.door_bell = self.config["GPIO"]["door_bell_port"]
-        self.door_summer = self.config["GPIO"]["door_opener_port"]
-        self.blink_username = self.config["blink"]["username"]
-        self.blink_password = self.config["blink"]["password"]
-        self.blink_name = self.config["blink"]["name"]
-        self.blink_config_file = self.base_path + self.config["blink"]["config_file"]
-        self.enable_detect_daylight = self.config["common"]["enable_detect_daylight"]
-        self.common_image_path = self.config["common"]["image_path"]
-        self.common_camera_type = self.config["common"]["camera_type"]
-        self.picam_url = self.config["picam"]["url"]
-        self.picam_image_width = self.config["picam"]["image_width"]
-        self.picam_image_hight = self.config["picam"]["image_hight"]
-        self.picam_image_filename = self.config["picam"]["image_filename"]
-        self.picam_exposure = self.config["picam"]["exposure"]
-        self.picam_rotation = self.config["picam"]["rotation"]
-        self.picam_iso = self.config["picam"]["iso"]
-        self.run_on_raspberry = self.config["common"]["run_on_raspberry"]
+
+        self.otp_password: str = self.config["otp"]["password"]
+        self.otp_length: int = self.config["otp"]["length"]
+        self.otp_interval: int = self.config["otp"]["interval"]
+        self.hash_type: str = self.config["otp"]["hash_type"]
+
+        self.run_on_raspberry: bool = self.config["GPIO"]["run_on_raspberry"]
+        self.door_bell: int = self.config["GPIO"]["door_bell_port"]
+        self.door_summer: int = self.config["GPIO"]["door_opener_port"]
+
+        self.photo_image_path: str = self.config["photo_general"]["image_path"]
+        self.default_camera_type = DefaultCam(self.config["photo_general"]["default_camera_type"].upper())
+        self.enable_detect_daylight: bool = self.config["photo_general"]["enable_detect_daylight"]
+
+        self.blink_enabled: bool = self.config["blink"]["enabled"]
+        self.blink_username: str = self.config["blink"]["username"]
+        self.blink_password: str = self.config["blink"]["password"]
+        self.blink_name: str = self.config["blink"]["name"]
+        self.blink_config_file: str = self.base_path + self.config["blink"]["config_file"]
+        self.blink_night_vision: bool = self.config["blink"]["night_vision"]
+
+        self.picam_enabled: bool = self.config["picam"]["enabled"]
+        self.picam_url: str = self.config["picam"]["url"]
+        self.picam_image_width: int = self.config["picam"]["image_width"]
+        self.picam_image_hight: int = self.config["picam"]["image_hight"]
+        self.picam_image_filename: str = self.config["picam"]["image_filename"]
+        self.picam_exposure: str = self.config["picam"]["exposure"]
+        self.picam_rotation: int = self.config["picam"]["rotation"]
+        self.picam_iso: int = self.config["picam"]["iso"]
+        self.picam_night_vision: bool = self.config["picam"]["night_vision"]
+
+        self.web_user_dict: dict[str, str] = self.get_web_user_dict()
+        self.flask_web_port: int = self.config["web"]["flask_web_port"]
+        self.flask_secret_key: str = self.config["web"]["flask_secret_key"]
+        self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
+
+    def get_web_user_dict(self) -> dict:
+        """Get user dict from list of yaml telegram.list
+
+        :return: dict of user key and values of telegram id
+        :rtype: dict
+        """
+        return dict(ChainMap(*self.config["web"]["flask_users"]))
 
     def get_base_path(self) -> None:
         """

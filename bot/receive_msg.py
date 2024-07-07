@@ -1,18 +1,20 @@
-import telebot
+from __future__ import annotations
+
+import asyncio
 import logging
-import threading
+import queue
 import re
-from door import opener
-from camera import blink_cam, cam_common
-from blinkpy.blinkpy import Blink
-from blinkpy.auth import Auth
-from otp import otp
+import pyotp
+import telebot
+
+
 from config import config_util
-from bot import send_msg
+from config.data_class import Camera_Task, Open_Door_Task
+
 logger: logging.Logger = logging.getLogger(name="receive_msg")
 
 
-class ReceivingMessage:
+class ReceivingMessage():
     """Receiving Telegram Bot messages"""
 
     telebot.apihelper.RETRY_ON_ERROR = True
@@ -20,16 +22,18 @@ class ReceivingMessage:
     def __init__(self,
                  bot: telebot.TeleBot,
                  config: config_util.Configuration,
-                 blink_instance: object,
-                 blink_auth_instance: object) -> None:
+                 loop,
+                 camera_task_queue_async: asyncio.Queue,
+                 door_open_task_queue: queue.Queue
+                 ) -> None:
         """Initial class definition."""
         self.logger: logging.Logger = logging.getLogger(name="ReceivingMessage")
         self.config: config_util.Configuration = config
+        self.loop = loop
+        self.camera_task_queue_async: asyncio.Queue = camera_task_queue_async
+        self.door_open_task_queue = door_open_task_queue
         self.logger.debug(msg="initialize receive_msg class instance")
         self.bot: telebot.TeleBot = bot
-        self.blink: Blink = blink_instance
-        self.auth: Auth = blink_auth_instance
-        self.blink_json_data: dict[any, any] = {}
         foto_list: list[str] = ["foto", "Foto", "FOTO"]
         blink_list: list[str] = ["blink", "Blink", "BLINK"]
         picam_list: list[str] = ["picam", "Picam", "PICAM", "PiCam"]
@@ -38,11 +42,27 @@ class ReceivingMessage:
         self.blink_command = self.bot.message_handler(commands=blink_list)(self.take_blink_foto)
         self.picam_command = self.bot.message_handler(commands=picam_list)(self.take_picam_foto)
         self.blink_auth_command = self.bot.message_handler(commands=blink_auth_list)(self.register_bink_authentication)
-        self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(self.receive_any_msg_text)
+        self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(
+            self.receive_any_msg_text)
 
     def start(self) -> None:
+
         self.logger.debug(msg="start bot endless polling")
-        self.bot.infinity_polling(logger_level=logging.DEBUG, timeout=10, long_polling_timeout=5)
+        try:
+            self.bot.infinity_polling(logger_level=logging.DEBUG, timeout=10, long_polling_timeout=5)
+        except Exception as err:
+            self.logger.error("Error: {0}".format(err))
+            pass
+
+    def stop(self):
+        self.bot.stop_polling()
+        self.bot.remove_webhook()
+        # self.bot_thread.join()
+
+    def signal_handler(self, sig, frame):
+        self.logger.info("Signal received, stopping the bot...")
+        self.stop()
+        self.logger.info("Bot stopped gracefully.")
 
     def receive_any_msg_text(self, message: telebot.types.Message) -> None:
         # check if received from allowed telegram chat group and allowed
@@ -52,33 +72,22 @@ class ReceivingMessage:
             self.validate_msg_text_has_code(message=message)
 
     def take_foto(self, message: telebot.types.Message) -> None:
-        
-        logger.debug(f"received /foto request with message {message}")
-        
+
+        logger.debug(f"received foto request with message {message}")
+
         # check if received from allowed telegram chat group and
         # if it was send from allowed user id.
         if self.get_allowed(message=message):
-            # start new thread for taking a foto
-            rcv_foto_thread = threading.Thread(
-                target=self.rcv_foto, args=(message,)
-            )
-            rcv_foto_thread.start()
-            rcv_foto_thread.join()
-
-    def rcv_foto(self, message: telebot.types.Message) -> bool:
-        """
-        Received request to take a foto.
-
-        :return: bool
-        :rtype: bool
-        """
-        logger.debug(msg="Foto request received")
-        result: bool = send_msg.telegram_send_message(
-            bot=self.bot, telegram_chat_nr=self.config.telegram_chat_nr, message="I will send a foto!"
-        )
-
-        cam_common.choose_camera(auth=self.auth, blink=self.blink, config_class_instance=self.config)
-        return bool(result)
+            asyncio.set_event_loop(self.loop)
+            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
+                Camera_Task(
+                    chat_id=message.chat.id,
+                    message_id=message.message_id,
+                    reply=True,
+                    photo=True
+                )
+            ),
+                self.loop)
 
     def take_picam_foto(self, message: telebot.types.Message) -> None:
 
@@ -88,49 +97,34 @@ class ReceivingMessage:
         # if it was send from allowed user id.
         if self.get_allowed(message=message):
             # start new thread for taking a foto
-            rcv_foto_thread = threading.Thread(
-                target=self.rcv_picam_foto, args=(message,)
-            )
-            rcv_foto_thread.start()
-            rcv_foto_thread.join()
-
-    def rcv_picam_foto(self, message: telebot.types.Message) -> bool:
-        """
-        take picam switch case condition detect from received message
-
-        :return: boolean
-        :rtype: bool
-        """
-        self.logger.debug(msg="text match PiCam foto found")
-        return cam_common.picam_take_photo(auth=self.auth,
-                                           blink=self.blink,
-                                           config_class_instance=self.config)
+            asyncio.set_event_loop(self.loop)
+            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
+                Camera_Task(
+                    chat_id=message.chat.id,
+                    message_id=message.message_id,
+                    reply=True,
+                    picam_photo=True
+                )
+            ),
+                self.loop)
 
     def take_blink_foto(self, message: telebot.types.Message) -> None:
 
-        logger.debug(f"received /blink request with message {message}")
+        logger.debug(f"received blink request with message {message}")
 
         # check if received from allowed telegram chat group and
         # if it was send from allowed user id.
         if self.get_allowed(message=message):
-            # start new thread for taking a foto
-            blink_foto_thread = threading.Thread(
-                target=self.rcv_blink_foto, args=(message,)
-            )
-            blink_foto_thread.start()
-            blink_foto_thread.join()
-
-    def rcv_blink_foto(self, message: telebot.types.Message) -> bool:
-        """
-        take blinkcam switch case condition detect from received message
-
-        :return: boolean
-        :rtype: bool
-        """
-        self.logger.debug(msg="text match blink cam foto found")
-        return cam_common.blink_take_photo(auth=self.auth,
-                                           blink=self.blink,
-                                           config_class_instance=self.config)
+            asyncio.set_event_loop(self.loop)
+            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
+                Camera_Task(
+                    chat_id=message.chat.id,
+                    message_id=message.message_id,
+                    reply=True,
+                    blink_photo=True
+                )
+            ),
+                self.loop)
 
     def register_bink_authentication(self, message: telebot.types.Message) -> None:
 
@@ -140,13 +134,9 @@ class ReceivingMessage:
         # if it was send from allowed user id.
         if self.get_allowed(message=message):
             # start new thread for taking a foto
-            blink_auth_thread = threading.Thread(
-                target=self.rcv_blink_auth, args=(message,)
-            )
-            blink_auth_thread.start()
-            blink_auth_thread.join()
+            self.rcv_blink_auth(message)
 
-    def rcv_blink_auth(self, message: telebot.types.Message) -> bool:
+    def rcv_blink_auth(self, message: telebot.types.Message) -> None:
         """
         received request to add blink cam 2FA authentication code
 
@@ -156,21 +146,24 @@ class ReceivingMessage:
         match = re.search(r"(?<=^blink.)\d{6}", message.text, re.IGNORECASE)
         if match:
             self.logger.info(msg="blink token received - will save config")
-            send_msg.telegram_send_message(
-                bot=self.bot,
-                telegram_chat_nr=self.config.telegram_chat_nr,
-                message="Blink token received " + match.group(0),
-            )
-            blink_cam.add_2fa_blink_token(
-                token=match.group(0), blink=self.blink, auth=self.auth
-            )
-            blink_cam.blink_compare_config(auth=self.auth,
-                                           blink=self.blink,
-                                           config_class_instance=self)
-            return True
+            message = "Blink token received " + match.group(0)
+            self.bot.reply_to(message=message, text=message)
+            asyncio.set_event_loop(self.loop)
+            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
+                Camera_Task(
+                    blink_mfa=match.group(0),
+                    chat_id=message.chat.message_id,
+                    message_id=message.message_id,
+                    reply=True
+                )
+            ),
+                self.loop)
+            return
 
         self.logger.debug(msg="no blink token detected")
-        return False
+        message = "Blink token received " + match.group(0)
+        self.bot.reply_to(message=message, text="no blink token detected")
+        return
 
     def get_allowed(self, message: telebot.types.Message) -> bool:
         """Checks given telegram chat id is allowed id from config
@@ -196,7 +189,7 @@ class ReceivingMessage:
         if str(message.from_user.id) in self.config.allowed_user_ids:
             return True
         return False
-    
+
     def validate_msg_text_has_code(self, message: telebot.types.Message) -> bool:
         """
         Check received message has a code to open door
@@ -224,19 +217,15 @@ class ReceivingMessage:
         :return: success status
         :rtype: boolean
         """
-        if otp.verify_totp_code(
-            to_verify=message.text,
-            my_secret=self.config.otp_password,
-            length=self.config.otp_length,
-            interval=self.config.otp_interval,
-            hash_type=self.config.hash_type,
-        ):
-            
-            self.logger.info(msg=message.text + " TOTP code correct")
-            self.bot.reply_to(message=message, text="Code accepted.")
 
-            opener.open_door(door_opener_port=self.config.door_summer, run_on_raspberry=self.config.run_on_raspberry)
-            
+        totp_config = pyotp.TOTP(s=self.config.otp_password,
+                                 digits=self.config.otp_length,
+                                 digest=self.config.hash_type,
+                                 interval=self.config.otp_interval)
+        if totp_config.verify(message.text):
+            self.logger.info(msg=message.text + " TOTP code correct")
+            self.door_open_task_queue.put(Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message_id=message.id))
+            self.bot.reply_to(message=message, text="Code accepted.")
             self.logger.info(msg="Door opened for 5 Sec.")
             return True
         else:
