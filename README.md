@@ -7,7 +7,9 @@
 [![codecov](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg)](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation)
     
 # Front-door intercom automation
-**New version is in development with new feature like**    
+<br>
+**New version is in development with new feature like**
+<br>
 **- WebApp, with browser page and rest api for opening**  
 **- using migration to pyTelegramBotAPI**  
 **- updated blinkpy to asyncio**  
@@ -15,17 +17,22 @@
 **- multi threading**  
 **- using pyOTP instead passlib**  
 **- detecting Pi Hardware native**  
-  
-**Same solution is in development as JAVA Spring Boot POC too**   
-  
+<br>  
+**Same solution is in development as JAVA Spring Boot POC too**
+<br>
 **If you want use take lates release [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)**.    
-  
+<br>  
 **Otherwise checkout new feature and testing development branch [refactor_and_new_features](https://github.com/OliverDrechsler/front_door_intercom_automation/tree/refactor_and_new_features)**  
-  
-  
-  
-  
-  
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 **[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
 
 ***[📚 API Docu on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html)***  
