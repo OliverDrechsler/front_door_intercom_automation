@@ -10,6 +10,7 @@
 
 **New version is in development with new feature like**  <br>
 <br>
+**- pyth3.12 support**  <br>
 **- WebApp, with browser page and rest api for opening**  <br>
 **- using migration to pyTelegramBotAPI**  <br>
 **- updated blinkpy to asyncio**  <br>
