@@ -8,21 +8,21 @@
     
 # Front-door intercom automation
 
-**New version is in development with new feature like**  
+**New version is in development with new feature like**  <br>
 <br>
-**- WebApp, with browser page and rest api for opening**  
-**- using migration to pyTelegramBotAPI**  
-**- updated blinkpy to asyncio**  
-**- daylight and night vision detect to choose camera**  
-**- multi threading**  
-**- using pyOTP instead passlib**  
-**- detecting Pi Hardware native**  
+**- WebApp, with browser page and rest api for opening**  <br>
+**- using migration to pyTelegramBotAPI**  <br>
+**- updated blinkpy to asyncio**  <br>
+**- daylight and night vision detect to choose camera**  <br>
+**- multi threading**  <br>
+**- using pyOTP instead passlib**  <br>
+**- detecting Pi Hardware native**  <br>
 <br>  
-**Same solution is in development as JAVA Spring Boot POC too**
+**Same solution is in development as JAVA Spring Boot POC too**<br>
 <br>
-**If you want use take lates release [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)**.    
+**If you want use take lates release [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)**  <br>
 <br>  
-**Otherwise checkout new feature and testing development branch [refactor_and_new_features](https://github.com/OliverDrechsler/front_door_intercom_automation/tree/refactor_and_new_features)**  
+**Otherwise checkout new feature and testing development branch [refactor_and_new_features](https://github.com/OliverDrechsler/front_door_intercom_automation/tree/refactor_and_new_features)**  <br>
 <br>
 <br>
 <br>
