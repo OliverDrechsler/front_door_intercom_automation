@@ -7,8 +7,8 @@
 [![codecov](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg)](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation)
     
 # Front-door intercom automation
-<br>
-**New version is in development with new feature like**
+
+**New version is in development with new feature like**  
 <br>
 **- WebApp, with browser page and rest api for opening**  
 **- using migration to pyTelegramBotAPI**  
@@ -33,6 +33,7 @@
 <br>
 <br>
 <br>
+
 **[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
 
 ***[📚 API Docu on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html)***  
