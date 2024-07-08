@@ -39,10 +39,10 @@ class DoorOpener():
                     if (task.open):
                         self.logger.info(f"Processing open door: {task}")
                         self.open_door()
-                        if (task.reply and task.message_id is not None):
+                        if (task.reply and task.message is not None):
                             self.message_task_queue.put(Message_Task(reply=True,
                                                                      chat_id=task.chat_id,
-                                                                     message_id=task.message_id,
+                                                                     message=task.message,
                                                                      data_text="Door opened!"
                                                                      ))
                         else:

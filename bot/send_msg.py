@@ -39,7 +39,7 @@ class SendMessage():
                     if (task.send):
                         self.send_message(chat_id=task.chat_id, text=task.data_text)
                     if (task.reply):
-                        self.reply_message(chat_id=task.chat_id, message_id=task.message_id, text=task.data_text)
+                        self.reply_message(chat_id=task.chat_id, message=task.message, text=task.data_text)
                     if (task.photo):
                         self.send_photo(chat_id=task.chat_id, image_path=task.filename)
         except Exception as err:
@@ -49,8 +49,8 @@ class SendMessage():
 #
 # ToDo rework  The parameter 'reply_to_message_id' is deprecated. Use 'reply_parameters' instead.
 #
-    def reply_message(self, chat_id: str, text: str, message_id: str):
-        self.bot.send_message(chat_id=chat_id, text=text, reply_to_message_id=message_id)
+    def reply_message(self, chat_id: str, text: str, message: telebot.types.Message):
+        self.bot.reply_to(message=message, text=text)
         logger.info("reply message : " + text)
 
     def send_message(self, chat_id: str, text: str) -> None:

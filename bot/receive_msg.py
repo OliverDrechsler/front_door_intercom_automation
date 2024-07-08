@@ -82,7 +82,7 @@ class ReceivingMessage():
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
                 Camera_Task(
                     chat_id=message.chat.id,
-                    message_id=message.message_id,
+                    message=message,
                     reply=True,
                     photo=True
                 )
@@ -101,7 +101,7 @@ class ReceivingMessage():
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
                 Camera_Task(
                     chat_id=message.chat.id,
-                    message_id=message.message_id,
+                    message=message,
                     reply=True,
                     picam_photo=True
                 )
@@ -119,7 +119,7 @@ class ReceivingMessage():
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
                 Camera_Task(
                     chat_id=message.chat.id,
-                    message_id=message.message_id,
+                    message=message,
                     reply=True,
                     blink_photo=True
                 )
@@ -152,8 +152,8 @@ class ReceivingMessage():
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
                 Camera_Task(
                     blink_mfa=match.group(0),
-                    chat_id=message.chat.message_id,
-                    message_id=message.message_id,
+                    chat_id=message.chat.id,
+                    message=message,
                     reply=True
                 )
             ),
@@ -224,7 +224,7 @@ class ReceivingMessage():
                                  interval=self.config.otp_interval)
         if totp_config.verify(message.text):
             self.logger.info(msg=message.text + " TOTP code correct")
-            self.door_open_task_queue.put(Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message_id=message.id))
+            self.door_open_task_queue.put(Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message=message))
             self.bot.reply_to(message=message, text="Code accepted.")
             self.logger.info(msg="Door opened for 5 Sec.")
             return True

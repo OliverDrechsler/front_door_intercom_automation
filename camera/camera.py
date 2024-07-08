@@ -82,18 +82,18 @@ class Camera:
                             if result:
                                 self.message_task_queue.put(Message_Task(reply=True,
                                                                          chat_id=task.chat_id,
-                                                                         message_id=task.message_id,
+                                                                         message=task.message,
                                                                          data_text="blink MFA added"))
                             else:
                                 self.message_task_queue.put(Message_Task(reply=True,
                                                                          chat_id=task.chat_id,
-                                                                         message_id=task.message_id,
+                                                                         message=task.message,
                                                                          data_text="an error occured during blink MFA "
                                                                                    "processing"))
                         else:
                             self.message_task_queue.put(Message_Task(reply=True,
                                                                      chat_id=task.chat_id,
-                                                                     message_id=task.message_id,
+                                                                     message=task.message,
                                                                      data_text="an error occured during blink MFA "
                                                                                "processing"))
             except Exception as err:
@@ -213,7 +213,7 @@ class Camera:
             self.message_task_queue.put(Message_Task(photo=True,
                                                      filename=self.config.photo_image_path,
                                                      chat_id=task.chat_id,
-                                                     message_id=task.message_id))
+                                                     message=task.message))
         else:
             self.message_task_queue.put(Message_Task(photo=True,
                                                      filename=self.config.photo_image_path,
@@ -224,7 +224,7 @@ class Camera:
             self.message_task_queue.put(Message_Task(reply=True,
                                                      data_text=message,
                                                      chat_id=task.chat_id,
-                                                     message_id=task.message_id))
+                                                     message=task.message))
         else:
             self.message_task_queue.put(Message_Task(send=True,
                                                            data_text=message,

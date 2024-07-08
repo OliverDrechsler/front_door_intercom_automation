@@ -5,35 +5,15 @@ import base64
 import logging
 import os
 from collections import ChainMap
-from enum import Enum
 
 # from collections import ChainMap
 import telebot
 import yaml
 
+from config.default_cam_enum import DefaultCam
+from config.yam_read_error import YamlReadError
+
 logger = logging.getLogger("config")
-
-
-class DefaultCam(str, Enum):
-    """A custom enumeration that is YAML-safe."""
-    PICAM = "picam"
-    BLINK = "BLINK"
-
-class YamlReadError(Exception):
-    """Exception raised for config yaml file read error.
-
-    Attributes:
-        message -- explanation of the error
-    """
-
-    def __init__(
-            self, message="A YAML config file readerror" + " is occured during parsing file"
-    ):
-        self.message = message
-        super().__init__(self.message)
-
-    def __str__(self):
-        return f"{self.message}"
 
 
 class Configuration:
