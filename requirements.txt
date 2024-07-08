@@ -1,6 +1,6 @@
 pyyaml==6.0.1
 gpiozero==2.0.1
-urllib3==2.1.0
+urllib3==2.2.2
 requests==2.31.0
 telepot==12.7
 blinkpy==0.22.6
