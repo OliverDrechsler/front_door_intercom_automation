@@ -6,7 +6,7 @@ import queue
 import re
 import pyotp
 import telebot
-
+import threading
 
 from config import config_util
 from config.data_class import Camera_Task, Open_Door_Task
@@ -20,7 +20,7 @@ class ReceivingMessage():
     telebot.apihelper.RETRY_ON_ERROR = True
 
     def __init__(self,
-                 bot: telebot.TeleBot,
+                 shutdown_event: threading.Event,
                  config: config_util.Configuration,
                  loop,
                  camera_task_queue_async: asyncio.Queue,
@@ -33,7 +33,7 @@ class ReceivingMessage():
         self.camera_task_queue_async: asyncio.Queue = camera_task_queue_async
         self.door_open_task_queue = door_open_task_queue
         self.logger.debug(msg="initialize receive_msg class instance")
-        self.bot: telebot.TeleBot = bot
+        self.bot = self.config.bot
         foto_list: list[str] = ["foto", "Foto", "FOTO"]
         blink_list: list[str] = ["blink", "Blink", "BLINK"]
         picam_list: list[str] = ["picam", "Picam", "PICAM", "PiCam"]
@@ -45,6 +45,7 @@ class ReceivingMessage():
         self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(
             self.receive_any_msg_text)
 
+
     def start(self) -> None:
 
         self.logger.debug(msg="start bot endless polling")
@@ -53,16 +54,16 @@ class ReceivingMessage():
         except Exception as err:
             self.logger.error("Error: {0}".format(err))
             pass
+        self.logger.info(msg="infinity_polling ended")
+        self.stop()
+
 
     def stop(self):
+        self.logger.info(msg="stop bot polling")
         self.bot.stop_polling()
+        self.logger.info(msg="stop bot remove webhook")
         self.bot.remove_webhook()
-        # self.bot_thread.join()
-
-    def signal_handler(self, sig, frame):
-        self.logger.info("Signal received, stopping the bot...")
-        self.stop()
-        self.logger.info("Bot stopped gracefully.")
+        self.logger.info(msg="bot stop finished")
 
     def receive_any_msg_text(self, message: telebot.types.Message) -> None:
         # check if received from allowed telegram chat group and allowed
@@ -73,7 +74,7 @@ class ReceivingMessage():
 
     def take_foto(self, message: telebot.types.Message) -> None:
 
-        logger.debug(f"received foto request with message {message}")
+        self.logger.debug(f"received foto request with message {message}")
 
         # check if received from allowed telegram chat group and
         # if it was send from allowed user id.
@@ -91,7 +92,7 @@ class ReceivingMessage():
 
     def take_picam_foto(self, message: telebot.types.Message) -> None:
 
-        logger.debug(f"received /picam request with message {message}")
+        self.logger.debug(f"received /picam request with message {message}")
 
         # check if received from allowed telegram chat group and
         # if it was send from allowed user id.
@@ -110,7 +111,7 @@ class ReceivingMessage():
 
     def take_blink_foto(self, message: telebot.types.Message) -> None:
 
-        logger.debug(f"received blink request with message {message}")
+        self.logger.debug(f"received blink request with message {message}")
 
         # check if received from allowed telegram chat group and
         # if it was send from allowed user id.
@@ -128,7 +129,7 @@ class ReceivingMessage():
 
     def register_bink_authentication(self, message: telebot.types.Message) -> None:
 
-        logger.debug(f"received /blink_auth request with message {message}")
+        self.logger.debug(f"received /blink_auth request with message {message}")
 
         # check if received from allowed telegram chat group and
         # if it was send from allowed user id.

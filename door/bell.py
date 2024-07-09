@@ -12,7 +12,7 @@ from config.data_class import Message_Task, Camera_Task
 import logging
 import time
 import queue
-
+import threading
 from datetime import datetime
 
 logger: logging.Logger = logging.getLogger(name="door-bell")
@@ -26,6 +26,7 @@ class DoorBell():
 
     def __init__(
             self,
+            shutdown_event: threading.Event,
             config: config_util.Configuration,
             loop,
             message_task_queue: queue.Queue,
@@ -39,6 +40,7 @@ class DoorBell():
         """
         self.logger: logging.Logger = logging.getLogger(name="door-bell")
         self.logger.debug(msg="reading config")
+        self.shutdown_event: threading.Event = shutdown_event
         self.config: config_util.Configuration = config
         self.loop = loop
         self.message_task_queue: queue.Queue = message_task_queue
@@ -57,7 +59,7 @@ class DoorBell():
         if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
             self.logger.debug(msg="RPI: start endless loop doorbell monitoring")
             button: Button = Button(pin=self.door_bell)
-            while True:
+            while not self.shutdown_event.is_set():
                 try:
                     time.sleep(0.001)
                     if button.is_pressed:
@@ -77,9 +79,11 @@ class DoorBell():
                 except Exception as err:
                     self.logger.error("Error: {0}".format(err))
                     pass
+            self.logger.info(msg="stop endless loop doorbell monitoring")
         else:
             self.logger.debug(msg="NOT on RPI: start empty endless loop")
-            while True:
-                time.sleep(60)
+            while not self.shutdown_event.is_set():
+                time.sleep(1)
                 if test:
                     break
+            self.logger.info(msg="STOP:  not on RPI - empty endless door bell loop")

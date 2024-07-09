@@ -1,7 +1,7 @@
 import logging
 import queue
 import time
-
+import threading
 from door import detect_rpi
 
 try:
@@ -15,13 +15,14 @@ logger: logging.Logger = logging.getLogger(name="door-opener")
 
 
 class DoorOpener():
-    def __init__(self, config: config_util.Configuration, loop, message_task_queue: queue.Queue,
+    def __init__(self, shutdown_event: threading.Event, config: config_util.Configuration, loop, message_task_queue: queue.Queue,
                  door_open_task_queue: queue.Queue) -> None:
         """
         Initial class definition.
         """
         self.logger: logging.Logger = logging.getLogger(name="door-opener")
         self.logger.debug(msg="reading config")
+        self.shutdown_event: threading.Event = shutdown_event
         self.config: config_util.Configuration = config
         self.loop = loop
         self.message_task_queue: queue.Queue = message_task_queue
@@ -29,7 +30,7 @@ class DoorOpener():
 
     def start(self):
         self.logger.info(msg="thread endless loop open door")
-        while True:
+        while not self.shutdown_event.is_set():
             try:
                 task = self.door_open_task_queue.get()
                 if task is None:  # Exit signal
@@ -54,6 +55,7 @@ class DoorOpener():
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
+        self.logger.info(msg="stop endless loop door opener")
 
     def open_door(self) -> bool:
         """Put Raspberry Pi GPIO port on high - voltage

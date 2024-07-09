@@ -1,7 +1,6 @@
 import logging
-import os
 import queue
-
+import threading
 import telebot
 
 from config import config_util
@@ -14,7 +13,7 @@ class SendMessage():
     telebot.apihelper.RETRY_ON_ERROR = True
 
     def __init__(self,
-                 bot: telebot.TeleBot,
+                 shutdown_event: threading.Event,
                  config: config_util.Configuration,
                  loop,
                  message_task_queue: queue.Queue
@@ -25,12 +24,14 @@ class SendMessage():
         self.loop = loop
         self.message_task_queue = message_task_queue
         self.logger.debug(msg="initialize send_msg class instance")
-        self.bot: telebot.TeleBot = bot
+        self.bot: telebot.TeleBot = self.config.bot
+        self.stop_polling = shutdown_event
+        self.bot.__stop_polling = shutdown_event
 
     def start(self) -> None:
         logger.debug(msg="thread endless loop send telegram bot messages")
         try:
-            while True:
+            while not self.stop_polling.is_set():
                 task = self.message_task_queue.get()
                 if task is None:  # Exit signal
                     break
@@ -45,6 +46,13 @@ class SendMessage():
         except Exception as err:
             self.logger.error("Error: {0}".format(err))
             pass
+        self.stop()
+
+    def stop(self) -> None:
+        self.logger.info(msg="stop bot stop polling")
+        self.bot.stop_polling()
+        self.logger.info(msg="stop bot remove webhook")
+        self.bot.remove_webhook()
 
 #
 # ToDo rework  The parameter 'reply_to_message_id' is deprecated. Use 'reply_parameters' instead.

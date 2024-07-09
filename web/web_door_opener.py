@@ -8,15 +8,16 @@ from flask import Flask, request, jsonify, render_template, send_from_directory,
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.exceptions import NotFound
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.serving import make_server
 
 from config import config_util
-from door import opener
 from config.data_class import Message_Task, Camera_Task, Open_Door_Task
 import asyncio
 import queue
+import threading
 
 logger: logging.Logger = logging.getLogger(name="web_door_opener")
-app = Flask(__name__)
+web_app = Flask(__name__)
 auth = HTTPBasicAuth()
 
 
@@ -50,21 +51,39 @@ class WebDoorOpener:
         """
         return generate_password_hash(input)
 
+    def transform_values(self, func):
+        """
+        Transforms all values of a dict with the given fuction.
+
+        :param d: Dictionary, that will be transformed
+        :param func: Funktion, that will be applied on the value
+        :return: new dictonary with transformed values
+        """
+        return {k: func(v) for k, v in self.config.web_user_dict.items()}
+
     def __init__(self,
+                 shutdown_event: threading.Event,
                  config: config_util.Configuration,
                  loop,
                  message_task_queue: queue.Queue,
                  camera_task_queue_async: asyncio.Queue,
                  door_open_task_queue: queue.Queue
                  ) -> None:
+        self.logger: logging.Logger = logging.getLogger(name="WebApp")
+        self.shutdown_event: threading.Event = shutdown_event
+        self.config: config_util.Configuration = config
         self.loop = loop
         self.message_task_queue: queue.Queue = message_task_queue
         self.camera_task_queue_async: asyncio.Queue = camera_task_queue_async
         self.door_open_task_queue: queue.Queue = door_open_task_queue
         self.blink_json_data: dict[any, any] = {}
-        self.config: config_util.Configuration = config
-        self.app = app
+
+        self.app = web_app
+        self.server = make_server('127.0.0.1', self.config.flask_web_port, self.app)
         self.app.permanent_session_lifetime = timedelta(days=self.config.flask_browser_session_cookie_lifetime)
+        self.ctx = self.app.app_context()
+        self.ctx.push()
+
         self.auth = auth
         self.browsers = ["safari", "firefox", "mozilla", "chrome", "edge"]
         self.str_log_level = logging.getLevelName(logger.getEffectiveLevel())
@@ -75,15 +94,27 @@ class WebDoorOpener:
         self.setup_routes()
         self.setup_error_handlers()
 
-    def transform_values(self, func):
+    def run(self):
         """
-        Transforms all values of a dict with the given fuction.
+        start method of flask
+        :return: none
+        """
+        if (self.str_log_level == "DEBUG"):
+            self.app.debug = True
+            self.server.serve_forever()
+        else:
+            self.app.debug = False
+            self.server.serve_forever()
 
-        :param d: Dictionary, that will be transformed
-        :param func: Funktion, that will be applied on the value
-        :return: new dictonary with transformed values
+    def shutdown(self):
         """
-        return {k: func(v) for k, v in self.config.web_user_dict.items()}
+        Shutdown method of flask
+        :return: none
+        """
+        self.logger.info("Shutting down web server")
+        self.server.shutdown()
+        self.logger.info("Shutting down web server - done!")
+
 
     def setup_logging(self):
         self.app.logger.setLevel(self.log_level)
@@ -358,15 +389,6 @@ class WebDoorOpener:
         self.app.register_error_handler(Exception, self.handle_exception)
         self.app.register_error_handler(NotFound, self.handle_not_found)
 
-    def run(self):
-        """
-        start method of flask
-        :return: none
-        """
-        if (self.str_log_level == "DEBUG"):
-            self.app.run(debug=True, port=self.config.flask_web_port, use_reloader=False)
-        else:
-            self.app.run(debug=False, port=self.config.flask_web_port, use_reloader=False)
 
 # def run_web_app():
 #     app = WebDoorOpener()
