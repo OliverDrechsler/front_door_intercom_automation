@@ -9,9 +9,8 @@ jobs:
  
   build_docs_job:
     runs-on: ubuntu-latest
-    # container: debian:buster-slim
     steps:
-      # - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
@@ -24,13 +23,20 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y git rsync python3-pip python3-sphinx python3-sphinx-rtd-theme
-          git clone --depth 1 "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
         shell: bash
       
       - run: pip install recommonmark sphinx_md sphinx-rtd-theme
 
-      - name: update gh_pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: "docs/buildDocs.sh"
-        shell: bash
+#      - name: update gh_pages
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: "docs/buildDocs.sh"
+#        shell: bash
+
+      - name: Build HTML
+        run: | 
+          cd docs/
+          make html
+      - name: Run ghp-import
+        run: | 
+          ghp-import -n -p -f _build/html
