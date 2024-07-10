@@ -22,3 +22,4 @@ blink_config.json
 jpynb/*
 .idea/*
 venv/*
+.python-version

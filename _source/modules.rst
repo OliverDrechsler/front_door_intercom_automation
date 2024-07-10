@@ -5,7 +5,7 @@ front-door_intercom_automation
    :maxdepth: 4
 
    camera
-   common
+   config
    door
    fdia
-   messaging
+   bot

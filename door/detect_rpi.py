@@ -1,25 +1,26 @@
 import io
-import os
 import logging
+import os
 
 logger: logging.Logger = logging.getLogger(name="detect_rpi")
 
 
 def detect_rpi(run_on_raspberry: bool) -> bool:
-    """Detects if code runs on a Raspberry PI
-
-    It tries to detect in 3 steps:
-    - checks if possic is available
-    - tries to read /sys/firmware/devicetree/base/model and tries to find a raspberry pi string
-    - tries to read /proc/cpuinfo and compares hardware chips  against given list of chips
-
-    :return: boolean - if detected
-    :rtype: bool
     """
+    Detects whether the system is running on a Raspberry Pi based on the model information
+    retrieved from '/sys/firmware/devicetree/base/model' or '/proc/cpuinfo'.
+
+    Args:
+        run_on_raspberry (bool): A boolean indicating whether to force the function to run on a Raspberry Pi.
+
+    Returns:
+        bool: True if a Raspberry Pi is detected, False otherwise.
+    """
+
     if os.name != 'posix':
         logger.debug("no posix detected")
         return False
-    
+
     try:
         logger.debug("try to detect rpi from /sys/firmware/devicetree/base/model now")
         with io.open('/sys/firmware/devicetree/base/model', 'r') as model:
@@ -47,5 +48,5 @@ def detect_rpi(run_on_raspberry: bool) -> bool:
     if run_on_raspberry:
         logger.info(msg="set to force to run on RPi")
         return run_on_raspberry
-    
+
     return False

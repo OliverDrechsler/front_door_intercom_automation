@@ -4,9 +4,10 @@ import asyncio
 import logging
 import queue
 import re
+import threading
+
 import pyotp
 import telebot
-import threading
 
 from config import config_util
 from config.data_class import Camera_Task, Open_Door_Task
@@ -19,13 +20,8 @@ class ReceivingMessage():
 
     telebot.apihelper.RETRY_ON_ERROR = True
 
-    def __init__(self,
-                 shutdown_event: threading.Event,
-                 config: config_util.Configuration,
-                 loop,
-                 camera_task_queue_async: asyncio.Queue,
-                 door_open_task_queue: queue.Queue
-                 ) -> None:
+    def __init__(self, shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                 camera_task_queue_async: asyncio.Queue, door_open_task_queue: queue.Queue) -> None:
         """Initial class definition."""
         self.logger: logging.Logger = logging.getLogger(name="ReceivingMessage")
         self.config: config_util.Configuration = config
@@ -45,9 +41,12 @@ class ReceivingMessage():
         self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(
             self.receive_any_msg_text)
 
-
     def start(self) -> None:
-
+        """
+        Starts the bot's endless polling.
+        Uses the bot's infinity_polling method with specified timeout and long_polling_timeout.
+        Logs any errors that occur during polling.
+        """
         self.logger.debug(msg="start bot endless polling")
         try:
             self.bot.infinity_polling(logger_level=logging.DEBUG, timeout=10, long_polling_timeout=5)
@@ -57,8 +56,10 @@ class ReceivingMessage():
         self.logger.info(msg="infinity_polling ended")
         self.stop()
 
-
     def stop(self):
+        """
+        A method to stop the bot. It logs the action of stopping bot polling, stops the bot from polling, removes the webhook, and logs the completion of stopping the bot.
+        """
         self.logger.info(msg="stop bot polling")
         self.bot.stop_polling()
         self.logger.info(msg="stop bot remove webhook")
@@ -66,84 +67,98 @@ class ReceivingMessage():
         self.logger.info(msg="bot stop finished")
 
     def receive_any_msg_text(self, message: telebot.types.Message) -> None:
-        # check if received from allowed telegram chat group and allowed
-        # user id has send.
+        """
+        Check if the message is received from an allowed telegram chat group and allowed user ID.
+        If the conditions are met, check if the message text has a TOTP code and open the door if correct, otherwise do nothing.
+
+        Parameters:
+            message (telebot.types.Message): The message object received.
+
+        Returns:
+            None
+        """
         if self.get_allowed(message=message):
             # check is message text has TOTP code and if correct open door, otherwise do nothing
             self.validate_msg_text_has_code(message=message)
 
     def take_foto(self, message: telebot.types.Message) -> None:
+        """
+        Takes a photo request from a telegram message and puts it into a camera task queue.
 
+        Args:
+            message (telebot.types.Message): The telegram message object containing the photo request.
+
+        Returns:
+            None
+
+        This function first logs a debug message indicating that a photo request has been received with the given message.
+        It then checks if the message is received from an allowed telegram chat group and if it was sent by an allowed user ID.
+        If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
+        The camera task contains the chat ID, message, reply flag, and photo flag.
+        """
         self.logger.debug(f"received foto request with message {message}")
-
-        # check if received from allowed telegram chat group and
-        # if it was send from allowed user id.
         if self.get_allowed(message=message):
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(
-                    chat_id=message.chat.id,
-                    message=message,
-                    reply=True,
-                    photo=True
-                )
-            ),
-                self.loop)
+                Camera_Task(chat_id=message.chat.id, message=message, reply=True, photo=True)), self.loop)
 
     def take_picam_foto(self, message: telebot.types.Message) -> None:
+        """
+        Takes a photo request specific to the PiCam (foto API [PiCamAPI](https://github.com/OliverDrechsler/PiCam_API)) from a telegram message and puts it into a camera task queue.
 
+        Args:
+            message (telebot.types.Message): The telegram message object containing the photo request.
+
+        Returns:
+            None
+        """
         self.logger.debug(f"received /picam request with message {message}")
-
-        # check if received from allowed telegram chat group and
-        # if it was send from allowed user id.
         if self.get_allowed(message=message):
             # start new thread for taking a foto
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(
-                    chat_id=message.chat.id,
-                    message=message,
-                    reply=True,
-                    picam_photo=True
-                )
-            ),
-                self.loop)
+                Camera_Task(chat_id=message.chat.id, message=message, reply=True, picam_photo=True)), self.loop)
 
     def take_blink_foto(self, message: telebot.types.Message) -> None:
+        """
+        Takes a photo request specific to the Blink camera from a telegram message and puts it into a camera task queue.
 
+        Args:
+            message (telebot.types.Message): The telegram message object containing the photo request.
+
+        Returns:
+            None
+
+        This function first logs a debug message indicating that a Blink photo request has been received with the given message.
+        It then checks if the message is received from an allowed telegram chat group and if it was sent by an allowed user ID.
+        If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
+        The camera task contains the chat ID, message, reply flag, and blink_photo flag.
+        """
         self.logger.debug(f"received blink request with message {message}")
-
-        # check if received from allowed telegram chat group and
-        # if it was send from allowed user id.
         if self.get_allowed(message=message):
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(
-                    chat_id=message.chat.id,
-                    message=message,
-                    reply=True,
-                    blink_photo=True
-                )
-            ),
-                self.loop)
+                Camera_Task(chat_id=message.chat.id, message=message, reply=True, blink_photo=True)), self.loop)
 
     def register_bink_authentication(self, message: telebot.types.Message) -> None:
+        """
+        Registers a Blink authentication based on the received message.
 
+        Args:
+            self: the object instance
+            message (telebot.types.Message): the message received
+
+        Returns:
+            None
+        """
         self.logger.debug(f"received /blink_auth request with message {message}")
-
-        # check if received from allowed telegram chat group and
-        # if it was send from allowed user id.
         if self.get_allowed(message=message):
             # start new thread for taking a foto
             self.rcv_blink_auth(message)
 
     def rcv_blink_auth(self, message: telebot.types.Message) -> None:
-        """
-        received request to add blink cam 2FA authentication code
 
-        :return: success status
-        :rtype: boolean
-        """
+        self.logger.debug(f"received blink token with message {message}")
         match = re.search(r"(?<=^blink.)\d{6}", message.text, re.IGNORECASE)
         if match:
             self.logger.info(msg="blink token received - will save config")
@@ -151,14 +166,7 @@ class ReceivingMessage():
             self.bot.reply_to(message=message, text=message)
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(
-                    blink_mfa=match.group(0),
-                    chat_id=message.chat.id,
-                    message=message,
-                    reply=True
-                )
-            ),
-                self.loop)
+                Camera_Task(blink_mfa=match.group(0), chat_id=message.chat.id, message=message, reply=True)), self.loop)
             return
 
         self.logger.debug(msg="no blink token detected")
@@ -167,25 +175,29 @@ class ReceivingMessage():
         return
 
     def get_allowed(self, message: telebot.types.Message) -> bool:
-        """Checks given telegram chat id is allowed id from config
-        and perform further check get_allowed_user
+        """
+        Checks if the message chat ID matches the configured Telegram chat number and calls get_allowed_user
+        if the condition is met. Returns True if the user is allowed, False otherwise.
 
-        :param message: received telegram message
-        :type message: telebot.types.Message
-        :return: check result as boolean
-        :rtype: bool
+        Parameters:
+            message (telebot.types.Message): The message object received.
+
+        Returns:
+            bool: True if the user is allowed, False otherwise.
         """
         if str(message.chat.id) == self.config.telegram_chat_nr:
             return self.get_allowed_user(message=message)
         return False
 
     def get_allowed_user(self, message: telebot.types.Message) -> bool:
-        """Checks if given telegram from user id is allowed from config file
+        """
+        Checks if the message from_user ID matches the configured allowed user IDs.
 
-        :param message: received telegram message
-        :type message: telebot.types.Message
-        :return: check result as boolean
-        :rtype: bool
+        Parameters:
+            message (telebot.types.Message): The message object received.
+
+        Returns:
+            bool: True if the user is allowed, False otherwise.
         """
         if str(message.from_user.id) in self.config.allowed_user_ids:
             return True
@@ -193,15 +205,20 @@ class ReceivingMessage():
 
     def validate_msg_text_has_code(self, message: telebot.types.Message) -> bool:
         """
-        Check received message has a code to open door
+        Validates if the message text contains a code number by using a regex search pattern.
+        If a match is found, it calls the 'verify_otp_code_in_msg' method and returns the result.
+        If no match is found, it logs a message and returns False.
 
-        :return: success status
-        :rtype: boolean
+        Parameters:
+            self: The instance of the class.
+            message (telebot.types.Message): The message object received.
+
+        Returns:
+            bool: True if the message text contains a code number, False otherwise.
         """
         bracket1 = "{"
         bracket2 = "}"
-        regex_search = r"^\d{0}{1}{2}$".format(bracket1, self.config.otp_length,
-                                               bracket2)
+        regex_search = r"^\d{0}{1}{2}$".format(bracket1, self.config.otp_length, bracket2)
         self.logger.debug(msg="regex search string")
         match = re.search(regex_search, message.text, re.IGNORECASE)
         if match:
@@ -212,20 +229,23 @@ class ReceivingMessage():
 
     def verify_otp_code_in_msg(self, message: telebot.types.Message) -> bool:
         """
-        Verify msg text code if it matches totp code
-        and opens the door.
+        Verifies if the received message text contains a valid TOTP code.
+        If the code is valid, it logs a message and returns True.
+        If the code is invalid, it logs a message and returns False.
 
-        :return: success status
-        :rtype: boolean
+        Parameters:
+            self: The instance of the class.
+            message (telebot.types.Message): The message object received.
+
+        Returns:
+            bool: True if the message text contains a valid TOTP code, False otherwise.
         """
-
-        totp_config = pyotp.TOTP(s=self.config.otp_password,
-                                 digits=self.config.otp_length,
-                                 digest=self.config.hash_type,
-                                 interval=self.config.otp_interval)
+        totp_config = pyotp.TOTP(s=self.config.otp_password, digits=self.config.otp_length,
+                                 digest=self.config.hash_type, interval=self.config.otp_interval)
         if totp_config.verify(message.text):
             self.logger.info(msg=message.text + " TOTP code correct")
-            self.door_open_task_queue.put(Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message=message))
+            self.door_open_task_queue.put(
+                Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message=message))
             self.bot.reply_to(message=message, text="Code accepted.")
             self.logger.info(msg="Door opened for 5 Sec.")
             return True

@@ -1,10 +1,12 @@
+import asyncio
 import logging
 import os
+import queue
+import threading
 from datetime import datetime, timezone, timedelta
 
 import pyotp
-from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, \
-    url_for, session
+from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for, session
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.exceptions import NotFound
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -12,9 +14,6 @@ from werkzeug.serving import make_server
 
 from config import config_util
 from config.data_class import Message_Task, Camera_Task, Open_Door_Task
-import asyncio
-import queue
-import threading
 
 logger: logging.Logger = logging.getLogger(name="web_door_opener")
 web_app = Flask(__name__)
@@ -25,7 +24,14 @@ class WebDoorOpener:
 
     @staticmethod
     def custom_auth_required(f):
+        """
+            A decorator for custom authentication required function.
+        """
+
         def decorator(self, *args, **kwargs):
+            """
+            A description of the entire function, its parameters, and its return types.
+            """
             user_agent = request.headers.get('User-Agent')
             if any(browser in user_agent.lower() for browser in self.browsers):
                 if 'username' not in session:
@@ -42,33 +48,46 @@ class WebDoorOpener:
     @staticmethod
     def create_password_hash(input):
         """
-        Generates a scrypt password hash with werkzeug.security
+        Generates a password hash using the `generate_password_hash` function.
 
-        :param input: given password
-        :type x: str
-        :return: scrypt hashed password
-        :rtype: str
+        Parameters:
+            input (str): The password to be hashed.
+
+        Returns:
+            str: The hashed password.
         """
         return generate_password_hash(input)
 
     def transform_values(self, func):
         """
-        Transforms all values of a dict with the given fuction.
+        Transforms the values of the `web_user_dict` dictionary in the `config` object
+        using the provided `func` function.
 
-        :param d: Dictionary, that will be transformed
-        :param func: Funktion, that will be applied on the value
-        :return: new dictonary with transformed values
+        Args:
+            func (function): The function to apply to each value in the dictionary.
+
+        Returns:
+            dict: A new dictionary with the transformed values.
         """
         return {k: func(v) for k, v in self.config.web_user_dict.items()}
 
-    def __init__(self,
-                 shutdown_event: threading.Event,
-                 config: config_util.Configuration,
-                 loop,
-                 message_task_queue: queue.Queue,
-                 camera_task_queue_async: asyncio.Queue,
-                 door_open_task_queue: queue.Queue
-                 ) -> None:
+    def __init__(self, shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                 message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue,
+                 door_open_task_queue: queue.Queue) -> None:
+        """
+        Initializes the WebApp with the provided parameters.
+
+        Args:
+            shutdown_event (threading.Event): The event to signal shutdown.
+            config (config_util.Configuration): The configuration object.
+            loop: The loop object.
+            message_task_queue (queue.Queue): The queue for message tasks.
+            camera_task_queue_async (asyncio.Queue): The queue for camera tasks.
+            door_open_task_queue (queue.Queue): The queue for door open tasks.
+
+        Returns:
+            None
+        """
         self.logger: logging.Logger = logging.getLogger(name="WebApp")
         self.shutdown_event: threading.Event = shutdown_event
         self.config: config_util.Configuration = config
@@ -96,8 +115,17 @@ class WebDoorOpener:
 
     def run(self):
         """
-        start method of flask
-        :return: none
+        Runs the server in debug mode if the log level is set to "DEBUG", otherwise runs the server in non-debug mode.
+
+        This function checks the value of `self.str_log_level` and sets `self.app.debug` accordingly. If the log level is "DEBUG",
+        the server is started in debug mode by setting `self.app.debug` to `True`. Otherwise, the server is started in
+        non-debug mode by setting `self.app.debug` to `False`.
+
+        Parameters:
+            None
+
+        Returns:
+            None
         """
         if (self.str_log_level == "DEBUG"):
             self.app.debug = True
@@ -108,18 +136,37 @@ class WebDoorOpener:
 
     def shutdown(self):
         """
-        Shutdown method of flask
-        :return: none
+        A description of the entire function, its parameters, and its return types.
         """
         self.logger.info("Shutting down web server")
         self.server.shutdown()
         self.logger.info("Shutting down web server - done!")
 
-
     def setup_logging(self):
+        """
+        Set up the logging configuration for the application.
+
+        This function configures the logging level of the application logger based on the value of `self.log_level`.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
         self.app.logger.setLevel(self.log_level)
 
     def verify_password(self, username, password):
+        """
+        Verify the provided username and password for authentication.
+
+        Parameters:
+            username (str): The username to be verified.
+            password (str): The password corresponding to the username.
+
+        Returns:
+            str or None: The authenticated username if successful, None otherwise.
+        """
         if username in self.users and check_password_hash(self.users.get(username), password):
             self.app.logger.debug("Authentication: Success: User %s authenticated", username)
             return username
@@ -129,9 +176,10 @@ class WebDoorOpener:
 
     def get_brwoser_session(self) -> bool:
         """
-        Get http request user agent header to identify if it's interactive user seseeion.
-        :return: Boolean
-        :rtype: bool
+        Check the user agent in the request headers to determine if it matches any of the specified browsers.
+
+        Returns:
+            bool: True if the user agent matches any of the specified browsers, False otherwise.
         """
         user_agent = request.headers.get('User-Agent')
         if any(browser in user_agent.lower() for browser in self.browsers):
@@ -140,11 +188,12 @@ class WebDoorOpener:
 
     def get_request_username(self) -> str:
         """
-        Get http request username.
-        Either it's a http basic auth from request or if browser session exists it get extracted from browser
-        session login username. If none could be extraced it assumes to be anonymous and returns it.
-        :return: userme
-        :rtype: str
+        Get the username from the request. If the browser session is active, returns the username stored in the session or 'anonymous' if not found.
+        If the browser session is not active, attempts to get the username from the request authorization.
+        If the username is not found in the request authorization, returns 'anonymous'.
+
+        Returns:
+            str: The username obtained from the session or request authorization, or 'anonymous' if not found.
         """
         if self.get_brwoser_session():
             return session.get('username', 'anonymous')
@@ -157,8 +206,19 @@ class WebDoorOpener:
 
     def log_request_info(self):
         """
-        Logs incoming http request
-        :return: none
+        Logs information about the incoming HTTP request.
+
+        This function checks if the request is made from a browser session. If it is, and the user is 'anonymous' and the endpoint is not 'login', 'favicon', or 'static', it redirects to the 'login' endpoint. If the user is 'anonymous' and there is no browser session, it handles the 401 Unauthenticated error.
+
+        After that, it logs the user, method, path, and request headers to the logger. It also logs the request data.
+
+        Parameters:
+            self (WebDoorOpener): The instance of the WebDoorOpener class.
+
+        Returns:
+            None: If the request is redirected or if the user is 'anonymous' and there is no browser session.
+            redirect: If the user is 'anonymous' and the endpoint is not 'login', 'favicon', or 'static'.
+            handle_401_unauthenticated: If the user is 'anonymous' and there is no browser session.
         """
         browser_session = self.get_brwoser_session()
         user = self.get_request_username()
@@ -179,16 +239,15 @@ class WebDoorOpener:
 
     def log_response_info(self, response):
         """
-        Logs outgoing http response
-        :return: none
+        Logs the response information including user, method, path, status, headers, and response data.
         """
         user = self.get_request_username()
 
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Response: ==========")
         self.app.logger.debug("")
-        self.app.logger.info('User: %s, Method: %s, Path: %s, Status: %s',
-                             user, request.method, request.path, response.status)
+        self.app.logger.info('User: %s, Method: %s, Path: %s, Status: %s', user, request.method, request.path,
+                             response.status)
         self.app.logger.debug('Response Headers: %s', response.headers)
 
         if (request.endpoint not in ['favicon', 'static']):
@@ -199,7 +258,7 @@ class WebDoorOpener:
 
     def login(self) -> str:
         """
-        Login method for interactive browser seesions
+        Login method for interactive browser sessions
         :return: html login page as string
         :rtype: str
         """
@@ -216,8 +275,7 @@ class WebDoorOpener:
 
     def favicon(self):
         """
-        Get favicon for browser - bookmarks
-        :return:
+        A function to serve the favicon file by sending it from the static directory.
         """
         return send_from_directory(os.path.join(self.app.root_path, 'static'), 'favicon.ico',
                                    mimetype='image/vnd.microsoft.icon')
@@ -225,54 +283,44 @@ class WebDoorOpener:
     @custom_auth_required
     def index(self) -> str:
         """
-        Get / default page
-        :return: homepage
-        :rtype: str
+        A function that returns the homepage HTML content as a string after ensuring custom authentication.
         """
         return render_template("homepage.html")
 
     @custom_auth_required
     def open(self):
         """
-        Get's timebased onetime password to open door.
+        A function to open the door when a valid TOTP code is provided.
 
-        :return: Http json response
-        :rtype: json
+        This function is decorated with `@custom_auth_required`, which ensures that the user is authenticated before accessing this endpoint.
+
+        Parameters:
+            None
+
+        Returns:
+            - If the provided TOTP code is valid, the function sends a message to open the door and takes a photo, and returns a success response with status code 201 and a message "TOTP is valid! Opening!".
+            - If the provided TOTP code is invalid, the function sends a message indicating the invalid TOTP code and returns a bad request response with a message "Invalid TOTP. Retry again -> will notify owner.".
         """
         auth_user = self.get_request_username()
         # auth_user = self.auth.current_user()
         data = request.get_json()
         web_input_totp = data.get('totp')
-        totp_config = pyotp.TOTP(s=self.config.otp_password,
-                                 digits=self.config.otp_length,
-                                 digest=self.config.hash_type,
-                                 interval=self.config.otp_interval)
+        totp_config = pyotp.TOTP(s=self.config.otp_password, digits=self.config.otp_length,
+                                 digest=self.config.hash_type, interval=self.config.otp_interval)
         if totp_config.verify(web_input_totp):
             self.app.logger.info('User %s send TOTP %s is valid -> will open', auth_user, web_input_totp)
             self.door_open_task_queue.put(Open_Door_Task(open=True, chat_id=self.config.telegram_chat_nr))
-            self.message_task_queue.put(Message_Task(send=True,
-                                                     chat_id=self.config.telegram_chat_nr,
-                                                     data_text=f"User {auth_user} web request TOTP code {web_input_totp} " +
-                                           f"accepted - opening door"
-                                                     ))
+            self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
+                                                     data_text=f"User {auth_user} web request TOTP code {web_input_totp} " + f"accepted - opening door"))
             asyncio.set_event_loop(self.loop)
-            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(
-                    photo=True,
-                    chat_id=self.config.telegram_chat_nr
-                )
-            ),
+            asyncio.run_coroutine_threadsafe(
+                self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
                 self.loop)
-            return self.handle_success_response(status_text="success",
-                                                status=201,
-                                                message="TOTP is valid! Opening!")
+            return self.handle_success_response(status_text="success", status=201, message="TOTP is valid! Opening!")
         else:
             self.app.logger.warning('User %s send invalid TOTP %s', auth_user, web_input_totp)
-            self.message_task_queue.put(Message_Task(send=True,
-                                                  chat_id=self.config.telegram_chat_nr,
-                                                  data_text=f"User {auth_user} web request TOTP code " +
-                                                  f"{web_input_totp} invalid!"
-                                                  ))
+            self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
+                                                     data_text=f"User {auth_user} web request TOTP code " + f"{web_input_totp} invalid!"))
             return self.handle_bad_request(message="Invalid TOTP. Retry again -> will notify owner.")
 
     def handle_exception(self, e):
@@ -284,36 +332,31 @@ class WebDoorOpener:
         :rtype: json
         """
         self.app.logger.error('Error: %s', str(e), exc_info=True)
-        return jsonify(self.error_response_json(
-            status=500,
-            error="Internal Server Error",
-            message=str(e)
-        )), 500
+        return jsonify(self.error_response_json(status=500, error="Internal Server Error", message=str(e))), 500
 
     def handle_not_found(self, error):
         """
-        Handles not found http 404 response.
-        :param error: The error
-        :return: http json response
+        A method to handle the not found error response.
+        :param error: Error object describing the not found error
+        :return: JSON response with status 404 and error details
         :rtype: json
         """
         self.app.logger.error('Error: %s', str(error), exc_info=True)
-        return jsonify(self.error_response_json(
-            status=404,
-            error="NotFound",
-            message=error.description
-        )), 404
+        return jsonify(self.error_response_json(status=404, error="NotFound", message=error.description)), 404
 
     def handle_401_unauthenticated(self):
         """
-        Hadles unauthenticated http 401 response
-        :return: http json response
-        :rtype: json
+        Generates a JSON response for a 401 Unauthorized error.
+
+        This function sets the status code of the response to 401, sets the 'WWW-Authenticate' header to 'Basic realm="Main"',
+        and sets the 'Location' header to the URL of the login page.
+
+        Returns:
+            The JSON response with the error details.
+
         """
         status = 401
-        resp = jsonify(self.error_response_json(
-            status=status,
-            error="Unauthorized",
+        resp = jsonify(self.error_response_json(status=status, error="Unauthorized",
             message="Access Diened for resource! Authenticate first or send basic Authroization header."))
         resp.status_code = status
         resp.headers['WWW-Authenticate'] = 'Basic realm="Main"'
@@ -322,15 +365,13 @@ class WebDoorOpener:
 
     def handle_bad_request(self, message: str):
         """
-        Handles Http 400 bad request responses
-        :param message: str
-        :return: json
+        A method to handle a bad request error response.
+
+        :param message: A string message describing the bad request error.
+        :return: JSON response with status 400, error details, and the status code 400.
+        :rtype: json
         """
-        return jsonify(self.error_response_json(
-            status=400,
-            error="Bad Request",
-            message=message
-        )), 400
+        return jsonify(self.error_response_json(status=400, error="Bad Request", message=message)), 400
 
     def error_response_json(self, status, error, message) -> dict:
         """
@@ -341,12 +382,7 @@ class WebDoorOpener:
         :return: dictonary
         :rtype: dict
         """
-        return {
-            'timestamp': datetime.now(tz=timezone.utc),
-            'status': status,
-            'error': error,
-            'message': message
-        }
+        return {'timestamp': datetime.now(tz=timezone.utc), 'status': status, 'error': error, 'message': message}
 
     def handle_success_response(self, status_text, status, message):
         """
@@ -356,22 +392,12 @@ class WebDoorOpener:
         :param message: a response message or dict
         :return: json
         """
-        return jsonify(
-            {
-                'timestamp': datetime.now(tz=timezone.utc),
-                'status': status,
-                'statusText': status_text,
-                'message': message
-            }
-        ), status
+        return jsonify({'timestamp': datetime.now(tz=timezone.utc), 'status': status, 'statusText': status_text,
+            'message': message}), status
 
     def setup_routes(self):
         """
-        Setup flask
-        - logging
-        - app routes
-        - authentication
-        :return: none
+        Setup routes for various URLs in the web application.
         """
         self.app.before_request(self.log_request_info)
         self.app.after_request(self.log_response_info)
@@ -383,12 +409,18 @@ class WebDoorOpener:
 
     def setup_error_handlers(self):
         """
-        Setup flask error handler http resonses
-        :return: none
+        Setup error handlers for the Flask application.
+
+        Registers error handlers for the `Exception` and `NotFound` exceptions.
+        The `handle_exception` method is called when an `Exception` occurs,
+        and the `handle_not_found` method is called when a `NotFound` exception occurs.
+
+        This method does not take any parameters.
+
+        This method does not return anything.
         """
         self.app.register_error_handler(Exception, self.handle_exception)
         self.app.register_error_handler(NotFound, self.handle_not_found)
-
 
 # def run_web_app():
 #     app = WebDoorOpener()

@@ -21,7 +21,7 @@ class Configuration:
 
     def __init__(self) -> None:
         """Initial class definition.
-        
+
         Read from config.yaml file it configuration into class attribute
         config dict and from there into multiple attributes.
         :return: Nothing adds class instance attribues
@@ -106,9 +106,7 @@ class Configuration:
             self.logger.error("Could not find %s", self.config_file)
             raise FileNotFoundError("Could not find config file")
         except:
-            self.logger.error(
-                "a YAML error is occured during parsing file %s ", self.config_file
-            )
+            self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
             raise YamlReadError("a YAML error is occured during parsing file")
 
     def define_config_file(self) -> None:
@@ -144,7 +142,5 @@ class Configuration:
         :type new_password: string
         """
         with open(self.base_path + "config.yaml", "w") as yaml_file:
-            self.config["otp"]["password"] = self.base32_encode_totp_password(
-                new_password
-            )
+            self.config["otp"]["password"] = self.base32_encode_totp_password(new_password)
             yaml.dump(self.config, yaml_file, default_flow_style=False)

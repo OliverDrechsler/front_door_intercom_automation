@@ -18,7 +18,7 @@ touch .nojekyll
 cat > README.md <<EOF
 # GitHub Pages Cache
  
-Nothing here only HitHub Pages
+Nothing here only GitHub Pages
 
 EOF
 git status
