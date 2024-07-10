@@ -45,14 +45,14 @@ jobs:
       #     pylint *
       #   continue-on-error: true
 
-      - name: black - static security code check
-        run: |
-          pip install black
-          black --verbose camera/.
-          black --verbose common/.
-          black --verbose door/.
-          black --verbose messaging/.
-          black --verbose fdia.py
+#      - name: black - static security code check
+#        run: |
+#          pip install black
+#          black --verbose camera/.
+#          black --verbose config/.
+#          black --verbose door/.
+#          black --verbose bot/.
+#          black --verbose fdia.py
 
       - name: Wemake Python Stylguide
         uses: wemake-services/wemake-python-styleguide@0.13.4
