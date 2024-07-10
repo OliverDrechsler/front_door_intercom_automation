@@ -1,24 +1,24 @@
-## .github/workflows/release.yml
-#name: Release
-#
-#on:
-#  push:
-#    branches:
-#      - master
-#  pull_request:
-#    types: closed
-#
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          fetch-depth: 0
-#      - id: bump
-#        uses: zwaldowski/match-label-action@v1
-#        with:
-#          allowed: major,minor,patch
+# .github/workflows/release.yml
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: closed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: bump
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major,minor,patch
 #      - uses: zwaldowski/semver-release-action@v1
 #        with:
 #          bump: ${{ steps.bump.outputs.match }}
