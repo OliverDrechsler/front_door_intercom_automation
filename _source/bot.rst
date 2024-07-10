@@ -1,18 +1,10 @@
-messaging package
+bot package
 =================
 
 Submodules
 ----------
 
-messaging.otp module
---------------------
-
-.. automodule:: messaging.otp
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-messaging.receive\_msg module
+bot.receive\_msg module
 -----------------------------
 
 .. automodule:: messaging.receive_msg
@@ -20,7 +12,7 @@ messaging.receive\_msg module
    :undoc-members:
    :show-inheritance:
 
-messaging.send\_msg module
+bot.send\_msg module
 --------------------------
 
 .. automodule:: messaging.send_msg
