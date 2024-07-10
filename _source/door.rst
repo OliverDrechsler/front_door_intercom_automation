@@ -20,6 +20,13 @@ door.opener module
    :undoc-members:
    :show-inheritance:
 
+door.detect\_rpi module
+-----------------------
+
+.. automodule:: door.detect_rpi module
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

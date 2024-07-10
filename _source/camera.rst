@@ -4,26 +4,10 @@ camera package
 Submodules
 ----------
 
-camera.blink\_cam module
+camera.camera
 ------------------------
 
-.. automodule:: camera.blink_cam
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-camera.cam\_common module
--------------------------
-
-.. automodule:: camera.cam_common
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-camera.picam module
--------------------
-
-.. automodule:: camera.picam
+.. automodule:: camera.camera
    :members:
    :undoc-members:
    :show-inheritance:

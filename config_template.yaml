@@ -62,14 +62,6 @@ picam:
   # blink.night_vision or picam.night_vision enabled.
   night_vision: False
 
-common:
-  enable_detect_daylight: False
-  image_path: "/tmp/foto.jpg"
-  camera_type: "blink"  # "blink" or "picam" careful - case senitive
-  # run code on RPi or on another system
-  # other system = no door bell detect and opener will work
-  run_on_raspberry: True
-
 web:
   # flask webserver port
   flask_web_port: 5001

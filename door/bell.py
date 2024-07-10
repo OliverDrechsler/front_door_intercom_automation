@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 import asyncio
-
 try:
     from gpiozero import Button
 except Exception:
@@ -19,9 +17,9 @@ logger: logging.Logger = logging.getLogger(name="door-bell")
 
 
 class DoorBell():
-    """Front door subclass of configuration config watches the door bell and
-        triggers
-       sends telegram message and camera photo.
+    """
+        Front door subclass of configuration config watches the door bell and
+        triggers sends telegram message and camera photo.
     """
 
     def __init__(self, shutdown_event: threading.Event, config: config_util.Configuration, loop,

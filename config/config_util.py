@@ -1,17 +1,15 @@
 from __future__ import annotations
 
-# import io
 import base64
 import logging
 import os
 from collections import ChainMap
 
-# from collections import ChainMap
 import telebot
 import yaml
 
 from config.default_cam_enum import DefaultCam
-from config.yam_read_error import YamlReadError
+from config.yaml_read_error import YamlReadError
 
 logger = logging.getLogger("config")
 

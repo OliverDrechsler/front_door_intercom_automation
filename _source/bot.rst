@@ -7,7 +7,7 @@ Submodules
 bot.receive\_msg module
 -----------------------------
 
-.. automodule:: messaging.receive_msg
+.. automodule:: bot.receive_msg
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ bot.receive\_msg module
 bot.send\_msg module
 --------------------------
 
-.. automodule:: messaging.send_msg
+.. automodule:: bot.send_msg
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ bot.send\_msg module
 Module contents
 ---------------
 
-.. automodule:: messaging
+.. automodule:: bot
    :members:
    :undoc-members:
    :show-inheritance:
