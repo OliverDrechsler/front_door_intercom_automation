@@ -28,17 +28,13 @@ jobs:
       
       - run: pip install recommonmark sphinx_md sphinx-rtd-theme
 
-#      - name: update gh_pages
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: "docs/buildDocs.sh"
-#        shell: bash
-
       - name: Build HTML
         run: | 
           cd docs/
           make html
+        shell: bash
 
       - name: Run ghp-import
         run: | 
           ghp-import -n -p -f _build/html
+        shell: bash
