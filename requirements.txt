@@ -1,11 +1,11 @@
 pyyaml==6.0.1
+# gpiozero==2.0.1
 gpiozero==2.0
 RPi.GPIO==0.7.1
 urllib3==2.1.0
 requests==2.31.0
-blinkpy==0.23.0b8
-# passlib==1.7.4
-
+blinkpy==0.22.4
+# blinkpy==0.23.0b8
 astral==3.2
 Flask==3.0.3
 Flask_HTTPAuth==4.8.0
