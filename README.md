@@ -1,10 +1,12 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/oliverdrechsler/front_door_intercom_automation/badge)](https://www.codefactor.io/repository/github/oliverdrechsler/front_door_intercom_automation)
-![CI pipeline](https://github.com/OliverDrechsler/front_door_intercom_automation/workflows/FDIa/badge.svg)
+![CodeFactor](https://www.codefactor.io/repository/github/oliverdrechsler/front_door_intercom_automation/badge)
+[![FDIa](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/codeql-analysis.yml)
 [![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
 [![Updates](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/shield.svg)](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/)
 [![Known Vulnerabilities](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg)](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&metric=alert_status)](https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation)
 [![codecov](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg)](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation)
+[![build github_pages](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml/badge.svg)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml)
     
 # Front-door intercom automation
 
