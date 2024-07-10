@@ -26,7 +26,7 @@ jobs:
           sudo apt-get install -y git rsync python3-pip python3-sphinx python3-sphinx-rtd-theme
         shell: bash
       
-      - run: pip install recommonmark sphinx_md sphinx-rtd-theme
+      - run: pip install recommonmark sphinx_md sphinx-rtd-theme ghp-import
 
       - name: Build HTML
         run: |
