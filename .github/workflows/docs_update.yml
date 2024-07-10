@@ -29,8 +29,7 @@ jobs:
       - run: pip install recommonmark sphinx_md sphinx-rtd-theme
 
       - name: Build HTML
-        run: | 
-          cd docs/
+        run: |
           make html
         shell: bash
 
