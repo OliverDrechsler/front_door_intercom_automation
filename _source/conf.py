@@ -27,7 +27,7 @@ copyright = '2020, Oliver Drechsler'
 author = 'Oliver Drechsler'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.4'
+release = '0.0.5'
 
 # -- General configuration ---------------------------------------------------
 
