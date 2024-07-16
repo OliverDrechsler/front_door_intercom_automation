@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.12
         uses: actions/setup-python@v1
         with:
           python-version: 3.12
@@ -55,7 +55,7 @@ jobs:
 #          black --verbose fdia.py
 #
       - name: Wemake Python Stylguide
-        uses: wemake-services/wemake-python-styleguide@0.13.4
+        uses: wemake-services/wemake-python-styleguide@0.19.2
         continue-on-error: true
         with:
           reporter: "github-pr-review"
