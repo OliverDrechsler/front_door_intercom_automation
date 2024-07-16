@@ -31,7 +31,8 @@ class TestConfiguration(unittest.TestCase):
             'GPIO': {
                 'run_on_raspberry': True,
                 'door_bell_port': 1,
-                'door_opener_port': 2
+                'door_opener_port': 2,
+                'testing_msg': True
             },
             'photo_general': {
                 'image_path': '/path/to/image',

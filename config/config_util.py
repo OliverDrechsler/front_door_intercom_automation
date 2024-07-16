@@ -44,6 +44,7 @@ class Configuration:
         self.run_on_raspberry: bool = self.config["GPIO"]["run_on_raspberry"]
         self.door_bell: int = self.config["GPIO"]["door_bell_port"]
         self.door_summer: int = self.config["GPIO"]["door_opener_port"]
+        self.testing_bell_msg: bool = self.config["GPIO"]["testing_msg"]
 
         self.photo_image_path: str = self.config["photo_general"]["image_path"]
         self.default_camera_type = DefaultCam(self.config["photo_general"]["default_camera_type"].upper())

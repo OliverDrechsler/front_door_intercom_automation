@@ -50,6 +50,7 @@ class TestDoorBell(unittest.TestCase):
         shutdown_event = threading.Event()
         config = MagicMock(spec=config_util.Configuration)
         config.run_on_raspberry = False
+        config.testing_bell_msg = True
         config.telegram_chat_nr = "test_chat_id"
         config.door_bell_pin = 17
         loop = asyncio.new_event_loop()

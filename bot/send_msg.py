@@ -56,8 +56,9 @@ class SendMessage():
             None
         """
         self.logger.debug(msg="thread endless loop send telegram bot messages")
-        try:
-            while not self.stop_polling.is_set():
+
+        while not self.stop_polling.is_set():
+            try:
                 task = self.message_task_queue.get()
                 if task is None:  # Exit signal
                     break
@@ -69,9 +70,9 @@ class SendMessage():
                         self.reply_message(chat_id=task.chat_id, message=task.message, text=task.data_text)
                     if (task.photo):
                         self.send_photo(chat_id=task.chat_id, image_path=task.filename)
-        except Exception as err:
-            self.logger.error("Error: {0}".format(err))
-            pass
+            except Exception as err:
+                self.logger.error("Error: {0}".format(err))
+                pass
         self.stop()
 
     def stop(self) -> None:
