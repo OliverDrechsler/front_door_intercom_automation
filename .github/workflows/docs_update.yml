@@ -1,4 +1,4 @@
-name: build github_pages
+name: build github_pages documentation
 on:
   push:
     # branches:
