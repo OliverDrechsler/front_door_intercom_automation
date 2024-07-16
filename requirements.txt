@@ -1,11 +1,11 @@
 pyyaml==6.0.1
-# gpiozero==2.0.1
-gpiozero==2.0
+gpiozero==2.0.1
+# gpiozero==2.0
 RPi.GPIO==0.7.1
 urllib3==2.1.0
 requests==2.31.0
-blinkpy==0.22.4
-# blinkpy==0.23.0b8
+# blinkpy==0.22.4
+blinkpy==0.23.0b8
 astral==3.2
 Flask==3.0.3
 Flask_HTTPAuth==4.8.0
@@ -16,9 +16,11 @@ pyotp==2.9.0
 pyTelegramBotAPI==4.20.0
 
 asyncio==3.4.3
-aiohttp==4.0.0a1
+aiohttp==3.9.5
 
 pytest==8.2.2
+pytest-cov==5.0.0
 mock==5.1.0
+coverage==7.60
 
 future-annotations==1.0.0

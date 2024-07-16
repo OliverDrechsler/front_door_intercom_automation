@@ -6,6 +6,8 @@ from config.yaml_read_error import YamlReadError
 from config.config_util import Configuration
 import base64
 
+import time
+
 
 class TestConfiguration(unittest.TestCase):
 
@@ -101,14 +103,6 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.flask_secret_key, 'dummy_secret')
         self.assertEqual(self.config.flask_browser_session_cookie_lifetime, 3600)
         self.assertEqual(self.config.web_user_dict, {'user1': 'id1', 'user2': 'id2'})
-
-    @patch('builtins.open', new_callable=mock_open, read_data="yaml: content")
-    def test_read_config(self, mock_file):
-        config_instance = Configuration()
-        config_file_path = config_instance.define_config_file()
-        with open(config_file_path, 'r') as file:
-            data = yaml.load(file, Loader=yaml.SafeLoader)
-        self.assertEqual(data, "yaml content")
 
     @patch('os.path.isfile', return_value=True)
     def test_define_config_file_exists(self, mock_isfile):

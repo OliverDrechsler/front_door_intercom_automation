@@ -55,7 +55,7 @@ class SendMessage():
         Returns:
             None
         """
-        logger.debug(msg="thread endless loop send telegram bot messages")
+        self.logger.debug(msg="thread endless loop send telegram bot messages")
         try:
             while not self.stop_polling.is_set():
                 task = self.message_task_queue.get()
@@ -98,7 +98,7 @@ class SendMessage():
         This function sends a reply message to a chat using the Telegram Bot API. It uses the `reply_to` method of the `bot` object to send the reply. The reply message contains the provided `text`. The function logs the reply message using the `logger` object.
         """
         self.bot.reply_to(message=message, text=text)
-        logger.info("reply message : " + text)
+        self.logger.info("reply message : " + text)
 
     def send_message(self, chat_id: str, text: str) -> None:
         """
@@ -112,7 +112,7 @@ class SendMessage():
             None
         """
         self.bot.send_message(chat_id=chat_id, text=text)
-        logger.info("send message : " + text)
+        self.logger.info("send message : " + text)
 
     def send_photo(self, chat_id: str, image_path: str) -> None:
         """
@@ -126,4 +126,4 @@ class SendMessage():
             None
         """
         self.bot.send_photo(chat_id=chat_id, photo=open(file=image_path, mode="rb"))
-        logger.info(msg="send a foto: success")
+        self.logger.info(msg="send a foto: success")

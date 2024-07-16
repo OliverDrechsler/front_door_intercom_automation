@@ -1,5 +1,5 @@
 from __future__ import annotations
-__all__: list[str] = ["config_util", "data_class", "default_cam_enum", "yaml_read_error.py"]
+__all__: list[str] = ["config_util", "data_class", "default_cam_enum", "yaml_read_error"]
 
 from . import config_util
 from . import data_class

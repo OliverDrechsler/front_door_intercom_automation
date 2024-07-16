@@ -62,7 +62,7 @@ class DoorBell():
         self.logger.info(msg="start monitoring door bell")
         if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
             self.logger.debug(msg="RPI: start endless loop doorbell monitoring")
-            button: Button = Button(pin=self.door_bell)
+            button: Button = Button(pin=self.config.door_bell_pin)
             while not self.shutdown_event.is_set():
                 try:
                     time.sleep(0.001)
@@ -79,9 +79,13 @@ class DoorBell():
                     pass
             self.logger.info(msg="stop endless loop doorbell monitoring")
         else:
-            self.logger.debug(msg="NOT on RPI: start empty endless loop")
-            while not self.shutdown_event.is_set():
-                time.sleep(1)
-                if test:
-                    break
-            self.logger.info(msg="STOP:  not on RPI - empty endless door bell loop")
+            self.logger.debug(msg="NOT on RPI: do a ring in 10 sec and stop afterwards.")
+            time.sleep(10)
+            now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
+            self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
+                                                     data_text="Ding Dong! " + now))
+            asyncio.set_event_loop(self.loop)
+            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(Camera_Task(photo=True)),
+                                             self.loop)
+
+            self.logger.info(msg="STOP: not on RPI - endless door bell loop stopped")

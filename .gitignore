@@ -24,3 +24,4 @@ jpynb/*
 venv/*
 .python-version
 _build/*
+_sources/*
