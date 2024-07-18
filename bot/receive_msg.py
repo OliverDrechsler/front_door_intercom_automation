@@ -159,18 +159,18 @@ class ReceivingMessage():
     def rcv_blink_auth(self, message: telebot.types.Message) -> None:
 
         self.logger.debug(f"received blink token with message {message}")
-        match = re.search(r"(?<=^blink.)\d{6}", message.text, re.IGNORECASE)
+        match = re.search(r'^/blink_auth (\d{6})$', message.text, re.IGNORECASE)
         if match:
             self.logger.info(msg="blink token received - will save config")
-            message = "Blink token received " + match.group(0)
-            self.bot.reply_to(message=message, text=message)
+            message_text = "Blink token received " + match.group(1)
+            self.bot.reply_to(message=message, text=message_text)
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(blink_mfa=match.group(0), chat_id=message.chat.id, message=message, reply=True)), self.loop)
+                Camera_Task(blink_mfa=match.group(1), chat_id=message.chat.id, message=message, reply=True)), self.loop)
             return
 
         self.logger.debug(msg="no blink token detected")
-        message = "Blink token received " + match.group(0)
+        message = "Blink token received " + match.group(1)
         self.bot.reply_to(message=message, text="no blink token detected")
         return
 

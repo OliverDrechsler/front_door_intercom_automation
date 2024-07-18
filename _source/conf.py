@@ -12,10 +12,14 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../'))
 
+# sys.path.insert(0, os.path.abspath('../docs'))
+sys.path.insert(0, os.path.abspath('..'))
+# sys.path.insert(0, os.path.abspath('.'))
+print("Python search paths:")
+for path in sys.path:
+    print(path)
 
-html_theme = 'python_docs_theme_technopathy'
 html_context = {'github_user_name': 'OliverDrechsler', 'github_repo_name': 'front_door_intercom_automation','project_name': 'Front Door intercom automation'}
 
 
@@ -27,21 +31,52 @@ copyright = '2020, Oliver Drechsler'
 author = 'Oliver Drechsler'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.5'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
+
+# Paths for the documents
+source_suffix = ['.rst', '.md']
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    # 'myst_parser',  # For Markdown support
+    'sphinx.ext.napoleon',  # For Google style docstrings
+    'sphinx.ext.viewcode',  # Add links to highlighted source code
     'sphinx.ext.autodoc',
-    'sphinx.ext.githubpages',
+    'sphinx.ext.autosummary',
     'recommonmark',
     'sphinx_md',
     'sphinx.ext.githubpages',
     'sphinx.ext.todo',
 ]
+
+# If you use MyST-Parser for Markdown
+myst_enable_extensions = [
+    "colon_fence",
+    "deflist",
+    "html_admonition",
+    "html_image",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist",
+]
+
+# Adding custom sidebar templates, must be a dictionary that maps document names
+# to template names.
+html_sidebars = {
+    '**': [
+        'globaltoc.html',
+        'relations.html',  # needs 'show_related': True theme option to display
+        'searchbox.html',
+    ]
+}
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

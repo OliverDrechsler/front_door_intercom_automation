@@ -1,44 +1,35 @@
 telegram:
-  token: "telegram_bot_token_code_here"
-  chat_number: "-4321"
-  allowed_user_ids:
+  token: "telegram_bot_token_code_here"    # telegram bot token password
+  chat_number: "-4321"                     # telegram chat channel 
+  allowed_user_ids:                        # list of allowed telegram user id to act on
     - "123456789"
     - "987654321"
-  active_message_reactions: "config_message_actions.json"
 
 otp:
-  # base32 encoded password here
-  # password: "Base32CodePasswordHere"
-  password: "KRSXG5CQIASCIVZQOJCA===="
-  # standard length = 6 , max length = 10 (9 = sha512) - at least 9 recommanded
-  length: 9
+  password: "KRSXG5CQIASCIVZQOJCA===="  # base32 encoded password here password: "Base32CodePasswordHere"
+  length: 9 # standard length = 6 , max length = 10 (9 = sha512) - at least 9 recommanded
   # time interval of totp code, default is 30 seconds
-  interval: 30
-  # possible time based one time passwaord hash's are: sha1 (default), sha256, sha512(recommended)
-  hash_type: sha512
+  interval: 30 # possible time based one time passwaord hash's are: sha1 (default), sha256, sha512(recommended)
+  hash_type: sha512  # encryption hash for OTP used  (possible values are sha1, sha256, sha512) - recommended sha512
 
 GPIO:
   testing_msg: True   # if not run on RPi and wanted simulate a door bell ring set to True otherwise false
-  door_bell_port: 1
-  door_opener_port: 2
-  run_on_raspberry: False
+  door_bell_port: 1   # RPi GPIO Port where door bell is connected
+  door_opener_port: 2 # RPi GPIO Port where door summer/opener is connected
+  run_on_raspberry: False # Boolean for run code without RPi GPIO on other system for testing purposes
 
 photo_general:
   # if enabled take precedence over default_camera_type and requires either
   # blink.night_vision or picam.night_vision enabled. Only one enabled allowed!
   enable_detect_daylight: False
   default_camera_type: "blink"  # "blink" or "picam" careful - case senitive
-  image_path: "/tmp/foto.jpg"
+  image_path: "/tmp/foto.jpg"   # path where downloaded foto from camera get intermediate stored
 
 blink:
-  # blink cam enabled ?
-  enabled: True
-  # blink account name here
-  username: "blink_account_email_address_here"
-  # blink account password
-  password: "blink_account_password_here"
-  # blink camera name here, not group
-  name: "Blink_Camera_name_here"
+  enabled: True     # blink cam enabled ?
+  username: "blink_account_email_address_here"  # blink account name here
+  password: "blink_account_password_here"       # blink account password
+  name: "Blink_Camera_name_here"                # blink camera name here, not group
   config_file: "blink_config.json"
   # if enabled requires also photo_general.enable_detect_daylight enabled
   # than it take precedence over default_camera_type.
@@ -47,16 +38,14 @@ blink:
   night_vision: True
 
 picam:
-  # PiCam enabled ?
-  enabled: False
-  # PiCam API https://github.com/OliverDrechsler/PiCam_API
-  url: "http://IP:8000/foto/"
-  image_width: 640
-  image_hight: 480
-  image_filename: "foto.jpg"
-  exposure: "auto"
-  rotation: 0
-  iso: 800
+  enabled: False    # PiCam enabled ?
+  url: "http://IP:8000/foto/"     # PiCam API https://github.com/OliverDrechsler/PiCam_API
+  image_width: 640                # PiCam photo width resolution
+  image_hight: 480                # PiCam photo hight resolution
+  image_filename: "foto.jpg"      # PiCam photo foto file
+  exposure: "auto"                
+  rotation: 0                     # PiCam photo rotation by default
+  iso: 800                        # PiCam photo resolution iso value
   # if enabled requires also photo_general.enable_detect_daylight enabled
   # than it take precedence over default_camera_type.
   # Only one enabled allowed!
@@ -64,13 +53,9 @@ picam:
   night_vision: False
 
 web:
-  # flask webserver port
-  flask_web_port: 5001
-  # flask secret key
-  flask_secret_key: "my_super_flask_secret_key"
-  # browser cookie key
-  browser_session_cookie_lifetime: 30
-  # flask app login user  for webpage and/or rest api call
-  flask_users:
+  flask_web_port: 5001                            # flask webserver port
+  flask_secret_key: "my_super_flask_secret_key"   # provide here your own flask secret key
+  browser_session_cookie_lifetime: 30             # browser cookie key
+  flask_users:             # list of flask app login user for webpage and/or rest api call
     - WebUser1: "password"
     - WebUser2: "password"

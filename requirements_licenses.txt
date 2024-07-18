@@ -1,10 +1,57 @@
-Python Modulename;Version Nr.;License Type
-pyyaml; 5.3.1; MIT
-gpiozero; 1.5.1; BSD License
-urllib3; 1.24.3; MIT
-requests; 2.25.0; Apache 2.0
-telepot; 12.7; MIT
-blinkpy; 0.18.0.dev0; MIT
-passlib; 1.7.4; BSD
-pytest; 5.4.3; MIT license
-RPi.GPIO; 0.7.0; MIT license
+                              List Of Packages
+┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Compatible ┃ Package             ┃ License(s)                            ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ ✔          │ Flask               │ BSD LICENSE                           │
+│ ✔          │ Flask-HTTPAuth      │ MIT LICENSE                           │
+│ ✔          │ Flask-Session       │ BSD LICENSE                           │
+│ ✔          │ Jinja2              │ BSD LICENSE                           │
+│ ✔          │ MarkupSafe          │ BSD LICENSE                           │
+│ ✔          │ PyYAML              │ MIT LICENSE                           │
+│ ✔          │ RPi.GPIO            │ MIT LICENSE                           │
+│ ✔          │ Werkzeug            │ BSD LICENSE                           │
+│ ✔          │ aiofiles            │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ aiohttp             │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ aiosignal           │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ astral              │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ async-timeout       │ APACHE SOFTWARE LICENSE               │
+│ ✖          │ asyncio             │ UNKNOWN                               │
+│ ✔          │ attrs               │ MIT LICENSE                           │
+│ ✔          │ backports.zoneinfo  │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ blinker             │ MIT LICENSE                           │
+│ ✔          │ blinkpy             │ MIT LICENSE                           │
+│ ✔          │ cachelib            │ BSD LICENSE                           │
+│ ✖          │ certifi             │ MOZILLA PUBLIC LICENSE 2.0 (MPL 2.0)  │
+│ ✔          │ charset-normalizer  │ MIT LICENSE                           │
+│ ✔          │ click               │ BSD LICENSE                           │
+│ ✔          │ colorama            │ BSD LICENSE                           │
+│ ✔          │ colorzero           │ BSD LICENSE                           │
+│ ✔          │ coverage            │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ exceptiongroup      │ MIT LICENSE                           │
+│ ✔          │ frozenlist          │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ future-annotations  │ MIT LICENSE                           │
+│ ✔          │ gpiozero            │ BSD LICENSE                           │
+│ ✔          │ idna                │ BSD LICENSE                           │
+│ ✔          │ importlib-metadata  │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ importlib-resources │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ iniconfig           │ MIT LICENSE                           │
+│ ✔          │ itsdangerous        │ BSD LICENSE                           │
+│ ✔          │ mock                │ BSD LICENSE                           │
+│ ✔          │ msgspec             │ BSD LICENSE                           │
+│ ✔          │ multidict           │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ packaging           │ APACHE SOFTWARE LICENSE;; BSD LICENSE │
+│ ✔          │ pluggy              │ MIT LICENSE                           │
+│ ✖          │ pyTelegramBotAPI    │ GNU GENERAL PUBLIC LICENSE V2 (GPLV2) │
+│ ✔          │ pyotp               │ MIT LICENSE                           │
+│ ✔          │ pytest              │ MIT LICENSE                           │
+│ ✔          │ pytest-cov          │ MIT LICENSE                           │
+│ ✔          │ python-dateutil     │ BSD LICENSE;; APACHE SOFTWARE LICENSE │
+│ ✔          │ python-slugify      │ MIT LICENSE                           │
+│ ✔          │ requests            │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ sortedcontainers    │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ tokenize-rt         │ MIT LICENSE                           │
+│ ✔          │ tomli               │ MIT LICENSE                           │
+│ ✔          │ tzdata              │ APACHE SOFTWARE LICENSE               │
+│ ✔          │ urllib3             │ MIT LICENSE                           │
+│ ✔          │ yarl                │ APACHE SOFTWARE LICENSE               │
+└────────────┴─────────────────────┴───────────────────────────────────────┘

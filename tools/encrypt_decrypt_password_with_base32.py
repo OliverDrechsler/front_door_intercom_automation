@@ -21,15 +21,13 @@ def program_start(encrypt, decrypt):
         encryption(encrypt)
     if decrypt is not None:
         decryption(decrypt)
-    print("Script end")
 
 
 def encryption(encrypt):
-    print(base64.b32encode(bytes(encrypt, "ascii")))
-
+    print(base64.b32encode(bytes(encrypt, "ascii")).decode("ascii"))
 
 def decryption(decrypt):
-    print(base64.b32decode(bytes(decrypt, "ascii")))
+    print(base64.b32decode(bytes(decrypt, "ascii")).decode("ascii"))
 
 
 if __name__ == '__main__':

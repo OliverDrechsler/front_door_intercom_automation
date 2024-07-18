@@ -25,3 +25,5 @@ venv/*
 .python-version
 _build/*
 _sources/*
+docs/_build/*
+docs/_sources/*

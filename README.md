@@ -1,281 +1,502 @@
-![CodeFactor](https://www.codefactor.io/repository/github/oliverdrechsler/front_door_intercom_automation/badge)
 [![FDIa](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/codeql-analysis.yml)
-[![wemake-python-styleguide](https://img.shields.io/badge/style-wemake-000000.svg)](https://github.com/wemake-services/wemake-python-styleguide)
-[![Updates](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/shield.svg)](https://pyup.io/repos/github/OliverDrechsler/front_door_intercom_automation/)
 [![Known Vulnerabilities](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg)](https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&metric=alert_status)](https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation)
 [![codecov](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg)](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation)
+
+![GitHub License](https://img.shields.io/github/license/OliverDrechsler/front_door_intercom_automation)  
+![Static Badge](https://img.shields.io/badge/Python-v.3.10-green)
+![Static Badge](https://img.shields.io/badge/Python-v.3.11-green)
+![Static Badge](https://img.shields.io/badge/Python-v.3.12-green)  
+
 [![build github_pages](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml/badge.svg)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml)
     
 # Front-door intercom automation
 
-**New version is in development with new feature like**  <br>
-<br>
-**- pyth3.12 support**  <br>
-**- WebApp, with browser page and rest api for opening**  <br>
-**- using migration to pyTelegramBotAPI**  <br>
-**- updated blinkpy to asyncio**  <br>
-**- daylight and night vision detect to choose camera**  <br>
-**- multi threading**  <br>
-**- using pyOTP instead passlib**  <br>
-**- detecting Pi Hardware native**  <br>
-<br>  
-**Same solution is in development as JAVA Spring Boot POC too**<br>
-<br>
-**If you want use take lates release [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)**  <br>
-<br>  
-**Otherwise checkout new feature and testing development branch [refactor_and_new_features](https://github.com/OliverDrechsler/front_door_intercom_automation/tree/refactor_and_new_features)**  <br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+## Short description
+
+Raspberry Pi intercom front door automation for recognising doorbells and creating photos.  
+Notification via your own privat Telegram chat channel.  
+Also opening the front door via the private Telegram chat channel.  
+Furthermore, a separate website & REST API is offered to open the front door.  
+**It is not recommended to make this website accessible on the Internet!**  
+Please use a VPN tunnel to reach the website or REST API.  
+It supports [Blink](https://blinkforhome.com) camera's and my [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.
+Door opening authorization is handled by timebased one time passwords.  
+The following wiring of the circuit is based on a BTIcino intercom system, but can also be connected to other systems.  
+
 
 **[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
 
 ***[📚 API Docu on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html)***  
 
+
 - [Front-door intercom automation](#front-door-intercom-automation)
   - [Short description](#short-description)
   - [Long description](#long-description)
-  - [Mobile Device Apps](#mobile-device-apps)
-  - [Hardware](#hardware)
-    - [Hardware circuit components](#hardware-circuit-components)
-    - [RPi Hardware](#rpi-hardware)
-    - [How to build circuit](#how-to-build-circuit)
-      - [selfmade circuit board connected to BTIcino Intercom](#selfmade-circuit-board-connected-to-bticino-intercom)
-      - [2 channel relay board for door opener](#2-channel-relay-board-for-door-opener)
-    - [My build pictures](#my-build-pictures)
-  - [Code tree structure](#code-tree-structure)
-  - [Config Files](#config-files)
-    - [Main config file description](#main-config-file-description)
-    - [Blink Cam config file description](#blink-cam-config-file-description)
-  - [Installation](#installation)
-    - [How to install / python requirements](#how-to-install--python-requirements)
-    - [How to run project code as a systemd service](#how-to-run-project-code-as-a-systemd-service)
-  - [How to](#how-to)
-    - [How to run unit-tests](#how-to-run-unit-tests)
-    - [Build pipeline checks](#build-pipeline-checks)
+  - [Demo](#demo)
+  - [Outlook](#outlook)
+  - [Get started](#get-started)
+    - [Requirements](#requirements)
+    - [Code tree structure](#code-tree-structure)
+    - [Installation](#installation)
+    - [Helper tools](#helper-tools)
+      - [Encrypt and decrypt a password with base32 for totp](#encrypt-and-decrypt-a-password-with-base32-for-totp)
+      - [get a OTP password or verify a OTP via cli](#get-a-otp-password-or-verify-a-otp-via-cli)
+    - [System service setup](#system-service-setup)
+    - [Configuration - config files](#configuration---config-files)
+    - [config.yaml - config\_template.yaml](#configyaml---config_templateyaml)
+    - [blink\_config.json](#blink_configjson)
+    - [Setup OTP](#setup-otp)
+  - [Cameras](#cameras)
+    - [Blink Cameras](#blink-cameras)
+    - [Raspberry Pi Camera Project PiCam\_API](#raspberry-pi-camera-project-picam_api)
   - [Telegram](#telegram)
-    - [How to setup a telegram bot](#how-to-setup-a-telegram-bot)
-    - [Telegram Bot Commands](#telegram-bot-commands)
-  - [Time-based one time passwords info and recommendations](#time-based-one-time-passwords-info-and-recommendations)
-  - [ToDo's:](#todos)
-  
-## Short description
+    - [Telegram setup](#telegram-setup)
+    - [Telegram receiving message commands and interactions](#telegram-receiving-message-commands-and-interactions)
+  - [Mobile Setup](#mobile-setup)
+    - [Mobile Apps](#mobile-apps)
+    - [Setup recommended OTP in your mobile phone](#setup-recommended-otp-in-your-mobile-phone)
+    - [Mobile usage](#mobile-usage)
+    - [Mobile IOS Door Open App](#mobile-ios-door-open-app)
+    - [How to use Apple IOS Shortcuts App to automate door opening](#how-to-use-apple-ios-shortcuts-app-to-automate-door-opening)
+  - [Web UI \& REST-API usage](#web-ui--rest-api-usage)
+  - [Hardware Ciruit](#hardware-ciruit)
+    - [required HW parts](#required-hw-parts)
+    - [build Hardware circuit](#build-hardware-circuit)
+  - [Help](#help)
+    - [Debugging](#debugging)
+    - [Hints](#hints)
+    - [How to run unit-tests](#how-to-run-unit-tests)
+    - [GiHub actions pipelines](#gihub-actions-pipelines)
+  - [ChangeLog](#changelog)
+  - [Previous Python Version releases](#previous-python-version-releases)
+  - [Author info](#author-info)
+  - [License](#license)
+  - [Contribution](#contribution)
 
-One Raspberry Pi is connected to a BTIcino front-door intercom.  
-It detects when the door bell rings.  
-Requests either from a Raspberry PI (Zero) with Camera a photo  
-or from a Blink Cam (depends on defined configuration in config.yaml).  
-Sends a door bell ring photo notification via telegram message to a privat  
-group and attachs the photo.  
-The house owner can respond with a time-based one time password in the  
-privat chat to open the door.  
+
 
 ## Long description
 
 Starting point was an article [Überallkingel at heise.de](https://www.heise.de/select/ct/2017/17/1502995489716437).  
-At beginning i startet it with RPi's (one as a Cam and one connected to BTIcino house intercom).  
-Later i decided to have infra red cam for night vison and i got during an amazon black week sale a cheap blink cam. That's why i support my own small [Flask API - PiCam API](https://github.com/OliverDrechsler/PiCam_API) Project as well the Blink Cams in general. 
+This front door intercom system extends any standard front door intercom system,  
+which are not connected to the Internet.
+The project offers the following functionality:
+- Front door bell detection. 
+- Notification via private Telegram channel [PyTelegramBotAPI library](https://github.com/eternnoir/pyTelegramBotAPI)
+- Photo creation and telegram sending on doorbell ringing.  
+- Front door opening via time-based one-time password [PyOTP library](https://pyauth.github.io/pyotp/)
+- Use of [Blink](https://blinkforhome.com) cameras with [BlinkPy library](https://github.com/fronzbot/blinkpy)
+- Use of my Raspberry PI camera Project [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) Project.
+- Day / night detection to select the appropriate camera if several are used simultaneously via [astral library](https://github.com/sffjunkie/astral)
+- Blink camera multi factory authentication setup via telegram chat message if Blink requires this.
+- Blink camera or PiCamera photo creation and sending on Telegram message request.
+- Automatic camera selection between Blink or PiCam_APi possible.
+- Fallback camera selection if one fails.
+- Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) website to open the front door with the browser using a time-based one-time password.
+- Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) REST-API to open the front door (via time-based one-time password) for integration into other projects / solutions / automations.
 
-This Project consists of 
+## Demo
+-> short Telegram usage video will follow.   
+-> short video WebUi usage video will follow.  
 
-- one Raspberry Pi B+ which runs this project files
+## Outlook
+
+Same solution is in development as JAVA Spring Boot app too.  
+Also a IOS Swift App, which makes telegram app and OTP obsolete for opening the door.  
+It's actually a POC will be published soon. 
+Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.   
+Next it's plan is to extend the Web-UI with more features (like show snapshots and other things)
+
+## Get started
+
+### Requirements
+Hardware:
+- Raspberry PI B+ or above
+- Blink Camera oder Pi Zero with PiCam_API Project installed
+- Front door intercom like BTIcino
   
-either use one of these camera or both
-- one Paspberry Pi Zero with Camera see git project [https://github.com/OliverDrechsler/PiCam_API](https://github.com/OliverDrechsler/PiCam_API)
-- one Blink Camera
+Software:
+- Python 3.10 or above
+- pip
+- git
+- Rasbian oder Ubuntu on Raspberry Pi
 
-The main Raspberry Pi is connected via wire to the BTIcino front-door intercom.   
-When the front door rings, the RPi detects it and starts  
-to take a photo (depends on config file) either from PiCam API or from a Blink Cam.  
-Then the RPi sends a telegram message about the door ringing to a privat chat.  
-Also it sends in a second step the photo to the telegram privat group.  
-The RPi runs a telegram bot. You can now respond with a one time password  
-message to open the door.
+### Code tree structure
+
+```
+.
+├── bot                   # Telegram modul classes for receiveing and sending
+├── camera                # Camera module 
+├── config                # Config module, enum and data classes
+├── docs                  # Further documentation
+│   ├── _source           # Documentation source dir for build docu page
+│   │   └── _static        # static docu images
+│   ├── telegram_bot_setup.md     # Telegram bot setup how to
+│   └── pull_request_template.md  # Pull request template
+├── door                  # Door module classes for opening or bell detection  
+├── test                  # Unit tests
+├── tools                 # CLI Helper tools
+│   ├── encrypt_decrypt_password_with_base32.py   # Encrypt or decrypt with base32 input password 
+│   └── totp_helper_cli.py                        # create or verify a TOTP from config file 
+└── web                   # Flask Webpage & REST-API modul class
+    ├── static            # Static web page icon files for favicons
+    └── templates         # Served and rendered web pages
+fdia.py                   # Main program code
+fdia.service              # Linux systemd service template file
+requirements.txt          # Depend lib to install via pip
+config_template.yaml      # Template config file
+Makefile                  # make for build html docs - github pages 
+README.md                 # This readme
+LICENSE                   # This project license
+requirements_licenses.txt # depend library licenses
+pull_request_template.md  #  Pull request how to
+
+```
+
+### Installation
+
+1. Clone repo to your RPi.
+```git clone git@github.com:OliverDrechsler/front_door_intercom_automation.git```
+
+1. go into project repo `cd front_door_intercom_automation`
+
+2. now run pip3 to install python requirments
+  ```pip3 install requirements.txt```
+
+1. copy config_template.yaml to config.yaml file
+   `cp config_template.yaml config.yaml`
+
+2. edit `config.yaml` file with your favorite editor
+
+- for creation of telegram bot and privat chat channel follow [telegram_bot_setup](docs/telegram_bot_setup.md)
+- for creation of base32 encrypted timebased one time password master password follow [one_time_password_setup](docs/one_time_password_setup.md)
+- for blink configuration follow [blink_camera setup](docs/blink_camera_setup.md)
+- for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects
+- for flask web config follow description in `config_template.yaml`
+
+6. run app
+   `python3 fdia.py`
+   and check log output
+
+   for troubleshooting see [Help](#help)
+
+7. setup app to run as daemon / service in linux follow [System service setup](#system-service-setup)
+
+### Helper tools
+
+#### Encrypt and decrypt a password with base32 for totp
+see further docu [docs/one_time_password_setup.md](docs/one_time_password_setup.md)
+
+#### get a OTP password or verify a OTP via cli
+see further docu [docs/totp_helper_cli.md](docs/totp_helper_cli.md)
+
+
+### System service setup
+Edit file `fdia.service` and adjust to your path ( `ExecStart=/home/pi/front_door_intercom_automation/fdia.py` ).  
+To run fdia as a service on startup with root permissions  
+copy `fdia.service`to `/etc/systemd/system/`to your RPi systemd deamon folder.  
+Run `systemctl daemon-reload` and `systemctl start fdia`to start it as a service.  
+
+
+### Configuration - config files
+
+### config.yaml - config_template.yaml
+config_template.yaml is a template config file and must be adjusted to your needs.  
+Copy config_template.yaml to config.yaml into project root folder.  
+`cp config_template.yaml config.yaml`  
   
-The bot is only reacting on defined (see config file) privat chat group as well  
-on known defined chat person id's!  
-
-The bot reacts on following received commands:
--  opening the door
--  taking a snapshot/photo
--  adding blink cam 2 factor authentication code
+In this yaml file you'll find after `#` comments / hints for which the line is what to configure.  
   
-The totp (time-based one time password) is compatible to each public available TOTP provider.  
-It also support sha1(not recommended), sha256 (sha2) and sha512 (sha3).  
-I recommend to use sha512.  
-In future there will be an additional AES encrytption added.  
+### blink_config.json
 
-The telegram bot has a command feature, where you can send the new 2FA token to system. In case of first time login or renew/relogin required.  
+If you have configured in the `config.yaml` your blink camera  
+( followed by this docu [blink_camera setup](docs/blink_camera_setup.md) )  
+after starting `fdia.py` application you can send your received blink 2 factor token via telegram channel
+to the application.  
+It starts to authenticate via 2FA / MFA (multi factor authentication) and saves afterwards the 
+blink config to the file `blink_config.json`. From now on it is getting used and normally no further
+2FA / MFA authentication is not anymore required.  
+Handle this file careful since there is your blink secret stored.
 
-## Mobile Device Apps
+### Setup OTP
 
+To store a master password for *totp* *time pased one time password* it must be encoded with base32 as a hash.
+You can run the the cli script `encrypt_decrypt_password_with_base32.py` in `tools` diretory.
+Than you get a base32 hashed password.  
+Please store this password in the `config.yaml` under section `otp:` `password:`
+
+For further docu refer to [docs/one_time_password_setup.md](docs/one_time_password_setup.md)
+
+
+## Cameras
+
+This project actually supports two type of cameras.
+- [Blink](https://blinkforhome.com) cameras with [BlinkPy library](https://github.com/fronzbot/blinkpy)  
+  This means all Blink cameras are supported.  
+- My Raspberry PI camera Project [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) Project.  
+  It is a self coded software project which just requires a Raspberry Pi and a wired Camera.
+  It is your choice when you want to be more GDPR compliant and don't want to expose your camera to the internet. Also you can use this project from your home wireless network only via web ui and must not use telegram.
+
+### Blink Cameras
+
+For configuration of the blink camera please procceed with further [docu/blink_camera_setup.md](docu/blink_camera_setup.md).  
+
+
+### Raspberry Pi Camera Project PiCam_API
+
+For configuration of the PiCam_API please procceed with the [PiCam_API Project](https://github.com/OliverDrechsler/PiCam_API) docu.  
+
+
+## Telegram
+
+### Telegram setup
+please follow exra documentation here [telegram_bot_setup](docs/telegram_bot_setup.md)
+
+### Telegram receiving message commands and interactions
+
+Received Telegram chat channel message command to action
+
+- `/Foto` = request to take a foto auto choice for PiCam or Blink config and send it in the telegram chat channel
+- `/Blink` = request to take a Blink foto and send it in the telegram chat channel
+- `/PiCam` = request to take a PiCam_API foto and send it in the telegram chat channel
+- `/Blink_auth <here your 6 digit security code>` = request to do a blink 2FA / MFA authentication and store blink config  
+- `<time based one time password code>` = validate totp, take a foto send it and open door.
+
+
+
+## Mobile Setup
+
+Install on your Mobile following Apps and set it up.
+
+### Mobile Apps
 * [Telegram Messagenger for free in AppStore](https://apps.apple.com/de/app/telegram-messenger/id686449807) 
-* [OTP Auth App for free in AppStore](https://apps.apple.com/de/app/otp-auth/id659877384) 
-## Hardware
-### Hardware circuit components
+* [OTP Auth App for free in AppStore](https://apps.apple.com/de/app/otp-auth/id659877384)
+* [Apple IOS Shortcuts for REST API automation](https://support.apple.com/de-de/guide/shortcuts/welcome/ios)
+
+
+### Setup recommended OTP in your mobile phone
+
+Provide configure same OTP config in OTP Auth App like in `config.yaml`defined.  
+
+
+### Mobile usage
+
+Use OTP App to get a totp code and copy to clipboard.  
+Paste clipboard code into telegram chat channel where front-door intercom automation bot ist listening.
+When bot receives valid code - door will be opened.
+
+Apple IOS Shotcuts App can be used to to send direct otp code passwords to REST-API.
+As long as you are in the local network as the fron door intercom automation is you can send it direct.
+If you're away for your home wireless network you can use a VPN tunnel to connect to your ISP router  
+and than send the otp door open code to the REST-API.  
+Do not expose the Flask Web-UI or REST-API to the internet!   
+VPN Tunnel can activation can also be automated like the REST-API call.
+
+### Mobile IOS Door Open App
+
+A mobile IOS door opening app is in development.  
+As long as it's not published i recommened to use the above Apps.  
+
+### How to use Apple IOS Shortcuts App to automate door opening
+
+t.b.d
+
+
+## Web UI & REST-API usage
+
+A Flask Web-UI will be provided on given config port in `config.yaml` under section `web`:
+```
+web:
+  flask_web_port: 5001                            # flask webserver port
+  flask_secret_key: "my_super_flask_secret_key"   # provide here your own flask secret key
+  browser_session_cookie_lifetime: 30             # browser cookie key
+  flask_users:             # list of flask app login user for webpage and/or rest api call
+    - WebUser1: "password"
+    - WebUser2: "password"
+```
+Here you can specify multiple users which are allowed to access the Web page and REST-API.  
+  
+For TLS cert encryption i recommend to use a NGINX reverse proxy with TLS cert configuration.  
+Please consult google for further details about it.  
+
+A REST-API `POST` call can be send to URL `http://<fqdn, hostname or ip>:<port>/open`.  
+For Authentication a base64 encoded header with username and password must be added.   
+Request body must be
+```
+{
+  "totp": "<here time based one time password code>"
+}
+```
+
+curl command example
+```
+curl -X POST http://127.0.0.1:<FLASK_WEB_PORT>/open \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Basic <BASE64_ENCODED_CREDENTIALS>" \
+     -d '{"totp": "<YOUR_TOTP_CODE>"}'
+```
+The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.  
+
+
+## Hardware Ciruit
+
+### required HW parts
 
 - door bell detection board:
 
   * Strip grid circuit board of Epoxy – 100 x 100 mit 2,54mm
   * Optocoupler (PC817)
-  * to get correct voltage of 1,2V for Optocoupler, a resistor of 330 Ohm (8 Volt), 560 Ohm (12 Volt) or 1,2 Kiloohm (24 Volt) 
+  * Resistor: to get correct voltage of 1,2V for Optocoupler, 
+    a resistor of 330 Ohm (8 Volt), 560 Ohm (12 Volt) or 1,2 Kilo ohm (24 Volt) 
   * Raspberry Pi Hutschienen-Netzteil (Mean Well MDR-20-15) für den Einbau in den Sicherungskasten
 
 - door opener board with relais:
 
-  * saintsmart 2 channel 5V 
+  * ***saintsmart 2-Channel 5V Relay Module***  
+![saintsmart 2-Channel 5V Relay Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU) 
+  [shop where to buy saintsmart relay](https://www.sainsmart.com/products/2-channel-5v-relay-module)
 
-### RPi Hardware
-
-- Raspberry Pi B+ with both circuits connected
-- Raspberry Pi Zero with camera
-
-### How to build circuit 
-
-t.b.d.
-#### selfmade circuit board connected to BTIcino Intercom
-
-to describe  
-***BTICino wiring diagram***  
-![BTICino wiring diagram](docs/img/RPi-BTIcino.jpg)
-
-#### 2 channel relay board for door opener
-
-to describe  
-***saintsmart 2-Channel 5V Relay Module***  
-![saintsmart 2-Channel 5V Relay Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU)
   
-[shop where to buy saintsmart relay](https://www.sainsmart.com/products/2-channel-5v-relay-module)
-
 ***Jumper and wiring layout***
 [wiring layout at stackexchange](https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules)
 
-### My build pictures 
 
-t.b.d.
+### build Hardware circuit
+Pictures:  
+[Door Bell ring detect circuit](./docs/_static/Build_Door_Bell_1.jpeg)  
+[Relai Wiring_1](./docs/_static/Build_Relai_Opener_1.jpeg)  
+[Relai Wiring_2](./docs/_static/Build_Relai_Opener_2.jpeg)  
 
-## Code tree structure
+***BTICino CT20/51 wiring pictures***  
+[BTICino Wiring Diagram](./docs/_static/RPi-BTIcino.jpg)  
+  
+[BTicino Intercom CT20/51 Picture 1](./docs/_static/Intercom_1.jpeg)  
+[BTicino Intercom CT20/51 Picture 2](./docs/_static/Intercom_2.jpeg)  
+[BTicino Intercom CT20/51 Picture 3](./docs/_static/Intercom_2.jpeg)  
+  
+***BTICino CT20/51 plans***
+[Plan 2](./docs/_static/Plan_2.png)  
+[Plan 3](./docs/_static/Plan_3.png)  
+[Plan 4](./docs/_static/Plan_4.png)  
+[Plan 5](./docs/_static/Plan_5.png)  
+[Plan 1](./docs/_static/Plan_1.jpeg)  
 
+## Help
+
+### Debugging
+
+Edit `fdia.py` file  and in top of the file line 22 (after imports)  
+there you'll find the section
 ```
-│
-├── camera                   # Camera's package folder
-│   ├── __init__.py
-│   ├── blink_cam.py         # Amazon's Blink Camera modules
-│   ├── cam_common.py        # a common module and to decide which cam gets used
-│   └── picam.py             # a module to access my PiCam API Project vi REST-API
-├── config                   # config package folder for configuration modules
-│   ├── __init__.py
-│   └── config_util.py       # Common config module / class 
-├── docs                     # Github Pages sphinx docu better read here https://oliverdrechsler.github.io/front_door_intercom_automation/
-├── door                     # door package folder
-│   ├── __init__.py
-│   ├── bell.py              # bell monitoring module
-│   └── opener.py            # door opening module
-├── fdia.py                  # Main Script / Program
-├── fdia.service             # sample systemd service config file
-├── get_otp_token.py         # OLD: generate a totp password with otp lib and sha1
-├── messaging                # telegram package folder
-│   ├── __init__.py
-│   ├── otp.py               # verify totp password module
-│   ├── receive_msg.py       # telegram bot module to receive messages
-│   └── send_msg.py          # telegram send message module
-├── LICENSE                  # Software LICENSE
-├── requirements_licenses.txt # used libraries licenes
-├── README.md                # This readme file
-├── blink_config.json        # Blink Camera config file. If not exist it be will created.
-├── config.yaml              # main config file if not found it will use config_template.yaml
-├── config_template.yaml     # a config template file to build your on config file
-├── telegram_bot_setup.md    # quick guid to setup a telegram bot
-└── requirements.txt         # required python libraries to install 
+"""Define logging LEVEL"""
+default_log_level = logging.INFO
 ```
 
-## Config Files
+Here you can modify *logging.INFO* level to *logging.DEBUG* and store the file.
+Now when you run the `fdia.py`app again you get full detail debug log of:
+- fdia app and it 6 threads
+  - fdia thread = main thread
+  - thread_receive_telegram_msg
+  - thread_send_telegram_msg
+  - thread_cameras
+  - web_thread
+  - thread_door_bell
+  - thread_open_door
+and 
+  - blink lib in debug mode
+  - telegram lib in debug mode
 
-config_template.yaml is a template config file and must be adjusted to your needs.
-Copy config_template.yaml to config.yaml into project root folder
-### Main config file description
+The communication between thread is handled via queues.  
+Therefore exists this `config/data_class.py` which is the the data transfer class between the threads  
+to submit the task.  
+  
+In case you do not find ther error in the log, raise a GitHub issue with your error.  
 
-t.b.d.
-Also see inside config_template.yaml
+### Hints
 
-### Blink Cam config file description
-
-t.b.d.
-
-## Installation
-
-### How to install / python requirements
-
-FDIA needs root permission to access GPIO Pin.
-If this is not wanted you have to adjust right to:
-- /dev/gpiomem
-- /sys/class/gpio...
-but its you consult google for it...  
-
-Python 3, pip3 and git cli is required.  
-Clone repo to your RPi.
-```git clone git@github.com:OliverDrechsler/front_door_intercom_automation.git```
-
-now run pip3 to install python requirments
-```pip3 install requirements.txt```
-
-### How to run project code as a systemd service
-
-Adjust file `fdia.service` to your path.
-To run fdia as a service on startup with root permissions  
-copy `fdia.service`to `/etc/systemd/system/`to your RPi systemd deamon folder. 
-Run `systemctl daemon-reload` and `systemctl start fdia`to start it as a service
-
-## How to
+Following important libraries are used and can also be consulted in case where issues are in
+- Blink -> [BlinkPy library](https://github.com/fronzbot/blinkpy)
+- Telegram -> [PyTelegramBotAPI library](https://github.com/eternnoir/pyTelegramBotAPI)
+- Web-UI and Rest-API (Flask) -> [Flask](https://flask.palletsprojects.com/en/3.0.x/)
+- Timebase one time password -> [PyOTP library](https://pyauth.github.io/pyotp/)
+- Ciruit wiring -> [Überallkingel at heise.de](https://www.heise.de/select/ct/2017/17/1502995489716437)
+  
+Internal code API docu can be found at github pages linked on top above or in code it self.  
 
 ### How to run unit-tests
-
-t.b.d.
 `python3 -m pytest`
 
-### Build pipeline checks
+### GiHub actions pipelines
 
-t.b.d.
-## Telegram
-### How to setup a telegram bot
+Check folder `.github`
+- `dependabot.yml` dependcy check pipeline for security issues
+- `workflows/ci.yml` contious integration pipeline builds code and tests code
+- `workflows/codeql-analysis.yml` CodeQL analysis pipeline
+- `workflows/docs_update.yml`  build GitHub page pipeline 
 
-see [telegram_bot_setup](telegram_bot_setup.md)
-### Telegram Bot Commands
+## ChangeLog
 
-t.b.d.
-## Time-based one time passwords info and recommendations
+Release 1.0.0 soo
 
-t.b.d.
+Older Release 0.0.5 and below uses and supports
+- python below 3.8 and therefore older OS'es
+- telepot library
+- blinkpy library below 0.20.0
 
-## ToDo's: 
+By default older version are not recommended to use because of vulnerabilities.
+Use always latest version.
 
-- [ ] write full documentation
-- [ ] added aes encryption to send otp password with aes encrypt additionally
-- [ ] add precommit checks (lint,bandit and pytest)
-- [ ] add setup.py install script
-- [ ] add fdia.py command line args to generate config and set new password
-- [ ] pictures how i build the hardware
-- [ ] pictures and docu how i mounted RPi Zero with Cam
-- [ ] pictures and docu how i mounted blink cam
-- [ ] pictures and docu how mounted the RPi close to BTIcino frond-door intercom in the control cabinet
-- [ ] pictures door bell photo notification
-- [ ] picture door bell open message
 
-**other repo ToDo's**
+## Previous Python Version releases
 
-- [ ] PiCam API had some ToDo's [https://github.com/OliverDrechsler/PiCam_API](https://github.com/OliverDrechsler/PiCam_API)
+**If you want use a release which works with python below 3.8 take a look at [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)** 
 
-- [ ] develop an iPhone and an Apple Watch App to:
-  - open door through one button via  
-        telegram message with AES + totp code encryption  
-  - geofencing feature for asking to open the door 
+## Author info
+I'm Oliver Drechsler and a Java and Python developer.  
+- 📫 Connect with me:: ...  
+<a href="https://twitter.com/lolly_olmi">
+  <img
+      alt="Twitter"
+      src="https://img.shields.io/badge/Twitter-1DA1F2?logo=twitter&logoColor=white&style=for-the-badge"
+    />
+</a>  
+<a href="https://www.linkedin.com/in/oliver-drechsler">
+  <img
+    alt="Linkedin"
+    src="https://img.shields.io/badge/linkedin-0077B5?logo=linkedin&logoColor=white&style=for-the-badge"
+  />
+</a>  
+<a href="https://www.xing.com/profile/Oliver_Drechsler5">
+  <img
+    alt="XING"
+    src="https://img.shields.io/badge/XING-Oliver%20Drechsler-green"
+  />
+</a>  
+<a href="https://stackoverflow.com/users/13054340/oliver-d">
+  <img
+    alt="Stackoverflow"
+    src="https://img.shields.io/badge/StackOverflow-Oliver%20Drechsler-green"
+  />
+</a>  
+ <a href="https://mailhide.io/e/zUK7KX73">
+  <img
+    src="https://img.shields.io/badge/Mail-8B89CC?style=for-the-badge&logo=mail&logoColor=white"
+  />
+</a>  
 
+
+## License
+The licence is GPLv2 because pyTelegramBotAPI was released under the GPLv2 and forces me to use the GPLv2
+see [license file of this project](LICENSE)
+
+Dependcies to other projects and libraries listed here [requirements_licenses.txt](requirements_licenses.txt).  
+It is create with [licensecheck](https://github.com/FHPythonUtils/LicenseCheck)
+```
+pip3 install licensecheck
+licensecheck -u requirements > requirements_license.txt
+```
+
+## Contribution
+Pull request docu can be found [here in docs/pull_request_template.md](docs/pull_request_template.md)
