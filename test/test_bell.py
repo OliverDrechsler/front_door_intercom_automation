@@ -1,69 +1,82 @@
 import unittest
-import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
-from door.bell import Door
-import json
+from unittest.mock import patch, MagicMock, PropertyMock, AsyncMock
+import asyncio
+import threading
+import queue
+from door.bell import DoorBell
+from config import config_util
+from config.data_class import Message_Task, Camera_Task
 
 
-class DoorTestCase(unittest.TestCase):
-    def setUp(self):
-        with open("test/expected_conf.json") as json_file:
-            self.CONFIG_DICT = json.load(json_file)
+class TestDoorBell(unittest.TestCase):
 
-        self.patcher_os_isfile = patch(
-            "common.config_util.os.path.isfile", return_value=False
-        )
-        self.patcher_os_path = patch(
-            "common.config_util.os.path.exists", return_value=False
-        )
+    @patch('door.bell.detect_rpi.detect_rpi', return_value=True)
+    @patch('door.bell.Button')
+    def test_ring_on_rpi(self, mock_button, mock_detect_rpi):
+        shutdown_event = threading.Event()
+        config = MagicMock(spec=config_util.Configuration)
+        config.run_on_raspberry = True
+        config.telegram_chat_nr = "test_chat_id"
+        config.door_bell_pin = 17
+        loop = asyncio.new_event_loop()
+        message_task_queue = queue.Queue()
+        camera_task_queue_async = asyncio.Queue()
 
-        self.patch_time = patch("door.bell.time.sleep", return_value=MagicMock())
-        self.mock_time = self.patch_time.start()
+        door_bell = DoorBell(shutdown_event, config, loop, message_task_queue, camera_task_queue_async)
 
-        self.bot = MagicMock()
-        self.blink = MagicMock()
-        self.auth = MagicMock()
+        mock_button_instance = mock_button.return_value
+        type(mock_button_instance).is_pressed = PropertyMock(side_effect=[True, False])
 
-        self.patch_button = patch("door.bell.Button", return_value=MagicMock())
-        self.mock_button = self.patch_button.start()
+        with patch('door.bell.datetime') as mock_datetime:
+            mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
+            with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
+                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock) as mock_put:
+                    with patch('time.sleep', side_effect=lambda x: shutdown_event.set()):
+                        door_bell.ring(test=True)
 
-        self.patch_send_msg = patch(
-            "door.bell.send_msg.telegram_send_message", return_value=MagicMock()
-        )
-        self.mock_send_msg = self.patch_send_msg.start()
+        self.assertEqual(message_task_queue.qsize(), 1)
+        self.assertEqual(mock_put.call_count, 1)
+        message_task = message_task_queue.get()
+        camera_task = mock_put.call_args[0][0]
+        self.assertIsInstance(message_task, Message_Task)
+        self.assertIsInstance(camera_task, Camera_Task)
+        self.assertTrue(message_task.send)
+        self.assertTrue(camera_task.photo)
+        self.assertEqual(message_task.chat_id, "test_chat_id")
+        self.assertIn("Ding Dong! 2024-07-12_12:00:00", message_task.data_text)
 
-        self.patch_choose_camera = patch(
-            "door.bell.cam_common.choose_camera", return_value=MagicMock()
-        )
-        self.mock_choose_camera = self.patch_choose_camera.start()
+    @patch('door.bell.detect_rpi.detect_rpi', return_value=False)
+    def test_ring_not_on_rpi(self, mock_detect_rpi):
+        shutdown_event = threading.Event()
+        config = MagicMock(spec=config_util.Configuration)
+        config.run_on_raspberry = False
+        config.testing_bell_msg = True
+        config.telegram_chat_nr = "test_chat_id"
+        config.door_bell_pin = 17
+        loop = asyncio.new_event_loop()
+        message_task_queue = queue.Queue()
+        camera_task_queue_async = asyncio.Queue()
 
-        self.mock_os_isfile = self.patcher_os_isfile.start()
-        with self.assertLogs("door-bell", level="DEBUG") as self.dl_log:
-            self.instance_door = Door(self.bot, self.blink, self.auth)
+        door_bell = DoorBell(shutdown_event, config, loop, message_task_queue, camera_task_queue_async)
 
-    def tearDown(self):
-        # self.patcher_logger.stop()
-        self.patcher_os_isfile.stop()
-        self.patch_time.stop()
-        self.patch_button.stop()
-        self.patch_send_msg.stop()
-        self.patch_choose_camera.stop()
+        with patch('door.bell.datetime') as mock_datetime:
+            mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
+            with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
+                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock) as mock_put:
+                    with patch('time.sleep', side_effect=lambda x: shutdown_event.set()):
+                        door_bell.ring(test=True)
 
-    def test_edge_case_ring_not_running_on_RPi_eq_test_mode(self, test=True):
+        self.assertEqual(message_task_queue.qsize(), 1)
+        self.assertEqual(mock_put.call_count, 1)
+        message_task = message_task_queue.get()
+        camera_task = mock_put.call_args[0][0]
+        self.assertIsInstance(message_task, Message_Task)
+        self.assertIsInstance(camera_task, Camera_Task)
+        self.assertTrue(message_task.send)
+        self.assertTrue(camera_task.photo)
+        self.assertEqual(message_task.chat_id, "test_chat_id")
+        self.assertIn("Ding Dong! 2024-07-12_12:00:00", message_task.data_text)
 
-        self.mock_os_isfile.assert_called()
-        self.assertEqual(self.instance_door.bot, self.bot)
-        self.assertEqual(self.instance_door.blink, self.blink)
-        self.assertEqual(self.instance_door.auth, self.auth)
-        self.assertEqual(self.instance_door.config, self.CONFIG_DICT)
-        expected_log = ["DEBUG:door-bell:reading config"]
-        self.assertEqual(self.dl_log.output, expected_log)
 
-        log1 = [
-            "INFO:door-bell:start monitoring door bell",
-            "DEBUG:door-bell:NOT on RPI: start empty endless loop",
-        ]
-        self.instance_door.run_on_raspberry = False
-        with self.assertLogs("door-bell", level="DEBUG") as self.ring_log:
-            self.instance_door.ring(test=True)
-        self.assertEqual(self.ring_log.output, log1)
+if __name__ == '__main__':
+    unittest.main()

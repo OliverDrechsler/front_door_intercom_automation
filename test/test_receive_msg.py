@@ -1,203 +1,154 @@
 import unittest
-import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
-from messaging.receive_msg import TelegramMessages
-from messaging.send_msg import telegram_send_message
-import json
+from unittest.mock import MagicMock, patch, AsyncMock
+import asyncio
+import threading
+import queue
+import telebot
+from config import config_util
+from config.data_class import Camera_Task, Open_Door_Task
+from bot.receive_msg import ReceivingMessage
 
 
-class TelegramMessagesTestCase(unittest.TestCase):
+class TestReceivingMessage(unittest.TestCase):
+
     def setUp(self):
-        with open("test/expected_conf.json") as json_file:
-            self.CONFIG_DICT = json.load(json_file)
+        self.shutdown_event = threading.Event()
+        self.config = config_util.Configuration()
+        self.loop = asyncio.new_event_loop()
+        self.camera_task_queue_async = AsyncMock(asyncio.Queue)
+        self.door_open_task_queue = queue.Queue()
+        self.bot = MagicMock(telebot.TeleBot)
 
-        with open("test/mocked_received_msg.json") as json_file:
-            self.mocked_received_msg = json.load(json_file)
+        self.config.bot = self.bot
+        self.config.telegram_chat_nr = "123456"
+        self.config.allowed_user_ids = ["111", "222"]
+        self.config.otp_password = "base32secret3232"
+        self.config.otp_length = 6
+        self.config.hash_type = 'sha1'
+        self.config.otp_interval = 30
 
-        self.patcher_os_isfile = patch(
-            "common.config_util.os.path.isfile", return_value=False
-        )
-        self.patcher_os_path = patch(
-            "common.config_util.os.path.exists", return_value=False
-        )
-
-        self.bot = MagicMock()
-        self.blink = MagicMock()
-        self.auth = MagicMock()
-
-        self.patch_verify_totp_code = patch(
-            "messaging.otp.verify_totp_code", return_value=MagicMock()
-        )
-        self.mock_verify_totp_code = self.patch_verify_totp_code.start()
-
-        self.patch_choose_camera = patch(
-            "camera.cam_common.choose_camera", return_value=MagicMock()
-        )
-        self.mock_choose_camera = self.patch_choose_camera.start()
-        self.patch_send_msg = patch(
-            "messaging.send_msg.telegram_send_message", return_value=MagicMock()
-        )
-        self.mock_send_msg = self.patch_send_msg.start()
-
-        self.patch_blink2FA = patch(
-            "camera.blink_cam.add_2fa_blink_token", return_value=MagicMock()
-        )
-        self.mock_blink2FA = self.patch_blink2FA.start()
-        self.patch_blink_compare_config = patch(
-            "camera.blink_cam.blink_compare_config", return_value=MagicMock()
-        )
-        self.mock_blink_compare_config = self.patch_blink_compare_config.start()
-
-        self.mock_os_isfile = self.patcher_os_isfile.start()
-
-        with self.assertLogs("fdia_telegram", level="DEBUG") as self.log1:
-            self.instance_TelegramMessages = TelegramMessages(
-                self.bot, self.blink, self.auth
-            )
-
-    def tearDown(self):
-        self.patcher_os_isfile.stop()
-        self.patch_verify_totp_code.stop()
-        self.patch_send_msg.stop()
-        self.patch_choose_camera.stop()
-        self.patch_blink2FA.stop()
-        self.patch_blink_compare_config.stop()
-
-    def test_telegram_messages_config(self):
-        self.mock_os_isfile.assert_called()
-        self.assertEqual(self.instance_TelegramMessages.bot, self.bot)
-        self.assertEqual(self.instance_TelegramMessages.blink, self.blink)
-        self.assertEqual(self.instance_TelegramMessages.auth, self.auth)
-        self.assertEqual(self.instance_TelegramMessages.config, self.CONFIG_DICT)
-        expected_log1 = ["DEBUG:fdia_telegram:reading config"]
-        self.assertEqual(self.log1.output, expected_log1)
-
-    def test_receive_msg_text_allowed_user_and_group_unwanted_text(self):
-        with open("test/mocked_received_msg.json") as json_file:
-            self.mocked_received_msg = json.load(json_file)
-        expected_log2 = [
-            "INFO:fdia_telegram:received a telegram message",
-            "DEBUG:fdia_telegram:receiving a message text in chat id -4321",
-            "INFO:fdia_telegram:received message = test4",
-            "INFO:fdia_telegram:chat msg allowed: chat_group_id -4321 is in config",
-            "INFO:fdia_telegram:chat msg allowed: user FirstName with from_id 123456789 is in config",
-            "DEBUG:fdia_telegram:text not matched checking for totp code",
-            "DEBUG:fdia_telegram:regex search string",
-            "DEBUG:fdia_telegram:no code number detected",
-        ]
-        with self.assertLogs("fdia_telegram", level="DEBUG") as self.log2:
-            self.instance_TelegramMessages.handle_received_message(
-                self.mocked_received_msg
-            )
-        self.assertEqual(self.log2.output, expected_log2)
-        self.assertEqual(self.instance_TelegramMessages.content_type, "text")
-        self.assertEqual(
-            str(self.instance_TelegramMessages.chat_id),
-            self.instance_TelegramMessages.telegram_chat_nr,
-        )
-        self.assertIn(
-            str(self.instance_TelegramMessages.from_id),
-            self.instance_TelegramMessages.allowed_user_ids,
-        )
-        self.mock_verify_totp_code.assert_not_called()
-
-    def test_receive_msg_text_allowed_user_and_group_with_foto_text(self):
-        with open("test/mocked_received_msg.json") as json_file:
-            self.mocked_received_msg = json.load(json_file)
-        self.mocked_received_msg["text"] = "foto"
-        expected_log3 = [
-            "INFO:fdia_telegram:received a telegram message",
-            "DEBUG:fdia_telegram:receiving a message text in chat id -4321",
-            "INFO:fdia_telegram:received message = foto",
-            "INFO:fdia_telegram:chat msg allowed: chat_group_id -4321 is in config",
-            "INFO:fdia_telegram:chat msg allowed: user FirstName with from_id 123456789 is in config",
-            "DEBUG:fdia_telegram:search_key: foto in message: foto",
-            "DEBUG:fdia_telegram:text match foto found",
-        ]
-        with self.assertLogs("fdia_telegram", level="DEBUG") as self.log3:
-            self.instance_TelegramMessages.handle_received_message(
-                self.mocked_received_msg
-            )
-        self.assertEqual(self.log3.output, expected_log3)
-        self.assertEqual(self.instance_TelegramMessages.content_type, "text")
-        self.assertEqual(
-            str(self.instance_TelegramMessages.chat_id),
-            self.instance_TelegramMessages.telegram_chat_nr,
-        )
-        self.assertIn(
-            str(self.instance_TelegramMessages.from_id),
-            self.instance_TelegramMessages.allowed_user_ids,
-        )
-        self.mock_send_msg.assert_called()
-        self.mock_choose_camera.assert_called()
-
-    def test_receive_msg_unallowed_user(self):
-        with open("test/mocked_received_msg.json") as json_file:
-            self.mocked_received_msg = json.load(json_file)
-        self.mocked_received_msg["from"]["id"] = 2342356
-        expected_log4 = [
-            "INFO:fdia_telegram:received a telegram message",
-            "DEBUG:fdia_telegram:receiving a message text in chat id -4321",
-            "INFO:fdia_telegram:received message = test4",
-            "INFO:fdia_telegram:chat msg allowed: chat_group_id -4321 is in config",
-            "INFO:fdia_telegram:chat msg denied: from user FirstName with from_id 2342356 is NOT in config",
-        ]
-        with self.assertLogs("fdia_telegram", level="DEBUG") as self.log4:
-            self.instance_TelegramMessages.handle_received_message(
-                self.mocked_received_msg
-            )
-        self.assertEqual(self.log4.output, expected_log4)
-        self.assertNotIn(
-            str(self.instance_TelegramMessages.from_id),
-            self.instance_TelegramMessages.allowed_user_ids,
+        self.receiving_message = ReceivingMessage(
+            self.shutdown_event,
+            self.config,
+            self.loop,
+            self.camera_task_queue_async,
+            self.door_open_task_queue
         )
 
-    def test_receive_msg_unallowed_group(self):
-        with open("test/mocked_received_msg.json") as json_file:
-            self.mocked_received_msg = json.load(json_file)
-        self.mocked_received_msg["chat"]["id"] = 3566
-        expected_log5 = [
-            "INFO:fdia_telegram:received a telegram message",
-            "DEBUG:fdia_telegram:receiving a message text in chat id 3566",
-            "INFO:fdia_telegram:received message = test4",
-            "INFO:fdia_telegram:chat msg denied: chat_id 3566 is not in config",
-        ]
-        with self.assertLogs("fdia_telegram", level="DEBUG") as self.log5:
-            self.instance_TelegramMessages.handle_received_message(
-                self.mocked_received_msg
-            )
-        self.assertEqual(self.log5.output, expected_log5)
-        self.assertNotEqual(
-            str(self.instance_TelegramMessages.chat_id),
-            self.instance_TelegramMessages.telegram_chat_nr,
-        )
+    def test_start_bot_polling(self):
+        self.receiving_message.bot.infinity_polling = MagicMock()
+        self.receiving_message.start()
+        self.receiving_message.bot.infinity_polling.assert_called_once()
 
-    def test_receive_msg_text_allowed_user_and_group_with_blink_2FA_code_text(self):
-        with open("test/mocked_received_msg.json") as json_file:
-            self.mocked_received_msg = json.load(json_file)
-        self.mocked_received_msg["text"] = "blink 356632"
-        expected_log6 = [
-            "INFO:fdia_telegram:received a telegram message",
-            f"DEBUG:fdia_telegram:receiving a message text in chat id {self.CONFIG_DICT['telegram']['chat_number']}",
-            "INFO:fdia_telegram:received message = blink 356632",
-            f"INFO:fdia_telegram:chat msg allowed: chat_group_id {self.CONFIG_DICT['telegram']['chat_number']} is in config",
-            f"INFO:fdia_telegram:chat msg allowed: user FirstName with from_id {self.CONFIG_DICT['telegram']['allowed_user_ids'][0]} is in config",
-            "DEBUG:fdia_telegram:search_key: blink in message: blink 356632",
-            "DEBUG:fdia_telegram:text match blink found",
-            "INFO:fdia_telegram:blink token received - will save config",
-        ]
-        with self.assertLogs("fdia_telegram", level="DEBUG") as self.log6:
-            self.instance_TelegramMessages.handle_received_message(
-                self.mocked_received_msg
-            )
-        self.assertEqual(self.log6.output, expected_log6)
-        self.assertEqual(
-            str(self.instance_TelegramMessages.chat_id),
-            self.instance_TelegramMessages.telegram_chat_nr,
-        )
-        self.mock_blink2FA.assert_called()
-        self.mock_blink_compare_config.assert_called()
+    def test_stop_bot_polling(self):
+        self.receiving_message.bot.stop_polling = MagicMock()
+        self.receiving_message.bot.remove_webhook = MagicMock()
+        self.receiving_message.stop()
+        self.receiving_message.bot.stop_polling.assert_called_once()
+        self.receiving_message.bot.remove_webhook.assert_called_once()
 
-    # def test_receive_msg_none_text_allowed_user_and_group(self):
+    @patch('telebot.types.Message')
+    def test_receive_any_msg_text(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+        mock_message.text = "123456"
 
-    # def test_receive_msg_text_allowed_user_and_group_with_totp_code_text(self):
+        self.receiving_message.get_allowed = MagicMock(return_value=True)
+        self.receiving_message.validate_msg_text_has_code = MagicMock(return_value=True)
+
+        self.receiving_message.receive_any_msg_text(mock_message)
+        self.receiving_message.validate_msg_text_has_code.assert_called_once_with(message=mock_message)
+
+    @patch('telebot.types.Message')
+    def test_take_foto(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message.get_allowed = MagicMock(return_value=True)
+
+        self.receiving_message.take_foto(mock_message)
+        self.camera_task_queue_async.put.assert_called_once()
+
+    @patch('telebot.types.Message')
+    def test_take_picam_foto(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message.get_allowed = MagicMock(return_value=True)
+
+        self.receiving_message.take_picam_foto(mock_message)
+        self.camera_task_queue_async.put.assert_called_once()
+
+    @patch('telebot.types.Message')
+    def test_take_blink_foto(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message.get_allowed = MagicMock(return_value=True)
+
+        self.receiving_message.take_blink_foto(mock_message)
+        self.camera_task_queue_async.put.assert_called_once()
+
+    @patch('telebot.types.Message')
+    def test_register_bink_authentication(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message.get_allowed = MagicMock(return_value=True)
+        self.receiving_message.rcv_blink_auth = MagicMock()
+
+        self.receiving_message.register_bink_authentication(mock_message)
+        self.receiving_message.rcv_blink_auth.assert_called_once_with(mock_message)
+
+    @patch('telebot.types.Message')
+    def test_get_allowed(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        self.receiving_message.get_allowed_user = MagicMock(return_value=True)
+
+        result = self.receiving_message.get_allowed(mock_message)
+        self.assertTrue(result)
+
+    @patch('telebot.types.Message')
+    def test_get_allowed_user(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.from_user.id = "111"
+
+        result = self.receiving_message.get_allowed_user(mock_message)
+        self.assertTrue(result)
+
+    @patch('telebot.types.Message')
+    def test_validate_msg_text_has_code(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.text = "123456"
+
+        self.receiving_message.verify_otp_code_in_msg = MagicMock(return_value=True)
+
+        result = self.receiving_message.validate_msg_text_has_code(mock_message)
+        self.assertTrue(result)
+
+    @patch('telebot.types.Message')
+    @patch('pyotp.TOTP.verify')
+    def test_verify_otp_code_in_msg(self, MockVerify, MockMessage):
+        mock_message = MockMessage()
+        mock_message.text = "123456"
+
+        MockVerify.return_value = True
+
+        result = self.receiving_message.verify_otp_code_in_msg(mock_message)
+        self.assertTrue(result)
+        self.assertFalse(self.door_open_task_queue.empty())
+        task = self.door_open_task_queue.get()
+        self.assertEqual(task.open, True)
+        self.assertEqual(task.reply, True)
+        self.assertEqual(task.chat_id, "123456")
+        self.assertEqual(task.message, mock_message)
+
+
+if __name__ == '__main__':
+    unittest.main()

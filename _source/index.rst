@@ -6,25 +6,31 @@
 Welcome to Front door intercom automation's documentation!
 ==========================================================
 
-While ring at front door receive photo message and open the door via telegram one-time password
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    Project Documentation <README.md>
 
-   How to create a telegram bot <telegram_bot_setup.md>
+   Telegram bot setup <docs/telegram_bot_setup.md>
+
+   Blink camera setup <docs/blink_camera_setup.md>
+
+   Timebased One Time Password setup <docs/one_time_password_setup.md>
+
+   Encrypt or decrypt a password with base32 for TOTP <docs/one_time_password_setup.md>
+
 
    Copyright <LICENSE.md>
 
+
    Advanced API documentation <modules.rst>
 
+
    View Code on GitHub <https://github.com/OliverDrechsler/front_door_intercom_automation>
-
    Imprint / Impressum on GitHub <https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md>
-
    GDPDR / DSGVO in GitHub <https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md>
+
 
 Indices and tables
 ==================

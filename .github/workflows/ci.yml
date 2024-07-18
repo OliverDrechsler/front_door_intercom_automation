@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: FDIa
+name: ci build and test code
 on:
   push:
     branches: "**"
@@ -15,69 +15,34 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.12
         uses: actions/setup-python@v1
         with:
-          python-version: 3.8
-      - run: pip install nox==2022.1.7
-      - run: pip install poetry==1.1.13
-      # - run: nox
+          python-version: 3.12
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      # - name: Lint with flake8
-      #   run: |
-      #     pip install flake8
-      #     # stop the build if there are Python syntax errors or undefined names
-      #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-      #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Run bandit - lint
+      - name: Lint with Ruff
         run: |
-          pip install bandit
-          bandit -s B605 *
-        # continue-on-error: true
-
-      # - name: Run pylint
-      #   run: |
-      #     pip install pylint
-      #     pylint *
-      #   continue-on-error: true
-
-      - name: black - static security code check
-        run: |
-          pip install black
-          black --verbose camera/.
-          black --verbose common/.
-          black --verbose door/.
-          black --verbose messaging/.
-          black --verbose fdia.py
-
-      - name: Wemake Python Stylguide
-        uses: wemake-services/wemake-python-styleguide@0.13.4
+          pip install ruff
+          ruff check --output-format=github .
         continue-on-error: true
-        with:
-          reporter: "github-pr-review"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Test with pytest
-        run: |
-          pip install pytest
-          # pytest
-          pip install pytest-cov
-          pytest --cov=./ --cov-report=xml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
-          flags: unittests
-
-      # - name: vulernability check in dependcies
-      #  run: |
-      #    pip install safety
-      #    safety check --full-report
+#
+#      - name: black - static security code check
+#        run: |
+#          pip install black
+#          black --verbose camera/.
+#          black --verbose config/.
+#          black --verbose door/.
+#          black --verbose bot/.
+#          black --verbose fdia.py
+#
+#
+#      - name: vulernability check in dependcies
+#        run: |
+#          pip install safety
+#          safety check --full-report
           
       # - name: Run Snyk to check for vulnerabilities
       #   uses: snyk/actions/node@master
@@ -88,3 +53,28 @@ jobs:
       #   env:
       #     # GITHUB_TOKEN: ${​{ secrets.GITHUB_TOKEN }}
       #     SONAR_TOKEN: ${​{ secrets.SONAR_TOKEN }}
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run tests
+      run: |
+        pytest --cov=./ --cov-report=xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: unittests

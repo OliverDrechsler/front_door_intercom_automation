@@ -4,8 +4,9 @@ front-door_intercom_automation
 .. toctree::
    :maxdepth: 4
 
+   bot
    camera
-   common
+   config
    door
+   web
    fdia
-   messaging

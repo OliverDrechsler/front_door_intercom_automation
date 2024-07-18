@@ -1,83 +1,103 @@
 from __future__ import annotations
-from common.config_util import Configuration
-from camera import blink_cam, picam, cam_common
-from messaging import send_msg
-import logging
-import time
-import json
+
+import asyncio
 
 try:
     from gpiozero import Button
-except:
+except Exception:
     pass
-
+from config import config_util
+from door import detect_rpi
+from config.data_class import Message_Task, Camera_Task
+import logging
+import time
+import queue
+import threading
 from datetime import datetime
 
-config = Configuration()
-
-logger = logging.getLogger("door-bell")
+logger: logging.Logger = logging.getLogger(name="door-bell")
 
 
-class Door(Configuration):
-    """Front door subclass of configuration config watches the door bell and
-        triggers
-       sends telegram message and camera photo.
+class DoorBell():
+    """
+        Front door subclass of configuration config watches the door bell and
+        triggers sends telegram message and camera photo.
     """
 
-    def __init__(
-        self, bot: object, blink_instance: object, blink_auth_instance: object
-    ) -> None:
+    def __init__(self, shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                 message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue) -> None:
         """
-        Initial class definition.
-        
-        Reads from parent class config.yaml file its configuration into class
-        attribute config dict and from there into multiple attributes.
-        :param blink_instance: blink class instance object
-        :type blink_instance: class object
-        :param telegram_instance: telegram bot class instance
-        :type telegram_instance: class object
-        :return: Nothing adds class instance attribues
-        :rtype: None
+        Initializes a new instance of the `DoorBell` class.
+
+        Args:
+            shutdown_event (threading.Event): An event object used to signal the shutdown of the application.
+            config (config_util.Configuration): The configuration object containing the settings for the doorbell.
+            loop: The event loop used for asynchronous operations.
+            message_task_queue (queue.Queue): A queue used to send messages to the message task.
+            camera_task_queue_async (asyncio.Queue): A queue used to send camera tasks to the camera task.
+
+        Returns:
+            None
         """
-        Configuration.__init__(self)
-        self.logger = logging.getLogger("door-bell")
-        self.logger.debug("reading config")
-        self.bot = bot
-        self.blink = blink_instance
-        self.auth = blink_auth_instance
+        self.logger: logging.Logger = logging.getLogger(name="door-bell")
+        self.logger.debug(msg="reading config")
+        self.shutdown_event: threading.Event = shutdown_event
+        self.config: config_util.Configuration = config
+        self.loop = loop
+        self.message_task_queue: queue.Queue = message_task_queue
+        self.camera_task_queue_async: asyncio.Queue = camera_task_queue_async
 
     def ring(self, test=False) -> None:
         """
-        Endless watch loop for door bell ring.
+        Monitors the door bell and triggers a series of actions when the bell rings.
 
-        :param self.door_bell: class attribute door_bell_port
-        :type self.door_bell: int
-        :param test: define code test mode
-        :type test: boolean
-        :param self.telegram_token:
-        :param self.telegram_chat_nr:
-        :return: Nothing
-        :rtype: None
+        Args:
+            test (bool, optional): If True, the function will exit after the first ring. Defaults to False.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: If an error occurs during the execution of the function.
+
         """
-        self.logger.info("start monitoring door bell")
-        if self.run_on_raspberry:
-            self.logger.debug("RPI: start endless loop doorbell monitoring")
-            button = Button(self.door_bell)
-            while True:
-                time.sleep(0.001)
-                if button.is_pressed:
-                    self.logger.info("Door bell ringing")
-                    now = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-                    send_msg.telegram_send_message(
-                        self.bot, self.telegram_chat_nr, "Ding Dong! " + now
-                    )
-                    cam_common.choose_camera(self.auth, self.blink, self)
-                    time.sleep(5)
-                if test:
-                    break
+        self.logger.info(msg="start monitoring door bell")
+        if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
+            self.logger.debug(msg="RPI: start endless loop doorbell monitoring")
+            button: Button = Button(pin=self.config.door_bell_pin)
+            while not self.shutdown_event.is_set():
+                try:
+                    time.sleep(0.001)
+                    if button.is_pressed:
+                        self.logger.info(msg="Door bell ringing")
+                        now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
+                        self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
+                                                                 data_text="Ding Dong! " + now))
+                        asyncio.set_event_loop(self.loop)
+                        asyncio.run_coroutine_threadsafe(
+                            self.camera_task_queue_async.put(
+                                Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
+                            self.loop)
+                except Exception as err:
+                    self.logger.error("Error: {0}".format(err))
+                    pass
+            self.logger.info(msg="stop endless loop doorbell monitoring")
         else:
-            self.logger.debug("NOT on RPI: start empty endless loop")
-            while True:
-                time.sleep(60)
-                if test:
-                    break
+            self.logger.info(msg="NOT on RPI: do a ring in 10 sec and stop afterwards.")
+            time.sleep(10)
+
+            if (self.config.testing_bell_msg):
+                now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
+                self.logger.info(msg="now send door bell ring")
+                self.message_task_queue.put(
+                    Message_Task(send=True, chat_id=self.config.telegram_chat_nr, data_text="Ding Dong! " + now))
+                asyncio.set_event_loop(self.loop)
+                asyncio.run_coroutine_threadsafe(
+                    self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
+                    self.loop)
+
+            self.logger.info(msg="Start: not on RPI - endless door bell loop")
+            while not self.shutdown_event.is_set():
+                pass
+
+            self.logger.info(msg="STOP: not on RPI - endless door bell loop stopped")

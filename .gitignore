@@ -18,3 +18,12 @@ _build/
 coverage.xml
 htmlcov/
 licenses.sh
+blink_config.json
+jpynb/*
+.idea/*
+venv/*
+.python-version
+_build/*
+_sources/*
+docs/_build/*
+docs/_sources/*
