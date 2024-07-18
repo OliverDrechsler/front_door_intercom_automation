@@ -74,10 +74,8 @@ class DoorBell():
                         self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                                  data_text="Ding Dong! " + now))
                         asyncio.set_event_loop(self.loop)
-                        asyncio.run_coroutine_threadsafe(
-                            self.camera_task_queue_async.put(
-                                Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
-                            self.loop)
+                        asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
+                            Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)), self.loop)
                 except Exception as err:
                     self.logger.error("Error: {0}".format(err))
                     pass

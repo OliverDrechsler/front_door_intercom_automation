@@ -40,7 +40,7 @@ class TestCamera(unittest.TestCase):
 
         with patch('os.path.exists', return_value=True):
             with patch('camera.json_load', new_callable=AsyncMock):
-                await self.camera.read_blink_config()
+                await self.camera._read_blink_config()
                 self.camera.logger.info.assert_called_with("blink aut with file done")
                 self.assertTrue(mock_blink_instance.auth.no_prompt)
 
@@ -49,7 +49,7 @@ class TestCamera(unittest.TestCase):
     async def test_save_blink_config(self, mock_blink, mock_client_session):
         mock_blink_instance = mock_blink.return_value
 
-        result = await self.camera.save_blink_config()
+        result = await self.camera._save_blink_config()
         self.camera.logger.info.assert_called_with("saving blink authenticated session infos into config file")
         self.assertTrue(result)
 
@@ -60,7 +60,7 @@ class TestCamera(unittest.TestCase):
         mock_camera = MagicMock()
         mock_blink_instance.cameras.__getitem__.return_value = mock_camera
 
-        result = await self.camera.blink_snapshot()
+        result = await self.camera._blink_snapshot()
         self.camera.logger.info.assert_called_with(
             msg="i'll take a snapshot from blink cam {0} and store it here {1}".format(
                 self.config.blink_name, self.config.photo_image_path))
@@ -77,7 +77,7 @@ class TestCamera(unittest.TestCase):
         mock_logger_info = MagicMock()
         self.camera.logger.info = mock_logger_info
 
-        result = self.camera.picam_request_take_foto()
+        result = self.camera._picam_request_take_foto()
         mock_logger_info.assert_called_with(msg="take a PiCam snapshot")
         self.assertTrue(result)
 
@@ -92,7 +92,7 @@ class TestCamera(unittest.TestCase):
         self.camera.logger.info = mock_logger_info
 
         with patch('builtins.open', unittest.mock.mock_open()):
-            result = self.camera.picam_request_download_foto()
+            result = self.camera._picam_request_download_foto()
             mock_logger_info.assert_called_with(msg="downloading PiCam foto")
             self.assertTrue(result)
 

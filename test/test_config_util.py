@@ -107,28 +107,28 @@ class TestConfiguration(unittest.TestCase):
 
     @patch('os.path.isfile', return_value=True)
     def test_define_config_file_exists(self, mock_isfile):
-        config_file = self.config.define_config_file()
+        config_file = self.config._define_config_file()
         self.assertEqual(config_file, '/dummy/base/path/config.yaml')
 
     @patch('os.path.isfile', return_value=False)
     @patch('os.path.exists', return_value=True)
     def test_define_config_file_template_exists(self, mock_exists, mock_isfile):
-        config_file = self.config.define_config_file()
+        config_file = self.config._define_config_file()
         self.assertEqual(config_file, '/dummy/base/path/config_template.yaml')
 
     @patch('os.path.isfile', return_value=False)
     @patch('os.path.exists', return_value=False)
     def test_define_config_file_not_exists(self, mock_exists, mock_isfile):
         with self.assertRaises(NameError):
-            self.config.define_config_file()
+            self.config._define_config_file()
 
     def test_base32_encode_totp_password(self):
-        encoded_password = self.config.base32_encode_totp_password('new_password')
+        encoded_password = self.config._base32_encode_totp_password('new_password')
         self.assertEqual(encoded_password, base64.b32encode('NEW_PASSWORD'.encode('UTF-8')).decode('UTF-8'))
 
     @patch('builtins.open', new_callable=mock_open)
     def test_write_yaml_config(self, mock_file):
-        self.config.write_yaml_config('new_password')
+        self.config._write_yaml_config('new_password')
         mock_file.assert_called_with('/dummy/base/path/config.yaml', 'w')
         self.assertEqual(self.config.config['otp']['password'], base64.b32encode('NEW_PASSWORD'.encode('UTF-8')).decode('UTF-8'))
 

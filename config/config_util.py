@@ -26,9 +26,9 @@ class Configuration:
         :rtype: None
         """
         self.logger = logging.getLogger("config")
-        self.base_path = self.get_base_path()
-        self.config_file = self.define_config_file()
-        self.config = self.read_config(self.config_file)
+        self.base_path = self._get_base_path()
+        self.config_file = self._define_config_file()
+        self.config = self._read_config(self.config_file)
 
         self.bot: telebot.TeleBot = None
 
@@ -67,12 +67,12 @@ class Configuration:
         self.picam_iso: int = self.config["picam"]["iso"]
         self.picam_night_vision: bool = self.config["picam"]["night_vision"]
 
-        self.web_user_dict: dict[str, str] = self.get_web_user_dict()
+        self.web_user_dict: dict[str, str] = self._get_web_user_dict()
         self.flask_web_port: int = self.config["web"]["flask_web_port"]
         self.flask_secret_key: str = self.config["web"]["flask_secret_key"]
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
 
-    def get_web_user_dict(self) -> dict:
+    def _get_web_user_dict(self) -> dict:
         """Get user dict from list of yaml telegram.list
 
         :return: dict of user key and values of telegram id
@@ -80,14 +80,14 @@ class Configuration:
         """
         return dict(ChainMap(*self.config["web"]["flask_users"]))
 
-    def get_base_path(self) -> None:
+    def _get_base_path(self) -> None:
         """
         Get from fdia base path. This normally one folder
         up from the config_util.py
         """
         return os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/"
 
-    def read_config(self, config_file: str) -> None:
+    def _read_config(self, config_file: str) -> None:
         """
         Reads config.yaml file into variables.
 
@@ -108,7 +108,7 @@ class Configuration:
             self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
             raise YamlReadError("a YAML error is occured during parsing file")
 
-    def define_config_file(self) -> None:
+    def _define_config_file(self) -> None:
         """
         Checks and defines Config yaml file path.
 
@@ -125,7 +125,7 @@ class Configuration:
             raise (NameError("No config file found!"))
         return self.base_path + "config_template.yaml"
 
-    def base32_encode_totp_password(self, new_password):
+    def _base32_encode_totp_password(self, new_password):
         """
         Encodes a new provided password into BASE32 string
 
@@ -134,12 +134,12 @@ class Configuration:
         """
         return (base64.b32encode(new_password.upper().encode("UTF-8"))).decode("UTF-8")
 
-    def write_yaml_config(self, new_password):
+    def _write_yaml_config(self, new_password):
         """Writes or updates the config.yaml file with the new provided TOTP password
 
         :param new_password: new provided TOTP ASCII password
         :type new_password: string
         """
         with open(self.base_path + "config.yaml", "w") as yaml_file:
-            self.config["otp"]["password"] = self.base32_encode_totp_password(new_password)
+            self.config["otp"]["password"] = self._base32_encode_totp_password(new_password)
             yaml.dump(self.config, yaml_file, default_flow_style=False)

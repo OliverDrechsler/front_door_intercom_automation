@@ -27,10 +27,10 @@ logging.basicConfig(format=format, level=default_log_level, datefmt="%Y-%m-%d %H
 logger: logging.Logger = logging.getLogger(name="fdia")
 
 allowed_levels = {'critical': logging.CRITICAL, 'error': logging.ERROR, 'warning': logging.WARNING,
-    'info': logging.INFO, 'debug': logging.DEBUG}
+                  'info': logging.INFO, 'debug': logging.DEBUG}
 logging_argparse = ArgumentParser(prog=__file__, add_help=True)
 logging_argparse.add_argument("-l", "--log-level", default=f"{logging.getLevelName(default_log_level)}",
-    choices=allowed_levels, help="set log level", )
+                              choices=allowed_levels, help="set log level", )
 logging_args, _ = logging_argparse.parse_known_args(args=sys.argv[1:])
 log_level = allowed_levels.get(logging_args.log_level.lower())
 try:
@@ -45,9 +45,9 @@ if actual_log_level is not logging.INFO:
     telebot.logger.setLevel(level=actual_log_level)
 
 
-def run_web_app(shutdown_event: threading.Event, config: config_util.Configuration, loop,
-                message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue,
-                door_open_task_queue: queue.Queue):
+def _run_web_app(shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                 message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue,
+                 door_open_task_queue: queue.Queue):
     """
     Initializes and runs the web application for the door opener.
 
@@ -69,8 +69,8 @@ def run_web_app(shutdown_event: threading.Event, config: config_util.Configurati
     web_app.run()
 
 
-def thread_open_door(shutdown_event: threading.Event, config: config_util.Configuration, loop,
-                     message_task_queue: queue.Queue, door_open_task_queue: asyncio.Queue) -> None:
+def _thread_open_door(shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                      message_task_queue: queue.Queue, door_open_task_queue: asyncio.Queue) -> None:
     """
     Creates an instance of the `DoorOpener` class and starts the door opener loop in a separate thread.
 
@@ -103,8 +103,8 @@ def thread_open_door(shutdown_event: threading.Event, config: config_util.Config
     logger.debug(msg="end door opener loop")
 
 
-def thread_door_bell(shutdown_event: threading.Event, config: config_util.Configuration, loop,
-                     message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue) -> None:
+def _thread_door_bell(shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                      message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue) -> None:
     """
     Door bell watch thread.
     """
@@ -116,8 +116,8 @@ def thread_door_bell(shutdown_event: threading.Event, config: config_util.Config
     logger.debug(msg="end door bell ring watch")
 
 
-def thread_receive_telegram_msg(shutdown_event: threading.Event, config: config_util.Configuration, loop,
-                                camera_task_queue_async: asyncio.Queue, door_open_task_queue: queue.Queue):
+def _thread_receive_telegram_msg(shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                                 camera_task_queue_async: asyncio.Queue, door_open_task_queue: queue.Queue):
     """
     Starts receiving messages from the Telegram Bot using the provided parameters.
 
@@ -137,8 +137,8 @@ def thread_receive_telegram_msg(shutdown_event: threading.Event, config: config_
                                  door_open_task_queue=door_open_task_queue).start()
 
 
-def thread_send_telegram_msg(shutdown_event: threading.Event, config: config_util.Configuration, loop,
-                             message_task_queue: queue.Queue):
+def _thread_send_telegram_msg(shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                              message_task_queue: queue.Queue):
     """
     Starts a new instance thread for sending messages via Telegram Bot.
 
@@ -156,8 +156,8 @@ def thread_send_telegram_msg(shutdown_event: threading.Event, config: config_uti
                          message_task_queue=message_task_queue).start()
 
 
-async def camera_task(shutdown_event: threading.Event, config: config_util.Configuration, loop,
-                      camera_task_queue_async: asyncio.Queue, message_task_queue: queue.Queue):
+async def _camera_task(shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                       camera_task_queue_async: asyncio.Queue, message_task_queue: queue.Queue):
     """
     Asynchronously runs the camera task.
 
@@ -185,8 +185,8 @@ async def camera_task(shutdown_event: threading.Event, config: config_util.Confi
     logger.info("Camera task shutdown complete")
 
 
-def thread_cameras(shutdown_event: threading.Event, config: config_util.Configuration, loop,
-                   camera_task_queue_async: asyncio.Queue, message_task_queue: queue.Queue):
+def _thread_cameras(shutdown_event: threading.Event, config: config_util.Configuration, loop,
+                    camera_task_queue_async: asyncio.Queue, message_task_queue: queue.Queue):
     """
     Starts the camera task in a separate thread.
 
@@ -206,7 +206,7 @@ def thread_cameras(shutdown_event: threading.Event, config: config_util.Configur
     it logs that the camera task shutdown is complete.
     """
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(camera_task(shutdown_event, config, loop, camera_task_queue_async, message_task_queue))
+    loop.run_until_complete(_camera_task(shutdown_event, config, loop, camera_task_queue_async, message_task_queue))
     logger.info("Camera event loop shutdown complete")
 
 
@@ -243,37 +243,37 @@ def main() -> None:
 
     logger.debug("creating camera thread with asyncio")
     loop = asyncio.new_event_loop()
-    camera_thread_async = threading.Thread(target=thread_cameras, args=(
+    camera_thread_async = threading.Thread(target=_thread_cameras, args=(
         shutdown_event, config, loop, camera_task_queue_async, message_task_queue))
     logger.info("start camera thread")
     camera_thread_async.start()
 
     logger.debug("creating Telegram Bot SEND thread")
-    send_msg_thread = threading.Thread(target=thread_send_telegram_msg,
-        args=(shutdown_event, config, loop, message_task_queue))
+    send_msg_thread = threading.Thread(target=_thread_send_telegram_msg,
+                                       args=(shutdown_event, config, loop, message_task_queue))
     logger.info("start Telegram Bot SEND thread")
     send_msg_thread.start()
 
     logger.debug("creating Telegram Bot receiving thread")
-    receive_msg_thread = threading.Thread(target=thread_receive_telegram_msg,
-        args=(shutdown_event, config, loop, camera_task_queue_async, door_open_task_queue))
+    receive_msg_thread = threading.Thread(target=_thread_receive_telegram_msg, args=(
+    shutdown_event, config, loop, camera_task_queue_async, door_open_task_queue))
     logger.info("start Telegram Bot receiving thread")
     receive_msg_thread.start()
 
     logger.debug(msg="preparing door bell watch thread")
-    door_bell_thread = threading.Thread(target=thread_door_bell,
-        args=(shutdown_event, config, loop, message_task_queue, camera_task_queue_async))
+    door_bell_thread = threading.Thread(target=_thread_door_bell, args=(
+    shutdown_event, config, loop, message_task_queue, camera_task_queue_async))
     logger.info(msg="start thread monitoring door bell")
     door_bell_thread.start()
 
     logger.debug(msg="preparing door open thread")
-    door_opener_thread = threading.Thread(target=thread_open_door,
-        args=(shutdown_event, config, loop, message_task_queue, door_open_task_queue))
+    door_opener_thread = threading.Thread(target=_thread_open_door,
+                                          args=(shutdown_event, config, loop, message_task_queue, door_open_task_queue))
     logger.info(msg="start door open thread")
     door_opener_thread.start()
 
     logger.debug(msg="preparing flask web door opener")
-    web_thread = threading.Thread(target=run_web_app, args=(
+    web_thread = threading.Thread(target=_run_web_app, args=(
         shutdown_event, config, loop, message_task_queue, camera_task_queue_async, door_open_task_queue))
     logger.info(msg="start thread flask web door opener")
     web_thread.start()

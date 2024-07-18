@@ -65,7 +65,7 @@ class DoorOpener():
                 if isinstance(task, Open_Door_Task):
                     if (task.open):
                         self.logger.info(f"Processing open door: {task}")
-                        self.open_door()
+                        self._open_door()
                         if (task.reply and task.message is not None):
                             self.message_task_queue.put(
                                 Message_Task(reply=True, chat_id=task.chat_id, message=task.message,
@@ -79,7 +79,7 @@ class DoorOpener():
                 pass
         self.logger.info(msg="stop endless loop door opener")
 
-    def open_door(self) -> bool:
+    def _open_door(self) -> bool:
         """
         A function that opens the door based on Raspberry Pi detection.
 

@@ -36,11 +36,11 @@ class TestSendMessage(unittest.TestCase):
         self.message_task_queue.put(task)
         self.message_task_queue.put(None)  # Signal to stop the loop
 
-        self.send_message_instance.send_message = Mock()
+        self.send_message_instance._send_message = Mock()
 
         self.send_message_instance.start()
 
-        self.send_message_instance.send_message.assert_called_once_with(chat_id="123", text="Hello")
+        self.send_message_instance._send_message.assert_called_once_with(chat_id="123", text="Hello")
         mock_debug.assert_called()
         mock_info.assert_called()
 
@@ -55,7 +55,7 @@ class TestSendMessage(unittest.TestCase):
     def test_send_message(self, mock_info):
         chat_id = "123"
         text = "Hello"
-        self.send_message_instance.send_message(chat_id=chat_id, text=text)
+        self.send_message_instance._send_message(chat_id=chat_id, text=text)
         self.send_message_instance.bot.send_message.assert_called_once_with(chat_id=chat_id, text=text)
         mock_info.assert_called_with("send message : Hello")
 
@@ -64,7 +64,7 @@ class TestSendMessage(unittest.TestCase):
         chat_id = "123"
         text = "Reply"
         message = Mock(spec=telebot.types.Message)
-        self.send_message_instance.reply_message(chat_id=chat_id, text=text, message=message)
+        self.send_message_instance._reply_message(chat_id=chat_id, text=text, message=message)
         self.send_message_instance.bot.reply_to.assert_called_once_with(message=message, text=text)
         mock_info.assert_called_with("reply message : Reply")
 
@@ -73,7 +73,7 @@ class TestSendMessage(unittest.TestCase):
     def test_send_photo(self, mock_open, mock_info):
         chat_id = "123"
         image_path = "path/to/photo.jpg"
-        self.send_message_instance.send_photo(chat_id=chat_id, image_path=image_path)
+        self.send_message_instance._send_photo(chat_id=chat_id, image_path=image_path)
         self.send_message_instance.bot.send_photo.assert_called_once_with(chat_id=chat_id, photo=open(image_path, 'rb'))
         mock_info.assert_called()
         call_args_list = mock_info.call_args_list

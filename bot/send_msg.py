@@ -65,11 +65,11 @@ class SendMessage():
                 logging.info(f"received task: {task}")
                 if isinstance(task, Message_Task):
                     if (task.send):
-                        self.send_message(chat_id=task.chat_id, text=task.data_text)
+                        self._send_message(chat_id=task.chat_id, text=task.data_text)
                     if (task.reply):
-                        self.reply_message(chat_id=task.chat_id, message=task.message, text=task.data_text)
+                        self._reply_message(chat_id=task.chat_id, message=task.message, text=task.data_text)
                     if (task.photo):
-                        self.send_photo(chat_id=task.chat_id, image_path=task.filename)
+                        self._send_photo(chat_id=task.chat_id, image_path=task.filename)
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
@@ -84,7 +84,7 @@ class SendMessage():
         self.logger.info(msg="stop bot remove webhook")
         self.bot.remove_webhook()
 
-    def reply_message(self, chat_id: str, text: str, message: telebot.types.Message):
+    def _reply_message(self, chat_id: str, text: str, message: telebot.types.Message):
         """
         Reply to a message in a chat.
 
@@ -101,7 +101,7 @@ class SendMessage():
         self.bot.reply_to(message=message, text=text)
         self.logger.info("reply message : " + text)
 
-    def send_message(self, chat_id: str, text: str) -> None:
+    def _send_message(self, chat_id: str, text: str) -> None:
         """
         Send a message to a specified chat using the Telegram Bot API.
 
@@ -115,7 +115,7 @@ class SendMessage():
         self.bot.send_message(chat_id=chat_id, text=text)
         self.logger.info("send message : " + text)
 
-    def send_photo(self, chat_id: str, image_path: str) -> None:
+    def _send_photo(self, chat_id: str, image_path: str) -> None:
         """
         Send a photo to a specified chat using the Telegram Bot API.
 
