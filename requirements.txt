@@ -25,3 +25,4 @@ mock==5.1.0
 # coverage==7.60
 
 future-annotations==1.0.0
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
