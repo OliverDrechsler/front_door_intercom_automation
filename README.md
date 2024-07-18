@@ -27,7 +27,7 @@ Door opening authorization is handled by timebased one time passwords.
 The following wiring of the circuit is based on a BTIcino intercom system, but can also be connected to other systems.  
 
 
-**[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/)**  
+**[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/README.html)**  
 
 ***[📚 API Docu on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html)***  
 
