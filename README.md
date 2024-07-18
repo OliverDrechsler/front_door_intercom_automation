@@ -20,9 +20,9 @@ Raspberry Pi intercom front door automation for recognising doorbells and creati
 Notification via your own privat Telegram chat channel.  
 Also opening the front door via the private Telegram chat channel.  
 Furthermore, a separate website & REST API is offered to open the front door.  
-**It is not recommended to make this website accessible on the Internet!**  
+**It is not recommended to make this website accessible on the Internet!**    
 Please use a VPN tunnel to reach the website or REST API.  
-It supports [Blink](https://blinkforhome.com) camera's and my [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.
+It supports [Blink](https://blinkforhome.com) camera's and my [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.  
 Door opening authorization is handled by timebased one time passwords.  
 The following wiring of the circuit is based on a BTIcino intercom system, but can also be connected to other systems.  
 
@@ -64,10 +64,12 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
   - [Web UI \& REST-API usage](#web-ui--rest-api-usage)
   - [Hardware Ciruit](#hardware-ciruit)
     - [required HW parts](#required-hw-parts)
+      - [Door bell detection board](#door-bell-detection-board)
+      - [Door opener board with relais:](#door-opener-board-with-relais)
     - [BTICino CT20/51 Intercom plans](#bticino-ct2051-intercom-plans)
     - [Dor bell ring plan](#dor-bell-ring-plan)
     - [BTICino CT20/51 wiring pictures](#bticino-ct2051-wiring-pictures)
-    - [Door open summer wiring pictures:](#door-open-summer-wiring-pictures)
+    - [Door open summer SaintSmart relay wiring pictures:](#door-open-summer-saintsmart-relay-wiring-pictures)
   - [Help](#help)
     - [Debugging](#debugging)
     - [Hints](#hints)
