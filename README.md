@@ -4,13 +4,14 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&metric=alert_status)](https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation)
 [![codecov](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg)](https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation)
 
-![GitHub License](https://img.shields.io/github/license/OliverDrechsler/front_door_intercom_automation)  
 ![Static Badge](https://img.shields.io/badge/Python-v.3.10-green)
 ![Static Badge](https://img.shields.io/badge/Python-v.3.11-green)
 ![Static Badge](https://img.shields.io/badge/Python-v.3.12-green)  
 
 [![build github_pages](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml/badge.svg)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml)
-    
+  
+![GitHub License](https://img.shields.io/github/license/OliverDrechsler/front_door_intercom_automation)  
+  
 # Front-door intercom automation
 
 ## Short description
@@ -63,7 +64,10 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
   - [Web UI \& REST-API usage](#web-ui--rest-api-usage)
   - [Hardware Ciruit](#hardware-ciruit)
     - [required HW parts](#required-hw-parts)
-    - [build Hardware circuit](#build-hardware-circuit)
+    - [BTICino CT20/51 Intercom plans](#bticino-ct2051-intercom-plans)
+    - [Dor bell ring plan](#dor-bell-ring-plan)
+    - [BTICino CT20/51 wiring pictures](#bticino-ct2051-wiring-pictures)
+    - [Door open summer wiring pictures:](#door-open-summer-wiring-pictures)
   - [Help](#help)
     - [Debugging](#debugging)
     - [Hints](#hints)
@@ -241,7 +245,7 @@ This project actually supports two type of cameras.
 
 ### Blink Cameras
 
-For configuration of the blink camera please procceed with further [docu/blink_camera_setup.md](docu/blink_camera_setup.md).  
+For configuration of the blink camera please procceed with further [docu/blink_camera_setup.md](docs/blink_camera_setup.md).  
 
 
 ### Raspberry Pi Camera Project PiCam_API
@@ -344,7 +348,7 @@ The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
 
 ### required HW parts
 
-- door bell detection board:
+#### Door bell detection board
 
   * Strip grid circuit board of Epoxy – 100 x 100 mit 2,54mm
   * Optocoupler (PC817)
@@ -352,36 +356,42 @@ The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
     a resistor of 330 Ohm (8 Volt), 560 Ohm (12 Volt) or 1,2 Kilo ohm (24 Volt) 
   * Raspberry Pi Hutschienen-Netzteil (Mean Well MDR-20-15) für den Einbau in den Sicherungskasten
 
-- door opener board with relais:
+#### Door opener board with relais:
 
   * ***saintsmart 2-Channel 5V Relay Module***  
-![saintsmart 2-Channel 5V Relay Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU) 
+![saintsmart 2-Channel 5V Relay Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU)   
   [shop where to buy saintsmart relay](https://www.sainsmart.com/products/2-channel-5v-relay-module)
-
   
-***Jumper and wiring layout***
-[wiring layout at stackexchange](https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules)
+ * ***Jumper and wiring layout***
+
+![SaintSmart diagram](docs/_static/saintsmart_wiring1.png)  
+
+![SaintSmart 4 relay diagram](docs/_static/saintsmart1_wiring2.png)  
+
+[wiring layout see at stackexchange](https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules)
 
 
-### build Hardware circuit
-Pictures:  
-[Door Bell ring detect circuit](./docs/_static/Build_Door_Bell_1.jpeg)  
-[Relai Wiring_1](./docs/_static/Build_Relai_Opener_1.jpeg)  
-[Relai Wiring_2](./docs/_static/Build_Relai_Opener_2.jpeg)  
+### BTICino CT20/51 Intercom plans
+![Plan 1](./docs/_static/Plan_1.jpeg)    
+![Plan 2](./docs/_static/Plan_4.png)    
+![Plan 3](./docs/_static/Plan_2.png)  
+![Plan 4](./docs/_static/Plan_3.png)  
+![Plan 5](./docs/_static/Plan_5.png)
 
-***BTICino CT20/51 wiring pictures***  
-[BTICino Wiring Diagram](./docs/_static/RPi-BTIcino.jpg)  
-  
-[BTicino Intercom CT20/51 Picture 1](./docs/_static/Intercom_1.jpeg)  
-[BTicino Intercom CT20/51 Picture 2](./docs/_static/Intercom_2.jpeg)  
-[BTicino Intercom CT20/51 Picture 3](./docs/_static/Intercom_2.jpeg)  
-  
-***BTICino CT20/51 plans***
-[Plan 2](./docs/_static/Plan_2.png)  
-[Plan 3](./docs/_static/Plan_3.png)  
-[Plan 4](./docs/_static/Plan_4.png)  
-[Plan 5](./docs/_static/Plan_5.png)  
-[Plan 1](./docs/_static/Plan_1.jpeg)  
+### Dor bell ring plan 
+![BTICino Wiring Diagram](./docs/_static/RPi-BTIcino.jpg)  
+
+### BTICino CT20/51 wiring pictures
+![BTicino Intercom CT20/51 Picture 1](./docs/_static/Intercom_1.jpeg)  
+![BTicino Intercom CT20/51 Picture 2](./docs/_static/Intercom_2.jpeg)  
+![BTicino Intercom CT20/51 Picture 3](./docs/_static/Intercom_2.jpeg)  
+![BTICino Wiring Diagram](./docs/_static/RPi-BTIcino.jpg)  
+
+### Door open summer SaintSmart relay wiring pictures:   
+![Door Bell ring detect circuit](./docs/_static/Build_Door_Bell_1.jpeg)  
+![Relai Wiring_1](./docs/_static/Build_Relai_Opener_1.jpeg)  
+![Relai Wiring_2](./docs/_static/Build_Relai_Opener_2.jpeg)  
+
 
 ## Help
 

@@ -23,7 +23,7 @@ door.opener module
 door.detect\_rpi module
 -----------------------
 
-.. automodule:: door.detect_rpi module
+.. automodule:: door.detect_rpi
    :members:
    :undoc-members:
    :show-inheritance:
