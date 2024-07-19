@@ -91,11 +91,11 @@ class DoorOpener():
         """
         if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
             logger.info(msg="opening the door")
-            GPIO.setmode(mode=GPIO.BCM)
-            GPIO.setup(channel=self.config.door_summer, dir=GPIO.OUT)
-            GPIO.output(channel=self.config.door_summer, state=GPIO.HIGH)
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(self.config.door_summer, GPIO.OUT)
+            GPIO.output(self.config.door_summer, GPIO.HIGH)
             time.sleep(5)
-            GPIO.output(channel=self.config.door_summer, state=GPIO.LOW)
+            GPIO.output(self.config.door_summer, GPIO.LOW)
             return True
         else:
             logger.info(msg="not running on raspberry pi - will not open the door")
