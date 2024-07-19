@@ -68,6 +68,7 @@ class Configuration:
         self.picam_night_vision: bool = self.config["picam"]["night_vision"]
 
         self.web_user_dict: dict[str, str] = self.get_web_user_dict()
+        self.flask_web_host: int = self.config["web"]["flask_web_host"]
         self.flask_web_port: int = self.config["web"]["flask_web_port"]
         self.flask_secret_key: str = self.config["web"]["flask_secret_key"]
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]

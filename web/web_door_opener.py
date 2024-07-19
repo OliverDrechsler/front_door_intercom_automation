@@ -98,7 +98,7 @@ class WebDoorOpener:
         self.blink_json_data: dict[any, any] = {}
 
         self.app = web_app
-        self.server = make_server('127.0.0.1', self.config.flask_web_port, self.app)
+        self.server = make_server(self.config.flask_web_host, self.config.flask_web_port, self.app)
         self.app.permanent_session_lifetime = timedelta(days=self.config.flask_browser_session_cookie_lifetime)
         self.ctx = self.app.app_context()
         self.ctx.push()
@@ -127,6 +127,7 @@ class WebDoorOpener:
         Returns:
             None
         """
+        self.logger.info("Start web server")
         if (self.str_log_level == "DEBUG"):
             self.app.debug = True
             self.server.serve_forever()

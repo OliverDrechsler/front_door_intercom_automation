@@ -83,7 +83,7 @@ class Camera:
 
                     elif task.picam_photo:
                         self.logger.info(f"processing task.picam_photo: {task.picam_photo}")
-                        self._picam_foto_helper(task)
+                        await self._picam_foto_helper(task)
 
                     elif task.blink_photo:
                         self.logger.info(f"processing task.blink_photo: {task.blink_photo}")
@@ -141,8 +141,8 @@ class Camera:
 
                 if not self.config.picam_night_vision:
                     self.logger.debug("picam night_vision is disabled")
-                    result = self._picam_foto_helper(task)
-                    return self._check_picam_result(task, result)
+                    result = await self._picam_foto_helper(task)
+                    return await self._check_picam_result(task, result)
 
             else:
                 self.logger.info("night detected is enabled")
@@ -154,8 +154,8 @@ class Camera:
 
                 if self.config.picam_night_vision:
                     self.logger.debug("picam night_vision is enabled")
-                    result = self._picam_foto_helper(task)
-                    return self._check_picam_result(task, result)
+                    result = await self._picam_foto_helper(task)
+                    return await self._check_picam_result(task, result)
 
         else:
             # use default camera
@@ -166,10 +166,10 @@ class Camera:
 
             if self.config.default_camera_type == DefaultCam.PICAM:
                 self.logger.debug("picam as default cam is choosen")
-                result = self._picam_foto_helper(task)
-                return self._check_picam_result(task, result)
+                result = await self._picam_foto_helper(task)
+                return await self._check_picam_result(task, result)
 
-    def _picam_foto_helper(self, task: Camera_Task) -> bool:
+    async def _picam_foto_helper(self, task: Camera_Task) -> bool:
         """
         A helper function for the PiCam to take and download a photo, log success and errors, and manage the message queue.
 
@@ -225,7 +225,7 @@ class Camera:
             return False
         return result
 
-    def _check_picam_result(self, task: Camera_Task, result: bool) -> bool:
+    async def _check_picam_result(self, task: Camera_Task, result: bool) -> bool:
         """
         Check the result of the picam function.
 
@@ -245,7 +245,7 @@ class Camera:
             self.logger.debug("_check_picam_result FALSE")
             if (self.config.blink_enabled):
                 self.logger.error("_check_picam_result - second try now with blink")
-                return self._blink_foto_helper(task)
+                return await self._blink_foto_helper(task)
             else:
                 self.logger.error("_check_picam_result - blink not enabled for second try")
         return result
@@ -270,7 +270,7 @@ class Camera:
             self.logger.debug("blink _check_blink_result FALSE")
             if (self.config.picam_enabled):
                 self.logger.error("_check_blink_result - second try now with picam")
-                return self._picam_foto_helper(task)
+                return await self._picam_foto_helper(task)
             else:
                 self.logger.error("_check_blink_result - picam not enabled for second try")
         return result

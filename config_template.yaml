@@ -53,6 +53,7 @@ picam:
   night_vision: False
 
 web:
+  flask_web_host: "0.0.0.0"                       # flask webserver host listing ip 0.0.0.0 to accessible for every one - 127.0.0.1 means internal only
   flask_web_port: 5001                            # flask webserver port
   flask_secret_key: "my_super_flask_secret_key"   # provide here your own flask secret key
   browser_session_cookie_lifetime: 30             # browser cookie key
