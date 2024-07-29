@@ -1,6 +1,6 @@
 pyyaml==6.0.1
 # gpiozero==2.0.1
-gpiozero==2.0
+gpiozero==2.0.1
 RPi.GPIO==0.7.1
 urllib3==2.1.0
 requests==2.31.0
