@@ -12,7 +12,7 @@ Flask_Session==0.8.0
 Werkzeug==3.0.3
 astral==3.2
 pyotp==2.9.0
-pyTelegramBotAPI==4.20.0
+pyTelegramBotAPI==4.21.0
 
 asyncio==3.4.3
 aiohttp==3.9.5
