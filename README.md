@@ -125,6 +125,7 @@ The project offers the following functionality:
 ## Outlook/Ideas - Improvements plan
 
 ### Plan 
+- [ ] fix codecov
 - [ ] extend docu for RPi.GPIO access with normal user
 - [ ] create docu for german users with camera snapshot GDPR hint at the front door
 - [ ] extend docu with pcb wiring layout  
