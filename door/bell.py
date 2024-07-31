@@ -66,17 +66,17 @@ class DoorBell():
 
         """
         self.logger.info(msg="start monitoring door bell")
+        asyncio.set_event_loop(self.loop)
         if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
             self.logger.debug(msg="RPI: start endless loop doorbell monitoring")
             while not self.shutdown_event.is_set():
                 try:
-                    time.sleep(0.001)
+                    time.sleep(0.01)
                     if GPIO.input(self.config.door_bell) == GPIO.LOW:  # Button is pressed
                         self.logger.info(msg="Door bell ringing")
                         now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
                         self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                                  data_text="Ding Dong! " + now))
-                        asyncio.set_event_loop(self.loop)
                         asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
                             Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)), self.loop)
                 except Exception as err:
@@ -85,21 +85,18 @@ class DoorBell():
             self.logger.info(msg="stop endless loop doorbell monitoring")
             GPIO.cleanup()
         else:
-            self.logger.info(msg="NOT on RPI: do a ring in 10 sec and stop afterwards.")
-            time.sleep(10)
-
-            if (self.config.testing_bell_msg):
-                now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
-                self.logger.info(msg="now send door bell ring")
-                self.message_task_queue.put(
-                    Message_Task(send=True, chat_id=self.config.telegram_chat_nr, data_text="Ding Dong! " + now))
-                asyncio.set_event_loop(self.loop)
-                asyncio.run_coroutine_threadsafe(
-                    self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
-                    self.loop)
-
+            # not on RPI - endless loop doorbell for testing purpose
             self.logger.info(msg="Start: not on RPI - endless door bell loop")
+            self.logger.info(msg=f"NOT on RPI: do a test ring every 60 sec = {self.config.testing_bell_msg}")
             while not self.shutdown_event.is_set():
-                pass
-
+                time.sleep(60)
+                if (self.config.testing_bell_msg):
+                    now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
+                    self.logger.info(msg="now send door bell ring")
+                    self.message_task_queue.put(
+                        Message_Task(send=True, chat_id=self.config.telegram_chat_nr, data_text="Ding Dong! " + now))
+                    asyncio.run_coroutine_threadsafe(
+                        self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
+                        self.loop)
+                    # asyncio.get_event_loop().run_forever()
             self.logger.info(msg="STOP: not on RPI - endless door bell loop stopped")
