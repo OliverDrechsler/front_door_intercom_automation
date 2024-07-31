@@ -1,10 +1,22 @@
 [Unit]
 Description=Front Door Intercom Automation
-After=network.target
+Documentation=https://oliverdrechsler.github.io/front_door_intercom_automation/
+Wants=network-online.target
+After=network-online.target
 
 [Service]
-Type=simple
+#Type=simple
 ExecStart=/home/pi/front_door_intercom_automation/fdia.py
+
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+KillSignal=SIGINT
+LimitNOFILE=65536
+Restart=on-failsure
+RestartSec=60
+User=root
+Group=root
+
 
 [Install]
 WantedBy=multi-user.target

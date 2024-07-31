@@ -35,8 +35,11 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
 - [Front-door intercom automation](#front-door-intercom-automation)
   - [Short description](#short-description)
   - [Long description](#long-description)
+  - [Features advantage comparision FDIA, Blink, Ring and PiCamAPI](#features-advantage-comparision-fdia-blink-ring-and-picamapi)
   - [Demo](#demo)
-  - [Outlook](#outlook)
+  - [Outlook/Ideas](#outlookideas)
+    - [Plan](#plan)
+    - [Ideas](#ideas)
   - [Get started](#get-started)
     - [Requirements](#requirements)
     - [Code tree structure](#code-tree-structure)
@@ -87,7 +90,7 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
 
 Starting point was an article [Überallkingel at heise.de](https://www.heise.de/select/ct/2017/17/1502995489716437).  
 This front door intercom system extends any standard front door intercom system,  
-which are not connected to the Internet.
+which are not connected to the Internet or ready for it.
 The project offers the following functionality:
 - Front door bell detection. 
 - Notification via private Telegram channel [PyTelegramBotAPI library](https://github.com/eternnoir/pyTelegramBotAPI)
@@ -103,17 +106,43 @@ The project offers the following functionality:
 - Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) website to open the front door with the browser using a time-based one-time password.
 - Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) REST-API to open the front door (via time-based one-time password) for integration into other projects / solutions / automations.
 
+## Features advantage comparision FDIA, Blink, Ring and PiCamAPI
+
+| Project with Product / <br/> Features,Capabilities | FDIA with PiCamAPI Camera                                                                                            | FDIA with Blink Camera                                                                                | FDIA with upcoming Ring Camera support - not there (idea to integrate)                                | Blink only (no FDIA)               | Ring only ( FDIA)                  | FDIA with no build HW module                 |
+|----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|------------------------------------|------------------------------------|----------------------------------------------|
+| Open Door                                          | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)                              | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)               | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)               | ❌                                  | ❌                                  | ❌                                            |
+| detect door bell ring                              | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                                       | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                        | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                        | ✅                                  | ✅                                  | ❌                                            |
+| Notification (channel)                             | ✅ via Telegram group                                                                                                 | ✅ via Telegram group                                                                                  | ✅ via Telegram group                                                                                  | ✅Blink App                         | ✅Ring App                          | ✅❌ Telegram but no HW module -> no detection |
+| Multi user notification                            | ✅                                                                                                                    | ✅                                                                                                     | ✅                                                                                                     | ❌ dependend on Account             | ❌                                  | ✅                                            |
+| Multi user door opening                            | ✅                                                                                                                    | ✅                                                                                                     | ✅                                                                                                     | ❌                                  | ❌                                  | ❌                                            |
+| GDPR data storage                                  | ✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed | ❌ Camaera Internet / Cloud exposed | ❌ Camaera Internet / Cloud exposed | ✅ no data Exposure                           
+| Local usage without Internet (door opening)        | ✅                                                                                                                    | ✅opening - ❌ no camera snapshot                                                                      | ✅opening - ❌ no camera snapshot                                                                       | ❌                                  | ❌                                  | ✅                                            |
+
 ## Demo
 -> short Telegram usage video will follow.   
 -> short video WebUi usage video will follow.  
 
-## Outlook
+## Outlook/Ideas - Improvements plan
 
-Same solution is in development as JAVA Spring Boot app too.  
-Also a IOS Swift App, which makes telegram app and OTP obsolete for opening the door.  
-It's actually a POC will be published soon. 
-Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.   
-Next it's plan is to extend the Web-UI with more features (like show snapshots and other things)
+### Plan 
+- [ ] extend docu for RPi.GPIO access with normal user
+- [ ] create docu for german users with camera snapshot GDPR hint at the front door
+- [ ] extend docu with pcb wiring layout  
+- [ ] create docu IOS ShortCut App with aotmatic door opening  and GeoFencing  
+- [ ] create demo videos
+- [ ] create docu OTP App
+- [ ] Same solution is in development as JAVA Spring Boot app too.  
+- [ ] Also a IOS Swift App, which makes telegram app and OTP obsolete for opening the door.  
+     It's actually a POC will be published soon. 
+- [ ] Next it's planned to extend the Web-UI with more features (like show snapshots and other things)
+
+### Ideas
+- [ ] add docker container build, image at GHCR and support via docker-compose.yaml
+- [ ] Blink door bell notification
+- [ ] Integrate Ring Cameras(video Doorbell too) (depends on lack of hardware - donation welcome - or temporary provision for development)
+- [ ] Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.  
+- [ ] Integration offering in [HomeAssistant](https://www.home-assistant.io/)
+- [ ] Support Google / Microsoft Authentication App with their format
 
 ## Get started
 
@@ -156,6 +185,7 @@ config_template.yaml      # Template config file
 Makefile                  # make for build html docs - github pages 
 README.md                 # This readme
 LICENSE                   # This project license
+CHANGELOG.md              # Project release changelog file
 requirements_licenses.txt # depend library licenses
 pull_request_template.md  #  Pull request how to
 
@@ -163,24 +193,26 @@ pull_request_template.md  #  Pull request how to
 
 ### Installation
 
+**For fresh install on RaspberryPi with code follow [How_to_install_fresh_RPi_with_code.md](docs/How_to_install_fresh_RPi_with_code.md)** 
+
 1. Clone repo to your RPi.
 ```git clone git@github.com:OliverDrechsler/front_door_intercom_automation.git```
 
-1. go into project repo `cd front_door_intercom_automation`
+2. go into project repo `cd front_door_intercom_automation`
 
-2. now run pip3 to install python requirments
+3. now run pip3 to install python requirments
   ```pip3 install requirements.txt```
 
-1. copy config_template.yaml to config.yaml file
+4. copy config_template.yaml to config.yaml file
    `cp config_template.yaml config.yaml`
 
-2. edit `config.yaml` file with your favorite editor
+5. edit `config.yaml` file with your favorite editor
 
-- for creation of telegram bot and privat chat channel follow [telegram_bot_setup](docs/telegram_bot_setup.md)
-- for creation of base32 encrypted timebased one time password master password follow [one_time_password_setup](docs/one_time_password_setup.md)
-- for blink configuration follow [blink_camera setup](docs/blink_camera_setup.md)
-- for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects
-- for flask web config follow description in `config_template.yaml`
+   - for creation of telegram bot and privat chat channel follow [telegram_bot_setup](docs/telegram_bot_setup.md)
+   - for creation of base32 encrypted timebased one time password master password follow [one_time_password_setup](docs/one_time_password_setup.md)
+   - for blink configuration follow [blink_camera setup](docs/blink_camera_setup.md)
+   - for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects
+   - for flask web config follow description in `config_template.yaml`
 
 6. run app
    `python3 fdia.py`
@@ -221,7 +253,7 @@ If you have configured in the `config.yaml` your blink camera
 ( followed by this docu [blink_camera setup](docs/blink_camera_setup.md) )  
 after starting `fdia.py` application you can send your received blink 2 factor token via telegram channel
 to the application.  
-It starts to authenticate via 2FA / MFA (multi factor authentication) and saves afterwards the 
+It starts to authenticate via 2FA(FactorAuthentication) / MFA (multi factor authentication) and saves afterwards the 
 blink config to the file `blink_config.json`. From now on it is getting used and normally no further
 2FA / MFA authentication is not anymore required.  
 Handle this file careful since there is your blink secret stored.
@@ -229,12 +261,11 @@ Handle this file careful since there is your blink secret stored.
 ### Setup OTP
 
 To store a master password for *totp* *time pased one time password* it must be encoded with base32 as a hash.
-You can run the the cli script `encrypt_decrypt_password_with_base32.py` in `tools` diretory.
+You can run the the cli script `encrypt_decrypt_password_with_base32.py` in `tools` directory.
 Than you get a base32 hashed password.  
 Please store this password in the `config.yaml` under section `otp:` `password:`
 
 For further docu refer to [docs/one_time_password_setup.md](docs/one_time_password_setup.md)
-
 
 ## Cameras
 
@@ -284,7 +315,7 @@ Install on your Mobile following Apps and set it up.
 
 ### Setup recommended OTP in your mobile phone
 
-Provide configure same OTP config in OTP Auth App like in `config.yaml`defined.  
+Provide configure same OTP config in OTP Auth App like in `config.yaml` defined.  
 
 
 ### Mobile usage
@@ -298,7 +329,7 @@ As long as you are in the local network as the fron door intercom automation is 
 If you're away for your home wireless network you can use a VPN tunnel to connect to your ISP router  
 and than send the otp door open code to the REST-API.  
 Do not expose the Flask Web-UI or REST-API to the internet!   
-VPN Tunnel can activation can also be automated like the REST-API call.
+VPN Tunnel activation can also be automated like the REST-API call in IOS Shotcut App.
 
 ### Mobile IOS Door Open App
 
@@ -324,10 +355,10 @@ web:
 ```
 Here you can specify multiple users which are allowed to access the Web page and REST-API.  
   
-For TLS cert encryption i recommend to use a NGINX reverse proxy with TLS cert configuration.  
+For TLS cert encryption it's recommend to use a NGINX reverse proxy with TLS cert configuration.  
 Please consult google for further details about it.  
 
-A REST-API `POST` call can be send to URL `http://<fqdn, hostname or ip>:<port>/open`.  
+A REST-API `POST` call can to URL `http://<fqdn, hostname or ip>:<port>/open`.  
 For Authentication a base64 encoded header with username and password must be added.   
 Request body must be
 ```
@@ -360,6 +391,8 @@ The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
 
 #### Door opener board with relais:
 
+SmartSaint Relay board is used to open door. RPi GPIO ports ar connected to SmartSaint.
+Other side of SmartSaint relay ports connected to (BTIcino) Intercom system.
   * ***saintsmart 2-Channel 5V Relay Module***  
 ![saintsmart 2-Channel 5V Relay Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU)   
   [shop where to buy saintsmart relay](https://www.sainsmart.com/products/2-channel-5v-relay-module)
@@ -399,7 +432,7 @@ The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
 
 ### Debugging
 
-Edit `fdia.py` file  and in top of the file line 22 (after imports)  
+Edit `fdia.py` file  and at top of the file (line 22 - after imports)  
 there you'll find the section
 ```
 """Define logging LEVEL"""
@@ -435,10 +468,10 @@ Following important libraries are used and can also be consulted in case where i
 - Timebase one time password -> [PyOTP library](https://pyauth.github.io/pyotp/)
 - Ciruit wiring -> [Überallkingel at heise.de](https://www.heise.de/select/ct/2017/17/1502995489716437)
   
-Internal code API docu can be found at github pages linked on top above or in code it self.  
+Internal code API docu can be found at github pages linked on top above or in code itself.  
 
 ### How to run unit-tests
-`python3 -m pytest`
+`pytest --cov=./ --cov-report=html`
 
 ### GiHub actions pipelines
 
@@ -450,20 +483,7 @@ Check folder `.github`
 
 ## ChangeLog
 
-Release 1.0.0 soo
-
-Older Release 0.0.5 and below uses and supports
-- python below 3.8 and therefore older OS'es
-- telepot library
-- blinkpy library below 0.20.0
-
-By default older version are not recommended to use because of vulnerabilities.
-Use always latest version.
-
-
-## Previous Python Version releases
-
-**If you want use a release which works with python below 3.8 take a look at [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)** 
+see CHANGELOG file [CHANGELOG](CHANGELOG.md)
 
 ## Author info
 I'm Oliver Drechsler and a Java and Python developer.  
@@ -500,8 +520,14 @@ I'm Oliver Drechsler and a Java and Python developer.
 
 
 ## License
-The licence is GPLv2 because pyTelegramBotAPI was released under the GPLv2 and forces me to use the GPLv2
-see [license file of this project](LICENSE)
+This Software is licenced under MIT see [license file of this project](LICENSE).  
+  
+Why is there no GPLv2 dependency as I understand it? 
+pyTelegramBotAPI published under GPLv2, but it is used as a shared library which is linked dynamic.
+Further only source code is distributed and python code is compiled during runtime (JIT) on user system, therefore it is no distribution.
+For more details see [Fundamental aspects of copyleft in GPL](https://www.opensourcelms.de/gpl-teil-1.html) and read section **7. Libraries**  
+
+
 
 Dependcies to other projects and libraries listed here [requirements_licenses.txt](requirements_licenses.txt).  
 It is create with [licensecheck](https://github.com/FHPythonUtils/LicenseCheck)

@@ -97,17 +97,20 @@ class WebDoorOpener:
         self.door_open_task_queue: queue.Queue = door_open_task_queue
         self.blink_json_data: dict[any, any] = {}
 
+
         self.app = web_app
-        self.server = make_server('127.0.0.1', self.config.flask_web_port, self.app)
+        self.app.secret_key = self.config.flask_secret_key
+        self.server = make_server(self.config.flask_web_host, self.config.flask_web_port, self.app)
         self.app.permanent_session_lifetime = timedelta(days=self.config.flask_browser_session_cookie_lifetime)
-        self.ctx = self.app.app_context()
-        self.ctx.push()
+
+        self.app.before_request(self.log_request_info)
+        self.app.after_request(self.log_response_info)
 
         self.auth = auth
         self.browsers = ["safari", "firefox", "mozilla", "chrome", "edge"]
         self.str_log_level = logging.getLevelName(logger.getEffectiveLevel())
         self.log_level = logger.getEffectiveLevel()
-        self.app.secret_key = self.config.flask_secret_key
+
         self.users = self.transform_values(self.create_password_hash)
         self.setup_logging()
         self.setup_routes()
@@ -127,6 +130,7 @@ class WebDoorOpener:
         Returns:
             None
         """
+        self.logger.info("Start web server")
         if (self.str_log_level == "DEBUG"):
             self.app.debug = True
             self.server.serve_forever()
@@ -399,8 +403,6 @@ class WebDoorOpener:
         """
         Setup routes for various URLs in the web application.
         """
-        self.app.before_request(self.log_request_info)
-        self.app.after_request(self.log_response_info)
         self.auth.verify_password(self.verify_password)
         self.app.add_url_rule('/favicon.ico', 'favicon', self.favicon)
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
@@ -422,11 +424,3 @@ class WebDoorOpener:
         self.app.register_error_handler(Exception, self.handle_exception)
         self.app.register_error_handler(NotFound, self.handle_not_found)
 
-# def run_web_app():
-#     app = WebDoorOpener()
-#     app.run()
-#
-# if __name__ == '__main__':
-#     thread = threading.Thread(target=run_web_app)
-#     thread.start()
-#     thread.join()  # Ensure the main thread waits for the Flask thread to finish

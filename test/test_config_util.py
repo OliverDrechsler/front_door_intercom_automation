@@ -59,6 +59,7 @@ class TestConfiguration(unittest.TestCase):
                 'night_vision': True
             },
             'web': {
+                'flask_web_host': '0.0.0.0',
                 'flask_web_port': 5000,
                 'flask_secret_key': 'dummy_secret',
                 'browser_session_cookie_lifetime': 3600,

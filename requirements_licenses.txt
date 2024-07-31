@@ -30,7 +30,6 @@
 │ ✔          │ exceptiongroup      │ MIT LICENSE                           │
 │ ✔          │ frozenlist          │ APACHE SOFTWARE LICENSE               │
 │ ✔          │ future-annotations  │ MIT LICENSE                           │
-│ ✔          │ gpiozero            │ BSD LICENSE                           │
 │ ✔          │ idna                │ BSD LICENSE                           │
 │ ✔          │ importlib-metadata  │ APACHE SOFTWARE LICENSE               │
 │ ✔          │ importlib-resources │ APACHE SOFTWARE LICENSE               │
