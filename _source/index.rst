@@ -24,6 +24,7 @@ Welcome to Front door intercom automation's documentation!
 
    Copyright <LICENSE.md>
 
+   ChangeLog <CHANGELOG.md>
 
    Advanced API documentation <modules.rst>
 
