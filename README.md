@@ -124,18 +124,16 @@ The project offers the following functionality:
 
 ## Outlook/Ideas - Improvements plan
 
-### Plan
-- [ ] further unit tests
-- [ ] change Project license  
+### Plan 
 - [ ] extend docu for RPi.GPIO access with normal user
-- [ ] create docu for germany camera snapshot gdpr hint at the front door
+- [ ] create docu for german users with camera snapshot GDPR hint at the front door
 - [ ] extend docu with pcb wiring layout  
 - [ ] create docu IOS ShortCut App with aotmatic door opening  and GeoFencing  
 - [ ] create demo videos
 - [ ] create docu OTP App
 - [ ] Same solution is in development as JAVA Spring Boot app too.  
 - [ ] Also a IOS Swift App, which makes telegram app and OTP obsolete for opening the door.  
-    It's actually a POC will be published soon. 
+     It's actually a POC will be published soon. 
 - [ ] Next it's planned to extend the Web-UI with more features (like show snapshots and other things)
 
 ### Ideas
@@ -473,7 +471,7 @@ Following important libraries are used and can also be consulted in case where i
 Internal code API docu can be found at github pages linked on top above or in code itself.  
 
 ### How to run unit-tests
-`python3 -m pytest`
+`pytest --cov=./ --cov-report=html`
 
 ### GiHub actions pipelines
 
@@ -522,8 +520,14 @@ I'm Oliver Drechsler and a Java and Python developer.
 
 
 ## License
-The licence is GPLv2 because pyTelegramBotAPI was released under the GPLv2 and forces me to use the GPLv2
-see [license file of this project](LICENSE)
+This Software is licenced under MIT see [license file of this project](LICENSE).  
+  
+Why is there no GPLv2 dependency as I understand it? 
+pyTelegramBotAPI published under GPLv2, but it is used as a shared library which is linked dynamic.
+Further only source code is distributed and python code is compiled during runtime (JIT) on user system, therefore it is no distribution.
+For more details see [Fundamental aspects of copyleft in GPL](https://www.opensourcelms.de/gpl-teil-1.html) and read section **7. Libraries**  
+
+
 
 Dependcies to other projects and libraries listed here [requirements_licenses.txt](requirements_licenses.txt).  
 It is create with [licensecheck](https://github.com/FHPythonUtils/LicenseCheck)

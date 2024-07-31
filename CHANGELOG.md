@@ -1,5 +1,14 @@
 # ChangeLog
 
+## Release 1.0.1 
+- LICENSE change from GPLv2 to MIT
+- small refactor, 
+- fix camera async
+- migrated from GPIOZERO to RPI.GPIO library
+- web ui add flask host ip
+- added more unit tests
+- updated documentation
+
 ## Release 1.0.0  - CODE REFACTORED - DOCU UPDATED
 - New version with new feature like:
   python 3.10, 3.11, 3.12 support (deprecated 3.9 and below)
