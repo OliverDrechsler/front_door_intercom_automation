@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install -r requirements.txt
-          pip3 install sphinx sphinx-rtd-theme ghp-import myst-parser
+          pip3 install sphinx sphinx-rtd-theme sphinx_md ghp-import myst-parser
         shell: bash
 
       - name: Build HTML

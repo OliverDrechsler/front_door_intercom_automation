@@ -21,6 +21,7 @@ recommonmark==0.7.1
 # sphinx==8.0.2
 sphinx==7.4.7
 sphinx-rtd-theme==2.0.0
+sphinx_md==
 ghp-import==2.1.0
 
 pytest==8.3.2
