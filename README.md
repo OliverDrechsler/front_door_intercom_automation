@@ -12,7 +12,7 @@
   
 ![GitHub License](https://img.shields.io/github/license/OliverDrechsler/front_door_intercom_automation)  
   
-# Front-door intercom automation
+# Front-door intercom automation - (FDIA)
 
 ## Short description
 
