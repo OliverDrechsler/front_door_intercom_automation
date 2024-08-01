@@ -18,8 +18,11 @@ release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.githubpages',  # Keep this one
-              'recommonmark', 'sphinx_md', 'sphinx.ext.todo', ]
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.githubpages',  # Keep this one
+              'myst_parser',
+              'sphinx_md',
+              'sphinx.ext.todo', ]
 
 templates_path = ['_templates']
 

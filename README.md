@@ -572,7 +572,7 @@ Dependcies to other projects and libraries listed here [requirements_licenses.tx
 It is create with [licensecheck](https://github.com/FHPythonUtils/LicenseCheck)
 ```
 pip3 install licensecheck
-licensecheck -u requirements > requirements_license.txt
+licensecheck -u requirements > requirements_licenses.txt
 ```
 
 ## Contribution

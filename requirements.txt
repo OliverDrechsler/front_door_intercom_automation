@@ -17,6 +17,10 @@ asyncio==3.4.3
 aiohttp==3.9.5
 
 myst-parser==3.0.1
+recommonmark==0.7.1
+sphinx==8.0.2
+sphinx-rtd-theme==2.0.0
+ghp-import==2.1.0
 
 pytest==8.3.2
 pytest-cov==5.0.0
