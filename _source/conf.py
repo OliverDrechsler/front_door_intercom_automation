@@ -1,7 +1,10 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+from os import getenv
 
+from recommonmark.parser import CommonMarkParser
+
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
@@ -14,51 +17,31 @@ release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 
-extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.githubpages',  # Keep this one
-    'recommonmark',
-    'sphinx_md',
-    'sphinx.ext.todo',
-]
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.githubpages',  # Keep this one
+              'recommonmark', 'sphinx_md', 'sphinx.ext.todo', ]
 
 templates_path = ['_templates']
 
-# exclude_patterns = ['fdia2']
-
-
 # -- Options for HTML output -------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-# html_theme = 'python_docs_theme_technopathy'
-#html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
 
-html_context = {
-    'github_user_name': 'OliverDrechsler',
-    'github_repo_name': 'front_door_intercom_automation',
-    'project_name': 'Front Door intercom automation'
-}
+html_context = {'github_user_name': 'OliverDrechsler', 'github_repo_name': 'front_door_intercom_automation',
+                'project_name': 'Front Door intercom automation'}
 html_static_path = ['_static']
 
 # -- Extension configuration -------------------------------------------------
-from recommonmark.parser import CommonMarkParser
 
-source_parsers = {
-    '.md': CommonMarkParser,
-}
+
+source_parsers = {'.md': CommonMarkParser, }
 
 source_suffix = ['.rst', '.md']
-
-
-from os import getenv
 
 sphinx_md_useGitHubURL = True
 baseBranch = "master"
 commitSHA = getenv('GITHUB_SHA')
-githubBaseURL = 'https://github.com/' + (getenv('GITHUB_REPOSITORY') or 'OliverDrechsler/front_door_intercom_automation') + '/'
+githubBaseURL = 'https://github.com/' + (
+        getenv('GITHUB_REPOSITORY') or 'OliverDrechsler/front_door_intercom_automation') + '/'
 githubFileURL = githubBaseURL + "blob/"
 githubDirURL = githubBaseURL + "tree/"
 if commitSHA:

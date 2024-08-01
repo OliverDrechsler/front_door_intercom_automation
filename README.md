@@ -126,6 +126,7 @@ The project offers the following functionality:
 
 ### Plan 
 - [ ] fix codecov
+- [ ] fix api docu gh
 - [ ] extend docu for RPi.GPIO access with normal user
 - [ ] create docu for german users with camera snapshot GDPR hint at the front door
 - [ ] extend docu with pcb wiring layout  

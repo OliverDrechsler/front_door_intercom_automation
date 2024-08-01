@@ -18,7 +18,7 @@ Welcome to Front door intercom automation's documentation!
 
    Timebased One Time Password setup <docs/one_time_password_setup.md>
 
-   Encrypt or decrypt a password with base32 for TOTP <docs/one_time_password_setup.md>
+   TOTP helper cli - get and verify a TOTP code  <docs/totp_helper_cli.md>
 
    How to  install on a fresh RPi with code <docs/How_to_install_fresh_RPi_with_code.md>
 

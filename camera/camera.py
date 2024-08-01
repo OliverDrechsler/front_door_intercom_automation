@@ -330,7 +330,7 @@ class Camera:
         """
         self.logger.info(
             msg="i'll take a snapshot from blink cam {0} and store it here {1}".format(self.config.blink_name,
-                self.config.photo_image_path))
+                                                                                       self.config.photo_image_path))
         try:
             await self.blink.refresh(force=True)
             self.logger.debug("create a camera instance")
@@ -379,7 +379,7 @@ class Camera:
         else:
             self.logger.info("no blink_config.json found - 2FA " + "authentication token required")
             self.blink.auth = Auth({"username": self.config.blink_username, "password": self.config.blink_password},
-                no_prompt=True, session=self.session)
+                                   no_prompt=True, session=self.session)
             authentication_success = None
 
     async def save_blink_config(self) -> bool:
@@ -430,8 +430,8 @@ class Camera:
         self.logger.info(msg="take a PiCam snapshot")
         self.logger.debug(msg=f"post url={self.config.picam_url}")
         payload: dict[str, any] = {"rotation": self.config.picam_rotation, "width": self.config.picam_image_width,
-            "filename": self.config.picam_image_filename, "hight": self.config.picam_image_hight,
-            "exposure": self.config.picam_exposure, "iso": self.config.picam_iso, }
+                                   "filename": self.config.picam_image_filename, "hight": self.config.picam_image_hight,
+                                   "exposure": self.config.picam_exposure, "iso": self.config.picam_iso, }
         self.logger.debug(msg=payload)
         headers: dict[str, str] = {"content-type": "application/json"}
         self.logger.debug(msg=headers)
