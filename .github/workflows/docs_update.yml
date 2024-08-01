@@ -30,6 +30,9 @@ jobs:
 
       - name: Build HTML
         run: |
+          cd ${{ github.workspace }}
+          echo "Listing contents of $(pwd):"
+          ls -la
           make html
         shell: bash
 
