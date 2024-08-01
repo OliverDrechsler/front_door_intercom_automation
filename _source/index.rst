@@ -16,6 +16,8 @@ Welcome to Front door intercom automation's documentation!
 
    Blink camera setup <docs/blink_camera_setup.md>
 
+   GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage <docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md>
+
    Timebased One Time Password setup <docs/one_time_password_setup.md>
 
    TOTP helper cli - get and verify a TOTP code  <docs/totp_helper_cli.md>

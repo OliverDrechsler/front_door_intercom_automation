@@ -320,11 +320,11 @@ This project actually supports two type of cameras.
 **For Other countries are not known to me - check by yourself**
 
 In Deutschland ist es erforderlich einen sichtbaren DSGVO Hinweis zur fotografischen Kamera Überwachung anzubringen.  
-[Datenschutzrechtliche Schranken für die private Videoüberwachung](https://www.heise.de/hintergrund/Datenschutzrechtliche-Schranken-fuer-die-private-Videoueberwachung-7238200.html)
+[Datenschutzrechtliche Schranken für die private Videoüberwachung](https://www.heise.de/hintergrund/Datenschutzrechtliche-Schranken-fuer-die-private-Videoueberwachung-7238200.html)  
+und  
 [Datenschutz: Geldstrafen wegen Videokameras in Autos und Wohnhäusern](https://www.heise.de/news/Datenschutz-Mehr-Beschwerden-wegen-Videoueberwachung-9818938.html)
 
-Weiter hat die Datenschutzkonferenz (DSK) eine [Orientierungshilfe](https://datenschutzkonferenz-online.de/media/oh/20200903_oh_vü_dsk.pdf)
-herraus gegeben.  
+Weiter hat die Datenschutzkonferenz (DSK) eine [Orientierungshilfe](https://datenschutzkonferenz-online.de/media/oh/20200903_oh_vü_dsk.pdf) herraus gegeben.    
 Deshalb verwende ich folgenden Hinweis welchen ich auf meinem Grundstück sichtbar für alle angebracht habe.  
 [siehe vorlagen Datei](docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md)
 
