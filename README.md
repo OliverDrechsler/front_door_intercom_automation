@@ -32,12 +32,12 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
 ***[📚 API Docu on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html)***  
 
 
-- [Front-door intercom automation](#front-door-intercom-automation)
+- [Front-door intercom automation - (FDIA)](#front-door-intercom-automation---fdia)
   - [Short description](#short-description)
   - [Long description](#long-description)
   - [Features advantage comparision FDIA, Blink, Ring and PiCamAPI](#features-advantage-comparision-fdia-blink-ring-and-picamapi)
   - [Demo](#demo)
-  - [Outlook/Ideas](#outlookideas)
+  - [Outlook/Ideas - Improvements plan](#outlookideas---improvements-plan)
     - [Plan](#plan)
     - [Ideas](#ideas)
   - [Get started](#get-started)
@@ -53,6 +53,7 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
     - [blink\_config.json](#blink_configjson)
     - [Setup OTP](#setup-otp)
   - [Cameras](#cameras)
+    - [GDPDR EuropeanUnion - Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland](#gdpdr-europeanunion---germany-hint---dsgvo-hinweis-zur-kameraüberwachung-in-deutschland)
     - [Blink Cameras](#blink-cameras)
     - [Raspberry Pi Camera Project PiCam\_API](#raspberry-pi-camera-project-picam_api)
   - [Telegram](#telegram)
@@ -79,7 +80,6 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
     - [How to run unit-tests](#how-to-run-unit-tests)
     - [GiHub actions pipelines](#gihub-actions-pipelines)
   - [ChangeLog](#changelog)
-  - [Previous Python Version releases](#previous-python-version-releases)
   - [Author info](#author-info)
   - [License](#license)
   - [Contribution](#contribution)
@@ -314,7 +314,8 @@ This project actually supports two type of cameras.
   It is a self coded software project which just requires a Raspberry Pi and a wired Camera.
   It is your choice when you want to be more GDPR compliant and don't want to expose your camera to the internet. Also you can use this project from your home wireless network only via web ui and must not use telegram.
 
-### GDPDR EU / Germany hint - DSGVO Hinweis zur Kamera überwachung in Deutschland.
+### GDPDR EuropeanUnion - Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland
+
 **Only for Germany required and maybe partially for EU - please check by your self**
 **For Other countries are not known to me - check by yourself**
 
