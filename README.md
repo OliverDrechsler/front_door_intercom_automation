@@ -124,10 +124,7 @@ The project offers the following functionality:
 
 ## Outlook/Ideas - Improvements plan
 
-### Plan 
-- [ ] fix codecov
-- [ ] fix api docu gh
-- [ ] extend docu for RPi.GPIO access with normal user
+### Plan
 - [ ] create docu for german users with camera snapshot GDPR hint at the front door
 - [ ] extend docu with pcb wiring layout  
 - [ ] create docu IOS ShortCut App with aotmatic door opening  and GeoFencing  
@@ -216,13 +213,53 @@ pull_request_template.md  #  Pull request how to
    - for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects
    - for flask web config follow description in `config_template.yaml`
 
-6. run app
+6. Check RPi system permission if want to run in user permission context 
+   - Check if the gpio Group Exists  
+   - First, verify if the gpio group exists on your system:  
+     `getent group gpio`
+   - If it doesn't exist, you can create it by running:  
+     `sudo groupadd gpio`
+   - Add Your User to the gpio Group. Replace your_username with your actual username:  
+     `sudo usermod -aG gpio your_username`
+   - Grant Group Permissions to GPIO     
+     You can adjust the permissions for the GPIO device files.    
+      This step is required to allow the gpio group to read and write to the GPIO pins:  
+    ```
+    sudo chown root:gpio /dev/gpiomem
+    sudo chmod g+rw /dev/gpiomem
+    ```
+   - Update udev Rules    
+     To automate the permission adjustments at boot, you can add a udev rule:    
+     Create a new file in /etc/udev/rules.d/:  
+     `sudo nano /etc/udev/rules.d/99-gpio.rules`
+   - Add the following line to this file:  
+    ```
+    SUBSYSTEM=="gpio", GROUP="gpio", MODE="0660"
+    SUBSYSTEM=="gpio*", PROGRAM="/bin/sh -c 'chown -R root:gpio /sys/class/gpio && chmod -R 770 /sys/class/gpio; chown -R root:gpio /sys/devices/virtual/gpio && chmod -R 770 /sys/devices/virtual/gpio;'"
+    ```
+   - Save and exit the file.  
+     Reload udev rules:  
+     `sudo udevadm control --reload-rules && sudo udevadm trigger`
+   - Reboot the System  
+  
+   **Or run Script as a Superuser**
+   The simplest way to give your script the necessary permissions is to run it with sudo.  
+   This grants it root privileges, which allows it to access the GPIO pins directly.  
+   `sudo python your_script.py`  
+   If you're using Python 3, make sure to run:  
+   `sudo python3 your_script.py`
+  
+8. run app
    `python3 fdia.py`
    and check log output
 
+  
    for troubleshooting see [Help](#help)
 
-7. setup app to run as daemon / service in linux follow [System service setup](#system-service-setup)
+
+9. setup app to run as daemon / service in linux follow [System service setup](#system-service-setup)
+
+
 
 ### Helper tools
 
