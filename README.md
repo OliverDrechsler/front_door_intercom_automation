@@ -244,9 +244,9 @@ pull_request_template.md  #  Pull request how to
    **Or run Script as a Superuser**
    The simplest way to give your script the necessary permissions is to run it with sudo.  
    This grants it root privileges, which allows it to access the GPIO pins directly.  
-   `sudo python your_script.py`  
+   `sudo python fdia.py`  
    If you're using Python 3, make sure to run:  
-   `sudo python3 your_script.py`
+   `sudo python3 fdia.py`
   
 8. run app
    `python3 fdia.py`
