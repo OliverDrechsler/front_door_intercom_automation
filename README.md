@@ -125,7 +125,6 @@ The project offers the following functionality:
 ## Outlook/Ideas - Improvements plan
 
 ### Plan
-- [ ] create docu for german users with camera snapshot GDPR hint at the front door
 - [ ] extend docu with pcb wiring layout  
 - [ ] create docu IOS ShortCut App with aotmatic door opening  and GeoFencing  
 - [ ] create demo videos
@@ -314,6 +313,19 @@ This project actually supports two type of cameras.
 - My Raspberry PI camera Project [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) Project.  
   It is a self coded software project which just requires a Raspberry Pi and a wired Camera.
   It is your choice when you want to be more GDPR compliant and don't want to expose your camera to the internet. Also you can use this project from your home wireless network only via web ui and must not use telegram.
+
+### GDPDR EU / Germany hint - DSGVO Hinweis zur Kamera überwachung in Deutschland.
+**Only for Germany required and maybe partially for EU - please check by your self**
+**For Other countries are not known to me - check by yourself**
+
+In Deutschland ist es erforderlich einen sichtbaren DSGVO Hinweis zur fotografischen Kamera Überwachung anzubringen.  
+[Datenschutzrechtliche Schranken für die private Videoüberwachung](https://www.heise.de/hintergrund/Datenschutzrechtliche-Schranken-fuer-die-private-Videoueberwachung-7238200.html)
+[Datenschutz: Geldstrafen wegen Videokameras in Autos und Wohnhäusern](https://www.heise.de/news/Datenschutz-Mehr-Beschwerden-wegen-Videoueberwachung-9818938.html)
+
+Weiter hat die Datenschutzkonferenz (DSK) eine [Orientierungshilfe](https://datenschutzkonferenz-online.de/media/oh/20200903_oh_vü_dsk.pdf)
+herraus gegeben.  
+Deshalb verwende ich folgenden Hinweis welchen ich auf meinem Grundstück sichtbar für alle angebracht habe.  
+[siehe vorlagen Datei](docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md)
 
 ### Blink Cameras
 
