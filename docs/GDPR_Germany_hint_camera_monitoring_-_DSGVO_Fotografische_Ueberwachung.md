@@ -17,7 +17,7 @@ Sie haben das Recht auf Auskunft.  <br>
 Bei weiteren Fragen wenden Sie sich an den Hausbesitzer  <br>
     </div>
     <div style="margin-left: 20px; text-align: center;">
-        <img src="_static/Camera.png" alt="Camera Monitoring" style="max-width: 200px; height: auto;">
+        <img src="https://raw.githubusercontent.com/OliverDrechsler/front_door_intercom_automation/master/docs/_static/Camera.png" alt="Camera Monitoring" style="max-width: 200px; height: auto;">
         <br>
         <strong>ACHTUNG:<br>Fotografische Überwachung</strong>
     </div>
