@@ -23,18 +23,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y git rsync python3-pip python3-sphinx python3-sphinx-rtd-theme
+          sudo apt-get install -y git rsync python3-pip
         shell: bash
-      
-      - run: |
-          pip install -r requirements.txt
-          pip install myst-parser sphinx_md sphinx-rtd-theme ghp-import
+
+      - name: Install dependencies
+        run: |
+          pip3 install -r requirements.txt
+          pip3 install sphinx sphinx-rtd-theme ghp-import myst-parser
+        shell: bash
 
       - name: Build HTML
         run: |
-#          cd ${{ github.workspace }}
-#          echo "Listing contents of $(pwd):"
-#          ls -la
           make html
         shell: bash
 
