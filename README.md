@@ -61,19 +61,21 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
     - [Telegram receiving message commands and interactions](#telegram-receiving-message-commands-and-interactions)
   - [Mobile Setup](#mobile-setup)
     - [Mobile Apps](#mobile-apps)
-    - [Setup recommended OTP in your mobile phone](#setup-recommended-otp-in-your-mobile-phone)
-    - [Mobile usage](#mobile-usage)
-    - [Mobile IOS Door Open App](#mobile-ios-door-open-app)
-    - [How to use Apple IOS Shortcuts App to automate door opening](#how-to-use-apple-ios-shortcuts-app-to-automate-door-opening)
+    - [Telegram on mobile phone](#telegram-on-mobile-phone)
+    - [OTP App on mobile phone - How to setup](#otp-app-on-mobile-phone---how-to-setup)
+      - [Telegram and OTP App - mobile usage](#telegram-and-otp-app---mobile-usage)
+    - [Apple IOS Shortcuts App - How to automate door opening](#apple-ios-shortcuts-app---how-to-automate-door-opening)
   - [Web UI \& REST-API usage](#web-ui--rest-api-usage)
-  - [Hardware Ciruit](#hardware-ciruit)
-    - [required HW parts](#required-hw-parts)
-      - [Door bell detection board](#door-bell-detection-board)
-      - [Door opener board with relais:](#door-opener-board-with-relais)
-    - [BTICino CT20/51 Intercom plans](#bticino-ct2051-intercom-plans)
-    - [Dor bell ring plan](#dor-bell-ring-plan)
-    - [BTICino CT20/51 wiring pictures](#bticino-ct2051-wiring-pictures)
-    - [Door open summer SaintSmart relay wiring pictures:](#door-open-summer-saintsmart-relay-wiring-pictures)
+  - [Hardware Ciruits](#hardware-ciruits)
+    - [Door bell detection](#door-bell-detection)
+      - [required HW parts](#required-hw-parts)
+      - [Door bell detection board - required electronic parts](#door-bell-detection-board---required-electronic-parts)
+      - [Generic door bell circuit and wiring plan](#generic-door-bell-circuit-and-wiring-plan)
+    - [Generic door opener relais:](#generic-door-opener-relais)
+      - [Smart Saint Relais circuit wiring](#smart-saint-relais-circuit-wiring)
+        - [For further interest Smart Saint Relais Jumper and circuit layout](#for-further-interest-smart-saint-relais-jumper-and-circuit-layout)
+        - [Door open summer SaintSmart relay wiring pictures:](#door-open-summer-saintsmart-relay-wiring-pictures)
+    - [BTIcino  door intercom specific wiring plans](#bticino--door-intercom-specific-wiring-plans)
   - [Help](#help)
     - [Debugging](#debugging)
     - [Hints](#hints)
@@ -104,7 +106,8 @@ The project offers the following functionality:
 - Automatic camera selection between Blink or PiCam_APi possible.
 - Fallback camera selection if one fails.
 - Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) website to open the front door with the browser using a time-based one-time password.
-- Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) REST-API to open the front door (via time-based one-time password) for integration into other projects / solutions / automations.
+- Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) REST-API to open the front door (via time-based one-time password).
+  For testing purpose you can expose the Flask Web-UI / REST-API via a Docker conainer with NGNIX reverse proxy.
 
 ## Features advantage comparision FDIA, Blink, Ring and PiCamAPI
 
@@ -125,21 +128,15 @@ The project offers the following functionality:
 ## Outlook/Ideas - Improvements plan
 
 ### Plan
-- [ ] extend docu with pcb wiring layout  
-- [ ] create docu IOS ShortCut App with aotmatic door opening  and GeoFencing  
-- [ ] create demo videos
-- [ ] create docu OTP App
-- [ ] Same solution is in development as JAVA Spring Boot app too.  
-- [ ] Also a IOS Swift App, which makes telegram app and OTP obsolete for opening the door.  
-     It's actually a POC will be published soon. 
+- [ ] Same solution is in development as JAVA Spring Boot app too.   
 - [ ] Next it's planned to extend the Web-UI with more features (like show snapshots and other things)
 
 ### Ideas
+- [ ] Integrate Ring Cameras(video Doorbell too) (depends on lack of hardware - donation welcome - or temporary provision for development)
+- [ ] Integration offering in [HomeAssistant](https://www.home-assistant.io/)
+- [ ] Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.  
 - [ ] add docker container build, image at GHCR and support via docker-compose.yaml
 - [ ] Blink door bell notification
-- [ ] Integrate Ring Cameras(video Doorbell too) (depends on lack of hardware - donation welcome - or temporary provision for development)
-- [ ] Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.  
-- [ ] Integration offering in [HomeAssistant](https://www.home-assistant.io/)
 - [ ] Support Google / Microsoft Authentication App with their format
 
 ## Get started
@@ -164,10 +161,18 @@ Software:
 ├── camera                # Camera module 
 ├── config                # Config module, enum and data classes
 ├── docs                  # Further documentation
-│   ├── _source           # Documentation source dir for build docu page
-│   │   └── _static        # static docu images
-│   ├── telegram_bot_setup.md     # Telegram bot setup how to
-│   └── pull_request_template.md  # Pull request template
+│   ├── _static           # static image dir 
+│   ├── blink_camera_setup.md                   # Blink camera setup
+│   ├── BTIcino_Intercom-wiring.md              # BTIcino door intercom wiring plans
+│   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html   # HTML DSGVO Template for door camera
+│   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md # DSGVO Template for door camera
+│   ├── How_to_install_fresh_RPi_with_code.md   # Install software code with a fresh Raspbian Image
+│   ├── How_to_setup_OTP_App_on_mobile_phone.md # Setup OTP App on mobile phone
+│   ├── one_time_password_setup.md              # How to setup otp config
+│   ├── pull_request_template.md                # Pull request template
+│   ├── SmartSaint_Relais_Jumper.md             # Door opener SmartSaint Relais jumper and circuit plan
+│   ├── telegram_bot_setup.md                   # Setup Telegram bot
+│   └── totp_helper_cli.md                      # TOTP (OTP) helper script - get and validate
 ├── door                  # Door module classes for opening or bell detection  
 ├── test                  # Unit tests
 ├── tools                 # CLI Helper tools
@@ -185,8 +190,6 @@ README.md                 # This readme
 LICENSE                   # This project license
 CHANGELOG.md              # Project release changelog file
 requirements_licenses.txt # depend library licenses
-pull_request_template.md  #  Pull request how to
-
 ```
 
 ### Installation
@@ -365,13 +368,16 @@ Install on your Mobile following Apps and set it up.
 * [OTP Auth App for free in AppStore](https://apps.apple.com/de/app/otp-auth/id659877384)
 * [Apple IOS Shortcuts for REST API automation](https://support.apple.com/de-de/guide/shortcuts/welcome/ios)
 
+### Telegram on mobile phone
+Please do it by yourself or consult google.
 
-### Setup recommended OTP in your mobile phone
+### OTP App on mobile phone - How to setup
 
 Provide configure same OTP config in OTP Auth App like in `config.yaml` defined.  
 
+For setup OTP App follow [How to setup OTP App on mobile phone](docs/How_to_setup_OTP_App_on_mobile_phone.md)
 
-### Mobile usage
+#### Telegram and OTP App - mobile usage
 
 Use OTP App to get a totp code and copy to clipboard.  
 Paste clipboard code into telegram chat channel where front-door intercom automation bot ist listening.
@@ -384,15 +390,18 @@ and than send the otp door open code to the REST-API.
 Do not expose the Flask Web-UI or REST-API to the internet!   
 VPN Tunnel activation can also be automated like the REST-API call in IOS Shotcut App.
 
-### Mobile IOS Door Open App
+### Apple IOS Shortcuts App - How to automate door opening
 
-A mobile IOS door opening app is in development.  
-As long as it's not published i recommened to use the above Apps.  
-
-### How to use Apple IOS Shortcuts App to automate door opening
-
-t.b.d
-
+Follow this guide [For setup Apple IOS Shortcuts App to open door](docs/How_to_setup_Shortcut_to_open_door.md)  
+This can only connect to Flask Web REST-API.  
+It will normally only work as long you're in the same home wifi network.  
+To use it while you're roaming (not at home), i recommend to setup a VPN Tunnel in your ISP router.  
+Activate it before and than use it.  
+To your your own security risk - you can make use of a Docker conainer with NGNIX reverse proxy.   
+See sample Docker container project here [https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt](https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt)  
+Than your http REST-API call can be made to the FQDN of the NGNIX reverse proxy which than forwards your request to FDIA Web-Ui / Rest-API.  
+**Important: I do not recommend to do that!**  
+It's just to describe possibilities. Securing NGNIX and Internet HTTP REST call's must be done by you in this case.
 
 ## Web UI & REST-API usage
 
@@ -430,11 +439,23 @@ curl -X POST http://127.0.0.1:<FLASK_WEB_PORT>/open \
 The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.  
 
 
-## Hardware Ciruit
+For testing purpose you can expose the Flask Web-UI / REST-API via a Docker conainer with NGNIX reverse proxy.  
+See sample Docker container project here [https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt](https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt)  
+**Important: I do not recommend to do that!**  
+My recommendation is to setup a VPN Tunnel in your ISP Router.    
+Activate VPN Tunnel when you want to send a open door web request.    
 
-### required HW parts
+## Hardware Ciruits
 
-#### Door bell detection board
+The door bell detection board and the door opener  board/relais  
+can be broadly used for many door intercom's (and not only to BTICino)   
+which has no specific connection ports or is Internet ready.
+
+### Door bell detection
+
+#### required HW parts
+
+#### Door bell detection board - required electronic parts
 
   * Strip grid circuit board of Epoxy – 100 x 100 mit 2,54mm
   * Optocoupler (PC817)
@@ -442,44 +463,36 @@ The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
     a resistor of 330 Ohm (8 Volt), 560 Ohm (12 Volt) or 1,2 Kilo ohm (24 Volt) 
   * Raspberry Pi Hutschienen-Netzteil (Mean Well MDR-20-15) für den Einbau in den Sicherungskasten
 
-#### Door opener board with relais:
+#### Generic door bell circuit and wiring plan 
+![Door bell circuit diagram](./docs/_static/Door_bell_circuit.jpg)  
 
-SmartSaint Relay board is used to open door. RPi GPIO ports ar connected to SmartSaint.
-Other side of SmartSaint relay ports connected to (BTIcino) Intercom system.
-  * ***saintsmart 2-Channel 5V Relay Module***  
-![saintsmart 2-Channel 5V Relay Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU)   
-  [shop where to buy saintsmart relay](https://www.sainsmart.com/products/2-channel-5v-relay-module)
+
+### Generic door opener relais:
+
+I recommend to use the SmartSaint relais board to open door.  
   
- * ***Jumper and wiring layout***
+***saintsmart 2-Channel 5V Relay Module***  
+![saintsmart 2-Channel 5V Relais Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU)   
+[shop where to buy saintsmart relais](https://www.sainsmart.com/products/2-channel-5v-relay-module)
 
-![SaintSmart diagram](docs/_static/saintsmart_wiring1.png)  
+#### Smart Saint Relais circuit wiring
+Because of the RPi does not deliver enough power, i connected an additional +5V power supply
+to the SmartSaint port `JD-VCC` and `JD-GND`.  
+A RPi GPIO port X connected to SmartSaint `IN1` and a RPi GPIO Port with +3,3V to SmartSaint Relais `VCC`.  
+Other side of SmartSaint relay ports connected to door intercom system.
+![RPi to SmartSaint Relais  to Door Intercom wiring](docs/_static/RPi_SmartSaintRelais_DoorIntercom_wiring.jpg)
+ 
+##### For further interest Smart Saint Relais Jumper and circuit layout
 
-![SaintSmart 4 relay diagram](docs/_static/saintsmart1_wiring2.png)  
+see additional [Smart Saint Relais Jumper and circuit layout plan](docs/SmartSaint_Relais_Jumper.md)
 
-[wiring layout see at stackexchange](https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules)
-
-
-### BTICino CT20/51 Intercom plans
-![Plan 1](./docs/_static/Plan_1.jpeg)    
-![Plan 2](./docs/_static/Plan_4.png)    
-![Plan 3](./docs/_static/Plan_2.png)  
-![Plan 4](./docs/_static/Plan_3.png)  
-![Plan 5](./docs/_static/Plan_5.png)
-
-### Dor bell ring plan 
-![BTICino Wiring Diagram](./docs/_static/RPi-BTIcino.jpg)  
-
-### BTICino CT20/51 wiring pictures
-![BTicino Intercom CT20/51 Picture 1](./docs/_static/Intercom_1.jpeg)  
-![BTicino Intercom CT20/51 Picture 2](./docs/_static/Intercom_2.jpeg)  
-![BTicino Intercom CT20/51 Picture 3](./docs/_static/Intercom_2.jpeg)  
-![BTICino Wiring Diagram](./docs/_static/RPi-BTIcino.jpg)  
-
-### Door open summer SaintSmart relay wiring pictures:   
+##### Door open summer SaintSmart relay wiring pictures:   
 ![Door Bell ring detect circuit](./docs/_static/Build_Door_Bell_1.jpeg)  
 ![Relai Wiring_1](./docs/_static/Build_Relai_Opener_1.jpeg)  
 ![Relai Wiring_2](./docs/_static/Build_Relai_Opener_2.jpeg)  
 
+### BTIcino  door intercom specific wiring plans
+see [BTIcino_Intercom_wiring](docs/BTIcino_Intercom_wiring.md)
 
 ## Help
 
