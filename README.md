@@ -329,7 +329,7 @@ und
 
 Weiter hat die Datenschutzkonferenz (DSK) eine [Orientierungshilfe](https://datenschutzkonferenz-online.de/media/oh/20200903_oh_vü_dsk.pdf) herraus gegeben.    
 Deshalb verwende ich folgenden Hinweis welchen ich auf meinem Grundstück sichtbar für alle angebracht habe.  
-[siehe vorlagen Datei](docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md)
+[siehe vorlagen Datei](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html)
 Die Vorlage ist auch als reine [HTML Datei](docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html) hier.   
 
 ### Blink Cameras
