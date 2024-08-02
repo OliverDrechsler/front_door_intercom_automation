@@ -24,6 +24,10 @@ Welcome to Front door intercom automation's documentation!
 
    How to  install on a fresh RPi with code <docs/How_to_install_fresh_RPi_with_code.md>
 
+   How to setup OTP App on mobile phone <docs/How_to_setup_OTP_App_on_mobile_phone.md>
+
+   How to setup Apple IOS Shortcuts App to open door <docs/How_to_setup_Shortcut_to_open_door.md>
+
    Copyright <LICENSE.md>
 
    ChangeLog <CHANGELOG.md>
