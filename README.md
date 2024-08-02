@@ -66,7 +66,7 @@ The following wiring of the circuit is based on a BTIcino intercom system, but c
       - [Telegram and OTP App - mobile usage](#telegram-and-otp-app---mobile-usage)
     - [Apple IOS Shortcuts App - How to automate door opening](#apple-ios-shortcuts-app---how-to-automate-door-opening)
   - [Web UI \& REST-API usage](#web-ui--rest-api-usage)
-  - [Hardware Ciruits](#hardware-ciruits)
+  - [Hardware Circuits](#hardware-circuits)
     - [Door bell detection](#door-bell-detection)
       - [required HW parts](#required-hw-parts)
       - [Door bell detection board - required electronic parts](#door-bell-detection-board---required-electronic-parts)
@@ -445,7 +445,7 @@ See sample Docker container project here [https://github.com/bh42/docker-nginx-r
 My recommendation is to setup a VPN Tunnel in your ISP Router.    
 Activate VPN Tunnel when you want to send a open door web request.    
 
-## Hardware Ciruits
+## Hardware Circuits
 
 The door bell detection board and the door opener  board/relais  
 can be broadly used for many door intercom's (and not only to BTICino)   
@@ -492,7 +492,7 @@ see additional [Smart Saint Relais Jumper and circuit layout plan](docs/SmartSai
 ![Relai Wiring_2](./docs/_static/Build_Relai_Opener_2.jpeg)  
 
 ### BTIcino  door intercom specific wiring plans
-see [BTIcino_Intercom_wiring](docs/BTIcino_Intercom_wiring.md)
+see [BTIcino_Intercom_wiring](docs/BTIcino_Intercom-wiring.md)
 
 ## Help
 
