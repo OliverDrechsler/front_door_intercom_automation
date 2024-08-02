@@ -52,7 +52,7 @@ Opening relais board can be buyed and must just be wired.
     - [blink\_config.json](#blink_configjson)
     - [Setup OTP](#setup-otp)
   - [Cameras](#cameras)
-    - [GDPDR EuropeanUnion - Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland](#gdpdr-europeanunion---germany-hint---dsgvo-hinweis-zur-kameraüberwachung-in-deutschland)
+    - [GDPDR EuropeanUnion and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland](#gdpdr-europeanunion-and-germany-hint---dsgvo-hinweis-zur-kameraüberwachung-in-deutschland)
     - [Blink Cameras](#blink-cameras)
     - [Raspberry Pi Camera Project PiCam\_API](#raspberry-pi-camera-project-picam_api)
   - [Telegram](#telegram)
@@ -317,10 +317,10 @@ This project actually supports two type of cameras.
   It is a self coded software project which just requires a Raspberry Pi and a wired Camera.
   It is your choice when you want to be more GDPR compliant and don't want to expose your camera to the internet. Also you can use this project from your home wireless network only via web ui and must not use telegram.
 
-### GDPDR EuropeanUnion - Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland
+### GDPDR EuropeanUnion and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland
 
-**Only for Germany required and maybe partially for EU - please check by your self**
-**For Other countries are not known to me - check by yourself**
+**Only for Germany required and maybe partially for EU - check by your self**
+**Other countries are not known to me - check by yourself**
 
 In Deutschland ist es erforderlich einen sichtbaren DSGVO Hinweis zur fotografischen Kamera Überwachung anzubringen.  
 [Datenschutzrechtliche Schranken für die private Videoüberwachung](https://www.heise.de/hintergrund/Datenschutzrechtliche-Schranken-fuer-die-private-Videoueberwachung-7238200.html)  
@@ -328,9 +328,9 @@ und
 [Datenschutz: Geldstrafen wegen Videokameras in Autos und Wohnhäusern](https://www.heise.de/news/Datenschutz-Mehr-Beschwerden-wegen-Videoueberwachung-9818938.html)
 
 Weiter hat die Datenschutzkonferenz (DSK) eine [Orientierungshilfe](https://datenschutzkonferenz-online.de/media/oh/20200903_oh_vü_dsk.pdf) herraus gegeben.    
-Deshalb verwende ich folgenden Hinweis welchen ich auf meinem Grundstück sichtbar für alle angebracht habe.  
+Deshalb habe ich folgenden Hinweis auf meinem Grundstück sichtbar für alle angebracht habe.  
 [siehe vorlagen Datei](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html)
-Die Vorlage ist auch als reine [HTML Datei](docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html) hier.   
+Die Vorlage ist auch als reine [HTML Datei](docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html) hier zum downloaden und anpassen.   
 
 ### Blink Cameras
 
