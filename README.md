@@ -16,16 +16,15 @@
 
 ## Short description
 
-Raspberry Pi intercom front door automation for recognising doorbells and creating photos.  
+Raspberry Pi intercom front door automation for recognising doorbells, opening door and creating photos.  
 Notify via your own privat Telegram chat channel.  
-Also opening the front door via the private Telegram chat channel.  
+Opening the front door via the private Telegram chat channel.  
 Furthermore, a separate website & REST API is offered to open the front door.  
-**It is not recommended to make this website accessible on the Internet!**    
-Please use a VPN tunnel to reach the website or REST API.  
-It supports [Blink](https://blinkforhome.com) camera's and my [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.  
+It supports [Blink](https://blinkforhome.com) camera's and my [simple PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.  
 Door opening authorization is handled by timebased one time passwords.  
-The following wiring of the circuit is based on a BTIcino intercom system, but can also be connected to other systems.  
-
+Door bell detection circuit and door opening relais board can nearly handle any door intercom which is not connected to internet.  
+Bell circuit must be build by your self, but it is documented below.  
+Opening relais board can be buyed and must just be wired.  
 
 **[📚 View on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/README.html)**  
 
