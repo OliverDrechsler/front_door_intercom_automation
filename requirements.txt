@@ -11,7 +11,7 @@ Werkzeug==3.0.3
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
 astral==3.2
 pyotp==2.9.0
-pyTelegramBotAPI==4.21.0
+pyTelegramBotAPI==4.22.0
 
 asyncio==3.4.3
 aiohttp==3.9.5
