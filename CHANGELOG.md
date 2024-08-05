@@ -1,4 +1,17 @@
 # ChangeLog
+## Release 1.0.2
+- add: door bell gpio button bouncer time 
+- add: enable option for door bell detection 
+- add: enable option for door opening relais board 
+- add: enable option for flask web ui and rest-api 
+- refactor: web log messages 
+- refactor fdia.service 
+- updated: README.md 
+- updated: How_to_install_fresh_RPi_with_Code.md 
+- bump: version updates for:
+  - Update requests from 2.32.2 to 2.32.3 
+  - Update pyTelegramBotAPI from 4.21.0 to 4.22.0. 
+  - Update aiohttp from 3.9.5 to 3.10.1.
 
 ## Release 1.0.1 
 - LICENSE change from GPLv2 to MIT
