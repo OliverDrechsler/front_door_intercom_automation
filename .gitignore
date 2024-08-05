@@ -28,4 +28,4 @@ _sources/*
 docs/_build/*
 docs/_sources/*
 .envrc
-.venv/
+.venv/*
