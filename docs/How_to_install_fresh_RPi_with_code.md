@@ -3,7 +3,7 @@
 ## Prepare SD Card
 
 1. open RPi Imager
-2. Select RPi hardware , Image RPI OS Lite, choose your SD Card
+2. Select RPi hardware , Image RPI OS (Debian "Bookworm") Lite, choose your SD Card
 3. Select next and choose configure settings.
 4. Enter Hostname
 5. Enter Username and password
@@ -39,9 +39,10 @@
 31.  now run `direnv allow`
 32.  `.venv/bin/pip3 install -r requirements.txt`to install required libs.
 33.    configure now `config.yaml`
-34. `.venv/bin/python3 -m fdia.py` test run
-35. Edit file `fdia.service` and adjust to your path to `ExecStart=/usr/local/bin/fdia/.venv/bin/python3 /usr/local/bin/fdia/fdia.py`  because python fdia code runs in python virtualenv therefore we've to call this python3 executable before.
+34. `.venv/bin/python3 -m fdia` test run
+35. Edit file `fdia.service` and adjust to your path to `ExecStart=/usr/local/bin/front_door_intercom_automation/.venv/bin/python3 /usr/local/bin/front_door_intercom_automation/fdia.py`  because python fdia code runs in python virtualenv therefore we've to call this python3 executable before.
 36. To run fdia as a service on startup with root permissions  
     copy `fdia.service`to `/etc/systemd/system/`to your RPi systemd deamon folder.  
 37. Run `systemctl daemon-reload` and `systemctl start fdia`to start it as a service.
 38. check log output `journalctl -xu fdia -f`
+39. activate new service `systemctl enable fdia.service`

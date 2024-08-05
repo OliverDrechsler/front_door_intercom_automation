@@ -226,13 +226,7 @@ class WebDoorOpener:
         """
         browser_session = self.get_brwoser_session()
         user = self.get_request_username()
-        if browser_session:
-            if (user == 'anonymous' and request.endpoint not in ['login', 'favicon', 'static']):
-                return redirect(url_for('login'))
-        else:
-            if (user == 'anonymous'):
-                return self.handle_401_unauthenticated()
-
+        self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', request.remote_addr, request.remote_user, request.method, request.path)
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Request: ==========")
         self.app.logger.debug("")
@@ -240,6 +234,13 @@ class WebDoorOpener:
         self.app.logger.debug('Request Headers: %s', request.headers)
         self.app.logger.debug('Request Data: %s', request.get_data())
         self.app.logger.debug("======== HTTP Request END ==========")
+
+        if browser_session:
+            if (user == 'anonymous' and request.endpoint not in ['login', 'favicon', 'static']):
+                return redirect(url_for('login'))
+        else:
+            if (user == 'anonymous'):
+                return self.handle_401_unauthenticated()
 
     def log_response_info(self, response):
         """
@@ -315,7 +316,7 @@ class WebDoorOpener:
             self.app.logger.info('User %s send TOTP %s is valid -> will open', auth_user, web_input_totp)
             self.door_open_task_queue.put(Open_Door_Task(open=True, chat_id=self.config.telegram_chat_nr))
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
-                                                     data_text=f"User {auth_user} web request TOTP code {web_input_totp} " + f"accepted - opening door"))
+                                                     data_text=f"{auth_user} request open door - TOTP code {web_input_totp}"))
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(
                 self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
@@ -324,7 +325,7 @@ class WebDoorOpener:
         else:
             self.app.logger.warning('User %s send invalid TOTP %s', auth_user, web_input_totp)
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
-                                                     data_text=f"User {auth_user} web request TOTP code " + f"{web_input_totp} invalid!"))
+                                                     data_text=f"{auth_user} request TOTP code " + f"{web_input_totp} invalid!"))
             return self.handle_bad_request(message="Invalid TOTP. Retry again -> will notify owner.")
 
     def handle_exception(self, e):

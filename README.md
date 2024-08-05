@@ -20,7 +20,7 @@ Raspberry Pi intercom front door automation for recognising doorbells, opening d
 Notify via your own privat Telegram chat channel.  
 Opening the front door via the private Telegram chat channel.  
 Furthermore, a separate website & REST API is offered to open the front door.  
-It supports [Blink](https://blinkforhome.com) camera's and my [simple PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.  
+It supports [Blink](https://blinkforhome.com) camera's and my simple [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.  
 Door opening authorization is handled by timebased one time passwords.  
 Door bell detection circuit and door opening relais board can nearly handle any door intercom which is not connected to internet.  
 Bell circuit must be build by your self, but it is documented below.  
@@ -93,21 +93,25 @@ Starting point was an article [Überallkingel at heise.de](https://www.heise.de/
 This front door intercom system ***extends any standard front door intercom system***,  
 which are not connected to the Internet or ready for it.
 The project offers the following functionality:
-- Front door opening via nearly any door intercom system.  
-- Front door bell detection. 
+- Front door opening via nearly any door intercom system. See hardware build [Generic door opener relais:](#generic-door-opener-relais)
+- Possibility to enable / disable door opening feature - runs without required hardware
+- Front door bell detection. See hardware build [Door bell detection](#door-bell-detection)
+- Possibility to enable / disable door bell detection - runs without required hardware
 - Notification via private Telegram channel [PyTelegramBotAPI library](https://github.com/eternnoir/pyTelegramBotAPI)
 - Front door opening via time-based one-time password [PyOTP library](https://pyauth.github.io/pyotp/)
-- Photo creation and telegram sending on doorbell ringing.  
+- Photo snapshot send via telegram on doorbell ringing.  
 - Use of [Blink](https://blinkforhome.com) cameras with [BlinkPy library](https://github.com/fronzbot/blinkpy)
 - Use of my Raspberry PI camera Project [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) Project.
 - Day / night detection to select the appropriate camera if several are used simultaneously via [astral library](https://github.com/sffjunkie/astral)
 - Blink camera multi factory authentication setup via telegram chat message if Blink requires this.
-- Blink camera or PiCamera photo creation and sending on Telegram message request.
+- Multi camera type support - Blink camera or PiCam_API camera photo snapshot and sending on Telegram message request.
 - Automatic camera selection between Blink or PiCam_APi possible.
 - Fallback camera selection if one fails.
 - Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) website to open the front door with the browser using a time-based one-time password.
-- Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) REST-API to open the front door (via time-based one-time password).
-  For testing purpose you can expose the Flask Web-UI / REST-API via a Docker conainer with NGNIX reverse proxy.
+- Internal Flask REST-API to open the front door (via time-based one-time password).
+- Possibility to enable / disable Flask Web-UI / REST-API - run without web interface
+- Possibility to enable/disable cameras, web-ui and hardware circuit (opener, bell detection) on your use case basis.
+  (E.g. Project can use for only door opening via Telegram chat - without dell detection, no web-ui, no cameras - in case us want to use blink video door bell natively)
 
 ## Features advantage comparision FDIA, Blink, Ring and PiCamAPI
 
@@ -395,13 +399,8 @@ VPN Tunnel activation can also be automated like the REST-API call in IOS Shotcu
 Follow this guide [For setup Apple IOS Shortcuts App to open door](docs/How_to_setup_Shortcut_to_open_door.md)  
 This can only connect to Flask Web REST-API.  
 It will normally only work as long you're in the same home wifi network.  
-To use it while you're roaming (not at home), i recommend to setup a VPN Tunnel in your ISP router.  
-Activate it before and than use it.  
-To your your own security risk - you can make use of a Docker conainer with NGNIX reverse proxy.   
-See sample Docker container project here [https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt](https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt)  
-Than your http REST-API call can be made to the FQDN of the NGNIX reverse proxy which than forwards your request to FDIA Web-Ui / Rest-API.  
-**Important: I do not recommend to do that!**  
-It's just to describe possibilities. Securing NGNIX and Internet HTTP REST call's must be done by you in this case.
+To use it while you're roaming (not at home), i recommend to use the telegram chat group to open the door.  
+Another possibility is to setup a VPN Tunnel in your ISP router. Activate this tunnel before and than use IOS Shortcut to open.    
 
 ## Web UI & REST-API usage
 
@@ -417,8 +416,11 @@ web:
 ```
 Here you can specify multiple users which are allowed to access the Web page and REST-API.  
   
-For TLS cert encryption it's recommend to use a NGINX reverse proxy with TLS cert configuration.  
-Please consult google for further details about it.  
+For TLS cert encryption it's recommend to use a NGINX reverse proxy with TLS cert configuration. 
+See sample Docker container project here [https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt](https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt)  
+**Important: I do not recommend to expose the Web-UI to the internet! It is not hardend nor pentested**  
+To access the Web-Ui/REST-API while you roam - i recommend to setup a VPN Tunnel in your ISP Router.    
+Activate VPN Tunnel before you send the web request.    
 
 A REST-API `POST` call can to URL `http://<fqdn, hostname or ip>:<port>/open`.  
 For Authentication a base64 encoded header with username and password must be added.   
@@ -436,14 +438,7 @@ curl -X POST http://127.0.0.1:<FLASK_WEB_PORT>/open \
      -H "Authorization: Basic <BASE64_ENCODED_CREDENTIALS>" \
      -d '{"totp": "<YOUR_TOTP_CODE>"}'
 ```
-The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.  
-
-
-For testing purpose you can expose the Flask Web-UI / REST-API via a Docker conainer with NGNIX reverse proxy.  
-See sample Docker container project here [https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt](https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt)  
-**Important: I do not recommend to do that!**  
-My recommendation is to setup a VPN Tunnel in your ISP Router.    
-Activate VPN Tunnel when you want to send a open door web request.    
+The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
 
 ## Hardware Circuits
 
@@ -452,6 +447,11 @@ can be broadly used for many door intercom's (and not only to BTICino)
 which has no specific connection ports or is Internet ready.
 
 ### Door bell detection
+
+To enable the door bell detection feature you have to configure the `config.yaml` file.  
+See also [config.yaml - config\_template.yaml](#configyaml---config_templateyaml)  
+When hardware circuit is to a GPIO port connected, then enable this feature with `True` in config file  
+section: `GPIO` `enable_door_bell_port` and specify the port in `door_bell_port`.  
 
 #### required HW parts
 
@@ -469,7 +469,15 @@ which has no specific connection ports or is Internet ready.
 
 ### Generic door opener relais:
 
-I recommend to use the SmartSaint relais board to open door.  
+To enable the door opening feature you have to configure the `config.yaml` file.  
+See also [config.yaml - config\_template.yaml](#configyaml---config_templateyaml)  
+When SmartSaint relais hardware is connected to a GPIO port connected,  
+then enable this feature with `True` in config file  
+section: `GPIO` `enable_door_opener_port` and specify the port in `door_opener_port`.  
+
+**I recommend to use the SmartSaint relais board to open door.**    
+It is simply to use and you have just to connect it to your RPi GPIO port and  
+on the other side to your door intercom system.  
   
 ***saintsmart 2-Channel 5V Relay Module***  
 ![saintsmart 2-Channel 5V Relais Module](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&usqp=CAU)   

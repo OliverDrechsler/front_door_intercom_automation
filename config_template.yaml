@@ -13,8 +13,11 @@ otp:
   hash_type: sha512  # encryption hash for OTP used  (possible values are sha1, sha256, sha512) - recommended sha512
 
 GPIO:
-  testing_msg: True   # if not run on RPi and wanted simulate a door bell ring set to True otherwise false
-  door_bell_port: 1   # RPi GPIO Port where door bell is connected
+  testing_msg: True               # if not run on RPi and wanted simulate a door bell ring set to True otherwise false
+  enable_door_bell_port: True     # enable or disable (True/False) door bell detection feature if hardware board is connected
+  door_bell_port: 1               # RPi GPIO Port where door bell is connected
+  door_bell_bounce_time: 5        # seconds to block since first door bell ring detected
+  enable_door_opener_port: True   # enable or disable (True/False) door opening feature if hardware board is connected
   door_opener_port: 2 # RPi GPIO Port where door summer/opener is connected
   run_on_raspberry: False # Boolean for run code without RPi GPIO on other system for testing purposes
 
@@ -53,6 +56,7 @@ picam:
   night_vision: False
 
 web:
+  enabled: True                                   # Web-Ui and REST-API enabled or disabled (True / False)webserver enabled
   flask_web_host: "0.0.0.0"                       # flask webserver host listing ip 0.0.0.0 to accessible for every one - 127.0.0.1 means internal only
   flask_web_port: 5001                            # flask webserver port
   flask_secret_key: "my_super_flask_secret_key"   # provide here your own flask secret key

@@ -6,13 +6,13 @@ After=network-online.target
 
 [Service]
 #Type=simple
-ExecStart=/home/pi/front_door_intercom_automation/fdia.py
+ExecStart=/usr/local/bin/front_door_intercom_automation/.venv/bin/python3 /usr/local/bin/front_door_intercom_automation/fdia.py
 
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 KillSignal=SIGINT
 LimitNOFILE=65536
-Restart=on-failsure
+Restart=on-failure
 RestartSec=60
 User=root
 Group=root

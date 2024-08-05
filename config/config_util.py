@@ -43,7 +43,10 @@ class Configuration:
 
         self.run_on_raspberry: bool = self.config["GPIO"]["run_on_raspberry"]
         self.door_bell: int = self.config["GPIO"]["door_bell_port"]
+        self.door_bell_enabled: bool = self.config["GPIO"]["enable_door_bell_port"]
+        self.door_bell_bounce_time: int = self.config["GPIO"]["door_bell_bounce_time"]
         self.door_summer: int = self.config["GPIO"]["door_opener_port"]
+        self.door_summer_enabled: bool = self.config["GPIO"]["enable_door_opener_port"]
         self.testing_bell_msg: bool = self.config["GPIO"]["testing_msg"]
 
         self.photo_image_path: str = self.config["photo_general"]["image_path"]
@@ -68,6 +71,7 @@ class Configuration:
         self.picam_night_vision: bool = self.config["picam"]["night_vision"]
 
         self.web_user_dict: dict[str, str] = self.get_web_user_dict()
+        self.flask_enabled: bool = self.config["web"]["enabled"]
         self.flask_web_host: int = self.config["web"]["flask_web_host"]
         self.flask_web_port: int = self.config["web"]["flask_web_port"]
         self.flask_secret_key: str = self.config["web"]["flask_secret_key"]

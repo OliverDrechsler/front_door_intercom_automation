@@ -30,7 +30,10 @@ class TestConfiguration(unittest.TestCase):
             },
             'GPIO': {
                 'run_on_raspberry': True,
+                'enable_door_bell_port': True,
+                'enable_door_opener_port': True,
                 'door_bell_port': 1,
+                'door_bell_bounce_time': 5,
                 'door_opener_port': 2,
                 'testing_msg': True
             },
@@ -59,6 +62,7 @@ class TestConfiguration(unittest.TestCase):
                 'night_vision': True
             },
             'web': {
+                'enabled': True,
                 'flask_web_host': '0.0.0.0',
                 'flask_web_port': 5000,
                 'flask_secret_key': 'dummy_secret',
@@ -83,6 +87,9 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.run_on_raspberry, True)
         self.assertEqual(self.config.door_bell, 1)
         self.assertEqual(self.config.door_summer, 2)
+        self.assertEqual(self.config.door_bell_enabled, True)
+        self.assertEqual(self.config.door_bell_bounce_time, 5)
+        self.assertEqual(self.config.door_summer_enabled, True)
         self.assertEqual(self.config.photo_image_path, '/path/to/image')
         self.assertEqual(DefaultCam.BLINK, self.config.default_camera_type)
         self.assertEqual(self.config.enable_detect_daylight, True)
@@ -101,6 +108,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.picam_rotation, 90)
         self.assertEqual(self.config.picam_iso, 100)
         self.assertEqual(self.config.picam_night_vision, True)
+        self.assertEqual(self.config.flask_enabled, True)
         self.assertEqual(self.config.flask_web_port, 5000)
         self.assertEqual(self.config.flask_secret_key, 'dummy_secret')
         self.assertEqual(self.config.flask_browser_session_cookie_lifetime, 3600)

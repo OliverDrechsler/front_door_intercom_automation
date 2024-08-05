@@ -261,22 +261,25 @@ def main() -> None:
     receive_msg_thread.start()
 
     logger.debug(msg="preparing door bell watch thread")
-    door_bell_thread = threading.Thread(target=thread_door_bell,
-        args=(shutdown_event, config, loop, message_task_queue, camera_task_queue_async))
-    logger.info(msg="start thread monitoring door bell")
-    door_bell_thread.start()
+    if (config.door_bell_enabled):
+        door_bell_thread = threading.Thread(target=thread_door_bell,
+            args=(shutdown_event, config, loop, message_task_queue, camera_task_queue_async))
+        logger.info(msg="start thread monitoring door bell")
+        door_bell_thread.start()
 
     logger.debug(msg="preparing door open thread")
-    door_opener_thread = threading.Thread(target=thread_open_door,
-        args=(shutdown_event, config, loop, message_task_queue, door_open_task_queue))
-    logger.info(msg="start door open thread")
-    door_opener_thread.start()
+    if (config.door_summer_enabled):
+        door_opener_thread = threading.Thread(target=thread_open_door,
+            args=(shutdown_event, config, loop, message_task_queue, door_open_task_queue))
+        logger.info(msg="start door open thread")
+        door_opener_thread.start()
 
     logger.debug(msg="preparing flask web door opener")
-    web_thread = threading.Thread(target=run_web_app, args=(
-        shutdown_event, config, loop, message_task_queue, camera_task_queue_async, door_open_task_queue))
-    logger.info(msg="start thread flask web door opener")
-    web_thread.start()
+    if (config.flask_enabled):
+        web_thread = threading.Thread(target=run_web_app, args=(
+            shutdown_event, config, loop, message_task_queue, camera_task_queue_async, door_open_task_queue))
+        logger.info(msg="start thread flask web door opener")
+        web_thread.start()
 
     try:
         while True:
@@ -293,15 +296,18 @@ def main() -> None:
         asyncio.run_coroutine_threadsafe(camera_task_queue_async.put(None), loop)
 
         send_msg_thread.join()
-        door_opener_thread.join()
+        if (config.door_summer_enabled):
+            door_opener_thread.join()
         camera_thread_async.join()
         receive_msg_thread.join()
         logger.info("shutdown door_bell_thread")
-        door_bell_thread.join()
+        if (config.door_bell_enabled):
+            door_bell_thread.join()
         logger.info("shutdown web_thread")
-        global web_app
-        web_app.shutdown()
-        web_thread.join()
+        if (config.flask_enabled):
+            global web_app
+            web_app.shutdown()
+            web_thread.join()
 
         os._exit(0)
 
