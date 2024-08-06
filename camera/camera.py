@@ -430,7 +430,7 @@ class Camera:
         self.logger.info(msg="take a PiCam snapshot")
         self.logger.debug(msg=f"post url={self.config.picam_url}")
         payload: dict[str, any] = {"rotation": self.config.picam_rotation, "width": self.config.picam_image_width,
-                                   "filename": self.config.picam_image_filename, "hight": self.config.picam_image_hight,
+                                   "filename": self.config.picam_image_filename, "height": self.config.picam_image_hight,
                                    "exposure": self.config.picam_exposure, "iso": self.config.picam_iso, }
         self.logger.debug(msg=payload)
         headers: dict[str, str] = {"content-type": "application/json"}
@@ -459,7 +459,7 @@ class Camera:
 
         with open(self.config.photo_image_path, "wb") as file:
             response: requests.Response = requests.get(
-                url=self.config.picam_url + "?filename=" + self.config.photo_image_path)
+                url=self.config.picam_url + "?filename=" + self.config.picam_image_filename)
             file.write(response.content)
         self.logger.debug(msg="downloading foto ended with status {}".format(response.status_code))
         self.logger.debug(msg="end downloading foto")

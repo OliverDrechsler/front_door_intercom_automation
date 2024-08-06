@@ -281,6 +281,7 @@ Edit file `fdia.service` and adjust to your path ( `ExecStart=/home/pi/front_doo
 To run fdia as a service on startup with root permissions  
 copy `fdia.service`to `/etc/systemd/system/`to your RPi systemd deamon folder.  
 Run `systemctl daemon-reload` and `systemctl start fdia`to start it as a service.  
+Enable system service with `systemctl enable fdia.service`.
 
 
 ### Configuration - config files
