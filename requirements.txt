@@ -14,7 +14,7 @@ pyotp==2.9.0
 pyTelegramBotAPI==4.22.0
 
 asyncio==3.4.3
-aiohttp==3.10.1
+aiohttp==3.10.3
 
 myst-parser==3.0.1
 recommonmark==0.7.1
