@@ -29,3 +29,4 @@ docs/_build/*
 docs/_sources/*
 .envrc
 .venv/*
+.python-version

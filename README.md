@@ -30,12 +30,14 @@ Opening relais board can be buyed and must just be wired.
 
 ***[📚 API Docu on Github Pages](https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html)***  
 
+## Demo
+![Demo opening via Telegram and Web-UI](./docs/_static/fdia_demo.gif)
 
 - [Front-door intercom automation - (FDIA)](#front-door-intercom-automation---fdia)
   - [Short description](#short-description)
+  - [Demo](#demo)
   - [Long description](#long-description)
   - [Features advantage comparision FDIA, Blink, Ring and PiCamAPI](#features-advantage-comparision-fdia-blink-ring-and-picamapi)
-  - [Demo](#demo)
   - [Outlook/Ideas - Improvements plan](#outlookideas---improvements-plan)
     - [Plan](#plan)
     - [Ideas](#ideas)
@@ -85,8 +87,6 @@ Opening relais board can be buyed and must just be wired.
   - [License](#license)
   - [Contribution](#contribution)
 
-
-
 ## Long description
 
 Starting point was an article [Überallkingel at heise.de](https://www.heise.de/select/ct/2017/17/1502995489716437).  
@@ -124,10 +124,6 @@ The project offers the following functionality:
 | Multi user door opening                            | ✅                                                                                                                     | ✅                                                                                                      | ✅                                                                                                      | ❌                                  | ❌                                   | ❌                                               |  
 | GDPR data storage                                  | ✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval  | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed  | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed  | ❌ Camaera Internet / Cloud exposed | ❌ Camaera Internet / Cloud exposed  | ✅ no data Exposure                              |  
 | Local usage without Internet (door opening)        | ✅                                                                                                                     | ✅opening - ❌ no camera snapshot                                                                       | ✅opening - ❌ no camera snapshot                                                                       | ❌                                  | ❌                                   | ✅                                               |  
-
-## Demo
--> short Telegram usage video will follow.   
--> short video WebUi usage video will follow.  
 
 ## Outlook/Ideas - Improvements plan
 
@@ -298,7 +294,7 @@ In this yaml file you'll find after `#` comments / hints for which the line is w
 If you have configured in the `config.yaml` your blink camera  
 ( followed by this docu [blink_camera setup](docs/blink_camera_setup.md) )  
 after starting `fdia.py` application you can send your received blink 2 factor token via telegram channel
-to the application.  
+to the application ( [/blink_auth here_your_blink_otp_code](docs/blink_camera_setup.md) ).  
 It starts to authenticate via 2FA(FactorAuthentication) / MFA (multi factor authentication) and saves afterwards the 
 blink config to the file `blink_config.json`. From now on it is getting used and normally no further
 2FA / MFA authentication is not anymore required.  
@@ -318,9 +314,10 @@ For further docu refer to [docs/one_time_password_setup.md](docs/one_time_passwo
 This project actually supports two type of cameras.
 - [Blink](https://blinkforhome.com) cameras with [BlinkPy library](https://github.com/fronzbot/blinkpy)  
   This means all Blink cameras are supported.  
-- My Raspberry PI camera Project [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) Project.  
-  It is a self coded software project which just requires a Raspberry Pi and a wired Camera.
-  It is your choice when you want to be more GDPR compliant and don't want to expose your camera to the internet. Also you can use this project from your home wireless network only via web ui and must not use telegram.
+- My Raspberry PI camera Project [PiCam_API](https://github.com/OliverDrechsler/PiCam_API)  
+  or [PiCam_API_2](https://github.com/OliverDrechsler/PiCam_API_2) Project.  
+  It is a small POC self coded software project which just requires a Raspberry Pi and a wired Camera.  
+  It is your choice when you want to be more GDPR compliant and don't want to expose your camera to the internet. Also you can use this project from your home wireless network only via web ui and must not use telegram. PiCam_API_2 uses [libcamera2](https://github.com/raspberrypi/picamera2) vs. PiCam_API uses the first [libcamera](https://github.com/raspberrypi/libcamera). There some hardware / os requirement differences between these versions [see docu libcamera2 requirements section](https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf).
 
 ### GDPDR EuropeanUnion and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland
 
@@ -344,7 +341,7 @@ For configuration of the blink camera please procceed with further [docu/blink_c
 
 ### Raspberry Pi Camera Project PiCam_API
 
-For configuration of the PiCam_API please procceed with the [PiCam_API Project](https://github.com/OliverDrechsler/PiCam_API) docu.  
+For configuration of the PiCam_API please procceed with the [PiCam_API Project](https://github.com/OliverDrechsler/PiCam_API) docu or [PiCam_API_2](https://github.com/OliverDrechsler/PiCam_API_2).
 
 
 ## Telegram
