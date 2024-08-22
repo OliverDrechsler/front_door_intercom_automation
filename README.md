@@ -39,6 +39,7 @@ Opening relais board can be buyed and must just be wired.
   - [Long description](#long-description)
   - [Features advantage comparision FDIA, Blink, Ring and PiCamAPI](#features-advantage-comparision-fdia-blink-ring-and-picamapi)
   - [Outlook/Ideas - Improvements plan](#outlookideas---improvements-plan)
+    - [in development](#in-development)
     - [Plan](#plan)
     - [Ideas](#ideas)
   - [Get started](#get-started)
@@ -115,7 +116,7 @@ The project offers the following functionality:
 
 ## Features advantage comparision FDIA, Blink, Ring and PiCamAPI
 
-| Project with Product / <br/> Features,Capabilities | FDIA with PiCamAPI Camera                                                                                              | FDIA with Blink Camera                                                                                  | FDIA with upcoming Ring Camera support - not there (idea to integrate)                                  | Blink only (no FDIA)                | Ring only ( FDIA)                    | FDIA with no build HW module                      |  
+| Project with Product / <br/> Features,Capabilities | FDIA with PiCamAPI Camera                                                                                              | FDIA with Blink Camera                                                                                  | FDIA with upcoming Ring Camera support - not there (under development)                                  | Blink only (no FDIA)                | Ring only ( FDIA)                    | FDIA with no build HW module                      |  
 |----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------|--------------------------------------|---------------------------------------------------|  
 | Open Door                                          | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)                               | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)                | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)                | ❌                                  | ❌                                   | ❌                                               |  
 | detect door bell ring                              | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                                        | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                         | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                         | ✅                                  | ✅                                   | ❌                                               |  
@@ -127,12 +128,14 @@ The project offers the following functionality:
 
 ## Outlook/Ideas - Improvements plan
 
+### in development
+- [x] Integrate Ring Cameras(video Doorbell too) (depends on lack of hardware - donation welcome - or temporary provision for development)
+
 ### Plan
 - [ ] Same solution is in development as JAVA Spring Boot app too.   
 - [ ] Next it's planned to extend the Web-UI with more features (like show snapshots and other things)
 
 ### Ideas
-- [ ] Integrate Ring Cameras(video Doorbell too) (depends on lack of hardware - donation welcome - or temporary provision for development)
 - [ ] Integration offering in [HomeAssistant](https://www.home-assistant.io/)
 - [ ] Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.  
 - [ ] add docker container build, image at GHCR and support via docker-compose.yaml
