@@ -1,4 +1,14 @@
 # ChangeLog
+
+## Release 1.0.4
+- bumped lib versions
+- updated doc readme.md
+- added unit tests for tools scripts
+- translated static web-ui page from german to english
+
+## Release 1.0.3
+- fix camera PiCam_API download filename
+
 ## Release 1.0.2
 - add: door bell gpio button bouncer time 
 - add: enable option for door bell detection 
