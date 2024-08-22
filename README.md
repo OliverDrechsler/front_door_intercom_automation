@@ -464,6 +464,7 @@ section: `GPIO` `enable_door_bell_port` and specify the port in `door_bell_port`
 #### Generic door bell circuit and wiring plan 
 ![Door bell circuit diagram](./docs/_static/Door_bell_circuit.jpg)  
 
+![circuit board with installed electronic parts and draw wiring](./docs/_static/Build_Door_Bell_2.jpeg)
 
 ### Generic door opener relais:
 
