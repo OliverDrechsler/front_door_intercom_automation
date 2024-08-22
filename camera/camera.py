@@ -12,9 +12,11 @@ import aiohttp
 import requests
 from astral import LocationInfo
 from astral.sun import sun
-from blinkpy.auth import Auth
+from blinkpy.auth import Auth as blink_auth
 from blinkpy.blinkpy import Blink
 from blinkpy.helpers.util import json_load
+
+from ring_doorbell import (Auth as ring_auth), AuthenticationError, Requires2FAError, Ring
 
 from config.config_util import Configuration, DefaultCam
 from config.data_class import Camera_Task, Message_Task
@@ -108,6 +110,31 @@ class Camera:
                                 Message_Task(reply=True, chat_id=task.chat_id, message=task.message,
                                              data_text="an error occured during blink MFA "
                                                        "processing"))
+
+                    elif task.ring_photo:
+                        self.logger.info(f"processing task.ring_photo: {task.ring_photo}")
+                        await self._ring_foto_helper(task)
+
+                    elif task.ring_mfa:
+                        self.logger.info(f"processing task.ring_mfa: {task.ring_mfa}")
+                        result = await self.add_2fa_ring_token(task)
+                        if result:
+                            result = await self.save_ring_config()
+                            if result:
+                                self.message_task_queue.put(
+                                    Message_Task(reply=True, chat_id=task.chat_id, message=task.message,
+                                                 data_text="ring MFA added"))
+                            else:
+                                self.message_task_queue.put(
+                                    Message_Task(reply=True, chat_id=task.chat_id, message=task.message,
+                                                 data_text="an error occured during ring MFA "
+                                                           "processing"))
+                        else:
+                            self.message_task_queue.put(
+                                Message_Task(reply=True, chat_id=task.chat_id, message=task.message,
+                                             data_text="an error occured during ring MFA "
+                                                       "processing"))
+
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
@@ -144,6 +171,11 @@ class Camera:
                     result = await self._picam_foto_helper(task)
                     return await self._check_picam_result(task, result)
 
+                if not self.config.ring_night_vision:
+                    self.logger.debug("ring night_vision is disabled")
+                    result = await self._ring_foto_helper(task)
+                    return await self._check_ring_result(task, result)
+
             else:
                 self.logger.info("night detected is enabled")
 
@@ -157,6 +189,11 @@ class Camera:
                     result = await self._picam_foto_helper(task)
                     return await self._check_picam_result(task, result)
 
+                if self.config.ring_night_vision:
+                    self.logger.debug("blink night_vision is enabled")
+                    result = await self._ring_foto_helper(task)
+                    return await self._check_ring_result(task, result)
+
         else:
             # use default camera
             if self.config.default_camera_type == DefaultCam.BLINK:
@@ -168,6 +205,11 @@ class Camera:
                 self.logger.debug("picam as default cam is choosen")
                 result = await self._picam_foto_helper(task)
                 return await self._check_picam_result(task, result)
+
+            if self.config.default_camera_type == DefaultCam.RING:
+                self.logger.debug("ring as default cam choosen")
+                result = await self._ring_foto_helper(task)
+                return await self._check_ring_result(task, result)
 
     async def _picam_foto_helper(self, task: Camera_Task) -> bool:
         """
@@ -225,6 +267,33 @@ class Camera:
             return False
         return result
 
+    async def _ring_foto_helper(self, task: Camera_Task) -> bool:
+        """
+        Asynchronously takes a photo using the Ring camera if enabled in the configuration.
+
+        Args:
+            task (Camera_Task): The camera task containing information about the task.
+
+        Returns:
+            bool: True if the photo was successfully taken and processed, False otherwise.
+
+        This function checks if the Blink camera is enabled in the configuration. If it is, it takes a photo using the Blink camera and processes the result. If the photo was successfully taken, it puts the photo in the message queue. If the photo was not taken successfully, it puts an error message in the message queue. If the Blink camera is not enabled, it logs a message and returns False.
+        """
+        if (self.config.ring_enabled):
+            self.logger.debug("_ring_foto_helper - blink enabled")
+            result = await self.ring_snapshot()
+            if result:
+                self.logger.debug("ring snapshot success")
+                self.put_msg_queue_photo(task)
+            else:
+                self.logger.error("ring snapshot error detected")
+                self.put_msg_queue_error(task, "an error occured during pocessing ring foto task")
+        else:
+            self.logger.info("_ring_foto_helper - blink disabled")
+            return False
+        return result
+
+
     async def _check_picam_result(self, task: Camera_Task, result: bool) -> bool:
         """
         Check the result of the picam function.
@@ -252,7 +321,7 @@ class Camera:
 
     async def _check_blink_result(self, task: Camera_Task, result: bool) -> bool:
         """
-        Check the result of the picam function.
+        Check the result of the blink function.
 
         Args:
             task (Camera_Task): The task to be checked.
@@ -261,8 +330,8 @@ class Camera:
         Returns:
             bool: The result of the picam function.
 
-        This function checks the result of the picam function. If the result is False, it logs a debug message.
-        If the blink camera is enabled in the configuration, it calls the _picam_foto_helper function with the task.
+        This function checks the result of the blink function. If the result is False, it logs a debug message.
+        If the blink camera is enabled in the configuration, it calls the _blink_foto_helper function with the task.
         If the blink camera is not enabled, it logs an error message.
         """
         self.logger.debug("blink _check_blink_result")
@@ -274,6 +343,32 @@ class Camera:
             else:
                 self.logger.error("_check_blink_result - picam not enabled for second try")
         return result
+
+    async def _check_ring_result(self, task: Camera_Task, result: bool) -> bool:
+        """
+        Check the result of the ring function.
+
+        Args:
+            task (Camera_Task): The task to be checked.
+            result (bool): The result of the ring function.
+
+        Returns:
+            bool: The result of the ring function.
+
+        This function checks the result of the ring function. If the result is False, it logs a debug message.
+        If the ring camera is enabled in the configuration, it calls the _ring_foto_helper function with the task.
+        If the ring camera is not enabled, it logs an error message.
+        """
+        self.logger.debug("ring _check_ring_result")
+        if not result:
+            self.logger.debug("blink _check_ring_result FALSE")
+            if (self.config.ring_enabled):
+                self.logger.error("_check_ring_result - second try now with picam")
+                return await self._picam_foto_helper(task)
+            else:
+                self.logger.error("_check_ring_result - picam not enabled for second try")
+        return result
+
 
     def put_msg_queue_photo(self, task: Camera_Task):
         """
@@ -373,12 +468,12 @@ class Camera:
             None
         """
         if os.path.exists(self.config.blink_config_file):
-            self.blink.auth = Auth(await json_load(self.config.blink_config_file), no_prompt=True, session=self.session)
+            self.blink.auth = ring_auth(await json_load(self.config.blink_config_file), no_prompt=True, session=self.session)
             self.logger.info("blink aut with file done")
             authentication_success = True
         else:
             self.logger.info("no blink_config.json found - 2FA " + "authentication token required")
-            self.blink.auth = Auth({"username": self.config.blink_username, "password": self.config.blink_password},
+            self.blink.auth = ring_auth({"username": self.config.blink_username, "password": self.config.blink_password},
                                    no_prompt=True, session=self.session)
             authentication_success = None
 
@@ -419,6 +514,42 @@ class Camera:
         await self.blink.setup_post_verify()
         self.logger.info("added 2FA token " + task.blink_mfa)
         return True
+
+
+
+
+
+
+
+
+    async def read_ring_config(self) -> bool:
+
+        if os.path.exists(self.config.ring_config_file):
+            self.ring.auth = ring_auth("FDIA", self.read_ring_config())
+            self.logger.info("blink aut with file done")
+            authentication_success = True
+        else:
+            self.logger.info("no blink_config.json found - 2FA " + "authentication token required")
+            self.blink.auth = Auth({"username": self.config.blink_username, "password": self.config.blink_password},
+                                   no_prompt=True, session=self.session)
+            authentication_success = None
+
+    async def save_ring_config(self) -> bool:
+        self.logger.info("saving ring authenticated session token to config file")
+        with open(self.config.ring_config_file, 'w') as f:
+            json.dump(self.ring.auth.token, f)
+        return True
+
+    async def add_ring_token(self, task: Camera_Task) -> bool:
+        await ring_auth.async_fetch_token(username, password, otp_callback())
+
+
+
+
+
+
+
+
 
     def picam_request_take_foto(self) -> bool:
         """
@@ -464,3 +595,4 @@ class Camera:
         self.logger.debug(msg="downloading foto ended with status {}".format(response.status_code))
         self.logger.debug(msg="end downloading foto")
         return True if response.status_code == 200 else False
+

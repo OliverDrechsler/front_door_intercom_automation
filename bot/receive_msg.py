@@ -34,10 +34,14 @@ class ReceivingMessage():
         blink_list: list[str] = ["blink", "Blink", "BLINK"]
         picam_list: list[str] = ["picam", "Picam", "PICAM", "PiCam"]
         blink_auth_list: list[str] = ["blink_auth", "Blink_auth", "Blink_Auth", "BLINK_AUTH"]
+        ring_list: list[str] = ["ring", "Ring", "RING"]
+        ring_auth_list: list[str] = ["ring_auth", "Ring_auth", "Ring_Auth", "RING_AUTH"]
         self.foto_command = self.bot.message_handler(commands=foto_list)(self.take_foto)
         self.blink_command = self.bot.message_handler(commands=blink_list)(self.take_blink_foto)
         self.picam_command = self.bot.message_handler(commands=picam_list)(self.take_picam_foto)
         self.blink_auth_command = self.bot.message_handler(commands=blink_auth_list)(self.register_bink_authentication)
+        self.ring_command = self.bot.message_handler(commands=ring_list)(self.take_ring_foto)
+        self.ring_auth_command = self.bot.message_handler(commands=ring_auth_list)(self.register_ring_authentication)
         self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(
             self.receive_any_msg_text)
 
@@ -173,6 +177,62 @@ class ReceivingMessage():
         message = "Blink token received " + match.group(1)
         self.bot.reply_to(message=message, text="no blink token detected")
         return
+
+    def take_ring_foto(self, message: telebot.types.Message) -> None:
+        """
+        Takes a photo request specific to the Ring camera from a telegram message and puts it into a camera task queue.
+
+        Args:
+            message (telebot.types.Message): The telegram message object containing the photo request.
+
+        Returns:
+            None
+
+        This function first logs a debug message indicating that a Ring photo request has been received with the given message.
+        It then checks if the message is received from an allowed telegram chat group and if it was sent by an allowed user ID.
+        If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
+        The camera task contains the chat ID, message, reply flag, and ring_photo flag.
+        """
+        self.logger.debug(f"received blink request with message {message}")
+        if self.get_allowed(message=message):
+            asyncio.set_event_loop(self.loop)
+            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
+                Camera_Task(chat_id=message.chat.id, message=message, reply=True, ring_photo=True)), self.loop)
+
+    def register_ring_authentication(self, message: telebot.types.Message) -> None:
+        """
+        Registers a Ring authentication based on the received message.
+
+        Args:
+            self: the object instance
+            message (telebot.types.Message): the message received
+
+        Returns:
+            None
+        """
+        self.logger.debug(f"received /blink_auth request with message {message}")
+        if self.get_allowed(message=message):
+            # start new thread for taking a foto
+            self.rcv_ring_auth(message)
+
+    def rcv_ring_auth(self, message: telebot.types.Message) -> None:
+
+        self.logger.debug(f"received ring token with message {message}")
+        match = re.search(r'^/ring_auth (\d{6})$', message.text, re.IGNORECASE)
+        if match:
+            self.logger.info(msg="ring token received - will save config")
+            message_text = "Ring token received " + match.group(1)
+            self.bot.reply_to(message=message, text=message_text)
+            asyncio.set_event_loop(self.loop)
+            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
+                Camera_Task(ring_mfa=match.group(1), chat_id=message.chat.id, message=message, reply=True)), self.loop)
+            return
+
+        self.logger.debug(msg="no ring token detected")
+        message = "ring token received " + match.group(1)
+        self.bot.reply_to(message=message, text="no ring token detected")
+        return
+
 
     def get_allowed(self, message: telebot.types.Message) -> bool:
         """

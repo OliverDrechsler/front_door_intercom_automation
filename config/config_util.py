@@ -70,6 +70,13 @@ class Configuration:
         self.picam_iso: int = self.config["picam"]["iso"]
         self.picam_night_vision: bool = self.config["picam"]["night_vision"]
 
+        self.ring_enabled: bool = self.config["ring"]["enabled"]
+        self.ring_username: str = self.config["ring"]["username"]
+        self.ring_password: str = self.config["ring"]["password"]
+        self.ring_name: str = self.config["ring"]["name"]
+        self.ring_config_file: str = self.base_path + self.config["ring"]["config_file"]
+        self.ring_night_vision: bool = self.config["ring"]["night_vision"]
+
         self.web_user_dict: dict[str, str] = self.get_web_user_dict()
         self.flask_enabled: bool = self.config["web"]["enabled"]
         self.flask_web_host: int = self.config["web"]["flask_web_host"]

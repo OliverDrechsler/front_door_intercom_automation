@@ -28,6 +28,8 @@ class Camera_Task:
     message: telebot.types.Message = None
     reply: bool = False
     photo: bool = False
-    blink_photo: bool = False
     picam_photo: bool = False
+    blink_photo: bool = False
     blink_mfa: bool = False
+    ring_photo: bool = False
+    ring_mfa: bool = False

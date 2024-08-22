@@ -55,6 +55,14 @@ picam:
   # blink.night_vision or picam.night_vision enabled.
   night_vision: False
 
+ring:
+  enabled: False
+  username: "ring_account_email_address_here"
+  password: "ring_account_password_here"
+  name: "Ring_Camera_name_here"
+  config_file: "ring_config.json"
+  night_vision: False
+
 web:
   enabled: True                                   # Web-Ui and REST-API enabled or disabled (True / False)webserver enabled
   flask_web_host: "0.0.0.0"                       # flask webserver host listing ip 0.0.0.0 to accessible for every one - 127.0.0.1 means internal only
