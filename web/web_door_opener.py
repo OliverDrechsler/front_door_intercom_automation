@@ -208,6 +208,17 @@ class WebDoorOpener:
             except AttributeError:
                 return 'anonymous'
 
+    def _get_request_remote_ip(self) -> str:
+        """
+        Get the remote IP address of the request.
+        Either returns the X-Forwarded-For header or the remote IP address from the request.
+        :return: String containing the remote IP address
+        """
+        if (request.headers.get('X-Forwarded-For') is not None):
+            return request.headers.get('X-Forwarded-For')
+        else:
+            return request.remote_addr
+
     def log_request_info(self):
         """
         Logs information about the incoming HTTP request.
@@ -226,7 +237,7 @@ class WebDoorOpener:
         """
         browser_session = self.get_brwoser_session()
         user = self.get_request_username()
-        self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', request.remote_addr, request.remote_user, request.method, request.path)
+        self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', self._get_request_remote_ip(), user, request.method, request.path)
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Request: ==========")
         self.app.logger.debug("")
