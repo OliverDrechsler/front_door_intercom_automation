@@ -612,5 +612,11 @@ pip3 install licensecheck
 licensecheck -u requirements > requirements_licenses.txt
 ```
 
+## Security
+
+[Security issue guide](SECURITY.md)
+
 ## Contribution
+
+[Contribution guide](CONTRIBUTING.md)
 Pull request docu can be found [here in docs/pull_request_template.md](docs/pull_request_template.md)
