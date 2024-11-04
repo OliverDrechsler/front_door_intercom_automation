@@ -7,7 +7,7 @@ astral==3.2
 Flask==3.0.3
 Flask_HTTPAuth==4.8.0
 Flask_Session==0.8.0
-Werkzeug==3.0.4
+Werkzeug==3.1.2
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
 astral==3.2
 pyotp==2.9.0
@@ -24,7 +24,7 @@ sphinx-rtd-theme==2.0.0 # pyup: ignore
 ghp-import==2.1.0
 
 pytest==8.3.3
-pytest-cov==5.0.0
+pytest-cov==6.0.0
 mock==5.1.0
 # coverage==7.60
 future-annotations==1.0.0
