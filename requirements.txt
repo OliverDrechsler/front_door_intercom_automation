@@ -4,7 +4,7 @@ urllib3==2.2.3
 requests==2.32.3
 blinkpy==0.23.0
 astral==3.2
-Flask==3.0.3
+Flask==3.1.0
 Flask_HTTPAuth==4.8.0
 Flask_Session==0.8.0
 Werkzeug==3.1.3
