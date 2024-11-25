@@ -1,5 +1,19 @@
 # ChangeLog
 
+# Release 1.0.5
+## What's Changed
+### Exciting New Features 🎉
+* add release notes pipeline by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/193
+### 👒 Dependencies
+* Scheduled weekly dependency update for week 39 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/183
+* Scheduled weekly dependency update for week 40 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/184
+* Scheduled weekly dependency update for week 42 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/186
+* Scheduled weekly dependency update for week 44 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/189
+* Scheduled weekly dependency update for week 45 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/190
+* Scheduled weekly dependency update for week 46 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/191
+* Scheduled weekly dependency update for week 47 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/192
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.4...1.0.5
+
 ## Release 1.0.4
 - bumped lib versions
 - updated doc readme.md
