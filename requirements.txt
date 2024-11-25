@@ -13,7 +13,7 @@ astral==3.2
 pyotp==2.9.0
 pyTelegramBotAPI==4.24.0
 asyncio==3.4.3
-aiohttp==3.11.2
+aiohttp==3.11.7
 click==8.1.7
 
 myst-parser==3.0.1 # pyup: ignore
