@@ -1,6 +1,6 @@
 pyyaml==6.0.2
 RPi.GPIO==0.7.1
-urllib3==2.2.3
+urllib3==2.3.0
 requests==2.32.3
 blinkpy==0.23.0
 astral==3.2
