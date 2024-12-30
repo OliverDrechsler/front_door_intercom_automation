@@ -1,6 +1,6 @@
 pyyaml==6.0.2
 RPi.GPIO==0.7.1
-urllib3==2.2.3
+urllib3==2.3.0
 requests==2.32.3
 blinkpy==0.23.0
 astral==3.2
@@ -13,8 +13,8 @@ astral==3.2
 pyotp==2.9.0
 pyTelegramBotAPI==4.25.0
 asyncio==3.4.3
-aiohttp==3.11.10
-click==8.1.7
+aiohttp==3.11.11
+click==8.1.8
 
 myst-parser==3.0.1 # pyup: ignore
 recommonmark==0.7.1 # pyup: ignore
