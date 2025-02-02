@@ -1,4 +1,21 @@
 # ChangeLog
+# Release 1.0.6
+## What's Changed
+### Exciting New Features 🎉
+* add changelog generator pipeline by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/194
+### 🏕 Features
+* Update CHANGELOG.md by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/195
+* Scheduled weekly dependency update for week 48 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/196
+* Scheduled weekly dependency update for week 50 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/198
+* Scheduled weekly dependency update for week 52 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/200
+* Scheduled weekly dependency update for week 02 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/201
+* Fix/picam request exceptions by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/203
+* Breaking change fix daylight detection from timezone utc to local timezone needs adjustment in config file by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/204
+
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.5...1.0.6
+
+
+
 
 # Release 1.0.5
 ## What's Changed
