@@ -7,7 +7,7 @@ import os
 import queue
 import time
 from datetime import datetime, timezone
-
+from zoneinfo import ZoneInfo
 import aiohttp
 import requests
 
@@ -374,11 +374,11 @@ class Camera:
         """
         Detects daylight and returns a boolean value.
         """
-        loc = LocationInfo(name="Berlin", region="Germany", timezone="Europe/Berlin")
-        time_now: datetime = datetime.now(tz=timezone.utc)
-        s: dict[str, datetime] = sun(
-            observer=loc.observer, date=time_now, tzinfo=loc.timezone
-        )
+        location = LocationInfo(name=self.config.location)
+        local_date = datetime.now(ZoneInfo(self.config.timezone))
+        s = sun(location.observer, date=local_date)
+        time_now = datetime.now(tz=ZoneInfo(self.config.timezone))  # Konvertiere String zu ZoneInfo
+
         daylight: bool = s["sunrise"] <= time_now <= (s["sunset"])
         self.logger.info(msg=f"Is daylight detected: {daylight}")
         return daylight
