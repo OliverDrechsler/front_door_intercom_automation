@@ -86,6 +86,7 @@ Opening relais board can be buyed and must just be wired.
   - [ChangeLog](#changelog)
   - [Author info](#author-info)
   - [License](#license)
+  - [Security](#security)
   - [Contribution](#contribution)
 
 ## Long description
@@ -116,15 +117,15 @@ The project offers the following functionality:
 
 ## Features advantage comparision FDIA, Blink, Ring and PiCamAPI
 
-| Project with Product / <br/> Features,Capabilities | FDIA with PiCamAPI Camera                                                                                              | FDIA with Blink Camera                                                                                  | FDIA with upcoming Ring Camera support - not there (in development branch feature/ring_camera_integration)                                  | Blink only (no FDIA)                | Ring only ( FDIA)                    | FDIA with no build HW module                      |  
-|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------|--------------------------------------|---------------------------------------------------|  
-| Open Door                                          | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)                               | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)                | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais)                | ❌                                  | ❌                                   | ❌                                               |  
-| detect door bell ring                              | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                                        | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                         | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board)                         | ✅                                  | ✅                                   | ❌                                               |  
-| Notification (channel)                             | ✅ via Telegram group                                                                                                  | ✅ via Telegram group                                                                                   | ✅ via Telegram group                                                                                   | ✅Blink App                         | ✅Ring App                           | ✅❌ Telegram but no HW module -> no detection   |  
-| Multi user notification                            | ✅                                                                                                                     | ✅                                                                                                      | ✅                                                                                                      | ❌ dependend on Account             | ❌                                   | ✅                                               |  
-| Multi user door opening                            | ✅                                                                                                                     | ✅                                                                                                      | ✅                                                                                                      | ❌                                  | ❌                                   | ❌                                               |  
-| GDPR data storage                                  | ✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval  | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed  | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed  | ❌ Camaera Internet / Cloud exposed | ❌ Camaera Internet / Cloud exposed  | ✅ no data Exposure                              |  
-| possible local usage without Internet (door opening only) | ✅                                                                                                                     | ✅opening - ❌ no camera snapshot                                                                       | ✅opening - ❌ no camera snapshot                                                                       | ❌                                  | ❌                                   | ✅                                               |  
+| Project with Product / <br/> Features,Capabilities | FDIA with PiCamAPI Camera | FDIA with Blink Camera | Blink only (no FDIA) | FDIA with no build HW module |  
+|---|---|---|---|---|
+| Open Door  | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais) | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais) | ❌ |❌ |  
+| detect door bell ring | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board) | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board) | ✅ | ❌ |  
+| Notification (channel) | ✅ via Telegram group | ✅ via Telegram group | ✅Blink App | ✅❌ Telegram but no HW module -> no detection |  
+| Multi user notification | ✅ | ✅ | ❌ dependend on Account | ✅ |  
+| Multi user door opening | ✅ | ✅ | ❌ | ❌ |  
+| GDPR data storage | ✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed | ❌ Camaera Internet / Cloud exposed | ✅ no data Exposure |  
+| possible local usage without Internet (door opening only) | ✅ | ✅opening - ❌ no camera snapshot | ❌ | ✅ |  
 
 ## Outlook/Ideas - Improvements plan
 
