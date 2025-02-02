@@ -46,3 +46,53 @@
 37. Run `systemctl daemon-reload` and `systemctl start fdia`to start it as a service.
 38. check log output `journalctl -xu fdia -f`
 39. activate new service `systemctl enable fdia.service`
+
+
+
+## Hint for direnv error
+
+In case you get an error with direnv, you can try to run the following command to fix it:
+Command:
+```bash
+direnv allow
+```
+
+Error:
+```
+direnv: loading front_door_intercom_automation/.envrc
+environment:747: layout_python-venv: command not found
+direnv: export +VIRTUAL_ENV
+```
+
+- create a new file in `~/.config/direnv/direnvrc` with content:
+  ```bash
+  layout_python-venv() {
+    local python=${1:-python3}
+    [[ $# -gt 0 ]] && shift
+    unset PYTHONHOME
+    if [[ -n $VIRTUAL_ENV ]]; then
+        VIRTUAL_ENV=$(realpath "${VIRTUAL_ENV}")
+    else
+        local python_version
+        python_version=$("$python" -c "import platform; print(platform.python_version())")
+        if [[ -z $python_version ]]; then
+        log_error "Could not detect Python version"
+        return 1
+        fi
+        VIRTUAL_ENV=$PWD/.direnv/python-venv-$python_version
+    fi
+    export VIRTUAL_ENV
+    if [[ ! -d $VIRTUAL_ENV ]]; then
+        log_status "no venv found; creating $VIRTUAL_ENV"
+        "$python" -m venv "$VIRTUAL_ENV"
+    fi
+    PATH="${VIRTUAL_ENV}/bin:${PATH}"
+    export PATH
+  }
+  ```
+- run now `source ~/.bashrc` and than 
+  ```
+  cd /usr/local/bin/front_door_intercom_automation
+  direnv allow
+  ```
+
