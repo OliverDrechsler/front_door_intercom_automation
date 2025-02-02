@@ -20,11 +20,7 @@ from blinkpy.helpers.util import json_load
 from config.config_util import Configuration, DefaultCam
 from config.data_class import Camera_Task, Message_Task
 
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
-)
 logger: logging.Logger = logging.getLogger(name="camera")
-
 
 class Camera:
     def __init__(
