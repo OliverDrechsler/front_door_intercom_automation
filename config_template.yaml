@@ -27,6 +27,8 @@ photo_general:
   enable_detect_daylight: False
   default_camera_type: "blink"  # "blink" or "picam" careful - case senitive
   image_path: "/tmp/foto.jpg"   # path where downloaded foto from camera get intermediate stored
+  timezone: "Europe/Berlin" # timezone for daylight detection
+  location: "Berlin" # location for daylight detection
 
 blink:
   enabled: True     # blink cam enabled ?

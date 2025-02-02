@@ -40,7 +40,9 @@ class TestConfiguration(unittest.TestCase):
             'photo_general': {
                 'image_path': '/path/to/image',
                 'default_camera_type': 'blink',
-                'enable_detect_daylight': True
+                'enable_detect_daylight': True,
+                'timezone': 'Europe/Berlin',
+                'location': 'Berlin'
             },
             'blink': {
                 'enabled': True,

@@ -3,6 +3,7 @@ import asyncio
 import queue
 from unittest.mock import Mock, patch, AsyncMock
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from config.config_util import Configuration, DefaultCam
 from config.data_class import Camera_Task, Message_Task
 from camera.camera import Camera
@@ -16,6 +17,8 @@ def config():
     config.default_camera_type = DefaultCam.BLINK
     config.photo_image_path = "/tmp/test.jpg"
     config.blink_name = "test_camera"
+    config.timezone = "Europe/Berlin"
+    config.location = "Berlin"
     return config
 
 
@@ -75,7 +78,7 @@ async def test_picam_foto_helper_success(camera):
 def test_detect_daylight(camera):
     with patch('camera.camera.sun') as mock_sun:
         # Simuliere Tageslicht
-        current_time = datetime.now(tz=timezone.utc)
+        current_time = datetime.now(tz=ZoneInfo(camera.config.timezone))  # Konvertiere String zu ZoneInfo
         mock_sun.return_value = {
             'sunrise': current_time.replace(hour=6),
             'sunset': current_time.replace(hour=20)

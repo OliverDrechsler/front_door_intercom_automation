@@ -52,6 +52,8 @@ class Configuration:
         self.photo_image_path: str = self.config["photo_general"]["image_path"]
         self.default_camera_type = DefaultCam(self.config["photo_general"]["default_camera_type"].upper())
         self.enable_detect_daylight: bool = self.config["photo_general"]["enable_detect_daylight"]
+        self.timezone: str = self.config["photo_general"]["timezone"]
+        self.location: str = self.config["photo_general"]["location"]
 
         self.blink_enabled: bool = self.config["blink"]["enabled"]
         self.blink_username: str = self.config["blink"]["username"]
