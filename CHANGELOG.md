@@ -1,4 +1,12 @@
 # ChangeLog
+# Release 1.0.7
+## What's Changed
+### 🏕 Features
+- added adjust image for picam snapshots at night  by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205
+- added unit tests for camera.py  by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205
+
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.6...1.0.7
+
 # Release 1.0.6
 ## What's Changed
 ### Exciting New Features 🎉
