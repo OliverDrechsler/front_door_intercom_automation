@@ -375,48 +375,6 @@ class Camera:
                              chat_id=task.chat_id)
             )
 
-    # def detect_daylight(self) -> bool:
-    #     """
-    #     Detects whether it is currently daylight based on sunrise and sunset times.
-    #
-    #     The method uses either the configured coordinates (latitude and longitude)
-    #     or the configured location to calculate sun times.
-    #
-    #     Returns:
-    #         bool: True if it is daylight (between sunrise and sunset),
-    #               False if it is dark
-    #               Incase of error True is returned as daylight
-    #     """
-    #     try:
-    #         local_tz = ZoneInfo(self.config.timezone)
-    #         local_date = datetime.now(local_tz)
-    #         if ((hasattr(self.config, 'lat') and hasattr(self.config, 'lon')) or
-    #                 (self.config.lat is not None and self.config.lon is not None)):
-    #             self.logger.debug("using coordinates for daylight detection")
-    #             location = LocationInfo(
-    #                 latitude=self.config.lat,
-    #                 longitude=self.config.lon,
-    #                 timezone=self.config.timezone
-    #             )
-    #             s = sun(location.observer, date=local_date)
-    #         elif hasattr(self.config, 'location'):
-    #             self.logger.debug("using location - city for daylight detection")
-    #             location = LocationInfo(name=self.config.location)
-    #             s = sun(location.observer, date=local_date)
-    #         else:
-    #             raise ValueError("No valid location data provided")
-    #
-    #         self.logger.debug(f"Sunrise: {s['sunrise']}, Sunset: {s['sunset']}")
-    #         time_now = datetime.now(tz=ZoneInfo(self.config.timezone))  # Konvertiere String zu ZoneInfo
-    #         daylight: bool = s["sunrise"] <= time_now <= (s["sunset"])
-    #         self.logger.info(msg=f"Is daylight detected: {daylight}")
-    #         return daylight
-    #     except ValueError as e:
-    #         self.logger.error(f"Invalid Location data: {e}")
-    #         return True
-    #     except Exception as e:
-    #         self.logger.error(f"Error in daylight calculation: {e}")
-    #         return True
     def detect_daylight(self) -> bool:
         """
         Detects whether it is currently daylight based on sunrise and sunset times.
