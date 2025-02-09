@@ -42,7 +42,10 @@ class TestConfiguration(unittest.TestCase):
                 'default_camera_type': 'blink',
                 'enable_detect_daylight': True,
                 'timezone': 'Europe/Berlin',
-                'location': 'Berlin'
+                'location': 'Berlin',
+                'lat': 1.1111111,
+                'lon': 2.2222222,
+                'brightness_enhancer': 3
             },
             'blink': {
                 'enabled': True,

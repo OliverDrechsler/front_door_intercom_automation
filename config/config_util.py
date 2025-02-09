@@ -54,6 +54,9 @@ class Configuration:
         self.enable_detect_daylight: bool = self.config["photo_general"]["enable_detect_daylight"]
         self.timezone: str = self.config["photo_general"]["timezone"]
         self.location: str = self.config["photo_general"]["location"]
+        self.lat: float = self.config["photo_general"].get("lat", None)  # optional value see config_template.yaml for more information
+        self.lon: float = self.config["photo_general"].get("lat", None)  # optional value see config_template.yaml for more information
+        self.brightness_enhancer: float = self.config["photo_general"].get("brightness_enhancer", None)  # optional value see config_template.yaml for more information
 
         self.blink_enabled: bool = self.config["blink"]["enabled"]
         self.blink_username: str = self.config["blink"]["username"]

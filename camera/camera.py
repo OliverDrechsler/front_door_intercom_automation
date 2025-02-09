@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 import aiohttp
 import requests
 
+from PIL import Image, ImageEnhance
 from astral import LocationInfo
 from astral.sun import sun
 from blinkpy.auth import Auth
@@ -227,6 +228,8 @@ class Camera:
             return False
         return result
 
+
+# tested
     async def _blink_foto_helper(self, task: Camera_Task) -> bool:
         """
         Asynchronously takes a photo using the Blink camera if enabled in the configuration.
@@ -367,21 +370,94 @@ class Camera:
             )
         else:
             self.message_task_queue.put(
-                Message_Task(send=True, data_text=message, chat_id=task.chat_id)
+                Message_Task(send=True,
+                             data_text=message,
+                             chat_id=task.chat_id)
             )
 
+    # def detect_daylight(self) -> bool:
+    #     """
+    #     Detects whether it is currently daylight based on sunrise and sunset times.
+    #
+    #     The method uses either the configured coordinates (latitude and longitude)
+    #     or the configured location to calculate sun times.
+    #
+    #     Returns:
+    #         bool: True if it is daylight (between sunrise and sunset),
+    #               False if it is dark
+    #               Incase of error True is returned as daylight
+    #     """
+    #     try:
+    #         local_tz = ZoneInfo(self.config.timezone)
+    #         local_date = datetime.now(local_tz)
+    #         if ((hasattr(self.config, 'lat') and hasattr(self.config, 'lon')) or
+    #                 (self.config.lat is not None and self.config.lon is not None)):
+    #             self.logger.debug("using coordinates for daylight detection")
+    #             location = LocationInfo(
+    #                 latitude=self.config.lat,
+    #                 longitude=self.config.lon,
+    #                 timezone=self.config.timezone
+    #             )
+    #             s = sun(location.observer, date=local_date)
+    #         elif hasattr(self.config, 'location'):
+    #             self.logger.debug("using location - city for daylight detection")
+    #             location = LocationInfo(name=self.config.location)
+    #             s = sun(location.observer, date=local_date)
+    #         else:
+    #             raise ValueError("No valid location data provided")
+    #
+    #         self.logger.debug(f"Sunrise: {s['sunrise']}, Sunset: {s['sunset']}")
+    #         time_now = datetime.now(tz=ZoneInfo(self.config.timezone))  # Konvertiere String zu ZoneInfo
+    #         daylight: bool = s["sunrise"] <= time_now <= (s["sunset"])
+    #         self.logger.info(msg=f"Is daylight detected: {daylight}")
+    #         return daylight
+    #     except ValueError as e:
+    #         self.logger.error(f"Invalid Location data: {e}")
+    #         return True
+    #     except Exception as e:
+    #         self.logger.error(f"Error in daylight calculation: {e}")
+    #         return True
     def detect_daylight(self) -> bool:
         """
-        Detects daylight and returns a boolean value.
-        """
-        location = LocationInfo(name=self.config.location)
-        local_date = datetime.now(ZoneInfo(self.config.timezone))
-        s = sun(location.observer, date=local_date)
-        time_now = datetime.now(tz=ZoneInfo(self.config.timezone))  # Konvertiere String zu ZoneInfo
+        Detects whether it is currently daylight based on sunrise and sunset times.
 
-        daylight: bool = s["sunrise"] <= time_now <= (s["sunset"])
-        self.logger.info(msg=f"Is daylight detected: {daylight}")
-        return daylight
+        The method uses either the configured coordinates (latitude and longitude)
+        or the configured location to calculate sun times.
+
+        Returns:
+            bool: True if it is daylight (between sunrise and sunset),
+                  False if it is dark
+                  Incase of error True is returned as daylight
+        """
+        try:
+            local_tz = ZoneInfo(self.config.timezone)
+            local_date = datetime.now(local_tz)
+            if (self.config.lat is not None and self.config.lon is not None):
+                self.logger.debug("using coordinates for daylight detection")
+                location = LocationInfo(
+                    latitude=self.config.lat,
+                    longitude=self.config.lon,
+                    timezone=self.config.timezone
+                )
+                s = sun(location.observer, date=local_date)
+            elif self.config.location is not None:
+                self.logger.debug("using location - city for daylight detection")
+                location = LocationInfo(name=self.config.location)
+                s = sun(location.observer, date=local_date)
+            else:
+                raise ValueError("No valid location data provided")
+
+            self.logger.debug(f"Sunrise: {s['sunrise']}, Sunset: {s['sunset']}")
+            time_now = datetime.now(tz=ZoneInfo(self.config.timezone))  # Konvertiere String zu ZoneInfo
+            daylight: bool = s["sunrise"] <= time_now <= s["sunset"]
+            self.logger.info(msg=f"Is daylight detected: {daylight}")
+            return daylight
+        except ValueError as e:
+            self.logger.error("Invalid Location data: " + str(e))
+            return True
+        except Exception as e:
+            self.logger.error("Error in daylight calculation: " + str(e))
+            return True
 
     async def blink_snapshot(self) -> bool:
         """
@@ -399,27 +475,24 @@ class Camera:
             await self.blink.refresh(force=True)
             self.logger.debug("create a camera instance")
             camera = self.blink.cameras[self.config.blink_name]
-        except Exception as err:
-            self.logger.error("Error: {0}".format(err))
-            return False
-
-        logger.debug("take a snpshot")
-        try:
+            logger.debug("take a snpshot")
             await camera.snap_picture()  # Take a new picture with the camera
+            self.logger.debug("refresh blink server info")
+            time.sleep(2)  # wait for blink class instance refresh interval to be done
+            await self.blink.refresh(force=True)  # refresh Server info
+            if os.path.exists(self.config.photo_image_path):
+                self.logger.debug("a file already exists and will be deleted before hand")
+                os.remove(self.config.photo_image_path)
+            else:
+                os.makedirs(os.path.dirname(self.config.photo_image_path), exist_ok=True)
+                self.logger.debug("directory created for the photo image path")
+            self.logger.info("saving blink foto")
+            await camera.image_to_file(self.config.photo_image_path)
         except Exception as err:
             self.logger.error("Error: {0}".format(err))
-            self.logger.error("Error: {0}".format(err.with_traceback()))
-            self.logger.error("Error: {0}".format(err.args))
+            self.logger.error("Error args: {0}".format(err.args))
             return False
 
-        self.logger.debug("refresh blink server info")
-        time.sleep(2)  # wait for blink class instane refresh invterval to be done
-        await self.blink.refresh(force=True)  # refesh Server info
-        if os.path.exists(self.config.photo_image_path):
-            self.logger.debug("a file already exists and will be deteleted before hand")
-            os.remove(self.config.photo_image_path)
-        self.logger.info("saving blink foto")
-        await camera.image_to_file(self.config.photo_image_path)
         return True
 
     async def read_blink_config(self):
@@ -565,6 +638,9 @@ class Camera:
                 )
                 response.raise_for_status()
                 file.write(response.content)
+                if not self.detect_daylight():
+                    self.adjust_image()
+
             self.logger.debug(
                 msg="downloading foto ended with status {}".format(response.status_code)
             )
@@ -572,5 +648,37 @@ class Camera:
             return True if response.status_code == 200 else False
 
         except Exception as e:
-            self.logger.error("Fehler: {}".format(e))
+            self.logger.error("Error: {0}".format(e))
+            self.logger.error("Error args: {0}".format(e.args))
         return False
+
+    def adjust_image(self) -> bool:
+        """
+        Adjusts brightness of the stored photo based on the
+        configuration values.
+
+        Returns:
+            bool: True if adjustment was successful, False on errors
+        """
+        try:
+            self.logger.info("start image brightness adjustement")
+            
+            if not os.path.exists(self.config.photo_image_path):
+                self.logger.error(f"Image file not found: {self.config.photo_image_path}")
+                return False
+            
+            image = Image.open(self.config.photo_image_path)
+            
+            # brightness adjustement (1.0 is normal, <1 darker, >1 lighter)
+            if hasattr(self.config, 'image_brightness'):
+                brightness_enhancer = ImageEnhance.Brightness(image)
+                image = brightness_enhancer.enhance(self.config.image_brightness)
+                self.logger.debug(f"Helligkeit angepasst auf {self.config.image_brightness}")
+
+            image.save(self.config.photo_image_path)
+            self.logger.debug("imgae adjustment done")
+            return True
+            
+        except Exception as err:
+            self.logger.error(f"Error during image brightness adjustement: {err}")
+            return False
