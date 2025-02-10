@@ -445,7 +445,7 @@ class Camera:
                 self.logger.debug("directory created for the photo image path")
             self.logger.info("saving blink foto")
             await camera.image_to_file(self.config.photo_image_path)
-            if not self.detect_daylight() and self.blink_image_brightening():
+            if not self.detect_daylight() and self.blink_image_brightening:
                 self.adjust_image()
         except Exception as err:
             self.logger.error("Error: {0}".format(err))
@@ -598,7 +598,7 @@ class Camera:
                 )
                 response.raise_for_status()
                 file.write(response.content)
-                if not self.detect_daylight() and self.picam_image_brightening():
+                if not self.detect_daylight() and self.picam_image_brightening:
                     self.adjust_image()
 
             self.logger.debug(
