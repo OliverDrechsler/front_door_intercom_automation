@@ -65,7 +65,7 @@ class Configuration:
         self.blink_name: str = self.config["blink"]["name"]
         self.blink_config_file: str = self.base_path + self.config["blink"]["config_file"]
         self.blink_night_vision: bool = self.config["blink"]["night_vision"]
-        self.blink_image_brightening: bool = self.config["blink"].get("image_brightning", False) # optional value see config_template.yaml for more information
+        self.blink_image_brightening: bool = self.config["blink"].get("image_brightening", False) # optional value see config_template.yaml for more information
 
         self.picam_enabled: bool = self.config["picam"]["enabled"]
         self.picam_url: str = self.config["picam"]["url"]
@@ -76,7 +76,7 @@ class Configuration:
         self.picam_rotation: int = self.config["picam"]["rotation"]
         self.picam_iso: int = self.config["picam"]["iso"]
         self.picam_night_vision: bool = self.config["picam"]["night_vision"]
-        self.picam_image_brightening: bool = self.config["picam"].get("image_brightning", False)  # optional value see config_template.yaml for more information
+        self.picam_image_brightening: bool = self.config["picam"].get("image_brightening", False)  # optional value see config_template.yaml for more information
 
         self.web_user_dict: dict[str, str] = self.get_web_user_dict()
         self.flask_enabled: bool = self.config["web"]["enabled"]
