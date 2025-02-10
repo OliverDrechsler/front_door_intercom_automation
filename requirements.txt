@@ -13,7 +13,7 @@ astral==3.2
 pyotp==2.9.0
 pyTelegramBotAPI==4.26.0
 asyncio==3.4.3
-aiohttp==3.11.11
+aiohttp==3.11.12
 click==8.1.8
 Pillow==11.1.0
 
