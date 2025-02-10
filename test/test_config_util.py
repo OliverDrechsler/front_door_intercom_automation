@@ -54,7 +54,8 @@ class TestConfiguration(unittest.TestCase):
                 'password': 'dummy_pass',
                 'name': 'dummy_blink',
                 'config_file': 'blink_config.yaml',
-                'night_vision': True
+                'night_vision': True,
+                'image_brightening': True
             },
             'picam': {
                 'enabled': True,
@@ -65,7 +66,8 @@ class TestConfiguration(unittest.TestCase):
                 'exposure': 'auto',
                 'rotation': 90,
                 'iso': 100,
-                'night_vision': True
+                'night_vision': True,
+                'image_brightening': True
             },
             'web': {
                 'enabled': True,
