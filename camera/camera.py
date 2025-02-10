@@ -228,8 +228,6 @@ class Camera:
             return False
         return result
 
-
-# tested
     async def _blink_foto_helper(self, task: Camera_Task) -> bool:
         """
         Asynchronously takes a photo using the Blink camera if enabled in the configuration.
@@ -420,6 +418,7 @@ class Camera:
     async def blink_snapshot(self) -> bool:
         """
         Asynchronously takes a snapshot from a Blink camera and saves it to a specified file path.
+        If detect_daylight is night and when image_brightning is enabled, the image will be adjusted.
 
         Returns:
             bool: True if the snapshot was successfully taken and saved, False otherwise.
@@ -446,6 +445,8 @@ class Camera:
                 self.logger.debug("directory created for the photo image path")
             self.logger.info("saving blink foto")
             await camera.image_to_file(self.config.photo_image_path)
+            if not self.detect_daylight() and self.self.blink_image_brightning():
+                self.adjust_image()
         except Exception as err:
             self.logger.error("Error: {0}".format(err))
             self.logger.error("Error args: {0}".format(err.args))
@@ -578,6 +579,7 @@ class Camera:
         This function sends a GET request to the PiCam API to download a photo.
         The photo is saved to the file specified in the `photo_image_path`
         configuration.
+        If detect_daylight night and when image_brightning is enabled, the image will be adjusted.
 
         Returns:
             bool: True if the HTTP request status code is 200, otherwise False.
@@ -596,7 +598,7 @@ class Camera:
                 )
                 response.raise_for_status()
                 file.write(response.content)
-                if not self.detect_daylight():
+                if not self.detect_daylight() and self.self.picam_image_brightning():
                     self.adjust_image()
 
             self.logger.debug(
@@ -612,7 +614,7 @@ class Camera:
 
     def adjust_image(self) -> bool:
         """
-        Adjusts brightness of the stored photo based on the
+        Adjusts brightness and contrast of the stored photo based on the
         configuration values.
 
         Returns:
@@ -631,8 +633,13 @@ class Camera:
             if hasattr(self.config, 'image_brightness'):
                 brightness_enhancer = ImageEnhance.Brightness(image)
                 image = brightness_enhancer.enhance(self.config.image_brightness)
-                self.logger.debug(f"Helligkeit angepasst auf {self.config.image_brightness}")
-
+                self.logger.debug(f"brightness adjusted to {self.config.image_brightness}")
+            
+            if hasattr(self.config, 'image_contrast'):
+                contrast_enhancer = ImageEnhance.Contrast(image)
+                image = contrast_enhancer.enhance(self.config.image_contrast)
+                self.logger.debug(f"contrast adjusted to {self.config.image_contrast}")
+            
             image.save(self.config.photo_image_path)
             self.logger.debug("imgae adjustment done")
             return True

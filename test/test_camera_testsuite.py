@@ -237,6 +237,9 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         mock_camera_instance = mock_blink_instance.cameras[self.config.blink_name]
         mock_camera_instance.snap_picture = AsyncMock()
         mock_camera_instance.image_to_file = AsyncMock()
+        self.camera.detect_daylight = MagicMock(return_value=True)
+        self.config.blink_image_brightning = True
+        self.camera.adjust_image = MagicMock(return_value=True)
 
         # Mock the ClientSession instance
         mock_client_session_instance = mock_client_session.return_value
@@ -425,6 +428,8 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.camera.config.picam_image_filename = "foto.jpg"
         self.camera.config.photo_image_path = "/tmp/photo.jpg"
         self.camera.detect_daylight = MagicMock(return_value=True)
+        self.config.picam_image_brightning = True
+        self.camera.adjust_image = MagicMock(return_value=True)
 
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -471,14 +476,16 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
 
     @patch('camera.camera.os.path.exists', return_value=True)
     @patch('camera.camera.Image.open')
+    @patch('camera.camera.ImageEnhance.Contrast')
     @patch('camera.camera.ImageEnhance.Brightness')
-    def test_adjust_image(self, mock_brightness, mock_open, mock_exists):
+    def test_adjust_image(self, mock_brightness, mock_enhancer, mock_open, mock_exists):
         self.config.photo_image_path = "test_image.jpg"
-        self.config.image_brightness = 1.5  # Stellen Sie sicher, dass image_brightness gesetzt ist
+        self.config.image_brightness = 3
+        self.config.image_contrast = 2
 
         mock_image = MagicMock()
         mock_open.return_value = mock_image
-        mock_enhancer = MagicMock()
+        mock_enhancer.return_value = MagicMock()
         mock_brightness.return_value = mock_enhancer
 
         result = self.camera.adjust_image()

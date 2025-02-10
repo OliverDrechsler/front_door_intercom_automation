@@ -45,7 +45,8 @@ class TestConfiguration(unittest.TestCase):
                 'location': 'Berlin',
                 'lat': 1.1111111,
                 'lon': 2.2222222,
-                'brightness_enhancer': 3
+                'brightness_enhancer': 3,
+                'contrast_enhancer': 2
             },
             'blink': {
                 'enabled': True,
