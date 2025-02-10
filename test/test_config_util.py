@@ -116,6 +116,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.picam_rotation, 90)
         self.assertEqual(self.config.picam_iso, 100)
         self.assertEqual(self.config.picam_night_vision, True)
+        self.assertEqual(self.config.picam_image_brightening, True)
         self.assertEqual(self.config.flask_enabled, True)
         self.assertEqual(self.config.flask_web_port, 5000)
         self.assertEqual(self.config.flask_secret_key, 'dummy_secret')
