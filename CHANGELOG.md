@@ -1,4 +1,13 @@
 # ChangeLog
+# Release 1.0.8
+## What's Changed
+### 🏕 Features
+* Scheduled weekly dependency update for week 06 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/206
+* fix image_brightness config variable and added image contrast enhancement by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/207
+
+
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.7...1.0.8
+
 # Release 1.0.7
 ## What's Changed
 ### 🏕 Features
