@@ -143,6 +143,12 @@ class Camera:
         """
         Asynchronously chooses a camera based on various conditions such as
         daylight detection, night vision, and default camera type.
+        Decision is:
+        - daylight detection enabled:
+            - daylight takes default_camera_type
+            - night: takes night vision enabled cam, if two precedence is blink over picam
+        - daylight detection disabled:
+            - takes default_camera_type
 
         Args:
             self: The Camera object.
@@ -160,18 +166,21 @@ class Camera:
             if self.detect_daylight():
                 self.logger.info("daylight detected")
 
-                if not self.config.blink_night_vision:
+                if self.config.default_camera_type == DefaultCam.BLINK:
                     self.logger.debug("blink night_vision is disabled")
                     result = await self._blink_foto_helper(task)
                     return await self._check_blink_result(task, result)
 
-                if not self.config.picam_night_vision:
+                if self.config.default_camera_type == DefaultCam.PICAM:
                     self.logger.debug("picam night_vision is disabled")
                     result = await self._picam_foto_helper(task)
                     return await self._check_picam_result(task, result)
 
             else:
                 self.logger.info("night detected is enabled")
+
+                # ToDo: improve here if two are enabled for night vision
+                # ToDo: further extended unit tests required here
 
                 if self.config.blink_night_vision:
                     self.logger.debug("blink night_vision is enabled")
@@ -184,7 +193,6 @@ class Camera:
                     return await self._check_picam_result(task, result)
 
         else:
-            # use default camera
             if self.config.default_camera_type == DefaultCam.BLINK:
                 self.logger.debug("blink as default cam choosen")
                 result = await self._blink_foto_helper(task)
