@@ -19,7 +19,10 @@ from door.opener import DoorOpener
 from web.web_door_opener import WebDoorOpener
 
 """Define logging LEVEL"""
-default_log_level = logging.INFO
+default_log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+allowed_levels = {'CRITICAL': logging.CRITICAL, 'ERROR': logging.ERROR, 'WARNING': logging.WARNING,
+                  'INFO': logging.INFO, 'DEBUG': logging.DEBUG}
+log_level = allowed_levels.get(default_log_level, logging.INFO)
 
 """Define code logging"""
 format = "%(asctime)s - %(name)s - %(threadName)s - %(funcName)s : %(message)s"

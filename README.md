@@ -509,14 +509,20 @@ see [BTIcino_Intercom_wiring](docs/BTIcino_Intercom-wiring.md)
 
 ### Debugging
 
-Edit `fdia.py` file  and at top of the file (line 22 - after imports)  
+You can set the log level via environment variable `LOG_LEVEL`    
+to  either `CRITICAL`,`ERROR`,`INFO`,`WARN` or`DEBUG`  
+before you start the app.  
+The shell command will be `export LOG_LEVEL=DEBUG && python3 fdia.py`  
+
+In case you want to store it permanently, you can add it in `fdia.py` file  
+and at top of the file (line 22 - after imports)  
 there you'll find the section
 ```
 """Define logging LEVEL"""
-default_log_level = logging.INFO
+default_log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
 ```
+Change `INFO` to `DEBUG` and store the file.
 
-Here you can modify *logging.INFO* level to *logging.DEBUG* and store the file.
 Now when you run the `fdia.py`app again you get full detail debug log of:
 - fdia app and it 6 threads
   - fdia thread = main thread
