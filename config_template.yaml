@@ -28,11 +28,13 @@ photo_general:
   default_camera_type: "blink"  # "blink" or "picam" careful - case senitive
   image_path: "/tmp/foto.jpg"   # path where downloaded foto from camera get intermediate stored
   timezone: "Europe/Berlin" # timezone for daylight detection
-  location: "Berlin" # location for daylight detection
-  lat: 1.1111111 # latitude for sunrise/sunset calculation if wanted based on lat  instead of location timezone 
-  lon: 2.2222222 # longitude for sunrise/sunset calculation if wanted based on lat  instead of location timezone
+  country: "Germany" # country for daylight detection
+  city: "Berlin" # city for daylight detection
+  lat: 1.1111111 # latitude for sunrise/sunset calculation if wanted based on lat  instead of country timezone
+  lon: 2.2222222 # longitude for sunrise/sunset calculation if wanted based on lat  instead of country timezone
   brightness_enhancer: 3 # brightness enhancer for image if camera does not provide night_vision (1.0 is normal, <1 darker, >1 lighter)
   contrast_enhancer: 2 # contrast enhancer for image if camera does not provide night_vision (1.0 is normal, <1 darker, >1 lighter)
+
 
 blink:
   enabled: True     # blink cam enabled ?
