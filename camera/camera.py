@@ -386,7 +386,7 @@ class Camera:
         Detects whether it is currently daylight based on sunrise and sunset times.
 
         The method uses either the configured coordinates (latitude and longitude)
-        or the configured location to calculate sun times.
+        or the configured country to calculate sun times.
 
         Returns:
             bool: True if it is daylight (between sunrise and sunset),
@@ -399,17 +399,19 @@ class Camera:
             if (self.config.lat is not None and self.config.lon is not None):
                 self.logger.debug("using coordinates for daylight detection")
                 location = LocationInfo(
+                    name=self.config.city,
+                    region=self.config.country,
                     latitude=self.config.lat,
                     longitude=self.config.lon,
                     timezone=self.config.timezone
                 )
                 s = sun(location.observer, date=local_date)
-            elif self.config.location is not None:
-                self.logger.debug("using location - city for daylight detection")
-                location = LocationInfo(name=self.config.location)
+            elif self.config.country is not None:
+                self.logger.debug("using country - city for daylight detection")
+                location = LocationInfo(name=self.config.country)
                 s = sun(location.observer, date=local_date)
             else:
-                raise ValueError("No valid location data provided")
+                raise ValueError("No valid country data provided")
 
             self.logger.debug(f"Sunrise: {s['sunrise']}, Sunset: {s['sunset']}")
             time_now = datetime.now(tz=ZoneInfo(self.config.timezone))  # Konvertiere String zu ZoneInfo

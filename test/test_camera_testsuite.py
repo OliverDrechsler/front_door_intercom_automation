@@ -195,7 +195,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
     def test_night_detected_with_location(self):
         self.config.lat = None
         self.config.lon = None
-        self.config.location = "Berlin"
+        self.config.country = "Berlin"
         with patch('camera.camera.sun', new_callable=MagicMock) as mock_sun:
             with patch('camera.camera.datetime', new_callable=MagicMock) as mock_datetime:
                 mock_datetime.now.return_value = datetime(2023, 6, 21, 2, 0, 0, tzinfo=ZoneInfo('Europe/Berlin'))
@@ -203,7 +203,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
                                          'sunset': datetime(2023, 6, 21, 22, 0, 0, tzinfo=ZoneInfo('Europe/Berlin'))}
                 self.assertFalse(self.camera.detect_daylight())
                 self.mock_logger_info.assert_any_call(msg="Is daylight detected: False")
-                self.mock_logger_debug.assert_any_call("using location - city for daylight detection")
+                self.mock_logger_debug.assert_any_call("using country - city for daylight detection")
 
     def test_invalid_location_data(self):
         with patch('camera.camera.sun', new_callable=MagicMock) as mock_sun:
@@ -214,9 +214,9 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
     def test_invalid_location_data(self):
         self.config.lat = None
         self.config.lon = None
-        self.config.location = None
+        self.config.country = None
         self.assertTrue(self.camera.detect_daylight())
-        self.mock_logger_error.assert_any_call("Invalid Location data: No valid location data provided")
+        self.mock_logger_error.assert_any_call("Invalid Location data: No valid country data provided")
 
     def test_exception_handling(self):
         with patch('camera.camera.sun', new_callable=MagicMock) as mock_sun:

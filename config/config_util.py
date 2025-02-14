@@ -52,10 +52,11 @@ class Configuration:
         self.photo_image_path: str = self.config["photo_general"]["image_path"]
         self.default_camera_type = DefaultCam(self.config["photo_general"]["default_camera_type"].upper())
         self.enable_detect_daylight: bool = self.config["photo_general"]["enable_detect_daylight"]
-        self.timezone: str = self.config["photo_general"]["timezone"]
-        self.location: str = self.config["photo_general"]["location"]
+        self.timezone: str = self.config["photo_general"]["timezone"]  # Timezone name for daylight detection
+        self.country: str = self.config["photo_general"]["country"]  # Country name for timezone and daylight detection
+        self.city: str = self.config["photo_general"].get("city", None)  # City name for timezone and daylight detection
         self.lat: float = self.config["photo_general"].get("lat", None)  # optional value see config_template.yaml for more information
-        self.lon: float = self.config["photo_general"].get("lat", None)  # optional value see config_template.yaml for more information
+        self.lon: float = self.config["photo_general"].get("lon", None)  # optional value see config_template.yaml for more information
         self.image_brightness: float = self.config["photo_general"].get("brightness_enhancer", None)  # optional value see config_template.yaml for more information
         self.image_contrast: float = self.config["photo_general"].get("contrast_enhancer", None)  # optional value see config_template.yaml for more information
 
