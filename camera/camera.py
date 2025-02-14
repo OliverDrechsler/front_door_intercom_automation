@@ -181,14 +181,14 @@ class Camera:
 
                 # ToDo: improve here if two are enabled for night vision
                 # ToDo: further extended unit tests required here
-
                 if self.config.blink_night_vision:
                     self.logger.debug("blink night_vision is enabled")
                     result = await self._blink_foto_helper(task)
                     return await self._check_blink_result(task, result)
 
-                if self.config.picam_night_vision:
-                    self.logger.debug("picam night_vision is enabled")
+                if self.config.picam_night_vision or self.config.picam_image_brightening:
+                    self.logger.debug(f"picam night_vision is {self.config.picam_night_vision}")
+                    self.logger.debug(f"picam image_brightening is {self.config.picam_image_brightening}")
                     result = await self._picam_foto_helper(task)
                     return await self._check_picam_result(task, result)
 
@@ -405,6 +405,7 @@ class Camera:
                     longitude=self.config.lon,
                     timezone=self.config.timezone
                 )
+                self.logger.debug(f"location: {location}")
                 s = sun(location.observer, date=local_date)
             elif self.config.country is not None:
                 self.logger.debug("using country - city for daylight detection")
