@@ -1,5 +1,15 @@
-
-                                                                  List Of Packages
+                                                 
+                      Info                       
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Item            ┃ Value                       ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ program         │ licensecheck                │
+│ version         │ 2024.2                      │
+│ license         │ MIT LICENSE                 │
+│ project_license │ NO LICENSE/ UNKNOWN LICENSE │
+└─────────────────┴─────────────────────────────┘
+                                                                                                                                                    
+                                                                  List Of Packages                                                                  
 ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Compatible ┃ Package                       ┃ License(s)                                                                                          ┃
 ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
@@ -49,10 +59,12 @@
 │ ✔          │ multidict                     │ APACHE SOFTWARE LICENSE                                                                             │
 │ ✔          │ myst-parser                   │ MIT LICENSE                                                                                         │
 │ ✔          │ packaging                     │ APACHE SOFTWARE LICENSE;; BSD LICENSE                                                               │
+│ ✔          │ pillow                        │ CMU LICENSE (MIT-CMU)                                                                               │
 │ ✔          │ pluggy                        │ MIT LICENSE                                                                                         │
 │ ✖          │ pyTelegramBotAPI              │ GNU GENERAL PUBLIC LICENSE V2 (GPLV2)                                                               │
 │ ✔          │ pyotp                         │ MIT LICENSE                                                                                         │
 │ ✔          │ pytest                        │ MIT LICENSE                                                                                         │
+│ ✔          │ pytest-asyncio                │ APACHE SOFTWARE LICENSE                                                                             │
 │ ✔          │ pytest-cov                    │ MIT LICENSE                                                                                         │
 │ ✔          │ python-dateutil               │ BSD LICENSE;; APACHE SOFTWARE LICENSE                                                               │
 │ ✔          │ python-slugify                │ MIT LICENSE                                                                                         │
@@ -75,3 +87,4 @@
 │ ✔          │ yarl                          │ APACHE SOFTWARE LICENSE                                                                             │
 │ ✔          │ zipp                          │ MIT LICENSE                                                                                         │
 └────────────┴───────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────┘
+

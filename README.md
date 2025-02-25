@@ -619,6 +619,11 @@ pip3 install licensecheck
 licensecheck -u requirements > requirements_licenses.txt
 ```
 
+Hint for licensecheck:  
+In case you receive a traceback error
+check for line comments in requirements.txt and remove them temporary.  
+
+
 ## Security
 
 [Security issue guide](SECURITY.md)
