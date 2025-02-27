@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "Front-door intercom automation - (FDIA)"
+version = "1.0.9"
+description = "Raspberry Pi intercom front door automation for recognising doorbells, opening door and creating photos and send notifications via Telegram"
+authors = ["Oliver Drechsler <https://github.com/oliverdrechsler>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[scripts]
+install = """
+#!/bin/bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+"""
+start = """
+#!/bin/bash
+source venv/bin/activate
+python fdia.py
+"""

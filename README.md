@@ -207,6 +207,8 @@ requirements_licenses.txt # depend library licenses
 
 3. now run pip3 to install python requirments
   ```pip3 install requirements.txt```
+  or with poetry
+  ```poetry run install```
 
 4. copy config_template.yaml to config.yaml file
    `cp config_template.yaml config.yaml`
@@ -258,6 +260,8 @@ requirements_licenses.txt # depend library licenses
 8. run app
    `python3 fdia.py`
    and check log output
+   or with poetry 
+   `poetry run start`
 
   
    for troubleshooting see [Help](#help)
