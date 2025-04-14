@@ -15,7 +15,7 @@ pyTelegramBotAPI==4.26.0
 asyncio==3.4.3
 aiohttp==3.11.16
 click==8.1.8
-Pillow==11.1.0
+Pillow==11.2.1
 
 myst-parser==3.0.1 # pyup: ignore
 recommonmark==0.7.1 # pyup: ignore
