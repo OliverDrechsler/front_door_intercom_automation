@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChangeLog &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="front-door_intercom_automation" href="modules.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="LICENSE.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-8">Release 1.0.8</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-changed">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#features">🏕 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-7">Release 1.0.7</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">🏕 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-6">Release 1.0.6</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id3">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exciting-new-features">Exciting New Features 🎉</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">🏕 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-5">Release 1.0.5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id5">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Exciting New Features 🎉</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">👒 Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#release-1-0-4">Release 1.0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-1-0-3">Release 1.0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-1-0-2">Release 1.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-1-0-1">Release 1.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-1-0-0-code-refactored-docu-updated">Release 1.0.0  - CODE REFACTORED - DOCU UPDATED</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-0-0-5-and-below-uses-and-supports">Release 0.0.5 and below uses and supports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#previous-python-version-releases">Previous Python Version releases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Advanced API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ChangeLog</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/CHANGELOG.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="changelog">
+<h1>ChangeLog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
+</section>
+<section id="release-1-0-8">
+<h1>Release 1.0.8<a class="headerlink" href="#release-1-0-8" title="Link to this heading"></a></h1>
+<section id="what-s-changed">
+<h2>What’s Changed<a class="headerlink" href="#what-s-changed" title="Link to this heading"></a></h2>
+<section id="features">
+<h3>🏕 Features<a class="headerlink" href="#features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Scheduled weekly dependency update for week 06 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/206</p></li>
+<li><p>fix image_brightness config variable and added image contrast enhancement by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/207</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.7…1.0.8</p>
+</section>
+</section>
+</section>
+<section id="release-1-0-7">
+<h1>Release 1.0.7<a class="headerlink" href="#release-1-0-7" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>What’s Changed<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="id2">
+<h3>🏕 Features<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>added adjust image for picam snapshots at night  by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205</p></li>
+<li><p>added unit tests for camera.py  by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.6…1.0.7</p>
+</section>
+</section>
+</section>
+<section id="release-1-0-6">
+<h1>Release 1.0.6<a class="headerlink" href="#release-1-0-6" title="Link to this heading"></a></h1>
+<section id="id3">
+<h2>What’s Changed<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="exciting-new-features">
+<h3>Exciting New Features 🎉<a class="headerlink" href="#exciting-new-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>add changelog generator pipeline by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/194</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>🏕 Features<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update CHANGELOG.md by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/195</p></li>
+<li><p>Scheduled weekly dependency update for week 48 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/196</p></li>
+<li><p>Scheduled weekly dependency update for week 50 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/198</p></li>
+<li><p>Scheduled weekly dependency update for week 52 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/200</p></li>
+<li><p>Scheduled weekly dependency update for week 02 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/201</p></li>
+<li><p>Fix/picam request exceptions by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/203</p></li>
+<li><p>Breaking change fix daylight detection from timezone utc to local timezone needs adjustment in config file by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/204</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.5…1.0.6</p>
+</section>
+</section>
+</section>
+<section id="release-1-0-5">
+<h1>Release 1.0.5<a class="headerlink" href="#release-1-0-5" title="Link to this heading"></a></h1>
+<section id="id5">
+<h2>What’s Changed<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<section id="id6">
+<h3>Exciting New Features 🎉<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>add release notes pipeline by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/193</p></li>
+</ul>
+</section>
+<section id="dependencies">
+<h3>👒 Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Scheduled weekly dependency update for week 39 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/183</p></li>
+<li><p>Scheduled weekly dependency update for week 40 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/184</p></li>
+<li><p>Scheduled weekly dependency update for week 42 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/186</p></li>
+<li><p>Scheduled weekly dependency update for week 44 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/189</p></li>
+<li><p>Scheduled weekly dependency update for week 45 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/190</p></li>
+<li><p>Scheduled weekly dependency update for week 46 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/191</p></li>
+<li><p>Scheduled weekly dependency update for week 47 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/192
+<strong>Full Changelog</strong>: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.4…1.0.5</p></li>
+</ul>
+</section>
+</section>
+<section id="release-1-0-4">
+<h2>Release 1.0.4<a class="headerlink" href="#release-1-0-4" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>bumped lib versions</p></li>
+<li><p>updated doc readme.md</p></li>
+<li><p>added unit tests for tools scripts</p></li>
+<li><p>translated static web-ui page from german to english</p></li>
+</ul>
+</section>
+<section id="release-1-0-3">
+<h2>Release 1.0.3<a class="headerlink" href="#release-1-0-3" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>fix camera PiCam_API download filename</p></li>
+</ul>
+</section>
+<section id="release-1-0-2">
+<h2>Release 1.0.2<a class="headerlink" href="#release-1-0-2" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>add: door bell gpio button bouncer time</p></li>
+<li><p>add: enable option for door bell detection</p></li>
+<li><p>add: enable option for door opening relais board</p></li>
+<li><p>add: enable option for flask web ui and rest-api</p></li>
+<li><p>refactor: web log messages</p></li>
+<li><p>refactor fdia.service</p></li>
+<li><p>updated: README.md</p></li>
+<li><p>updated: How_to_install_fresh_RPi_with_Code.md</p></li>
+<li><p>bump: version updates for:</p>
+<ul>
+<li><p>Update requests from 2.32.2 to 2.32.3</p></li>
+<li><p>Update pyTelegramBotAPI from 4.21.0 to 4.22.0.</p></li>
+<li><p>Update aiohttp from 3.9.5 to 3.10.1.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="release-1-0-1">
+<h2>Release 1.0.1<a class="headerlink" href="#release-1-0-1" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>LICENSE change from GPLv2 to MIT</p></li>
+<li><p>small refactor,</p></li>
+<li><p>fix camera async</p></li>
+<li><p>migrated from GPIOZERO to RPI.GPIO library</p></li>
+<li><p>web ui add flask host ip</p></li>
+<li><p>added more unit tests</p></li>
+<li><p>updated documentation</p></li>
+</ul>
+</section>
+<section id="release-1-0-0-code-refactored-docu-updated">
+<h2>Release 1.0.0  - CODE REFACTORED - DOCU UPDATED<a class="headerlink" href="#release-1-0-0-code-refactored-docu-updated" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>New version with new feature like:
+python 3.10, 3.11, 3.12 support (deprecated 3.9 and below)</p></li>
+<li><p>WebApp, with browser page and rest api for opening</p></li>
+<li><p>migrated to pyTelegramBotAPI</p></li>
+<li><p>updated blinkpy to asyncio</p></li>
+<li><p>daylight and night vision detect to choose camera</p></li>
+<li><p>multi threading</p></li>
+<li><p>using pyOTP instead passlib</p></li>
+<li><p>detecting Pi Hardware native</p></li>
+</ul>
+</section>
+<section id="release-0-0-5-and-below-uses-and-supports">
+<h2>Release 0.0.5 and below uses and supports<a class="headerlink" href="#release-0-0-5-and-below-uses-and-supports" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>python below 3.8 and therefore older OS’es</p></li>
+<li><p>telepot library</p></li>
+<li><p>blinkpy library below 0.20.0</p></li>
+</ul>
+<p>By default older version are not recommended to use because of vulnerabilities.
+Use always latest version.</p>
+</section>
+<section id="previous-python-version-releases">
+<h2>Previous Python Version releases<a class="headerlink" href="#previous-python-version-releases" title="Link to this heading"></a></h2>
+<p><strong>If you want use a release which works with python below 3.8 take a look at <a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5">0.0.5</a></strong></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="LICENSE.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="front-door_intercom_automation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
