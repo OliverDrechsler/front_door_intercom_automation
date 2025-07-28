@@ -446,7 +446,8 @@ class Camera:
             logger.debug("take a snpshot")
             await camera.snap_picture()  # Take a new picture with the camera
             self.logger.debug("refresh blink server info")
-            time.sleep(2)  # wait for blink class instance refresh interval to be done
+            await asyncio.sleep(1)
+            # time.sleep(2)  # wait for blink class instance refresh interval to be done
             await self.blink.refresh(force=True)  # refresh Server info
             if os.path.exists(self.config.photo_image_path):
                 self.logger.debug("a file already exists and will be deleted before hand")
