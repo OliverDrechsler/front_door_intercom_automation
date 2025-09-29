@@ -1,4 +1,4 @@
-pyyaml==6.0.2
+pyyaml==6.0.3
 RPi.GPIO==0.7.1
 urllib3==2.5.0
 requests==2.32.5
