@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bot package &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="camera package" href="camera.html" />
+    <link rel="prev" title="front-door_intercom_automation" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-8">Release 1.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7">Release 1.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6">Release 1.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5">Release 1.0.5</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Advanced API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">bot package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bot.receive_msg">bot.receive_msg module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bot.receive_msg.ReceivingMessage"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bot.send_msg">bot.send_msg module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bot.send_msg.SendMessage"><code class="docutils literal notranslate"><span class="pre">SendMessage</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bot">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html">camera package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="door.html">door package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html">web package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html">fdia module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">front-door_intercom_automation</a></li>
+      <li class="breadcrumb-item active">bot package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/bot.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bot-package">
+<h1>bot package<a class="headerlink" href="#bot-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-bot.receive_msg">
+<span id="bot-receive-msg-module"></span><h2>bot.receive_msg module<a class="headerlink" href="#module-bot.receive_msg" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bot.receive_msg.</span></span><span class="sig-name descname"><span class="pre">ReceivingMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Receiving Telegram Bot messages</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.get_allowed">
+<span class="sig-name descname"><span class="pre">get_allowed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.get_allowed" title="Link to this definition"></a></dt>
+<dd><p>Checks if the message chat ID matches the configured Telegram chat number and calls get_allowed_user
+if the condition is met. Returns True if the user is allowed, False otherwise.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>message (telebot.types.Message): The message object received.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if the user is allowed, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.get_allowed_user">
+<span class="sig-name descname"><span class="pre">get_allowed_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.get_allowed_user" title="Link to this definition"></a></dt>
+<dd><p>Checks if the message from_user ID matches the configured allowed user IDs.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>message (telebot.types.Message): The message object received.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if the user is allowed, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.rcv_blink_auth">
+<span class="sig-name descname"><span class="pre">rcv_blink_auth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.rcv_blink_auth" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.receive_any_msg_text">
+<span class="sig-name descname"><span class="pre">receive_any_msg_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.receive_any_msg_text" title="Link to this definition"></a></dt>
+<dd><p>Check if the message is received from an allowed telegram chat group and allowed user ID.
+If the conditions are met, check if the message text has a TOTP code and open the door if correct, otherwise do nothing.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>message (telebot.types.Message): The message object received.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.register_bink_authentication">
+<span class="sig-name descname"><span class="pre">register_bink_authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.register_bink_authentication" title="Link to this definition"></a></dt>
+<dd><p>Registers a Blink authentication based on the received message.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>self: the object instance
+message (telebot.types.Message): the message received</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.start" title="Link to this definition"></a></dt>
+<dd><p>Starts the bot’s endless polling.
+Uses the bot’s infinity_polling method with specified timeout and long_polling_timeout.
+Logs any errors that occur during polling.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.stop" title="Link to this definition"></a></dt>
+<dd><p>A method to stop the bot. It logs the action of stopping bot polling, stops the bot from polling, removes the webhook, and logs the completion of stopping the bot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.take_blink_foto">
+<span class="sig-name descname"><span class="pre">take_blink_foto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.take_blink_foto" title="Link to this definition"></a></dt>
+<dd><p>Takes a photo request specific to the Blink camera from a telegram message and puts it into a camera task queue.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>message (telebot.types.Message): The telegram message object containing the photo request.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>This function first logs a debug message indicating that a Blink photo request has been received with the given message.
+It then checks if the message is received from an allowed telegram chat group and if it was sent by an allowed user ID.
+If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
+The camera task contains the chat ID, message, reply flag, and blink_photo flag.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.take_foto">
+<span class="sig-name descname"><span class="pre">take_foto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.take_foto" title="Link to this definition"></a></dt>
+<dd><p>Takes a photo request from a telegram message and puts it into a camera task queue.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>message (telebot.types.Message): The telegram message object containing the photo request.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>This function first logs a debug message indicating that a photo request has been received with the given message.
+It then checks if the message is received from an allowed telegram chat group and if it was sent by an allowed user ID.
+If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
+The camera task contains the chat ID, message, reply flag, and photo flag.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.take_picam_foto">
+<span class="sig-name descname"><span class="pre">take_picam_foto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.take_picam_foto" title="Link to this definition"></a></dt>
+<dd><p>Takes a photo request specific to the PiCam (foto API [PiCamAPI](<a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API">https://github.com/OliverDrechsler/PiCam_API</a>)) from a telegram message and puts it into a camera task queue.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>message (telebot.types.Message): The telegram message object containing the photo request.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.validate_msg_text_has_code">
+<span class="sig-name descname"><span class="pre">validate_msg_text_has_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.validate_msg_text_has_code" title="Link to this definition"></a></dt>
+<dd><p>Validates if the message text contains a code number by using a regex search pattern.
+If a match is found, it calls the ‘verify_otp_code_in_msg’ method and returns the result.
+If no match is found, it logs a message and returns False.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>self: The instance of the class.
+message (telebot.types.Message): The message object received.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if the message text contains a code number, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.verify_otp_code_in_msg">
+<span class="sig-name descname"><span class="pre">verify_otp_code_in_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.verify_otp_code_in_msg" title="Link to this definition"></a></dt>
+<dd><p>Verifies if the received message text contains a valid TOTP code.
+If the code is valid, it logs a message and returns True.
+If the code is invalid, it logs a message and returns False.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>self: The instance of the class.
+message (telebot.types.Message): The message object received.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if the message text contains a valid TOTP code, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-bot.send_msg">
+<span id="bot-send-msg-module"></span><h2>bot.send_msg module<a class="headerlink" href="#module-bot.send_msg" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="bot.send_msg.SendMessage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bot.send_msg.</span></span><span class="sig-name descname"><span class="pre">SendMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.send_msg.SendMessage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.send_msg.SendMessage.reply_message">
+<span class="sig-name descname"><span class="pre">reply_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.send_msg.SendMessage.reply_message" title="Link to this definition"></a></dt>
+<dd><p>Reply to a message in a chat.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>chat_id (str): The ID of the chat.
+text (str): The text of the reply message.
+message (telebot.types.Message): The message to reply to.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>This function sends a reply message to a chat using the Telegram Bot API. It uses the <cite>reply_to</cite> method of the <cite>bot</cite> object to send the reply. The reply message contains the provided <cite>text</cite>. The function logs the reply message using the <cite>logger</cite> object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.send_msg.SendMessage.send_message">
+<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.send_msg.SendMessage.send_message" title="Link to this definition"></a></dt>
+<dd><p>Send a message to a specified chat using the Telegram Bot API.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>chat_id (str): The ID of the chat.
+text (str): The text of the message to be sent.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.send_msg.SendMessage.send_photo">
+<span class="sig-name descname"><span class="pre">send_photo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.send_msg.SendMessage.send_photo" title="Link to this definition"></a></dt>
+<dd><p>Send a photo to a specified chat using the Telegram Bot API.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>chat_id (str): The ID of the chat.
+image_path (str): The path to the image file to be sent.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.send_msg.SendMessage.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.send_msg.SendMessage.start" title="Link to this definition"></a></dt>
+<dd><p>Starts the thread endless loop to send telegram bot messages.</p>
+<p>This function runs in an infinite loop until the <cite>stop_polling</cite> event is set. It continuously retrieves tasks from the <cite>message_task_queue</cite> and processes them. If a task is an instance of <cite>Message_Task</cite>, it performs the following actions based on the task attributes:
+- If <cite>task.send</cite> is True, it sends a message to the specified chat using the <cite>send_message</cite> method.
+- If <cite>task.reply</cite> is True, it replies to the specified message with the given text using the <cite>reply_message</cite> method.
+- If <cite>task.photo</cite> is True, it sends a photo to the specified chat using the <cite>send_photo</cite> method.</p>
+<p>If an exception occurs during the execution of the loop, it logs the error and continues.</p>
+<p>After the loop finishes, it calls the <cite>stop</cite> method.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>self (SendMessage): The instance of the <cite>SendMessage</cite> class.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.send_msg.SendMessage.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bot.send_msg.SendMessage.stop" title="Link to this definition"></a></dt>
+<dd><p>A method to stop the bot. It logs the action of stopping bot polling, stops the bot from polling, removes the webhook.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-bot">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bot" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="front-door_intercom_automation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="camera.html" class="btn btn-neutral float-right" title="camera package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

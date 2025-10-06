@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>door package &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="web package" href="web.html" />
+    <link rel="prev" title="camera package" href="camera.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-8">Release 1.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7">Release 1.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6">Release 1.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5">Release 1.0.5</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Advanced API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bot.html">bot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html">camera package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">door package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-door.bell">door.bell module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#door.bell.DoorBell"><code class="docutils literal notranslate"><span class="pre">DoorBell</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-door.opener">door.opener module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#door.opener.DoorOpener"><code class="docutils literal notranslate"><span class="pre">DoorOpener</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-door.detect_rpi">door.detect_rpi module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#door.detect_rpi.detect_rpi"><code class="docutils literal notranslate"><span class="pre">detect_rpi()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-door">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="web.html">web package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html">fdia module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">front-door_intercom_automation</a></li>
+      <li class="breadcrumb-item active">door package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/door.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="door-package">
+<h1>door package<a class="headerlink" href="#door-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-door.bell">
+<span id="door-bell-module"></span><h2>door.bell module<a class="headerlink" href="#module-door.bell" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="door.bell.DoorBell">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">door.bell.</span></span><span class="sig-name descname"><span class="pre">DoorBell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.bell.DoorBell" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Front door subclass of configuration config watches the door bell and
+triggers sends telegram message and camera photo.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="door.bell.DoorBell.ring">
+<span class="sig-name descname"><span class="pre">ring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#door.bell.DoorBell.ring" title="Link to this definition"></a></dt>
+<dd><p>Monitors the door bell and triggers a series of actions when the bell rings.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>test (bool, optional): If True, the function will exit after the first ring. Defaults to False.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>Exception: If an error occurs during the execution of the function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-door.opener">
+<span id="door-opener-module"></span><h2>door.opener module<a class="headerlink" href="#module-door.opener" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="door.opener.DoorOpener">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">door.opener.</span></span><span class="sig-name descname"><span class="pre">DoorOpener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Configuration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.opener.DoorOpener" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="door.opener.DoorOpener.open_door">
+<span class="sig-name descname"><span class="pre">open_door</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#door.opener.DoorOpener.open_door" title="Link to this definition"></a></dt>
+<dd><p>A function that opens the door based on Raspberry Pi detection.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>self: The object instance.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if the door is successfully opened, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="door.opener.DoorOpener.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#door.opener.DoorOpener.start" title="Link to this definition"></a></dt>
+<dd><p>Starts the thread endless loop to open the door.</p>
+<p>This method runs in an infinite loop until the <cite>shutdown_event</cite> is set. It continuously retrieves tasks from the <cite>door_open_task_queue</cite> and processes them. If a task is an instance of <cite>Open_Door_Task</cite>, it performs the following actions based on the task attributes:
+- If <cite>task.open</cite> is True, it logs the received task and opens the door by calling the <cite>open_door</cite> method.
+- If <cite>task.reply</cite> is True and <cite>task.message</cite> is not None, it puts a <cite>Message_Task</cite> object with the reply flag set to True, the chat ID from the task, the message from the task, and the data text “Door opened!” into the <cite>message_task_queue</cite>.
+- If <cite>task.reply</cite> is False, it puts a <cite>Message_Task</cite> object with the send flag set to True, the chat ID from the configuration, and the data text “Door opened!” into the <cite>message_task_queue</cite>.
+- If an exception occurs during the execution of the loop, it logs the error and continues.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-door.detect_rpi">
+<span id="door-detect-rpi-module"></span><h2>door.detect_rpi module<a class="headerlink" href="#module-door.detect_rpi" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="door.detect_rpi.detect_rpi">
+<span class="sig-prename descclassname"><span class="pre">door.detect_rpi.</span></span><span class="sig-name descname"><span class="pre">detect_rpi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_on_raspberry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#door.detect_rpi.detect_rpi" title="Link to this definition"></a></dt>
+<dd><p>Detects whether the system is running on a Raspberry Pi based on the model information
+retrieved from ‘/sys/firmware/devicetree/base/model’ or ‘/proc/cpuinfo’.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>run_on_raspberry (bool): A boolean indicating whether to force the function to run on a Raspberry Pi.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if a Raspberry Pi is detected, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-door">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-door" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="camera.html" class="btn btn-neutral float-left" title="camera package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="web.html" class="btn btn-neutral float-right" title="web package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
