@@ -14,8 +14,8 @@ import requests
 from PIL import Image, ImageEnhance
 from astral import LocationInfo
 from astral.sun import sun
-from blinkpy.auth import Auth, BlinkBadResponse, UnauthorizedError
-from blinkpy.blinkpy import Blink, BlinkSetupError, BlinkTwoFARequiredError, TokenRefreshFailed, LoginError
+from blinkpy.auth import Auth, BlinkBadResponse, UnauthorizedError, BlinkTwoFARequiredError, TokenRefreshFailed, LoginError
+from blinkpy.blinkpy import Blink, BlinkSetupError
 from blinkpy.helpers.util import json_load
 
 from config.config_util import Configuration, DefaultCam
@@ -70,15 +70,14 @@ class Camera:
             self.blink = Blink(session=self.session, refresh_rate=3)
             await self.read_blink_config()
             try:
-                self.logger.info(f"start blink")
+                self.logger.info("start blink")
                 await self.blink.start()
             except BlinkTwoFARequiredError:
-                self.logger.info(f"BlinkTwoFARequiredError")
+                self.logger.info("BlinkTwoFARequiredError")
                 self.message_task_queue.put(
                     Message_Task(
-                        reply=True,
-                        chat_id=task.chat_id,
-                        message=task.message,
+                        send=True,
+                        chat_id=self.config.telegram_chat_nr,
                         data_text="BlinkTwoFARequiredError - please provide 2FA token from Blink via command /blink_auth <token>",
                     )
                 )
@@ -86,9 +85,8 @@ class Camera:
                 self.logger.error(f"BlinkSetupError: {e}")
                 self.message_task_queue.put(
                     Message_Task(
-                        reply=True,
-                        chat_id=task.chat_id,
-                        message=task.message,
+                        send=True,
+                        chat_id=self.config.telegram_chat_nr,
                         data_text="BlinkSetupError - an error occured during Blink setup - check logs",
                     )
                 )
@@ -96,9 +94,8 @@ class Camera:
                 self.logger.error(f"TokenRefreshFailed: {e}")
                 self.message_task_queue.put(
                     Message_Task(
-                        reply=True,
-                        chat_id=task.chat_id,
-                        message=task.message,
+                        send=True,
+                        chat_id=self.config.telegram_chat_nr,
                         data_text="An Blink TokenRefreshFailed error occured - check logs",
                     )
                 )
@@ -106,9 +103,8 @@ class Camera:
                 self.logger.error(f"Blink LoginError: {e}")
                 self.message_task_queue.put(
                     Message_Task(
-                        reply=True,
-                        chat_id=task.chat_id,
-                        message=task.message,
+                        send=True,
+                        chat_id=self.config.telegram_chat_nr,
                         data_text="An LoginError occured during Blink start - check logs",
                     )
                 )
@@ -116,9 +112,8 @@ class Camera:
                 self.logger.error(f"Unexpected BlinkBadResponse occured: {e}")
                 self.message_task_queue.put(
                     Message_Task(
-                        reply=True,
-                        chat_id=task.chat_id,
-                        message=task.message,
+                        send=True,
+                        chat_id=self.config.telegram_chat_nr,
                         data_text="Unexpected BlinkBadResponse occured - check logs",
                     )
                 )
@@ -126,9 +121,8 @@ class Camera:
                 self.logger.error(f"An authorization UnauthorizedError occured at  Blink start: {e}")
                 self.message_task_queue.put(
                     Message_Task(
-                        reply=True,
-                        chat_id=task.chat_id,
-                        message=task.message,
+                        send=True,
+                        chat_id=self.config.telegram_chat_nr,
                         data_text="An authorization UnauthorizedError occured at  Blink start",
                     )
                 )        
