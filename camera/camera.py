@@ -93,7 +93,7 @@ class Camera:
                 )
             except TokenRefreshFailed as e:
                 self.logger.error(f"TokenRefreshFailed: {e}")
-                            self.message_task_queue.put(
+                self.message_task_queue.put(
                     Message_Task(
                         reply=True,
                         chat_id=task.chat_id,
