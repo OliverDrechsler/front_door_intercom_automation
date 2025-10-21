@@ -14,14 +14,15 @@ import requests
 from PIL import Image, ImageEnhance
 from astral import LocationInfo
 from astral.sun import sun
-from blinkpy.auth import Auth
-from blinkpy.blinkpy import Blink
+from blinkpy.auth import Auth, BlinkBadResponse, UnauthorizedError, BlinkTwoFARequiredError, TokenRefreshFailed, LoginError
+from blinkpy.blinkpy import Blink, BlinkSetupError
 from blinkpy.helpers.util import json_load
 
 from config.config_util import Configuration, DefaultCam
 from config.data_class import Camera_Task, Message_Task
 
 logger: logging.Logger = logging.getLogger(name="camera")
+
 
 class Camera:
     def __init__(
@@ -70,7 +71,7 @@ class Camera:
             await self.read_blink_config()
             try:
                 self.logger.info(f"start blink")
-                await blink.start()
+                await self.blink.start()
             except BlinkTwoFARequiredError:
                 self.logger.info(f"BlinkTwoFARequiredError")
                 self.message_task_queue.put(
