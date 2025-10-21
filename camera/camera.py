@@ -68,7 +68,69 @@ class Camera:
             self.logger.debug("add session to blink")
             self.blink = Blink(session=self.session, refresh_rate=3)
             await self.read_blink_config()
-            await self.blink.start()
+            try:
+                self.logger.info(f"start blink")
+                await blink.start()
+            except BlinkTwoFARequiredError:
+                self.logger.info(f"BlinkTwoFARequiredError")
+                self.message_task_queue.put(
+                    Message_Task(
+                        reply=True,
+                        chat_id=task.chat_id,
+                        message=task.message,
+                        data_text="BlinkTwoFARequiredError - please provide 2FA token from Blink via command /blink_auth <token>",
+                    )
+                )
+            except BlinkSetupError as e:
+                self.logger.error(f"BlinkSetupError: {e}")
+                self.message_task_queue.put(
+                    Message_Task(
+                        reply=True,
+                        chat_id=task.chat_id,
+                        message=task.message,
+                        data_text="BlinkSetupError - an error occured during Blink setup - check logs",
+                    )
+                )
+            except TokenRefreshFailed as e:
+                self.logger.error(f"TokenRefreshFailed: {e}")
+                            self.message_task_queue.put(
+                    Message_Task(
+                        reply=True,
+                        chat_id=task.chat_id,
+                        message=task.message,
+                        data_text="An Blink TokenRefreshFailed error occured - check logs",
+                    )
+                )
+            except LoginError as e:
+                self.logger.error(f"Blink LoginError: {e}")
+                self.message_task_queue.put(
+                    Message_Task(
+                        reply=True,
+                        chat_id=task.chat_id,
+                        message=task.message,
+                        data_text="An LoginError occured during Blink start - check logs",
+                    )
+                )
+            except BlinkBadResponse as e:
+                self.logger.error(f"Unexpected BlinkBadResponse occured: {e}")
+                self.message_task_queue.put(
+                    Message_Task(
+                        reply=True,
+                        chat_id=task.chat_id,
+                        message=task.message,
+                        data_text="Unexpected BlinkBadResponse occured - check logs",
+                    )
+                )
+            except UnauthorizedError as e:
+                self.logger.error(f"An authorization UnauthorizedError occured at  Blink start: {e}")
+                self.message_task_queue.put(
+                    Message_Task(
+                        reply=True,
+                        chat_id=task.chat_id,
+                        message=task.message,
+                        data_text="An authorization UnauthorizedError occured at  Blink start",
+                    )
+                )        
 
         logger.info("camera now start endless loop")
         while self.running:
@@ -101,6 +163,7 @@ class Camera:
 
                     elif task.blink_mfa:
                         self.logger.info(f"processing task.blink_mfa: {task.blink_mfa}")
+
                         result = await self.add_2fa_blink_token(task)
                         if result:
                             result = await self.save_blink_config()
@@ -440,15 +503,18 @@ class Camera:
             )
         )
         try:
-            await self.blink.refresh(force=True)
+            # await self.blink.refresh(force=True)
             self.logger.debug("create a camera instance")
             camera = self.blink.cameras[self.config.blink_name]
             logger.debug("take a snpshot")
             await camera.snap_picture()  # Take a new picture with the camera
             self.logger.debug("refresh blink server info")
-            await asyncio.sleep(1)
+            await asyncio.sleep(delay=2)
             # time.sleep(2)  # wait for blink class instance refresh interval to be done
-            await self.blink.refresh(force=True)  # refresh Server info
+            refresh_result: bool = await self.blink.refresh(force=True)  # refresh Server info
+            if not refresh_result:
+                self.logger.error("an error occured during blink refresh")
+                return False
             if os.path.exists(self.config.photo_image_path):
                 self.logger.debug("a file already exists and will be deleted before hand")
                 os.remove(self.config.photo_image_path)
@@ -459,6 +525,7 @@ class Camera:
             await camera.image_to_file(self.config.photo_image_path)
             if not self.detect_daylight() and self.config.blink_image_brightening:
                 self.adjust_image()
+        # ToDo: further exception handlinhg required here  / improvement
         except Exception as err:
             self.logger.error("Error: {0}".format(err))
             self.logger.error("Error args: {0}".format(err.args))
@@ -541,12 +608,15 @@ class Camera:
             bool: True if the token is successfully added.
         """
         self.logger.debug("add a 2FA token for authentication")
-        await self.blink.auth.send_auth_key(self.blink, task.blink_mfa)
+        await self.blink.send_2fa_code(task.blink_mfa)
         self.logger.debug("verify 2FA token")
-        # ToDo implement  exception handling with return false
-        await self.blink.setup_post_verify()
-        self.logger.info("added 2FA token " + task.blink_mfa)
-        return True
+        result = await self.blink.setup_post_verify() 
+        if result:
+            self.logger.info("added 2FA token " + task.blink_mfa)
+            return True
+        else:
+            self.logger.error("an error occured during verifying 2FA token")
+            return False
 
     def picam_request_take_foto(self) -> bool:
         """
@@ -634,28 +704,28 @@ class Camera:
         """
         try:
             self.logger.info("start image brightness adjustement")
-            
+
             if not os.path.exists(self.config.photo_image_path):
                 self.logger.error(f"Image file not found: {self.config.photo_image_path}")
                 return False
-            
+
             image = Image.open(self.config.photo_image_path)
-            
+
             # brightness adjustement (1.0 is normal, <1 darker, >1 lighter)
             if hasattr(self.config, 'image_brightness'):
                 brightness_enhancer = ImageEnhance.Brightness(image)
                 image = brightness_enhancer.enhance(self.config.image_brightness)
                 self.logger.debug(f"brightness adjusted to {self.config.image_brightness}")
-            
+
             if hasattr(self.config, 'image_contrast'):
                 contrast_enhancer = ImageEnhance.Contrast(image)
                 image = contrast_enhancer.enhance(self.config.image_contrast)
                 self.logger.debug(f"contrast adjusted to {self.config.image_contrast}")
-            
+
             image.save(self.config.photo_image_path)
             self.logger.debug("imgae adjustment done")
             return True
-            
+
         except Exception as err:
             self.logger.error(f"Error during image brightness adjustement: {err}")
             return False
