@@ -14,8 +14,8 @@ import requests
 from PIL import Image, ImageEnhance
 from astral import LocationInfo
 from astral.sun import sun
-from blinkpy.auth import Auth, BlinkBadResponse, UnauthorizedError, BlinkTwoFARequiredError, TokenRefreshFailed, LoginError
-from blinkpy.blinkpy import Blink, BlinkSetupError
+from blinkpy.auth import Auth, BlinkBadResponse, UnauthorizedError
+from blinkpy.blinkpy import Blink, BlinkSetupError, BlinkTwoFARequiredError, TokenRefreshFailed, LoginError
 from blinkpy.helpers.util import json_load
 
 from config.config_util import Configuration, DefaultCam
