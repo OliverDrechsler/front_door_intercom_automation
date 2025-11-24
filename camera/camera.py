@@ -4,9 +4,11 @@ import asyncio
 import json
 import logging
 import os
+from pathlib import Path
 import queue
 import time
 from datetime import datetime, timezone
+from tracemalloc import start
 from zoneinfo import ZoneInfo
 import aiohttp
 import requests
@@ -14,7 +16,14 @@ import requests
 from PIL import Image, ImageEnhance
 from astral import LocationInfo
 from astral.sun import sun
-from blinkpy.auth import Auth, BlinkBadResponse, UnauthorizedError, BlinkTwoFARequiredError, TokenRefreshFailed, LoginError
+from blinkpy.auth import (
+    Auth,
+    BlinkBadResponse,
+    UnauthorizedError,
+    BlinkTwoFARequiredError,
+    TokenRefreshFailed,
+    LoginError,
+)
 from blinkpy.blinkpy import Blink, BlinkSetupError
 from blinkpy.helpers.util import json_load
 
@@ -55,10 +64,11 @@ class Camera:
         self.message_task_queue = message_task_queue
         self.logger.debug(msg="initialize camera class instance")
         self.running: bool = True
+        self.restart: bool = False
 
     async def start(self) -> None:
         """
-        Initializes the camera, starts a blink session if enabled, and processes 
+        Initializes the camera, starts a blink session if enabled, and processes
         various camera tasks asynchronously.
         """
         logger.debug(msg="thread camera start")
@@ -118,14 +128,38 @@ class Camera:
                     )
                 )
             except UnauthorizedError as e:
-                self.logger.error(f"An authorization UnauthorizedError occured at  Blink start: {e}")
+                self.logger.error(
+                    f"An authorization UnauthorizedError occured at  Blink start: {e}"
+                )
                 self.message_task_queue.put(
                     Message_Task(
                         send=True,
                         chat_id=self.config.telegram_chat_nr,
                         data_text="An authorization UnauthorizedError occured at  Blink start",
                     )
-                )        
+                )
+                blink_file_path = Path(self.config.blink_config_file)
+                if blink_file_path.exists():
+                    blink_file_path.unlink()
+                    self.logger.info(
+                        f"{self.config.blink_config_file} deleted because authentication error."
+                    )
+                else:
+                    self.logger.warning(
+                        f"want {self.config.blink_config_file} to delete but was not existing"
+                    )
+                    self.message_task_queue.put(
+                        Message_Task(
+                            send=True,
+                            chat_id=self.config.telegram_chat_nr,
+                            data_text=f"want {blink_file_path} to delete but was not existing",
+                        )
+                    )
+                # restart
+                if not self.restart:
+                    self.restart = True
+                    # schedule restart of blink session asynchronously
+                    asyncio.create_task(self.start())
 
         logger.info("camera now start endless loop")
         while self.running:
@@ -244,9 +278,16 @@ class Camera:
                     result = await self._blink_foto_helper(task)
                     return await self._check_blink_result(task, result)
 
-                if self.config.picam_night_vision or self.config.picam_image_brightening:
-                    self.logger.debug(f"picam night_vision is {self.config.picam_night_vision}")
-                    self.logger.debug(f"picam image_brightening is {self.config.picam_image_brightening}")
+                if (
+                    self.config.picam_night_vision
+                    or self.config.picam_image_brightening
+                ):
+                    self.logger.debug(
+                        f"picam night_vision is {self.config.picam_night_vision}"
+                    )
+                    self.logger.debug(
+                        f"picam image_brightening is {self.config.picam_image_brightening}"
+                    )
                     result = await self._picam_foto_helper(task)
                     return await self._check_picam_result(task, result)
 
@@ -434,9 +475,7 @@ class Camera:
             )
         else:
             self.message_task_queue.put(
-                Message_Task(send=True,
-                             data_text=message,
-                             chat_id=task.chat_id)
+                Message_Task(send=True, data_text=message, chat_id=task.chat_id)
             )
 
     def detect_daylight(self) -> bool:
@@ -454,14 +493,14 @@ class Camera:
         try:
             local_tz = ZoneInfo(self.config.timezone)
             local_date = datetime.now(local_tz)
-            if (self.config.lat is not None and self.config.lon is not None):
+            if self.config.lat is not None and self.config.lon is not None:
                 self.logger.debug("using coordinates for daylight detection")
                 location = LocationInfo(
                     name=self.config.city,
                     region=self.config.country,
                     latitude=self.config.lat,
                     longitude=self.config.lon,
-                    timezone=self.config.timezone
+                    timezone=self.config.timezone,
                 )
                 self.logger.debug(f"location: {location}")
                 s = sun(location.observer, date=local_date)
@@ -473,7 +512,9 @@ class Camera:
                 raise ValueError("No valid country data provided")
 
             self.logger.debug(f"Sunrise: {s['sunrise']}, Sunset: {s['sunset']}")
-            time_now = datetime.now(tz=ZoneInfo(self.config.timezone))  # Konvertiere String zu ZoneInfo
+            time_now = datetime.now(
+                tz=ZoneInfo(self.config.timezone)
+            )  # Konvertiere String zu ZoneInfo
             daylight: bool = s["sunrise"] <= time_now <= s["sunset"]
             self.logger.info(msg=f"Is daylight detected: {daylight}")
             return daylight
@@ -506,15 +547,21 @@ class Camera:
             self.logger.debug("refresh blink server info")
             await asyncio.sleep(delay=2)
             # time.sleep(2)  # wait for blink class instance refresh interval to be done
-            refresh_result: bool = await self.blink.refresh(force=True)  # refresh Server info
+            refresh_result: bool = await self.blink.refresh(
+                force=True
+            )  # refresh Server info
             if not refresh_result:
                 self.logger.error("an error occured during blink refresh")
                 return False
             if os.path.exists(self.config.photo_image_path):
-                self.logger.debug("a file already exists and will be deleted before hand")
+                self.logger.debug(
+                    "a file already exists and will be deleted before hand"
+                )
                 os.remove(self.config.photo_image_path)
             else:
-                os.makedirs(os.path.dirname(self.config.photo_image_path), exist_ok=True)
+                os.makedirs(
+                    os.path.dirname(self.config.photo_image_path), exist_ok=True
+                )
                 self.logger.debug("directory created for the photo image path")
             self.logger.info("saving blink foto")
             await camera.image_to_file(self.config.photo_image_path)
@@ -532,16 +579,16 @@ class Camera:
         """
         Asynchronously reads the Blink configuration file and authenticates with Blink.
 
-        This function checks if the Blink configuration file exists. If it does, it loads 
-        the configuration file using the `json_load` function, creates an `Auth` object 
-        with the loaded configuration, sets the `auth` attribute of the `blink` object to 
-        the created `Auth` object, logs a message indicating that the authentication was 
+        This function checks if the Blink configuration file exists. If it does, it loads
+        the configuration file using the `json_load` function, creates an `Auth` object
+        with the loaded configuration, sets the `auth` attribute of the `blink` object to
+        the created `Auth` object, logs a message indicating that the authentication was
         done using the file, and sets the `authentication_success` variable to `True`.
 
-        If the Blink configuration file does not exist, it logs a message indicating that 
-        the file was not found and that a 2FA authentication token is required. It creates 
-        an `Auth` object with the provided Blink username and password, sets the `auth` 
-        attribute of the `blink` object to the created `Auth` object, and sets the 
+        If the Blink configuration file does not exist, it logs a message indicating that
+        the file was not found and that a 2FA authentication token is required. It creates
+        an `Auth` object with the provided Blink username and password, sets the `auth`
+        attribute of the `blink` object to the created `Auth` object, and sets the
         `authentication_success` variable to `None`.
 
         Parameters:
@@ -605,7 +652,7 @@ class Camera:
         self.logger.debug("add a 2FA token for authentication")
         await self.blink.send_2fa_code(task.blink_mfa)
         self.logger.debug("verify 2FA token")
-        result = await self.blink.setup_post_verify() 
+        result = await self.blink.setup_post_verify()
         if result:
             self.logger.info("added 2FA token " + task.blink_mfa)
             return True
@@ -701,18 +748,22 @@ class Camera:
             self.logger.info("start image brightness adjustement")
 
             if not os.path.exists(self.config.photo_image_path):
-                self.logger.error(f"Image file not found: {self.config.photo_image_path}")
+                self.logger.error(
+                    f"Image file not found: {self.config.photo_image_path}"
+                )
                 return False
 
             image = Image.open(self.config.photo_image_path)
 
             # brightness adjustement (1.0 is normal, <1 darker, >1 lighter)
-            if hasattr(self.config, 'image_brightness'):
+            if hasattr(self.config, "image_brightness"):
                 brightness_enhancer = ImageEnhance.Brightness(image)
                 image = brightness_enhancer.enhance(self.config.image_brightness)
-                self.logger.debug(f"brightness adjusted to {self.config.image_brightness}")
+                self.logger.debug(
+                    f"brightness adjusted to {self.config.image_brightness}"
+                )
 
-            if hasattr(self.config, 'image_contrast'):
+            if hasattr(self.config, "image_contrast"):
                 contrast_enhancer = ImageEnhance.Contrast(image)
                 image = contrast_enhancer.enhance(self.config.image_contrast)
                 self.logger.debug(f"contrast adjusted to {self.config.image_contrast}")
