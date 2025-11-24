@@ -289,7 +289,12 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
     @patch('camera.camera.aiohttp.ClientSession', autospec=False)
     async def test_blink_snapshot_with_snap_picture_exception(self, mock_client_session, mock_blink):
         mock_blink_instance = mock_blink.return_value
-        mock_blink_instance.refresh = AsyncMock()
+        # Create an async mock that won't be called - create a coro and close it immediately to avoid warning
+        async def never_called():
+            pass
+        coro = never_called()
+        coro.close()
+        mock_blink_instance.refresh = MagicMock(return_value=coro)
         mock_camera_instance = MagicMock()
         mock_camera_instance.snap_picture = AsyncMock(side_effect=Exception("Custom exception"))
         mock_blink_instance.cameras = {self.config.blink_name: mock_camera_instance}

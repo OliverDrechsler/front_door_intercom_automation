@@ -22,13 +22,13 @@ def camera_setup():
          patch('camera.camera.json_load') as mock_json_load, \
          patch('camera.camera.aiohttp.ClientSession') as mock_session:
 
-        mock_blink_instance = AsyncMock()
+        mock_blink_instance = MagicMock()
         mock_blink_instance.start = AsyncMock()
         mock_blink.return_value = mock_blink_instance
 
         camera = Camera(config, loop, camera_queue, message_queue)
 
-        mock_session_instance = AsyncMock()
+        mock_session_instance = MagicMock()
         mock_session_instance.close = AsyncMock()
         mock_session.return_value = mock_session_instance
         camera.session = mock_session_instance
@@ -44,10 +44,11 @@ def camera_setup():
     # Teardown
     try:
         # Cancel all pending tasks
-        for task in asyncio.all_tasks(loop):
+        pending = asyncio.all_tasks(loop)
+        for task in pending:
             task.cancel()
         loop.run_until_complete(asyncio.sleep(0))
-    except RuntimeError:
+    except (RuntimeError, ValueError):
         pass
     finally:
         loop.close()

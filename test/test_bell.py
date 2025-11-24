@@ -26,6 +26,22 @@ class TestDoorBell(unittest.TestCase):
         # Ensure the GPIO mock is available in the door.bell module
         door.bell.GPIO = self.mock_gpio['RPi.GPIO']
         self.GPIO = self.mock_gpio['RPi.GPIO']
+        
+        self.loop = None
+    
+    def tearDown(self):
+        """Cleanup event loop after each test"""
+        if self.loop and not self.loop.is_closed():
+            try:
+                pending = asyncio.all_tasks(self.loop)
+                for task in pending:
+                    task.cancel()
+                # Run loop to process cancellations
+                self.loop.run_until_complete(asyncio.sleep(0))
+            except (RuntimeError, ValueError):
+                pass
+            finally:
+                self.loop.close()
 
     @patch('door.bell.detect_rpi.detect_rpi', return_value=True)
     def test_ring_on_rpi(self, mock_detect_rpi):
@@ -44,6 +60,7 @@ class TestDoorBell(unittest.TestCase):
         config.telegram_chat_nr = "test_chat_id"
         config.door_bell = 17  # pin number
         loop = asyncio.new_event_loop()
+        self.loop = loop  # Store reference for cleanup
         message_task_queue = queue.Queue()
         camera_task_queue_async = asyncio.Queue()
 
@@ -70,9 +87,6 @@ class TestDoorBell(unittest.TestCase):
                         loop.run_until_complete(asyncio.sleep(0))
                     except RuntimeError:
                         pass
-        
-        # Cleanup loop after test
-        loop.close()
 
         self.assertEqual(message_task_queue.qsize(), 1)
         self.assertEqual(mock_put.call_count, 1)
@@ -99,6 +113,7 @@ class TestDoorBell(unittest.TestCase):
         config.telegram_chat_nr = "test_chat_id"
         config.door_bell = 17  # pin number
         loop = asyncio.new_event_loop()
+        self.loop = loop  # Store reference for cleanup
         message_task_queue = queue.Queue()
         camera_task_queue_async = asyncio.Queue()
 
@@ -125,9 +140,6 @@ class TestDoorBell(unittest.TestCase):
                         loop.run_until_complete(asyncio.sleep(0))
                     except RuntimeError:
                         pass
-        
-        # Cleanup loop after test
-        loop.close()
 
         self.assertEqual(message_task_queue.qsize(), 1)
         self.assertEqual(mock_put.call_count, 1)

@@ -122,9 +122,8 @@ class TestReceivingMessage(unittest.TestCase):
         result = self.receiving_message.get_allowed_user(mock_message)
         self.assertTrue(result)
 
-    @patch('telebot.types.Message')
-    def test_validate_msg_text_has_code(self, MockMessage):
-        mock_message = MockMessage()
+    def test_validate_msg_text_has_code(self):
+        mock_message = MagicMock()
         mock_message.text = "123456"
 
         self.receiving_message.verify_otp_code_in_msg = MagicMock(return_value=True)

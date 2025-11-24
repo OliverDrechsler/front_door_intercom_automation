@@ -79,9 +79,13 @@ class TestSendMessage(unittest.TestCase):
     def test_send_photo(self, mock_file, mock_info):
         chat_id = "123"
         image_path = "path/to/photo.jpg"
-        # Ensure send_photo returns None
+        # Ensure send_photo returns None and mock_file operations are non-async
         self.send_message_instance.bot.send_photo = MagicMock(return_value=None)
+        mock_file.return_value.write = MagicMock(return_value=None)
+        mock_file.return_value.close = MagicMock(return_value=None)
+        
         self.send_message_instance.send_photo(chat_id=chat_id, image_path=image_path)
+        
         self.send_message_instance.bot.send_photo.assert_called_once()
         mock_info.assert_called()
         call_args_list = mock_info.call_args_list
