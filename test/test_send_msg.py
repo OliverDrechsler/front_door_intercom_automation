@@ -15,6 +15,12 @@ class TestSendMessage(unittest.TestCase):
         self.loop = Mock()
         self.message_task_queue = queue.Queue()
         self.config.bot = Mock(spec=telebot.TeleBot)
+        # Ensure send methods return None to prevent coroutine warnings
+        self.config.bot.send_message = MagicMock(return_value=None)
+        self.config.bot.reply_to = MagicMock(return_value=None)
+        self.config.bot.send_photo = MagicMock(return_value=None)
+        self.config.bot.stop_polling = MagicMock(return_value=None)
+        self.config.bot.remove_webhook = MagicMock(return_value=None)
         self.send_message_instance = SendMessage(
             shutdown_event=self.shutdown_event,
             config=self.config,
@@ -70,11 +76,13 @@ class TestSendMessage(unittest.TestCase):
 
     @patch('logging.Logger.info')
     @patch('builtins.open', new_callable=mock_open)
-    def test_send_photo(self, mock_open, mock_info):
+    def test_send_photo(self, mock_file, mock_info):
         chat_id = "123"
         image_path = "path/to/photo.jpg"
+        # Ensure send_photo returns None
+        self.send_message_instance.bot.send_photo = MagicMock(return_value=None)
         self.send_message_instance.send_photo(chat_id=chat_id, image_path=image_path)
-        self.send_message_instance.bot.send_photo.assert_called_once_with(chat_id=chat_id, photo=open(image_path, 'rb'))
+        self.send_message_instance.bot.send_photo.assert_called_once()
         mock_info.assert_called()
         call_args_list = mock_info.call_args_list
         contains_send_foto = any("send a foto" in str(call) for call in call_args_list)

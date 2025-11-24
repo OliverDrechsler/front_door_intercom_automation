@@ -52,7 +52,9 @@ class TestDoorBell(unittest.TestCase):
         with patch('door.bell.datetime') as mock_datetime:
             mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
             with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
-                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock) as mock_put:
+                async def async_put_side_effect(item):
+                    pass
+                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock, side_effect=async_put_side_effect) as mock_put:
                     def stop_loop_after_first_press(*args, **kwargs):
                         # Set shutdown_event to stop the loop after first press
                         shutdown_event.set()
@@ -61,6 +63,16 @@ class TestDoorBell(unittest.TestCase):
                     original_sleep = time.sleep
                     with patch('time.sleep', side_effect=stop_loop_after_first_press):
                         door_bell.ring(test=True)
+                    # Cleanup any pending coroutines
+                    try:
+                        for task in asyncio.all_tasks(loop):
+                            task.cancel()
+                        loop.run_until_complete(asyncio.sleep(0))
+                    except RuntimeError:
+                        pass
+        
+        # Cleanup loop after test
+        loop.close()
 
         self.assertEqual(message_task_queue.qsize(), 1)
         self.assertEqual(mock_put.call_count, 1)
@@ -95,7 +107,9 @@ class TestDoorBell(unittest.TestCase):
         with patch('door.bell.datetime') as mock_datetime:
             mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
             with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
-                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock) as mock_put:
+                async def async_put_side_effect(item):
+                    pass
+                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock, side_effect=async_put_side_effect) as mock_put:
                     def stop_after_one_ring(*args, **kwargs):
                         # Trigger shutdown_event after one loop to stop execution
                         shutdown_event.set()
@@ -104,6 +118,16 @@ class TestDoorBell(unittest.TestCase):
                     original_sleep = time.sleep
                     with patch('time.sleep', side_effect=stop_after_one_ring):
                         door_bell.ring(test=True)
+                    # Cleanup any pending coroutines
+                    try:
+                        for task in asyncio.all_tasks(loop):
+                            task.cancel()
+                        loop.run_until_complete(asyncio.sleep(0))
+                    except RuntimeError:
+                        pass
+        
+        # Cleanup loop after test
+        loop.close()
 
         self.assertEqual(message_task_queue.qsize(), 1)
         self.assertEqual(mock_put.call_count, 1)
