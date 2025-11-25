@@ -4,8 +4,11 @@ from os import getenv
 
 from recommonmark.parser import CommonMarkParser
 
-sys.path.insert(0, os.path.abspath('../'))
-
+## sys.path.insert(0, os.path.abspath('../'))
+# Add project root so autodoc can import the package/module
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
 # -- Project information -----------------------------------------------------
 
@@ -28,7 +31,8 @@ templates_path = ['_templates']
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = 'sphinx_rtd_theme'
+# HTML output
+html_theme = "sphinx_rtd_theme"
 
 html_context = {'github_user_name': 'OliverDrechsler', 'github_repo_name': 'front_door_intercom_automation',
                 'project_name': 'Front Door intercom automation'}
@@ -56,3 +60,7 @@ else:
     githubDirURL = githubDirURL + baseBranch + "/"
 sphinx_md_githubFileURL = githubFileURL
 sphinx_md_githubDirURL = githubDirURL
+
+# Autodoc options
+autodoc_member_order = "bysource"
+autodoc_typehints = "description"

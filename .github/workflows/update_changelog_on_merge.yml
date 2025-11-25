@@ -1,0 +1,57 @@
+name: Update CHANGELOG on PR merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  update_changelog:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Prepend changelog entry
+        env:
+          PR_TITLE: "${{ github.event.pull_request.title }}"
+          PR_NUMBER: "${{ github.event.pull_request.number }}"
+          PR_AUTHOR: "${{ github.event.pull_request.user.login }}"
+          BASE_REF: "${{ github.event.pull_request.base.ref }}"
+        run: |
+          DATE=$(date -u +"%Y-%m-%d")
+          echo "Preparing changelog entry for branch ${BASE_REF}"
+          if [ -f CHANGELOG.md ]; then
+            # create a new entry string with actual newlines and prepend it to the existing file
+            ENTRY=$'## Unreleased - '${DATE}$"\n\n"$' - Merge: '${PR_TITLE}$' (#'${PR_NUMBER}') by @'${PR_AUTHOR}$'\n\n'
+            printf "%s%s" "$ENTRY" "$(cat CHANGELOG.md)" > CHANGELOG.md.new
+            mv CHANGELOG.md.new CHANGELOG.md
+          else
+            ENTRY=$'## Unreleased - '${DATE}$"\n\n"$' - Merge: '${PR_TITLE}$' (#'${PR_NUMBER}') by @'${PR_AUTHOR}$'\n\n'
+            printf "%s" "$ENTRY" > CHANGELOG.md
+          fi
+
+      - name: Commit and push CHANGELOG
+        env:
+          BASE_REF: "${{ github.event.pull_request.base.ref }}"
+        run: |
+          git add CHANGELOG.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update CHANGELOG for PR #${{ github.event.pull_request.number }}"
+          # push to the base branch of the PR
+          git push origin HEAD:${BASE_REF}

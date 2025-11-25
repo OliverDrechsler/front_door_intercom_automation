@@ -1,16 +1,25 @@
 name: Changelog Generator
+
 on:
   pull_request:
     branches:
       - master
     types: [opened, reopened, synchronize]
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   changelog:
-    name: Chanegelog Generator
+    name: Changelog Generator
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: etcdigital/pull-request-changelog@master
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate changelog for PR
+        uses: etcdigital/pull-request-changelog@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
