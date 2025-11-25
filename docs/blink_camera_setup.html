@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blink Camera setup &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fotografische Überwachung" href="GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html" />
+    <link rel="prev" title="Quick Guide to setup a telegram bot and privat group chat" href="telegram_bot_setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Blink camera setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#first-time-setup-no-blink-config-json-available">First time setup (no blink_config.json) available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-configure-again-blink-after-first-time-setup-was-made">Setup / configure again blink after first time setup was made</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#known-issues">Known issues</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#camera-name">Camera name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#connecting-to-the-right-camera">Connecting to the right camera</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#debugging">Debugging</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#changelog">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-8">Release 1.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-7">Release 1.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-6">Release 1.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-5">Release 1.0.5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Advanced API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Blink Camera setup</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/blink_camera_setup.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="blink-camera-setup">
+<h1>Blink Camera setup<a class="headerlink" href="#blink-camera-setup" title="Link to this heading"></a></h1>
+<section id="first-time-setup-no-blink-config-json-available">
+<h2>First time setup (no blink_config.json) available<a class="headerlink" href="#first-time-setup-no-blink-config-json-available" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Follow Blink installtion guide to setup your camera in your mobile app.</p></li>
+<li><p>Give your cam a name. Be careful with the camera name in Blink. The Blink library only supports ASCII characters and no language-specific special characters.</p></li>
+<li><p>Test your camera with the mobile app.</p></li>
+<li><p>Start configure now your blink camera in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file  under section <code class="docutils literal notranslate"><span class="pre">blink:</span></code>.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">enabled</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>if want to use the blink.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">username</span></code> and <code class="docutils literal notranslate"><span class="pre">password</span></code>.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">name</span></code>for the camera name in Blink App.</p></li>
+<li><p>choose <code class="docutils literal notranslate"><span class="pre">night_vision</span></code> to set to <code class="docutils literal notranslate"><span class="pre">True</span></code>or <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p>specify your blink camera json config file in <code class="docutils literal notranslate"><span class="pre">config_file</span></code>: “blink_config.json”</p></li>
+</ul>
+<ol class="arabic simple" start="5">
+<li><p>Before you start <em>FDIA</em> the first time setup please check, that<br />
+in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> under <code class="docutils literal notranslate"><span class="pre">GPIO</span></code>: <code class="docutils literal notranslate"><span class="pre">testing_msg</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p>Start FDIA and check your log output.</p></li>
+<li><p>Blink will directly send you a second factor authentication request (one time password)
+to your mobile phone or e-mail address of your account.</p></li>
+<li><p>Take the 6 digit security code and send it in telegram to your <code class="docutils literal notranslate"><span class="pre">Front</span> <span class="pre">Door</span> <span class="pre">Intercom</span> <span class="pre">Automation</span></code> Bot.
+The message request to authenticate against blink must look like this<br />
+<code class="docutils literal notranslate"><span class="pre">/blink_auth</span> <span class="pre">&lt;6</span> <span class="pre">digit</span> <span class="pre">security</span> <span class="pre">code</span> <span class="pre">here&gt;</span></code>   (without &lt;&gt; chars)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">FDIA</span></code> will now authenticate against blink and log something like this:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2024</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">01</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">-</span> <span class="n">blinkpy</span><span class="o">.</span><span class="n">blinkpy</span> <span class="o">-</span> <span class="n">Thread</span><span class="o">-</span><span class="mi">1</span> <span class="p">(</span><span class="n">thread_cameras</span><span class="p">)</span> <span class="o">-</span> <span class="n">setup_camera_list</span> <span class="p">:</span> <span class="n">network</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;network_id&quot;</span><span class="p">:</span> <span class="mi">12345</span><span class="p">,</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyBlinkCameraGruppenSettingsName&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;cameras&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="10">
+<li><p>After that it will store the blink config to your defined <code class="docutils literal notranslate"><span class="pre">blink:</span> <span class="pre">config_file</span></code> (normally <code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code>)</p></li>
+<li><p>Check now your blink config file. It should contain your <em>credentials</em>, <em>uid</em>, <em>device_id</em>, <em>user_id</em>
+and at least a <strong>token</strong> and some more fields.</p></li>
+<li><p>Now you can test to take a foto via telegram chat group message. Just send <code class="docutils literal notranslate"><span class="pre">/Blink</span></code> and you should receive a new snapshot foto.</p></li>
+</ol>
+</section>
+<section id="setup-configure-again-blink-after-first-time-setup-was-made">
+<h2>Setup / configure again blink after first time setup was made<a class="headerlink" href="#setup-configure-again-blink-after-first-time-setup-was-made" title="Link to this heading"></a></h2>
+<p>In case you want to reconfigure your blink or you issues something else or login issues,
+just delete your blink <code class="docutils literal notranslate"><span class="pre">config_file</span></code> (name defined in the config.yaml).<br />
+Double check your credentials there as well under the <code class="docutils literal notranslate"><span class="pre">blink</span></code> section.
+Now follow the first time setup.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="known-issues">
+<h3>Known issues<a class="headerlink" href="#known-issues" title="Link to this heading"></a></h3>
+<section id="camera-name">
+<h4>Camera name<a class="headerlink" href="#camera-name" title="Link to this heading"></a></h4>
+<p>Actually the blink library which i use does not really support language specific special characters.<br />
+Therefore just use standard ASCII chars and in best case no spaces in the camera name.</p>
+</section>
+<section id="connecting-to-the-right-camera">
+<h4>Connecting to the right camera<a class="headerlink" href="#connecting-to-the-right-camera" title="Link to this heading"></a></h4>
+<p>When <code class="docutils literal notranslate"><span class="pre">FDIA</span></code> starts up it logs in to blink and logs
+your camera like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2024</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">01</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">-</span> <span class="n">blinkpy</span><span class="o">.</span><span class="n">blinkpy</span> <span class="o">-</span> <span class="n">Thread</span><span class="o">-</span><span class="mi">1</span> <span class="p">(</span><span class="n">thread_cameras</span><span class="p">)</span> <span class="o">-</span> <span class="n">setup_camera_list</span> <span class="p">:</span> <span class="n">network</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;network_id&quot;</span><span class="p">:</span> <span class="mi">12345</span><span class="p">,</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyBlinkCameraGruppenSettingsName&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;cameras&quot;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="debugging">
+<h3>Debugging<a class="headerlink" href="#debugging" title="Link to this heading"></a></h3>
+<p>Enable debug mode for <code class="docutils literal notranslate"><span class="pre">FDIA</span></code></p>
+<p>Edit <code class="docutils literal notranslate"><span class="pre">fdia.py</span></code> file  and in top of the file line 22 (after imports)<br />
+there you’ll find the section</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Define logging LEVEL&quot;&quot;&quot;</span>
+<span class="n">default_log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+</pre></div>
+</div>
+<p>Here you can modify <em>logging.INFO</em> level to <em>logging.DEBUG</em> and store the file.</p>
+<p>Now start up the <code class="docutils literal notranslate"><span class="pre">FDIA</span></code> again and try to read log output.</p>
+<p>If nothing really occurs try to send from your mobile phone a <code class="docutils literal notranslate"><span class="pre">/Blink</span></code> telegram message in the chat group.</p>
+<p>Stop the <code class="docutils literal notranslate"><span class="pre">FDIA</span></code>.<br />
+Check again detail log output.<br />
+In detail check all log output of the thread where teh camera code runs.<br />
+You’ll find the tread number when you search for <code class="docutils literal notranslate"><span class="pre">thread-1</span> <span class="pre">(thread_cameras)</span></code>.<br />
+Here you’ll in this case it’s <code class="docutils literal notranslate"><span class="pre">thread-1</span></code>. Now read all log output from <em>thread-1</em>.</p>
+<p>If you can solve it by sour self raise a issue request in github.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="telegram_bot_setup.html" class="btn btn-neutral float-left" title="Quick Guide to setup a telegram bot and privat group chat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html" class="btn btn-neutral float-right" title="Fotografische Überwachung" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Guide to setup a telegram bot and privat group chat &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Blink Camera setup" href="blink_camera_setup.html" />
+    <link rel="prev" title="Front-door intercom automation - (FDIA)" href="../README.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Project Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Telegram bot setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#open-bothfather-channel">1. Open bothfather channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-new-bot">2. Create new bot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-privat-telegram-chat-group">3. Create a privat telegram chat group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#change-bot-setting-in-the-botfather-chat">4. Change bot setting  in the BotFather Chat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#change-bot-permissions-to-get-group-messages-in-the-botfather-chat">5. Change bot permissions to get group messages in the BotFather Chat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-python-bot-command-to-get-chat-group-details-for-configuration-config-yaml">6. Run python bot command to get chat group details for configuration config.yaml</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#changelog">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-8">Release 1.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-7">Release 1.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-6">Release 1.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-5">Release 1.0.5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Advanced API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quick Guide to setup a telegram bot and privat group chat</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/telegram_bot_setup.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quick-guide-to-setup-a-telegram-bot-and-privat-group-chat">
+<h1>Quick Guide to setup a telegram bot and privat group chat<a class="headerlink" href="#quick-guide-to-setup-a-telegram-bot-and-privat-group-chat" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="#quick-guide-to-setup-a-telegram-bot-and-privat-group-chat"><span class="xref myst">Quick Guide to setup a telegram bot and privat group chat</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#1-open-bothfather-channel"><span class="xref myst">1. Open bothfather channel</span></a></p></li>
+<li><p><a class="reference internal" href="#2-create-new-bot"><span class="xref myst">2. Create new bot</span></a></p></li>
+<li><p><a class="reference internal" href="#3-create-a-privat-telegram-chat-group"><span class="xref myst">3. Create a privat telegram chat group</span></a></p></li>
+<li><p><a class="reference internal" href="#4-change-bot-setting--in-the-botfather-chat"><span class="xref myst">4. Change bot setting  in the BotFather Chat</span></a></p></li>
+<li><p><a class="reference internal" href="#5-change-bot-permissions-to-get-group-messages-in-the-botfather-chat"><span class="xref myst">5. Change bot permissions to get group messages in the BotFather Chat</span></a></p></li>
+<li><p><a class="reference internal" href="#6-run-python-bot-command-to-get-chat-group-details-for-configuration-configyaml"><span class="xref myst">6. Run python bot command to get chat group details for configuration config.yaml</span></a></p></li>
+</ul>
+</li>
+</ul>
+<section id="open-bothfather-channel">
+<h2>1. Open bothfather channel<a class="headerlink" href="#open-bothfather-channel" title="Link to this heading"></a></h2>
+<p>send massage to &#64;botfather</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">start</span>
+</pre></div>
+</div>
+</section>
+<section id="create-new-bot">
+<h2>2. Create new bot<a class="headerlink" href="#create-new-bot" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">newbot</span>
+</pre></div>
+</div>
+<p>answer with botname
+<code class="docutils literal notranslate"><span class="pre">fdia</span></code>
+answer bot name with bot at end
+<code class="docutils literal notranslate"><span class="pre">fdia_bot</span></code></p>
+</section>
+<section id="create-a-privat-telegram-chat-group">
+<h2>3. Create a privat telegram chat group<a class="headerlink" href="#create-a-privat-telegram-chat-group" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Open Telegram App:</p></li>
+</ol>
+<p>Launch the Telegram app on your mobile device or desktop.</p>
+<ol class="arabic simple" start="2">
+<li><p>Start a New Group:</p></li>
+</ol>
+<p>Tap the pencil icon, then select “New Group.”</p>
+<ol class="arabic simple" start="3">
+<li><p>Select Members:</p></li>
+</ol>
+<p>Choose the users you want to add to the group. You can search for their usernames or select them from your contacts.</p>
+<ol class="arabic simple" start="4">
+<li><p>Name the Group:</p></li>
+</ol>
+<p>After selecting the members, tap the arrow (or “Next”) and enter a name for your group. Optionally, you can set a group photo.</p>
+<ol class="arabic simple" start="5">
+<li><p>Select Auto-Message-Deletion</p></li>
+</ol>
+<p>Select an auto deletion interval of your choice in the dropdown box.</p>
+<ol class="arabic simple" start="6">
+<li><p>Create the Group:</p></li>
+</ol>
+<p>Tap the checkmark (or “Create”) to finalize the creation of the group.</p>
+<ol class="arabic simple" start="7">
+<li><p>Find the Bot</p></li>
+</ol>
+<p>Search for the bot you want to add to the group by typing its complete username in the search bar.</p>
+<ol class="arabic simple" start="8">
+<li><p>Add the Bot</p></li>
+</ol>
+<p>Open the bot’s chat, tap the bot’s profile picture, and select “Add to Group.”.<br />
+Then choose the group you just created.</p>
+<ol class="arabic simple" start="9">
+<li><p>Open Group Settings</p></li>
+</ol>
+<p>Go to the group chat, tap the group name at the top to open the group’s info page.</p>
+<ol class="arabic simple" start="10">
+<li><p>Edit Group Permissions</p></li>
+</ol>
+<p>Tap the pencil icon (or “Edit”) to access the group settings.</p>
+<ol class="arabic simple" start="11">
+<li><p>Set Privacy</p></li>
+</ol>
+<p>In the “Group Type” section, ensure the group is set to “Private.” .<br />
+This means only invited members can join the group.</p>
+<ol class="arabic simple" start="12">
+<li><p>Enable Bot to Read Messages
+For the bot to read messages, it needs the appropriate permissions</p></li>
+</ol>
+<p>Admin Rights:
+Go to the group’s info page, select “Administrators,” and add the bot as an admin. When setting the bot’s admin permissions, ensure it has the “Read All Group Messages” permission.</p>
+</section>
+<section id="change-bot-setting-in-the-botfather-chat">
+<h2>4. Change bot setting  in the BotFather Chat<a class="headerlink" href="#change-bot-setting-in-the-botfather-chat" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">setjoingroups</span>
+</pre></div>
+</div>
+<p>select group from selcections menu/ insert bot name</p>
+</section>
+<section id="change-bot-permissions-to-get-group-messages-in-the-botfather-chat">
+<h2>5. Change bot permissions to get group messages in the BotFather Chat<a class="headerlink" href="#change-bot-permissions-to-get-group-messages-in-the-botfather-chat" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">setprivacy</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>select bot from choosable menu or add bot name</p></li>
+<li><p>new select <code class="docutils literal notranslate"><span class="pre">disable</span></code> to get and read all messages</p></li>
+</ul>
+</section>
+<section id="run-python-bot-command-to-get-chat-group-details-for-configuration-config-yaml">
+<h2>6. Run python bot command to get chat group details for configuration config.yaml<a class="headerlink" href="#run-python-bot-command-to-get-chat-group-details-for-configuration-config-yaml" title="Link to this heading"></a></h2>
+<p>Now it time to get your telegram</p>
+<ul class="simple">
+<li><p>user id</p></li>
+<li><p>chat group id</p></li>
+<li><p>and if more than one user is in the group their user ids</p></li>
+</ul>
+<p>Send from your mobile phone a message to the telegram chat group where your bot is assigned in.
+Now it time to ask other telegram chat group members to also send a test message to the group so that their from id’s are also visible in the below commands.</p>
+<p>Now run shell command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="s2">&quot;https://api.telegram.org/bot&lt;YOUR_BOT_TOKEN code&gt;/getUpdates&quot;</span> <span class="o">|</span><span class="n">jq</span> <span class="o">-</span><span class="n">r</span>
+</pre></div>
+</div>
+<p>example output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+  <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">839666728</span><span class="p">,</span>
+      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1994</span><span class="p">,</span>
+        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
+          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFirstName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFullName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;test text&quot;</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+        <span class="p">{</span>
+      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">3456789012</span><span class="p">,</span>
+      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1995</span><span class="p">,</span>
+        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123450000</span><span class="p">,</span>
+          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFirstName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFullName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;other user test text&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>or if you prefer httpie command instead shell curl run this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span> <span class="n">GET</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="o">.</span><span class="n">telegram</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">bot</span><span class="o">&lt;</span><span class="n">YOUR_BOT_TOKEN</span><span class="o">&gt;/</span><span class="n">getUpdates</span>
+</pre></div>
+</div>
+<p>example output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Access</span><span class="o">-</span><span class="n">Control</span><span class="o">-</span><span class="n">Allow</span><span class="o">-</span><span class="n">Methods</span><span class="p">:</span> <span class="n">GET</span><span class="p">,</span> <span class="n">POST</span><span class="p">,</span> <span class="n">OPTIONS</span>
+<span class="n">Access</span><span class="o">-</span><span class="n">Control</span><span class="o">-</span><span class="n">Allow</span><span class="o">-</span><span class="n">Origin</span><span class="p">:</span> <span class="o">*</span>
+<span class="n">Access</span><span class="o">-</span><span class="n">Control</span><span class="o">-</span><span class="n">Expose</span><span class="o">-</span><span class="n">Headers</span><span class="p">:</span> <span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">,</span><span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">,</span><span class="n">Date</span><span class="p">,</span><span class="n">Server</span><span class="p">,</span><span class="n">Connection</span>
+<span class="n">Connection</span><span class="p">:</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length</span><span class="p">:</span> <span class="mi">998</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Date</span><span class="p">:</span> <span class="n">Wed</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Jul</span> <span class="mi">2024</span> <span class="mi">08</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">52</span> <span class="n">GMT</span>
+<span class="n">Server</span><span class="p">:</span> <span class="n">nginx</span><span class="o">/</span><span class="mf">1.18.0</span>
+<span class="n">Strict</span><span class="o">-</span><span class="n">Transport</span><span class="o">-</span><span class="n">Security</span><span class="p">:</span> <span class="nb">max</span><span class="o">-</span><span class="n">age</span><span class="o">=</span><span class="mi">31536000</span><span class="p">;</span> <span class="n">includeSubDomains</span><span class="p">;</span> <span class="n">preload</span>
+
+<span class="p">{</span>
+  <span class="s2">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+  <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">839666728</span><span class="p">,</span>
+      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1994</span><span class="p">,</span>
+        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
+          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFirstName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFullName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;test text&quot;</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+        <span class="p">{</span>
+      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">3456789012</span><span class="p">,</span>
+      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1995</span><span class="p">,</span>
+        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123450000</span><span class="p">,</span>
+          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFirstName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFullName&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;other user test text&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now search in the output for</p>
+<ul class="simple">
+<li><p>json tree <code class="docutils literal notranslate"><span class="pre">message.from.id</span></code>  which is equal to the user id stored in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> under
+section <code class="docutils literal notranslate"><span class="pre">telegram</span></code> <code class="docutils literal notranslate"><span class="pre">allowed_user_ids</span></code> as list string values.</p></li>
+<li><p>json tree <code class="docutils literal notranslate"><span class="pre">message.chat.id</span></code> which is the telegram chat group id
+which you want to allow the bot to react on. A group chat id starts always with a <code class="docutils literal notranslate"><span class="pre">-</span></code>.<br />
+Store this chat id in  <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> under
+section <code class="docutils literal notranslate"><span class="pre">telegram</span></code> <code class="docutils literal notranslate"><span class="pre">chat_number</span></code> as string value.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../README.html" class="btn btn-neutral float-left" title="Front-door intercom automation - (FDIA)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blink_camera_setup.html" class="btn btn-neutral float-right" title="Blink Camera setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

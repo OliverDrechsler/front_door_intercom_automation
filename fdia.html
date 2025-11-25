@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fdia module &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Security Policy" href="SECURITY.html" />
+    <link rel="prev" title="web package" href="web.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#changelog">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-8">Release 1.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7">Release 1.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6">Release 1.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5">Release 1.0.5</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Advanced API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bot.html">bot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html">camera package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="door.html">door package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html">web package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fdia module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.log_level"><code class="docutils literal notranslate"><span class="pre">log_level</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.run_web_app"><code class="docutils literal notranslate"><span class="pre">run_web_app()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.thread_open_door"><code class="docutils literal notranslate"><span class="pre">thread_open_door()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.thread_door_bell"><code class="docutils literal notranslate"><span class="pre">thread_door_bell()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.thread_receive_telegram_msg"><code class="docutils literal notranslate"><span class="pre">thread_receive_telegram_msg()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.thread_send_telegram_msg"><code class="docutils literal notranslate"><span class="pre">thread_send_telegram_msg()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.camera_task"><code class="docutils literal notranslate"><span class="pre">camera_task()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.thread_cameras"><code class="docutils literal notranslate"><span class="pre">thread_cameras()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdia.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">front-door_intercom_automation</a></li>
+      <li class="breadcrumb-item active">fdia module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fdia.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-fdia">
+<span id="fdia-module"></span><h1>fdia module<a class="headerlink" href="#module-fdia" title="Link to this heading"></a></h1>
+<dl class="py data">
+<dt class="sig sig-object py" id="fdia.log_level">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">log_level</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fdia.log_level" title="Link to this definition"></a></dt>
+<dd><p>Define code logging</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.run_web_app">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">run_web_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fdia.run_web_app" title="Link to this definition"></a></dt>
+<dd><p>Initializes and runs the web application for the door opener.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>shutdown_event (threading.Event): The event for shutting down the web app.
+config (config_util.Configuration): The configuration object for the web app.
+loop: The event loop for the web app.
+message_task_queue (queue.Queue): The queue for message tasks.
+camera_task_queue_async (asyncio.Queue): The asynchronous queue for camera tasks.
+door_open_task_queue (queue.Queue): The queue for door open tasks.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>camera_task_queue_async</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>door_open_task_queue</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.thread_open_door">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">thread_open_door</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fdia.thread_open_door" title="Link to this definition"></a></dt>
+<dd><p>Creates an instance of the <cite>DoorOpener</cite> class and starts the door opener loop in a separate thread.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>shutdown_event (threading.Event): The event used to signal the shutdown of the door opener.
+config (config_util.Configuration): The configuration object for the door opener.
+loop: The event loop for the door opener.
+message_task_queue (queue.Queue): The queue for message tasks.
+door_open_task_queue (asyncio.Queue): The asynchronous queue for door open tasks.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>This function creates an instance of the <cite>DoorOpener</cite> class and calls its <cite>start</cite> method to start the door opener loop.
+The door opener loop runs in a separate thread and is responsible for opening the door when a door open task is received.
+The function takes the following parameters:
+- <cite>shutdown_event</cite>: An event object used to signal the shutdown of the door opener.
+- <cite>config</cite>: The configuration object for the door opener.
+- <cite>loop</cite>: The event loop for the door opener.
+- <cite>message_task_queue</cite>: The queue for message tasks.
+- <cite>door_open_task_queue</cite>: The asynchronous queue for door open tasks.</p>
+<p>The function does not return any value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>door_open_task_queue</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.thread_door_bell">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">thread_door_bell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fdia.thread_door_bell" title="Link to this definition"></a></dt>
+<dd><p>Door bell watch thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>camera_task_queue_async</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.thread_receive_telegram_msg">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">thread_receive_telegram_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fdia.thread_receive_telegram_msg" title="Link to this definition"></a></dt>
+<dd><p>Starts receiving messages from the Telegram Bot using the provided parameters.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p>shutdown_event: threading.Event</p></li>
+<li><p>config: config_util.Configuration</p></li>
+<li><p>loop:</p></li>
+<li><p>camera_task_queue_async: asyncio.Queue</p></li>
+<li><p>door_open_task_queue: queue.Queue</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><p>No return value.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>camera_task_queue_async</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>door_open_task_queue</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.thread_send_telegram_msg">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">thread_send_telegram_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fdia.thread_send_telegram_msg" title="Link to this definition"></a></dt>
+<dd><p>Starts a new instance thread for sending messages via Telegram Bot.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p>shutdown_event: threading.Event</p></li>
+<li><p>config: config_util.Configuration</p></li>
+<li><p>loop: Loop</p></li>
+<li><p>message_task_queue: queue.Queue</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><p>No return value.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.camera_task">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">camera_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fdia.camera_task" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously runs the camera task.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>shutdown_event (threading.Event): The event used to signal the shutdown of the task.
+config (config_util.Configuration): The configuration object.
+loop (asyncio.AbstractEventLoop): The event loop.
+camera_task_queue_async (asyncio.Queue): The asynchronous queue for camera tasks.
+message_task_queue (queue.Queue): The queue for message tasks.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>This function starts the camera task by creating a <cite>Camera</cite> object with the provided configuration, event loop,
+and queues. It then enters a loop that continues until the shutdown event is set. Inside the loop, it calls the
+<cite>start</cite> method of the <cite>Camera</cite> object and waits for 0.1 seconds before the next iteration. After the loop exits,
+it logs that the camera task shutdown is complete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>camera_task_queue_async</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.thread_cameras">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">thread_cameras</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fdia.thread_cameras" title="Link to this definition"></a></dt>
+<dd><p>Starts the camera task in a separate thread.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>shutdown_event (threading.Event): The event used to signal the shutdown of the camera task.
+config (config_util.Configuration): The configuration object.
+loop (asyncio.AbstractEventLoop): The event loop.
+camera_task_queue_async (asyncio.Queue): The asynchronous queue for camera tasks.
+message_task_queue (queue.Queue): The queue for message tasks.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<p>This function starts the camera task by creating a <cite>Camera</cite> object with the provided configuration, event loop,
+and queues. It then enters a loop that continues until the shutdown event is set. Inside the loop, it calls the
+<cite>start</cite> method of the <cite>Camera</cite> object and waits for 0.1 seconds before the next iteration. After the loop exits,
+it logs that the camera task shutdown is complete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>camera_task_queue_async</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fdia.main">
+<span class="sig-prename descclassname"><span class="pre">fdia.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fdia.main" title="Link to this definition"></a></dt>
+<dd><p>The main function that starts the program.</p>
+<p>This function initializes the necessary objects and threads for the program to run. It sets up the configuration,
+creates instances of the Telegram bot and the camera thread, and starts the threads. It then enters a loop that
+continues until a keyboard interrupt is received. Inside the loop, it waits for 0.01 seconds before the next iteration.
+After the loop exits, it sets the shutdown event, joins all the threads, and exits the program.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="web.html" class="btn btn-neutral float-left" title="web package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="SECURITY.html" class="btn btn-neutral float-right" title="Security Policy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

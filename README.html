@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Front-door intercom automation - (FDIA) &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Guide to setup a telegram bot and privat group chat" href="docs/telegram_bot_setup.html" />
+    <link rel="prev" title="Welcome to Front door intercom automation’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Project Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#short-description">Short description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#long-description">Long description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features-advantage-comparision-fdia-blink-ring-and-picamapi">Features advantage comparision FDIA, Blink, Ring and PiCamAPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#outlook-ideas-improvements-plan">Outlook/Ideas - Improvements plan</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#in-development">in development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plan">Plan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ideas">Ideas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#get-started">Get started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-tree-structure">Code tree structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helper-tools">Helper tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#encrypt-and-decrypt-a-password-with-base32-for-totp">Encrypt and decrypt a password with base32 for totp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-a-otp-password-or-verify-a-otp-via-cli">get a OTP password or verify a OTP via cli</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#system-service-setup">System service setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-config-files">Configuration - config files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#config-yaml-config-template-yaml">config.yaml - config_template.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#blink-config-json">blink_config.json</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-otp">Setup OTP</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cameras">Cameras</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gdpdr-europeanunion-and-germany-hint-dsgvo-hinweis-zur-kamerauberwachung-in-deutschland">GDPDR EuropeanUnion and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#blink-cameras">Blink Cameras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#raspberry-pi-camera-project-picam-api">Raspberry Pi Camera Project PiCam_API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#telegram">Telegram</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#telegram-setup">Telegram setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#telegram-receiving-message-commands-and-interactions">Telegram receiving message commands and interactions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mobile-setup">Mobile Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mobile-apps">Mobile Apps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#telegram-on-mobile-phone">Telegram on mobile phone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#otp-app-on-mobile-phone-how-to-setup">OTP App on mobile phone - How to setup</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#telegram-and-otp-app-mobile-usage">Telegram and OTP App - mobile usage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apple-ios-shortcuts-app-how-to-automate-door-opening">Apple IOS Shortcuts App - How to automate door opening</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#web-ui-rest-api-usage">Web UI &amp; REST-API usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hardware-circuits">Hardware Circuits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#door-bell-detection">Door bell detection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#required-hw-parts">required HW parts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#door-bell-detection-board-required-electronic-parts">Door bell detection board - required electronic parts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generic-door-bell-circuit-and-wiring-plan">Generic door bell circuit and wiring plan</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#generic-door-opener-relais">Generic door opener relais:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#smart-saint-relais-circuit-wiring">Smart Saint Relais circuit wiring</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#bticino-door-intercom-specific-wiring-plans">BTIcino  door intercom specific wiring plans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#help">Help</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#debugging">Debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hints">Hints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-run-unit-tests">How to run unit-tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gihub-actions-pipelines">GiHub actions pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog">ChangeLog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#author-info">Author info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#security">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#changelog">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-8">Release 1.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7">Release 1.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6">Release 1.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5">Release 1.0.5</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Advanced API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Front-door intercom automation - (FDIA)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/codeql-analysis.yml"><img alt="CodeQL" src="https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/codeql-analysis.yml/badge.svg" /></a>
+<a class="reference external" href="https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation"><img alt="Synk security" src="https://snyk.io/test/github/OliverDrechsler/front_door_intercom_automation/badge.svg" /></a>
+<a class="reference external" href="https://sonarcloud.io/dashboard?id=OliverDrechsler_front_door_intercom_automation"><img alt="Sonar Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=OliverDrechsler_front_door_intercom_automation&amp;metric=alert_status" /></a>
+<a class="reference external" href="https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation"><img alt="CodeCov" src="https://codecov.io/gh/OliverDrechsler/front_door_intercom_automation/branch/master/graph/badge.svg" /></a></p>
+<p><img alt="Static Badge" src="https://img.shields.io/badge/Python-v.3.10-green" />
+<img alt="Static Badge" src="https://img.shields.io/badge/Python-v.3.11-green" />
+<img alt="Static Badge" src="https://img.shields.io/badge/Python-v.3.12-green" /></p>
+<p><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml"><img alt="FDIa" src="https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml/badge.svg?branch=master" /></a>
+<a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml"><img alt="build github_pages" src="https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml/badge.svg" /></a></p>
+<p><img alt="GitHub License" src="https://img.shields.io/github/license/OliverDrechsler/front_door_intercom_automation" /></p>
+<section id="front-door-intercom-automation-fdia">
+<h1>Front-door intercom automation - (FDIA)<a class="headerlink" href="#front-door-intercom-automation-fdia" title="Link to this heading"></a></h1>
+<section id="short-description">
+<h2>Short description<a class="headerlink" href="#short-description" title="Link to this heading"></a></h2>
+<p>Raspberry Pi intercom front door automation for recognising doorbells, opening door and creating photos.<br />
+Notify via your own privat Telegram chat channel.<br />
+Opening the front door via the private Telegram chat channel.<br />
+Furthermore, a separate website &amp; REST API is offered to open the front door.<br />
+It supports <a class="reference external" href="https://blinkforhome.com">Blink</a> camera’s and my simple <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API">PiCam_API</a> project.<br />
+Door opening authorization is handled by timebased one time passwords.<br />
+Door bell detection circuit and door opening relais board can nearly handle any door intercom which is not connected to internet.<br />
+Bell circuit must be build by your self, but it is documented below.<br />
+Opening relais board can be buyed and must just be wired.</p>
+<p><strong><a class="reference external" href="https://oliverdrechsler.github.io/front_door_intercom_automation/README.html">📚 View on Github Pages</a></strong></p>
+<p><em><strong><a class="reference external" href="https://oliverdrechsler.github.io/front_door_intercom_automation/modules.html">📚 API Docu on Github Pages</a></strong></em></p>
+</section>
+<section id="demo">
+<h2>Demo<a class="headerlink" href="#demo" title="Link to this heading"></a></h2>
+<p><img alt="Demo opening via Telegram and Web-UI" src="_images/fdia_demo.gif" /></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#front-door-intercom-automation---fdia"><span class="xref myst">Front-door intercom automation - (FDIA)</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#short-description"><span class="xref myst">Short description</span></a></p></li>
+<li><p><a class="reference internal" href="#demo"><span class="xref myst">Demo</span></a></p></li>
+<li><p><a class="reference internal" href="#long-description"><span class="xref myst">Long description</span></a></p></li>
+<li><p><a class="reference internal" href="#features-advantage-comparision-fdia-blink-ring-and-picamapi"><span class="xref myst">Features advantage comparision FDIA, Blink, Ring and PiCamAPI</span></a></p></li>
+<li><p><a class="reference internal" href="#outlookideas---improvements-plan"><span class="xref myst">Outlook/Ideas - Improvements plan</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#in-development"><span class="xref myst">in development</span></a></p></li>
+<li><p><a class="reference internal" href="#plan"><span class="xref myst">Plan</span></a></p></li>
+<li><p><a class="reference internal" href="#ideas"><span class="xref myst">Ideas</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#get-started"><span class="xref myst">Get started</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#requirements"><span class="xref myst">Requirements</span></a></p></li>
+<li><p><a class="reference internal" href="#code-tree-structure"><span class="xref myst">Code tree structure</span></a></p></li>
+<li><p><a class="reference internal" href="#installation"><span class="xref myst">Installation</span></a></p></li>
+<li><p><a class="reference internal" href="#helper-tools"><span class="xref myst">Helper tools</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#encrypt-and-decrypt-a-password-with-base32-for-totp"><span class="xref myst">Encrypt and decrypt a password with base32 for totp</span></a></p></li>
+<li><p><a class="reference internal" href="#get-a-otp-password-or-verify-a-otp-via-cli"><span class="xref myst">get a OTP password or verify a OTP via cli</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#system-service-setup"><span class="xref myst">System service setup</span></a></p></li>
+<li><p><a class="reference internal" href="#configuration---config-files"><span class="xref myst">Configuration - config files</span></a></p></li>
+<li><p><a class="reference internal" href="#configyaml---config_templateyaml"><span class="xref myst">config.yaml - config_template.yaml</span></a></p></li>
+<li><p><a class="reference internal" href="#blink_configjson"><span class="xref myst">blink_config.json</span></a></p></li>
+<li><p><a class="reference internal" href="#setup-otp"><span class="xref myst">Setup OTP</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#cameras"><span class="xref myst">Cameras</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#gdpdr-europeanunion-and-germany-hint---dsgvo-hinweis-zur-kamera%C3%BCberwachung-in-deutschland"><span class="xref myst">GDPDR EuropeanUnion and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland</span></a></p></li>
+<li><p><a class="reference internal" href="#blink-cameras"><span class="xref myst">Blink Cameras</span></a></p></li>
+<li><p><a class="reference internal" href="#raspberry-pi-camera-project-picam_api"><span class="xref myst">Raspberry Pi Camera Project PiCam_API</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#telegram"><span class="xref myst">Telegram</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#telegram-setup"><span class="xref myst">Telegram setup</span></a></p></li>
+<li><p><a class="reference internal" href="#telegram-receiving-message-commands-and-interactions"><span class="xref myst">Telegram receiving message commands and interactions</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mobile-setup"><span class="xref myst">Mobile Setup</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#mobile-apps"><span class="xref myst">Mobile Apps</span></a></p></li>
+<li><p><a class="reference internal" href="#telegram-on-mobile-phone"><span class="xref myst">Telegram on mobile phone</span></a></p></li>
+<li><p><a class="reference internal" href="#otp-app-on-mobile-phone---how-to-setup"><span class="xref myst">OTP App on mobile phone - How to setup</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#telegram-and-otp-app---mobile-usage"><span class="xref myst">Telegram and OTP App - mobile usage</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#apple-ios-shortcuts-app---how-to-automate-door-opening"><span class="xref myst">Apple IOS Shortcuts App - How to automate door opening</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#web-ui--rest-api-usage"><span class="xref myst">Web UI &amp; REST-API usage</span></a></p></li>
+<li><p><a class="reference internal" href="#hardware-circuits"><span class="xref myst">Hardware Circuits</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#door-bell-detection"><span class="xref myst">Door bell detection</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#required-hw-parts"><span class="xref myst">required HW parts</span></a></p></li>
+<li><p><a class="reference internal" href="#door-bell-detection-board---required-electronic-parts"><span class="xref myst">Door bell detection board - required electronic parts</span></a></p></li>
+<li><p><a class="reference internal" href="#generic-door-bell-circuit-and-wiring-plan"><span class="xref myst">Generic door bell circuit and wiring plan</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#generic-door-opener-relais"><span class="xref myst">Generic door opener relais:</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#smart-saint-relais-circuit-wiring"><span class="xref myst">Smart Saint Relais circuit wiring</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#for-further-interest-smart-saint-relais-jumper-and-circuit-layout"><span class="xref myst">For further interest Smart Saint Relais Jumper and circuit layout</span></a></p></li>
+<li><p><a class="reference internal" href="#door-open-summer-saintsmart-relay-wiring-pictures"><span class="xref myst">Door open summer SaintSmart relay wiring pictures:</span></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bticino--door-intercom-specific-wiring-plans"><span class="xref myst">BTIcino  door intercom specific wiring plans</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#help"><span class="xref myst">Help</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#debugging"><span class="xref myst">Debugging</span></a></p></li>
+<li><p><a class="reference internal" href="#hints"><span class="xref myst">Hints</span></a></p></li>
+<li><p><a class="reference internal" href="#how-to-run-unit-tests"><span class="xref myst">How to run unit-tests</span></a></p></li>
+<li><p><a class="reference internal" href="#gihub-actions-pipelines"><span class="xref myst">GiHub actions pipelines</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#changelog"><span class="xref myst">ChangeLog</span></a></p></li>
+<li><p><a class="reference internal" href="#author-info"><span class="xref myst">Author info</span></a></p></li>
+<li><p><a class="reference internal" href="#license"><span class="xref myst">License</span></a></p></li>
+<li><p><a class="reference internal" href="#security"><span class="xref myst">Security</span></a></p></li>
+<li><p><a class="reference internal" href="#contribution"><span class="xref myst">Contribution</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="long-description">
+<h2>Long description<a class="headerlink" href="#long-description" title="Link to this heading"></a></h2>
+<p>Starting point was an article <a class="reference external" href="https://www.heise.de/select/ct/2017/17/1502995489716437">Überallkingel at heise.de</a>.<br />
+This front door intercom system <em><strong>extends any standard front door intercom system</strong></em>,<br />
+which are not connected to the Internet or ready for it.
+The project offers the following functionality:</p>
+<ul class="simple">
+<li><p>Front door opening via nearly any door intercom system. See hardware build <a class="reference internal" href="#generic-door-opener-relais"><span class="xref myst">Generic door opener relais:</span></a></p></li>
+<li><p>Possibility to enable / disable door opening feature - runs without required hardware</p></li>
+<li><p>Front door bell detection. See hardware build <a class="reference internal" href="#door-bell-detection"><span class="xref myst">Door bell detection</span></a></p></li>
+<li><p>Possibility to enable / disable door bell detection - runs without required hardware</p></li>
+<li><p>Notification via private Telegram channel <a class="reference external" href="https://github.com/eternnoir/pyTelegramBotAPI">PyTelegramBotAPI library</a></p></li>
+<li><p>Front door opening via time-based one-time password <a class="reference external" href="https://pyauth.github.io/pyotp/">PyOTP library</a></p></li>
+<li><p>Photo snapshot send via telegram on doorbell ringing.</p></li>
+<li><p>Use of <a class="reference external" href="https://blinkforhome.com">Blink</a> cameras with <a class="reference external" href="https://github.com/fronzbot/blinkpy">BlinkPy library</a></p></li>
+<li><p>Use of my Raspberry PI camera Project <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API">PiCam_API</a> or <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API_2">PiCam_API_2</a> Project.</p></li>
+<li><p>Day / night detection to select the appropriate camera if several are used simultaneously via <a class="reference external" href="https://github.com/sffjunkie/astral">astral library</a></p></li>
+<li><p>Blink camera multi factory authentication setup via telegram chat message if Blink requires this.</p></li>
+<li><p>Multi camera type support - Blink camera or PiCam_API camera photo snapshot and sending on Telegram message request.</p></li>
+<li><p>Automatic camera selection between Blink or PiCam_APi possible.</p></li>
+<li><p>Fallback camera selection if one fails.</p></li>
+<li><p>Internal <a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/">Flask</a> website to open the front door with the browser using a time-based one-time password.</p></li>
+<li><p>Internal Flask REST-API to open the front door (via time-based one-time password).</p></li>
+<li><p>Possibility to enable / disable Flask Web-UI / REST-API - run without web interface</p></li>
+<li><p>Possibility to enable/disable cameras, web-ui and hardware circuit (opener, bell detection) on your use case basis.
+(E.g. Project can use for only door opening via Telegram chat - without dell detection, no web-ui, no cameras - in case us want to use blink video door bell natively)</p></li>
+</ul>
+</section>
+<section id="features-advantage-comparision-fdia-blink-ring-and-picamapi">
+<h2>Features advantage comparision FDIA, Blink, Ring and PiCamAPI<a class="headerlink" href="#features-advantage-comparision-fdia-blink-ring-and-picamapi" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Project with Product / <br/> Features,Capabilities</p></th>
+<th class="head"><p>FDIA with PiCamAPI Camera</p></th>
+<th class="head"><p>FDIA with Blink Camera</p></th>
+<th class="head"><p>Blink only (no FDIA)</p></th>
+<th class="head"><p>FDIA with no build HW module</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Open Door</p></td>
+<td><p>✅ with build HW module <a class="reference internal" href="#door-opener-board-with-relais"><span class="xref myst">Door opener board with relais:</span></a></p></td>
+<td><p>✅ with build HW module <a class="reference internal" href="#door-opener-board-with-relais"><span class="xref myst">Door opener board with relais:</span></a></p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>detect door bell ring</p></td>
+<td><p>✅ with build Hw module <a class="reference internal" href="#door-bell-detection-board"><span class="xref myst">Door bell detection board</span></a></p></td>
+<td><p>✅ with build Hw module <a class="reference internal" href="#door-bell-detection-board"><span class="xref myst">Door bell detection board</span></a></p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p>Notification (channel)</p></td>
+<td><p>✅ via Telegram group</p></td>
+<td><p>✅ via Telegram group</p></td>
+<td><p>✅Blink App</p></td>
+<td><p>✅❌ Telegram but no HW module -&gt; no detection</p></td>
+</tr>
+<tr class="row-odd"><td><p>Multi user notification</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌ dependend on Account</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Multi user door opening</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>GDPR data storage</p></td>
+<td><p>✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval</p></td>
+<td><p>✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed</p></td>
+<td><p>❌ Camaera Internet / Cloud exposed</p></td>
+<td><p>✅ no data Exposure</p></td>
+</tr>
+<tr class="row-even"><td><p>possible local usage without Internet (door opening only)</p></td>
+<td><p>✅</p></td>
+<td><p>✅opening - ❌ no camera snapshot</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="outlook-ideas-improvements-plan">
+<h2>Outlook/Ideas - Improvements plan<a class="headerlink" href="#outlook-ideas-improvements-plan" title="Link to this heading"></a></h2>
+<section id="in-development">
+<h3>in development<a class="headerlink" href="#in-development" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>[x] Integrate Ring Cameras(video Doorbell too) (depends on lack of hardware - donation welcome - or temporary provision for development)</p></li>
+</ul>
+</section>
+<section id="plan">
+<h3>Plan<a class="headerlink" href="#plan" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>[ ] Same solution is in development as JAVA Spring Boot app too.</p></li>
+<li><p>[ ] Next it’s planned to extend the Web-UI with more features (like show snapshots and other things)</p></li>
+</ul>
+</section>
+<section id="ideas">
+<h3>Ideas<a class="headerlink" href="#ideas" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>[ ] Integration offering in <a class="reference external" href="https://www.home-assistant.io/">HomeAssistant</a></p></li>
+<li><p>[ ] Further it’s planed to integrate door opening in Amazon Alexa as ProofOfConcept.</p></li>
+<li><p>[ ] add docker container build, image at GHCR and support via docker-compose.yaml</p></li>
+<li><p>[ ] Blink door bell notification</p></li>
+<li><p>[ ] Support Google / Microsoft Authentication App with their format</p></li>
+</ul>
+</section>
+</section>
+<section id="get-started">
+<h2>Get started<a class="headerlink" href="#get-started" title="Link to this heading"></a></h2>
+<section id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<p>Hardware:</p>
+<ul class="simple">
+<li><p>Raspberry PI B+ or above</p></li>
+<li><p>Blink Camera oder Pi Zero with PiCam_API Project installed</p></li>
+<li><p>Front door intercom like BTIcino</p></li>
+</ul>
+<p>Software:</p>
+<ul class="simple">
+<li><p>Python 3.10 or above</p></li>
+<li><p>pip</p></li>
+<li><p>git</p></li>
+<li><p>Rasbian oder Ubuntu on Raspberry Pi</p></li>
+</ul>
+</section>
+<section id="code-tree-structure">
+<h3>Code tree structure<a class="headerlink" href="#code-tree-structure" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>.
+├── bot                   # Telegram modul classes for receiveing and sending
+├── camera                # Camera module 
+├── config                # Config module, enum and data classes
+├── docs                  # Further documentation
+│   ├── _static           # static image dir 
+│   ├── blink_camera_setup.md                   # Blink camera setup
+│   ├── BTIcino_Intercom-wiring.md              # BTIcino door intercom wiring plans
+│   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html   # HTML DSGVO Template for door camera
+│   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md # DSGVO Template for door camera
+│   ├── How_to_install_fresh_RPi_with_code.md   # Install software code with a fresh Raspbian Image
+│   ├── How_to_setup_OTP_App_on_mobile_phone.md # Setup OTP App on mobile phone
+│   ├── one_time_password_setup.md              # How to setup otp config
+│   ├── pull_request_template.md                # Pull request template
+│   ├── SmartSaint_Relais_Jumper.md             # Door opener SmartSaint Relais jumper and circuit plan
+│   ├── telegram_bot_setup.md                   # Setup Telegram bot
+│   └── totp_helper_cli.md                      # TOTP (OTP) helper script - get and validate
+├── door                  # Door module classes for opening or bell detection  
+├── test                  # Unit tests
+├── tools                 # CLI Helper tools
+│   ├── encrypt_decrypt_password_with_base32.py   # Encrypt or decrypt with base32 input password 
+│   └── totp_helper_cli.py                        # create or verify a TOTP from config file 
+└── web                   # Flask Webpage &amp; REST-API modul class
+    ├── static            # Static web page icon files for favicons
+    └── templates         # Served and rendered web pages
+fdia.py                   # Main program code
+fdia.service              # Linux systemd service template file
+requirements.txt          # Depend lib to install via pip
+config_template.yaml      # Template config file
+Makefile                  # make for build html docs - github pages 
+README.md                 # This readme
+LICENSE                   # This project license
+CHANGELOG.md              # Project release changelog file
+requirements_licenses.txt # depend library licenses
+</pre></div>
+</div>
+</section>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
+<p><strong>For fresh install on RaspberryPi with code follow <a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html"><span class="std std-doc">How_to_install_fresh_RPi_with_code.md</span></a></strong></p>
+<ol class="arabic">
+<li><p>Clone repo to your RPi.
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:OliverDrechsler/front_door_intercom_automation.git</span></code></p></li>
+<li><p>go into project repo <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">front_door_intercom_automation</span></code></p></li>
+<li><p>now run pip3 to install python requirments
+<code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">requirements.txt</span></code>
+or with poetry
+<code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">run</span> <span class="pre">install</span></code></p></li>
+<li><p>copy config_template.yaml to config.yaml file
+<code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">config_template.yaml</span> <span class="pre">config.yaml</span></code></p></li>
+<li><p>edit <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file with your favorite editor</p>
+<ul class="simple">
+<li><p>for creation of telegram bot and privat chat channel follow <a class="reference internal" href="docs/telegram_bot_setup.html"><span class="std std-doc">telegram_bot_setup</span></a></p></li>
+<li><p>for creation of base32 encrypted timebased one time password master password follow <a class="reference internal" href="docs/one_time_password_setup.html"><span class="std std-doc">one_time_password_setup</span></a></p></li>
+<li><p>for blink configuration follow <a class="reference internal" href="docs/blink_camera_setup.html"><span class="std std-doc">blink_camera setup</span></a></p></li>
+<li><p>for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects</p></li>
+<li><p>for flask web config follow description in <code class="docutils literal notranslate"><span class="pre">config_template.yaml</span></code></p></li>
+</ul>
+</li>
+<li><p>Check RPi system permission if want to run in user permission context</p>
+<ul class="simple">
+<li><p>Check if the gpio Group Exists</p></li>
+<li><p>First, verify if the gpio group exists on your system:<br />
+<code class="docutils literal notranslate"><span class="pre">getent</span> <span class="pre">group</span> <span class="pre">gpio</span></code></p></li>
+<li><p>If it doesn’t exist, you can create it by running:<br />
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">groupadd</span> <span class="pre">gpio</span></code></p></li>
+<li><p>Add Your User to the gpio Group. Replace your_username with your actual username:<br />
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">usermod</span> <span class="pre">-aG</span> <span class="pre">gpio</span> <span class="pre">your_username</span></code></p></li>
+<li><p>Grant Group Permissions to GPIO<br />
+You can adjust the permissions for the GPIO device files.<br />
+This step is required to allow the gpio group to read and write to the GPIO pins:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">chown</span> <span class="n">root</span><span class="p">:</span><span class="n">gpio</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">gpiomem</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="n">g</span><span class="o">+</span><span class="n">rw</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">gpiomem</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Update udev Rules<br />
+To automate the permission adjustments at boot, you can add a udev rule:<br />
+Create a new file in /etc/udev/rules.d/:<br />
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">nano</span> <span class="pre">/etc/udev/rules.d/99-gpio.rules</span></code></p></li>
+<li><p>Add the following line to this file:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SUBSYSTEM</span><span class="o">==</span><span class="s2">&quot;gpio&quot;</span><span class="p">,</span> <span class="n">GROUP</span><span class="o">=</span><span class="s2">&quot;gpio&quot;</span><span class="p">,</span> <span class="n">MODE</span><span class="o">=</span><span class="s2">&quot;0660&quot;</span>
+<span class="n">SUBSYSTEM</span><span class="o">==</span><span class="s2">&quot;gpio*&quot;</span><span class="p">,</span> <span class="n">PROGRAM</span><span class="o">=</span><span class="s2">&quot;/bin/sh -c &#39;chown -R root:gpio /sys/class/gpio &amp;&amp; chmod -R 770 /sys/class/gpio; chown -R root:gpio /sys/devices/virtual/gpio &amp;&amp; chmod -R 770 /sys/devices/virtual/gpio;&#39;&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Save and exit the file.<br />
+Reload udev rules:<br />
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">udevadm</span> <span class="pre">control</span> <span class="pre">--reload-rules</span> <span class="pre">&amp;&amp;</span> <span class="pre">sudo</span> <span class="pre">udevadm</span> <span class="pre">trigger</span></code></p></li>
+<li><p>Reboot the System</p></li>
+</ul>
+<p><strong>Or run Script as a Superuser</strong>
+The simplest way to give your script the necessary permissions is to run it with sudo.<br />
+This grants it root privileges, which allows it to access the GPIO pins directly.<br />
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">python</span> <span class="pre">fdia.py</span></code><br />
+If you’re using Python 3, make sure to run:<br />
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">python3</span> <span class="pre">fdia.py</span></code></p>
+</li>
+<li><p>run app
+<code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">fdia.py</span></code>
+and check log output
+or with poetry
+<code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">run</span> <span class="pre">start</span></code></p>
+<p>for troubleshooting see <a class="reference internal" href="#help"><span class="xref myst">Help</span></a></p>
+</li>
+<li><p>setup app to run as daemon / service in linux follow <a class="reference internal" href="#system-service-setup"><span class="xref myst">System service setup</span></a></p></li>
+</ol>
+</section>
+<section id="helper-tools">
+<h3>Helper tools<a class="headerlink" href="#helper-tools" title="Link to this heading"></a></h3>
+<section id="encrypt-and-decrypt-a-password-with-base32-for-totp">
+<h4>Encrypt and decrypt a password with base32 for totp<a class="headerlink" href="#encrypt-and-decrypt-a-password-with-base32-for-totp" title="Link to this heading"></a></h4>
+<p>see further docu <a class="reference internal" href="docs/one_time_password_setup.html"><span class="std std-doc">docs/one_time_password_setup.md</span></a></p>
+</section>
+<section id="get-a-otp-password-or-verify-a-otp-via-cli">
+<h4>get a OTP password or verify a OTP via cli<a class="headerlink" href="#get-a-otp-password-or-verify-a-otp-via-cli" title="Link to this heading"></a></h4>
+<p>see further docu <a class="reference internal" href="docs/totp_helper_cli.html"><span class="std std-doc">docs/totp_helper_cli.md</span></a></p>
+</section>
+</section>
+<section id="system-service-setup">
+<h3>System service setup<a class="headerlink" href="#system-service-setup" title="Link to this heading"></a></h3>
+<p>Edit file <code class="docutils literal notranslate"><span class="pre">fdia.service</span></code> and adjust to your path ( <code class="docutils literal notranslate"><span class="pre">ExecStart=/home/pi/front_door_intercom_automation/fdia.py</span></code> ).<br />
+To run fdia as a service on startup with root permissions<br />
+copy <code class="docutils literal notranslate"><span class="pre">fdia.service</span></code>to <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/</span></code>to your RPi systemd deamon folder.<br />
+Run <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">daemon-reload</span></code> and <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">fdia</span></code>to start it as a service.<br />
+Enable system service with <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">enable</span> <span class="pre">fdia.service</span></code>.</p>
+</section>
+<section id="configuration-config-files">
+<h3>Configuration - config files<a class="headerlink" href="#configuration-config-files" title="Link to this heading"></a></h3>
+</section>
+<section id="config-yaml-config-template-yaml">
+<h3>config.yaml - config_template.yaml<a class="headerlink" href="#config-yaml-config-template-yaml" title="Link to this heading"></a></h3>
+<p>config_template.yaml is a template config file and must be adjusted to your needs.<br />
+Copy config_template.yaml to config.yaml into project root folder.<br />
+<code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">config_template.yaml</span> <span class="pre">config.yaml</span></code></p>
+<p>In this yaml file you’ll find after <code class="docutils literal notranslate"><span class="pre">#</span></code> comments / hints for which the line is what to configure.</p>
+</section>
+<section id="blink-config-json">
+<h3>blink_config.json<a class="headerlink" href="#blink-config-json" title="Link to this heading"></a></h3>
+<p>If you have configured in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> your blink camera<br />
+( followed by this docu <a class="reference internal" href="docs/blink_camera_setup.html"><span class="std std-doc">blink_camera setup</span></a> )<br />
+after starting <code class="docutils literal notranslate"><span class="pre">fdia.py</span></code> application you can send your received blink 2 factor token via telegram channel
+to the application ( <a class="reference internal" href="docs/blink_camera_setup.html"><span class="std std-doc">/blink_auth here_your_blink_otp_code</span></a> ).<br />
+It starts to authenticate via 2FA(FactorAuthentication) / MFA (multi factor authentication) and saves afterwards the
+blink config to the file <code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code>. From now on it is getting used and normally no further
+2FA / MFA authentication is not anymore required.<br />
+Handle this file careful since there is your blink secret stored.</p>
+</section>
+<section id="setup-otp">
+<h3>Setup OTP<a class="headerlink" href="#setup-otp" title="Link to this heading"></a></h3>
+<p>To store a master password for <em>totp</em> <em>time pased one time password</em> it must be encoded with base32 as a hash.
+You can run the the cli script <code class="docutils literal notranslate"><span class="pre">encrypt_decrypt_password_with_base32.py</span></code> in <code class="docutils literal notranslate"><span class="pre">tools</span></code> directory.
+Than you get a base32 hashed password.<br />
+Please store this password in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> under section <code class="docutils literal notranslate"><span class="pre">otp:</span></code> <code class="docutils literal notranslate"><span class="pre">password:</span></code></p>
+<p>For further docu refer to <a class="reference internal" href="docs/one_time_password_setup.html"><span class="std std-doc">docs/one_time_password_setup.md</span></a></p>
+</section>
+</section>
+<section id="cameras">
+<h2>Cameras<a class="headerlink" href="#cameras" title="Link to this heading"></a></h2>
+<p>This project actually supports two type of cameras.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://blinkforhome.com">Blink</a> cameras with <a class="reference external" href="https://github.com/fronzbot/blinkpy">BlinkPy library</a><br />
+This means all Blink cameras are supported.</p></li>
+<li><p>My Raspberry PI camera Project <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API">PiCam_API</a><br />
+or <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API_2">PiCam_API_2</a> Project.<br />
+It is a small POC self coded software project which just requires a Raspberry Pi and a wired Camera.<br />
+It is your choice when you want to be more GDPR compliant and don’t want to expose your camera to the internet. Also you can use this project from your home wireless network only via web ui and must not use telegram. PiCam_API_2 uses <a class="reference external" href="https://github.com/raspberrypi/picamera2">libcamera2</a> vs. PiCam_API uses the first <a class="reference external" href="https://github.com/raspberrypi/libcamera">libcamera</a>. There some hardware / os requirement differences between these versions <a class="reference external" href="https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf">see docu libcamera2 requirements section</a>.</p></li>
+</ul>
+<section id="gdpdr-europeanunion-and-germany-hint-dsgvo-hinweis-zur-kamerauberwachung-in-deutschland">
+<h3>GDPDR EuropeanUnion and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland<a class="headerlink" href="#gdpdr-europeanunion-and-germany-hint-dsgvo-hinweis-zur-kamerauberwachung-in-deutschland" title="Link to this heading"></a></h3>
+<p><strong>Only for Germany required and maybe partially for EU - check by your self</strong>
+<strong>Other countries are not known to me - check by yourself</strong></p>
+<p>In Deutschland ist es erforderlich einen sichtbaren DSGVO Hinweis zur fotografischen Kamera Überwachung anzubringen.<br />
+<a class="reference external" href="https://www.heise.de/hintergrund/Datenschutzrechtliche-Schranken-fuer-die-private-Videoueberwachung-7238200.html">Datenschutzrechtliche Schranken für die private Videoüberwachung</a><br />
+und<br />
+<a class="reference external" href="https://www.heise.de/news/Datenschutz-Mehr-Beschwerden-wegen-Videoueberwachung-9818938.html">Datenschutz: Geldstrafen wegen Videokameras in Autos und Wohnhäusern</a></p>
+<p>Weiter hat die Datenschutzkonferenz (DSK) eine <a class="reference external" href="https://datenschutzkonferenz-online.de/media/oh/20200903_oh_v%C3%BC_dsk.pdf">Orientierungshilfe</a> herraus gegeben.<br />
+Deshalb habe ich folgenden Hinweis auf meinem Grundstück sichtbar für alle angebracht habe.<br />
+<a class="reference external" href="https://oliverdrechsler.github.io/front_door_intercom_automation/docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">siehe vorlagen Datei</a>
+Die Vorlage ist auch als reine <a class="reference download internal" download="" href="_downloads/3bb4770b44b68836155fdef9282a11cd/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html"><span class="xref download myst">HTML Datei</span></a> hier zum downloaden und anpassen.</p>
+</section>
+<section id="blink-cameras">
+<h3>Blink Cameras<a class="headerlink" href="#blink-cameras" title="Link to this heading"></a></h3>
+<p>For configuration of the blink camera please procceed with further <a class="reference internal" href="docs/blink_camera_setup.html"><span class="std std-doc">docu/blink_camera_setup.md</span></a>.</p>
+</section>
+<section id="raspberry-pi-camera-project-picam-api">
+<h3>Raspberry Pi Camera Project PiCam_API<a class="headerlink" href="#raspberry-pi-camera-project-picam-api" title="Link to this heading"></a></h3>
+<p>For configuration of the PiCam_API please procceed with the <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API">PiCam_API Project</a> docu or <a class="reference external" href="https://github.com/OliverDrechsler/PiCam_API_2">PiCam_API_2</a>.</p>
+</section>
+</section>
+<section id="telegram">
+<h2>Telegram<a class="headerlink" href="#telegram" title="Link to this heading"></a></h2>
+<section id="telegram-setup">
+<h3>Telegram setup<a class="headerlink" href="#telegram-setup" title="Link to this heading"></a></h3>
+<p>please follow exra documentation here <a class="reference internal" href="docs/telegram_bot_setup.html"><span class="std std-doc">telegram_bot_setup</span></a></p>
+</section>
+<section id="telegram-receiving-message-commands-and-interactions">
+<h3>Telegram receiving message commands and interactions<a class="headerlink" href="#telegram-receiving-message-commands-and-interactions" title="Link to this heading"></a></h3>
+<p>Received Telegram chat channel message command to action</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/Foto</span></code> = request to take a foto auto choice for PiCam or Blink config and send it in the telegram chat channel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Blink</span></code> = request to take a Blink foto and send it in the telegram chat channel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/PiCam</span></code> = request to take a PiCam_API foto and send it in the telegram chat channel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Blink_auth</span> <span class="pre">&lt;here</span> <span class="pre">your</span> <span class="pre">6</span> <span class="pre">digit</span> <span class="pre">security</span> <span class="pre">code&gt;</span></code> = request to do a blink 2FA / MFA authentication and store blink config</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;time</span> <span class="pre">based</span> <span class="pre">one</span> <span class="pre">time</span> <span class="pre">password</span> <span class="pre">code&gt;</span></code> = validate totp, take a foto send it and open door.</p></li>
+</ul>
+</section>
+</section>
+<section id="mobile-setup">
+<h2>Mobile Setup<a class="headerlink" href="#mobile-setup" title="Link to this heading"></a></h2>
+<p>Install on your Mobile following Apps and set it up.</p>
+<section id="mobile-apps">
+<h3>Mobile Apps<a class="headerlink" href="#mobile-apps" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://apps.apple.com/de/app/telegram-messenger/id686449807">Telegram Messagenger for free in AppStore</a></p></li>
+<li><p><a class="reference external" href="https://apps.apple.com/de/app/otp-auth/id659877384">OTP Auth App for free in AppStore</a></p></li>
+<li><p><a class="reference external" href="https://support.apple.com/de-de/guide/shortcuts/welcome/ios">Apple IOS Shortcuts for REST API automation</a></p></li>
+</ul>
+</section>
+<section id="telegram-on-mobile-phone">
+<h3>Telegram on mobile phone<a class="headerlink" href="#telegram-on-mobile-phone" title="Link to this heading"></a></h3>
+<p>Please do it by yourself or consult google.</p>
+</section>
+<section id="otp-app-on-mobile-phone-how-to-setup">
+<h3>OTP App on mobile phone - How to setup<a class="headerlink" href="#otp-app-on-mobile-phone-how-to-setup" title="Link to this heading"></a></h3>
+<p>Provide configure same OTP config in OTP Auth App like in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> defined.</p>
+<p>For setup OTP App follow <a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html"><span class="std std-doc">How to setup OTP App on mobile phone</span></a></p>
+<section id="telegram-and-otp-app-mobile-usage">
+<h4>Telegram and OTP App - mobile usage<a class="headerlink" href="#telegram-and-otp-app-mobile-usage" title="Link to this heading"></a></h4>
+<p>Use OTP App to get a totp code and copy to clipboard.<br />
+Paste clipboard code into telegram chat channel where front-door intercom automation bot ist listening.
+When bot receives valid code - door will be opened.</p>
+<p>Apple IOS Shotcuts App can be used to to send direct otp code passwords to REST-API.
+As long as you are in the local network as the fron door intercom automation is you can send it direct.
+If you’re away for your home wireless network you can use a VPN tunnel to connect to your ISP router<br />
+and than send the otp door open code to the REST-API.<br />
+Do not expose the Flask Web-UI or REST-API to the internet!<br />
+VPN Tunnel activation can also be automated like the REST-API call in IOS Shotcut App.</p>
+</section>
+</section>
+<section id="apple-ios-shortcuts-app-how-to-automate-door-opening">
+<h3>Apple IOS Shortcuts App - How to automate door opening<a class="headerlink" href="#apple-ios-shortcuts-app-how-to-automate-door-opening" title="Link to this heading"></a></h3>
+<p>Follow this guide <a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html"><span class="std std-doc">For setup Apple IOS Shortcuts App to open door</span></a><br />
+This can only connect to Flask Web REST-API.<br />
+It will normally only work as long you’re in the same home wifi network.<br />
+To use it while you’re roaming (not at home), i recommend to use the telegram chat group to open the door.<br />
+Another possibility is to setup a VPN Tunnel in your ISP router. Activate this tunnel before and than use IOS Shortcut to open.</p>
+</section>
+</section>
+<section id="web-ui-rest-api-usage">
+<h2>Web UI &amp; REST-API usage<a class="headerlink" href="#web-ui-rest-api-usage" title="Link to this heading"></a></h2>
+<p>A Flask Web-UI will be provided on given config port in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> under section <code class="docutils literal notranslate"><span class="pre">web</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">web</span><span class="p">:</span>
+  <span class="n">flask_web_port</span><span class="p">:</span> <span class="mi">5001</span>                            <span class="c1"># flask webserver port</span>
+  <span class="n">flask_secret_key</span><span class="p">:</span> <span class="s2">&quot;my_super_flask_secret_key&quot;</span>   <span class="c1"># provide here your own flask secret key</span>
+  <span class="n">browser_session_cookie_lifetime</span><span class="p">:</span> <span class="mi">30</span>             <span class="c1"># browser cookie key</span>
+  <span class="n">flask_users</span><span class="p">:</span>             <span class="c1"># list of flask app login user for webpage and/or rest api call</span>
+    <span class="o">-</span> <span class="n">WebUser1</span><span class="p">:</span> <span class="s2">&quot;password&quot;</span>
+    <span class="o">-</span> <span class="n">WebUser2</span><span class="p">:</span> <span class="s2">&quot;password&quot;</span>
+</pre></div>
+</div>
+<p>Here you can specify multiple users which are allowed to access the Web page and REST-API.</p>
+<p>For TLS cert encryption it’s recommend to use a NGINX reverse proxy with TLS cert configuration.
+See sample Docker container project here <a class="reference external" href="https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt">https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt</a><br />
+<strong>Important: I do not recommend to expose the Web-UI to the internet! It is not hardend nor pentested</strong><br />
+To access the Web-Ui/REST-API while you roam - i recommend to setup a VPN Tunnel in your ISP Router.<br />
+Activate VPN Tunnel before you send the web request.</p>
+<p>A REST-API <code class="docutils literal notranslate"><span class="pre">POST</span></code> call can to URL <code class="docutils literal notranslate"><span class="pre">http://&lt;fqdn,</span> <span class="pre">hostname</span> <span class="pre">or</span> <span class="pre">ip&gt;:&lt;port&gt;/open</span></code>.<br />
+For Authentication a base64 encoded header with username and password must be added.<br />
+Request body must be</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;totp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;here time based one time password code&gt;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>curl command example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="o">&lt;</span><span class="n">FLASK_WEB_PORT</span><span class="o">&gt;/</span><span class="nb">open</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span> \
+     <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Authorization: Basic &lt;BASE64_ENCODED_CREDENTIALS&gt;&quot;</span> \
+     <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;{&quot;totp&quot;: &quot;&lt;YOUR_TOTP_CODE&gt;&quot;}&#39;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;BASE64_ENCODED_CREDENTIALS&gt;</span></code> is <code class="docutils literal notranslate"><span class="pre">username:password</span></code> encoded base64 string.</p>
+</section>
+<section id="hardware-circuits">
+<h2>Hardware Circuits<a class="headerlink" href="#hardware-circuits" title="Link to this heading"></a></h2>
+<p>The door bell detection board and the door opener  board/relais<br />
+can be broadly used for many door intercom’s (and not only to BTICino)<br />
+which has no specific connection ports or is Internet ready.</p>
+<section id="door-bell-detection">
+<h3>Door bell detection<a class="headerlink" href="#door-bell-detection" title="Link to this heading"></a></h3>
+<p>To enable the door bell detection feature you have to configure the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file.<br />
+See also <a class="reference internal" href="#configyaml---config_templateyaml"><span class="xref myst">config.yaml - config_template.yaml</span></a><br />
+When hardware circuit is to a GPIO port connected, then enable this feature with <code class="docutils literal notranslate"><span class="pre">True</span></code> in config file<br />
+section: <code class="docutils literal notranslate"><span class="pre">GPIO</span></code> <code class="docutils literal notranslate"><span class="pre">enable_door_bell_port</span></code> and specify the port in <code class="docutils literal notranslate"><span class="pre">door_bell_port</span></code>.</p>
+<section id="required-hw-parts">
+<h4>required HW parts<a class="headerlink" href="#required-hw-parts" title="Link to this heading"></a></h4>
+</section>
+<section id="door-bell-detection-board-required-electronic-parts">
+<h4>Door bell detection board - required electronic parts<a class="headerlink" href="#door-bell-detection-board-required-electronic-parts" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Strip grid circuit board of Epoxy – 100 x 100 mit 2,54mm</p></li>
+<li><p>Optocoupler (PC817)</p></li>
+<li><p>Resistor: to get correct voltage of 1,2V for Optocoupler,
+a resistor of 330 Ohm (8 Volt), 560 Ohm (12 Volt) or 1,2 Kilo ohm (24 Volt)</p></li>
+<li><p>Raspberry Pi Hutschienen-Netzteil (Mean Well MDR-20-15) für den Einbau in den Sicherungskasten</p></li>
+</ul>
+</section>
+<section id="generic-door-bell-circuit-and-wiring-plan">
+<h4>Generic door bell circuit and wiring plan<a class="headerlink" href="#generic-door-bell-circuit-and-wiring-plan" title="Link to this heading"></a></h4>
+<p><img alt="Door bell circuit diagram" src="_images/Door_bell_circuit.jpg" /></p>
+<p><img alt="circuit board with installed electronic parts and draw wiring" src="_images/Build_Door_Bell_2.jpeg" /></p>
+</section>
+</section>
+<section id="generic-door-opener-relais">
+<h3>Generic door opener relais:<a class="headerlink" href="#generic-door-opener-relais" title="Link to this heading"></a></h3>
+<p>To enable the door opening feature you have to configure the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file.<br />
+See also <a class="reference internal" href="#configyaml---config_templateyaml"><span class="xref myst">config.yaml - config_template.yaml</span></a><br />
+When SmartSaint relais hardware is connected to a GPIO port connected,<br />
+then enable this feature with <code class="docutils literal notranslate"><span class="pre">True</span></code> in config file<br />
+section: <code class="docutils literal notranslate"><span class="pre">GPIO</span></code> <code class="docutils literal notranslate"><span class="pre">enable_door_opener_port</span></code> and specify the port in <code class="docutils literal notranslate"><span class="pre">door_opener_port</span></code>.</p>
+<p><strong>I recommend to use the SmartSaint relais board to open door.</strong><br />
+It is simply to use and you have just to connect it to your RPi GPIO port and<br />
+on the other side to your door intercom system.</p>
+<p><em><strong>saintsmart 2-Channel 5V Relay Module</strong></em><br />
+<img alt="saintsmart 2-Channel 5V Relais Module" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD36-cHUnlLZT-B6s4C5KsQBCRfhxt5Cjqxg&amp;usqp=CAU" /><br />
+<a class="reference external" href="https://www.sainsmart.com/products/2-channel-5v-relay-module">shop where to buy saintsmart relais</a></p>
+<section id="smart-saint-relais-circuit-wiring">
+<h4>Smart Saint Relais circuit wiring<a class="headerlink" href="#smart-saint-relais-circuit-wiring" title="Link to this heading"></a></h4>
+<p>Because of the RPi does not deliver enough power, i connected an additional +5V power supply
+to the SmartSaint port <code class="docutils literal notranslate"><span class="pre">JD-VCC</span></code> and <code class="docutils literal notranslate"><span class="pre">JD-GND</span></code>.<br />
+A RPi GPIO port X connected to SmartSaint <code class="docutils literal notranslate"><span class="pre">IN1</span></code> and a RPi GPIO Port with +3,3V to SmartSaint Relais <code class="docutils literal notranslate"><span class="pre">VCC</span></code>.<br />
+Other side of SmartSaint relay ports connected to door intercom system.
+<img alt="RPi to SmartSaint Relais  to Door Intercom wiring" src="_images/RPi_SmartSaintRelais_DoorIntercom_wiring.jpg" /></p>
+<section id="for-further-interest-smart-saint-relais-jumper-and-circuit-layout">
+<h5>For further interest Smart Saint Relais Jumper and circuit layout<a class="headerlink" href="#for-further-interest-smart-saint-relais-jumper-and-circuit-layout" title="Link to this heading"></a></h5>
+<p>see additional <a class="reference internal" href="docs/SmartSaint_Relais_Jumper.html"><span class="std std-doc">Smart Saint Relais Jumper and circuit layout plan</span></a></p>
+</section>
+<section id="door-open-summer-saintsmart-relay-wiring-pictures">
+<h5>Door open summer SaintSmart relay wiring pictures:<a class="headerlink" href="#door-open-summer-saintsmart-relay-wiring-pictures" title="Link to this heading"></a></h5>
+<p><img alt="Door Bell ring detect circuit" src="_images/Build_Door_Bell_1.jpeg" /><br />
+<img alt="Relai Wiring_1" src="_images/Build_Relai_Opener_1.jpeg" /><br />
+<img alt="Relai Wiring_2" src="_images/Build_Relai_Opener_2.jpeg" /></p>
+</section>
+</section>
+</section>
+<section id="bticino-door-intercom-specific-wiring-plans">
+<h3>BTIcino  door intercom specific wiring plans<a class="headerlink" href="#bticino-door-intercom-specific-wiring-plans" title="Link to this heading"></a></h3>
+<p>see <a class="reference internal" href="docs/BTIcino_Intercom-wiring.html"><span class="std std-doc">BTIcino_Intercom_wiring</span></a></p>
+</section>
+</section>
+<section id="help">
+<h2>Help<a class="headerlink" href="#help" title="Link to this heading"></a></h2>
+<section id="debugging">
+<h3>Debugging<a class="headerlink" href="#debugging" title="Link to this heading"></a></h3>
+<p>You can set the log level via environment variable <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code><br />
+to  either <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>,<code class="docutils literal notranslate"><span class="pre">ERROR</span></code>,<code class="docutils literal notranslate"><span class="pre">INFO</span></code>,<code class="docutils literal notranslate"><span class="pre">WARN</span></code> or<code class="docutils literal notranslate"><span class="pre">DEBUG</span></code><br />
+before you start the app.<br />
+The shell command will be <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">LOG_LEVEL=DEBUG</span> <span class="pre">&amp;&amp;</span> <span class="pre">python3</span> <span class="pre">fdia.py</span></code></p>
+<p>In case you want to store it permanently, you can add it in <code class="docutils literal notranslate"><span class="pre">fdia.py</span></code> file<br />
+and at top of the file (line 22 - after imports)<br />
+there you’ll find the section</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Define logging LEVEL&quot;&quot;&quot;</span>
+<span class="n">default_log_level</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;LOG_LEVEL&#39;</span><span class="p">,</span> <span class="s1">&#39;INFO&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Change <code class="docutils literal notranslate"><span class="pre">INFO</span></code> to <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> and store the file.</p>
+<p>Now when you run the <code class="docutils literal notranslate"><span class="pre">fdia.py</span></code>app again you get full detail debug log of:</p>
+<ul class="simple">
+<li><p>fdia app and it 6 threads</p>
+<ul>
+<li><p>fdia thread = main thread</p></li>
+<li><p>thread_receive_telegram_msg</p></li>
+<li><p>thread_send_telegram_msg</p></li>
+<li><p>thread_cameras</p></li>
+<li><p>web_thread</p></li>
+<li><p>thread_door_bell</p></li>
+<li><p>thread_open_door
+and</p></li>
+<li><p>blink lib in debug mode</p></li>
+<li><p>telegram lib in debug mode</p></li>
+</ul>
+</li>
+</ul>
+<p>The communication between thread is handled via queues.<br />
+Therefore exists this <code class="docutils literal notranslate"><span class="pre">config/data_class.py</span></code> which is the the data transfer class between the threads<br />
+to submit the task.</p>
+<p>In case you do not find ther error in the log, raise a GitHub issue with your error.</p>
+</section>
+<section id="hints">
+<h3>Hints<a class="headerlink" href="#hints" title="Link to this heading"></a></h3>
+<p>Following important libraries are used and can also be consulted in case where issues are in</p>
+<ul class="simple">
+<li><p>Blink -&gt; <a class="reference external" href="https://github.com/fronzbot/blinkpy">BlinkPy library</a></p></li>
+<li><p>Telegram -&gt; <a class="reference external" href="https://github.com/eternnoir/pyTelegramBotAPI">PyTelegramBotAPI library</a></p></li>
+<li><p>Web-UI and Rest-API (Flask) -&gt; <a class="reference external" href="https://flask.palletsprojects.com/en/3.0.x/">Flask</a></p></li>
+<li><p>Timebase one time password -&gt; <a class="reference external" href="https://pyauth.github.io/pyotp/">PyOTP library</a></p></li>
+<li><p>Ciruit wiring -&gt; <a class="reference external" href="https://www.heise.de/select/ct/2017/17/1502995489716437">Überallkingel at heise.de</a></p></li>
+</ul>
+<p>Internal code API docu can be found at github pages linked on top above or in code itself.</p>
+</section>
+<section id="how-to-run-unit-tests">
+<h3>How to run unit-tests<a class="headerlink" href="#how-to-run-unit-tests" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--cov=./</span> <span class="pre">--cov-report=html</span></code></p>
+</section>
+<section id="gihub-actions-pipelines">
+<h3>GiHub actions pipelines<a class="headerlink" href="#gihub-actions-pipelines" title="Link to this heading"></a></h3>
+<p>Check folder <code class="docutils literal notranslate"><span class="pre">.github</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dependabot.yml</span></code> dependcy check pipeline for security issues</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workflows/ci.yml</span></code> contious integration pipeline builds code and tests code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workflows/codeql-analysis.yml</span></code> CodeQL analysis pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workflows/docs_update.yml</span></code>  build GitHub page pipeline</p></li>
+</ul>
+</section>
+</section>
+<section id="changelog">
+<h2>ChangeLog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h2>
+<p>see CHANGELOG file <a class="reference internal" href="CHANGELOG.html"><span class="std std-doc">CHANGELOG</span></a></p>
+</section>
+<section id="author-info">
+<h2>Author info<a class="headerlink" href="#author-info" title="Link to this heading"></a></h2>
+<p>I’m Oliver Drechsler and a Java and Python developer.</p>
+<ul class="simple">
+<li><p>📫 Connect with me:: …<br />
+<a href="https://twitter.com/lolly_olmi">
+<img
+    alt="Twitter"
+    src="https://img.shields.io/badge/Twitter-1DA1F2?logo=twitter&logoColor=white&style=for-the-badge"
+  />
+</a><br />
+<a href="https://www.linkedin.com/in/oliver-drechsler">
+<img
+  alt="Linkedin"
+  src="https://img.shields.io/badge/linkedin-0077B5?logo=linkedin&logoColor=white&style=for-the-badge"
+/>
+</a><br />
+<a href="https://www.xing.com/profile/Oliver_Drechsler5">
+<img
+  alt="XING"
+  src="https://img.shields.io/badge/XING-Oliver%20Drechsler-green"
+/>
+</a><br />
+<a href="https://stackoverflow.com/users/13054340/oliver-d">
+<img
+  alt="Stackoverflow"
+  src="https://img.shields.io/badge/StackOverflow-Oliver%20Drechsler-green"
+/>
+</a><br />
+<a href="https://mailhide.io/e/zUK7KX73">
+<img
+  src="https://img.shields.io/badge/Mail-8B89CC?style=for-the-badge&logo=mail&logoColor=white"
+/>
+</a></p></li>
+</ul>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>This Software is licenced under MIT see <a class="reference internal" href="LICENSE.html"><span class="doc std std-doc">license file of this project</span></a>.</p>
+<p>Why is there no GPLv2 dependency as I understand it?
+pyTelegramBotAPI published under GPLv2, but it is used as a shared library which is linked dynamic.
+Further only source code is distributed and python code is compiled during runtime (JIT) on user system, therefore it is no distribution.
+For more details see <a class="reference external" href="https://www.opensourcelms.de/gpl-teil-1.html">Fundamental aspects of copyleft in GPL</a> and read section <strong>7. Libraries</strong></p>
+<p>Dependcies to other projects and libraries listed here <a class="reference internal" href="#requirements_licenses.txt"><span class="xref myst">requirements_licenses.txt</span></a>.<br />
+It is create with <a class="reference external" href="https://github.com/FHPythonUtils/LicenseCheck">licensecheck</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">licensecheck</span>
+<span class="n">licensecheck</span> <span class="o">-</span><span class="n">u</span> <span class="n">requirements</span> <span class="o">&gt;</span> <span class="n">requirements_licenses</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Hint for licensecheck:<br />
+In case you receive a traceback error
+check for line comments in requirements.txt and remove them temporary.</p>
+</section>
+<section id="security">
+<h2>Security<a class="headerlink" href="#security" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="SECURITY.html"><span class="std std-doc">Security issue guide</span></a></p>
+</section>
+<section id="contribution">
+<h2>Contribution<a class="headerlink" href="#contribution" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="CONTRIBUTING.html"><span class="std std-doc">Contribution guide</span></a>
+Pull request docu can be found <a class="reference internal" href="docs/pull_request_template.html"><span class="std std-doc">here in docs/pull_request_template.md</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Front door intercom automation’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="docs/telegram_bot_setup.html" class="btn btn-neutral float-right" title="Quick Guide to setup a telegram bot and privat group chat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>front-door_intercom_automation &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="bot package" href="bot.html" />
+    <link rel="prev" title="Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by @OliverDrechsler" href="CHANGELOG.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#changelog">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-8">Release 1.0.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7">Release 1.0.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6">Release 1.0.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5">Release 1.0.5</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bot.html">bot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html">camera package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="door.html">door package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html">web package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html">fdia module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">front-door_intercom_automation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="front-door-intercom-automation">
+<h1>front-door_intercom_automation<a class="headerlink" href="#front-door-intercom-automation" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bot.html">bot package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bot.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bot.html#module-bot.receive_msg">bot.receive_msg module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.start"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.stop"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.receive_any_msg_text"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.receive_any_msg_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.take_foto"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.take_foto()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.take_picam_foto"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.take_picam_foto()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.take_blink_foto"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.take_blink_foto()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.register_bink_authentication"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.register_bink_authentication()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.rcv_blink_auth"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.rcv_blink_auth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.get_allowed"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.get_allowed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.get_allowed_user"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.get_allowed_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.validate_msg_text_has_code"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.validate_msg_text_has_code()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.receive_msg.ReceivingMessage.verify_otp_code_in_msg"><code class="docutils literal notranslate"><span class="pre">ReceivingMessage.verify_otp_code_in_msg()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bot.html#module-bot.send_msg">bot.send_msg module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bot.html#bot.send_msg.SendMessage"><code class="docutils literal notranslate"><span class="pre">SendMessage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.send_msg.SendMessage.start"><code class="docutils literal notranslate"><span class="pre">SendMessage.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.send_msg.SendMessage.stop"><code class="docutils literal notranslate"><span class="pre">SendMessage.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.send_msg.SendMessage.reply_message"><code class="docutils literal notranslate"><span class="pre">SendMessage.reply_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.send_msg.SendMessage.send_message"><code class="docutils literal notranslate"><span class="pre">SendMessage.send_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bot.html#bot.send_msg.SendMessage.send_photo"><code class="docutils literal notranslate"><span class="pre">SendMessage.send_photo()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bot.html#module-bot">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="camera.html">camera package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="camera.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html#module-camera.camera">camera.camera</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="camera.html#camera.camera.Camera"><code class="docutils literal notranslate"><span class="pre">Camera</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.start"><code class="docutils literal notranslate"><span class="pre">Camera.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.choose_cam"><code class="docutils literal notranslate"><span class="pre">Camera.choose_cam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.put_msg_queue_photo"><code class="docutils literal notranslate"><span class="pre">Camera.put_msg_queue_photo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.put_msg_queue_error"><code class="docutils literal notranslate"><span class="pre">Camera.put_msg_queue_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.detect_daylight"><code class="docutils literal notranslate"><span class="pre">Camera.detect_daylight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.blink_snapshot"><code class="docutils literal notranslate"><span class="pre">Camera.blink_snapshot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.read_blink_config"><code class="docutils literal notranslate"><span class="pre">Camera.read_blink_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.save_blink_config"><code class="docutils literal notranslate"><span class="pre">Camera.save_blink_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.add_2fa_blink_token"><code class="docutils literal notranslate"><span class="pre">Camera.add_2fa_blink_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.picam_request_take_foto"><code class="docutils literal notranslate"><span class="pre">Camera.picam_request_take_foto()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.picam_request_download_foto"><code class="docutils literal notranslate"><span class="pre">Camera.picam_request_download_foto()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="camera.html#camera.camera.Camera.adjust_image"><code class="docutils literal notranslate"><span class="pre">Camera.adjust_image()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html#module-camera">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="door.html">door package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="door.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="door.html#module-door.bell">door.bell module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="door.html#door.bell.DoorBell"><code class="docutils literal notranslate"><span class="pre">DoorBell</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="door.html#door.bell.DoorBell.ring"><code class="docutils literal notranslate"><span class="pre">DoorBell.ring()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="door.html#module-door.opener">door.opener module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="door.html#door.opener.DoorOpener"><code class="docutils literal notranslate"><span class="pre">DoorOpener</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="door.html#door.opener.DoorOpener.start"><code class="docutils literal notranslate"><span class="pre">DoorOpener.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="door.html#door.opener.DoorOpener.open_door"><code class="docutils literal notranslate"><span class="pre">DoorOpener.open_door()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="door.html#module-door.detect_rpi">door.detect_rpi module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="door.html#door.detect_rpi.detect_rpi"><code class="docutils literal notranslate"><span class="pre">detect_rpi()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="door.html#module-door">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">web package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="web.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#module-web.web_door_opener">web.web_door_opener module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.custom_auth_required"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.custom_auth_required()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.create_password_hash"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.create_password_hash()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.transform_values"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.transform_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.run"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.shutdown"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.shutdown()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.setup_logging"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.setup_logging()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.verify_password"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.verify_password()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.get_brwoser_session"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.get_brwoser_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.get_request_username"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.get_request_username()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.log_request_info"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.log_request_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.log_response_info"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.log_response_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.login"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.login()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.favicon"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.favicon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.index"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.open"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.open()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.handle_exception"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.handle_exception()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.handle_not_found"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.handle_not_found()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.handle_401_unauthenticated"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.handle_401_unauthenticated()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.handle_bad_request"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.handle_bad_request()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.error_response_json"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.error_response_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.handle_success_response"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.handle_success_response()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.setup_routes"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.setup_routes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="web.html#web.web_door_opener.WebDoorOpener.setup_error_handlers"><code class="docutils literal notranslate"><span class="pre">WebDoorOpener.setup_error_handlers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#module-web">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fdia.html">fdia module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.log_level"><code class="docutils literal notranslate"><span class="pre">log_level</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.run_web_app"><code class="docutils literal notranslate"><span class="pre">run_web_app()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.thread_open_door"><code class="docutils literal notranslate"><span class="pre">thread_open_door()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.thread_door_bell"><code class="docutils literal notranslate"><span class="pre">thread_door_bell()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.thread_receive_telegram_msg"><code class="docutils literal notranslate"><span class="pre">thread_receive_telegram_msg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.thread_send_telegram_msg"><code class="docutils literal notranslate"><span class="pre">thread_send_telegram_msg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.camera_task"><code class="docutils literal notranslate"><span class="pre">camera_task()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.thread_cameras"><code class="docutils literal notranslate"><span class="pre">thread_cameras()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="fdia.html#fdia.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="CHANGELOG.html" class="btn btn-neutral float-left" title="Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by @OliverDrechsler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bot.html" class="btn btn-neutral float-right" title="bot package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
