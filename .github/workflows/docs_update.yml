@@ -46,7 +46,6 @@ jobs:
 
       - name: Build HTML
         run: |
-#          rm -rf docs/_build || true
           make html
         shell: bash
 
