@@ -96,7 +96,12 @@ jobs:
             echo "Tag $TAG already exists; skipping creation"
           else
             git tag "$TAG"
-            git push origin "$TAG"
+            if ! git push origin "$TAG" 2>&1; then
+              echo "⚠️  Failed to push tag. Check repository rules at:"
+              echo "https://github.com/${{ github.repository }}/rules?ref=refs%2Ftags%2F$TAG"
+              echo "tag_exists=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
             echo "tag_exists=false" >> $GITHUB_OUTPUT
           fi
 
