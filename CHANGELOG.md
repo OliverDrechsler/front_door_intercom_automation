@@ -1,3 +1,5 @@
+## Unreleased - 2025-11-25\n\n - Merge: Feature/ci release pipelines (#234) by @OliverDrechsler
+
 # ChangeLog
 # Release 1.0.8
 ## What's Changed
