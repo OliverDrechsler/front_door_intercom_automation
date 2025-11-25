@@ -26,6 +26,22 @@ class TestDoorBell(unittest.TestCase):
         # Ensure the GPIO mock is available in the door.bell module
         door.bell.GPIO = self.mock_gpio['RPi.GPIO']
         self.GPIO = self.mock_gpio['RPi.GPIO']
+        
+        self.loop = None
+    
+    def tearDown(self):
+        """Cleanup event loop after each test"""
+        if self.loop and not self.loop.is_closed():
+            try:
+                pending = asyncio.all_tasks(self.loop)
+                for task in pending:
+                    task.cancel()
+                # Run loop to process cancellations
+                self.loop.run_until_complete(asyncio.sleep(0))
+            except (RuntimeError, ValueError):
+                pass
+            finally:
+                self.loop.close()
 
     @patch('door.bell.detect_rpi.detect_rpi', return_value=True)
     def test_ring_on_rpi(self, mock_detect_rpi):
@@ -44,6 +60,7 @@ class TestDoorBell(unittest.TestCase):
         config.telegram_chat_nr = "test_chat_id"
         config.door_bell = 17  # pin number
         loop = asyncio.new_event_loop()
+        self.loop = loop  # Store reference for cleanup
         message_task_queue = queue.Queue()
         camera_task_queue_async = asyncio.Queue()
 
@@ -52,7 +69,9 @@ class TestDoorBell(unittest.TestCase):
         with patch('door.bell.datetime') as mock_datetime:
             mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
             with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
-                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock) as mock_put:
+                async def async_put_side_effect(item):
+                    pass
+                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock, side_effect=async_put_side_effect) as mock_put:
                     def stop_loop_after_first_press(*args, **kwargs):
                         # Set shutdown_event to stop the loop after first press
                         shutdown_event.set()
@@ -61,6 +80,13 @@ class TestDoorBell(unittest.TestCase):
                     original_sleep = time.sleep
                     with patch('time.sleep', side_effect=stop_loop_after_first_press):
                         door_bell.ring(test=True)
+                    # Cleanup any pending coroutines
+                    try:
+                        for task in asyncio.all_tasks(loop):
+                            task.cancel()
+                        loop.run_until_complete(asyncio.sleep(0))
+                    except RuntimeError:
+                        pass
 
         self.assertEqual(message_task_queue.qsize(), 1)
         self.assertEqual(mock_put.call_count, 1)
@@ -87,6 +113,7 @@ class TestDoorBell(unittest.TestCase):
         config.telegram_chat_nr = "test_chat_id"
         config.door_bell = 17  # pin number
         loop = asyncio.new_event_loop()
+        self.loop = loop  # Store reference for cleanup
         message_task_queue = queue.Queue()
         camera_task_queue_async = asyncio.Queue()
 
@@ -95,7 +122,9 @@ class TestDoorBell(unittest.TestCase):
         with patch('door.bell.datetime') as mock_datetime:
             mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
             with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
-                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock) as mock_put:
+                async def async_put_side_effect(item):
+                    pass
+                with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock, side_effect=async_put_side_effect) as mock_put:
                     def stop_after_one_ring(*args, **kwargs):
                         # Trigger shutdown_event after one loop to stop execution
                         shutdown_event.set()
@@ -104,6 +133,13 @@ class TestDoorBell(unittest.TestCase):
                     original_sleep = time.sleep
                     with patch('time.sleep', side_effect=stop_after_one_ring):
                         door_bell.ring(test=True)
+                    # Cleanup any pending coroutines
+                    try:
+                        for task in asyncio.all_tasks(loop):
+                            task.cancel()
+                        loop.run_until_complete(asyncio.sleep(0))
+                    except RuntimeError:
+                        pass
 
         self.assertEqual(message_task_queue.qsize(), 1)
         self.assertEqual(mock_put.call_count, 1)

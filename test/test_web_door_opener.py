@@ -24,10 +24,10 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         cls.mock_config.telegram_chat_nr = 123456789
         cls.mock_config.flask_browser_session_cookie_lifetime = 1
 
-        # Mock event and queues
+        # Mock event and queues - don't use asyncio.Queue in sync context
         cls.mock_shutdown_event = threading.Event()
         cls.mock_message_task_queue = queue.Queue()
-        cls.mock_camera_task_queue_async = asyncio.Queue()
+        cls.mock_camera_task_queue_async = MagicMock()  # Mock async queue instead of real asyncio.Queue
         cls.mock_door_open_task_queue = queue.Queue()
 
         # Create a new event loop for each test
@@ -89,6 +89,12 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         hashed_password = generate_password_hash('testpassword')
         self.web_door_opener.users = {'testuser': hashed_password}
         self.web_door_opener.browsers = ["werkzeug"]
+        
+        # Mock the async queue put method to return a coroutine
+        async def async_put(item):
+            pass
+        self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
+        
         login_response = self.client.post('/login', data={'username': 'testuser', 'password': 'testpassword'})
         response = self.client.post('/open', json={'totp': '123456'})
         self.assertEqual(201, response.status_code)
@@ -99,6 +105,12 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         hashed_password = generate_password_hash('testpassword')
         self.web_door_opener.users = {'testuser': hashed_password}
         self.web_door_opener.browsers = ["api_call"]
+        
+        # Mock the async queue put method to return a coroutine
+        async def async_put(item):
+            pass
+        self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
+        
         auth_header = {
             'Authorization': 'Basic ' + b64encode(b'testuser:testpassword').decode('utf-8')
         }
@@ -143,8 +155,17 @@ class WebDoorOpenerTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         # Stop and close the event loop
-        cls.loop.stop()
-        cls.loop.close()
+        try:
+            # Cancel all remaining tasks
+            pending = asyncio.all_tasks(cls.loop)
+            for task in pending:
+                task.cancel()
+            # Run the loop one more time to process cancellations
+            cls.loop.run_until_complete(asyncio.sleep(0))
+            cls.loop.stop()
+            cls.loop.close()
+        except Exception:
+            pass
 
 if __name__ == '__main__':
     unittest.main()

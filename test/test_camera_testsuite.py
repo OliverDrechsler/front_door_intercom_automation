@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 from camera.camera import Camera
 from config import Camera_Task
 from config.config_util import Configuration
+from blinkpy.auth import BlinkTwoFARequiredError, UnauthorizedError
 
 
 class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
@@ -269,9 +270,12 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.mock_logger_debug.assert_any_call('refresh blink server info')
         self.mock_logger_debug.assert_any_call('a file already exists and will be deleted before hand')
 
-    @patch('camera.camera.Blink', autospec=True)
+    @patch('camera.camera.Blink', autospec=False)
     async def test_blink_snapshot_with_refresh_exception_(self, mock_blink):
         mock_blink_instance = mock_blink.return_value
+        mock_camera = MagicMock()
+        mock_camera.snap_picture = AsyncMock()
+        mock_blink_instance.cameras = {self.config.blink_name: mock_camera}
         mock_blink_instance.refresh = AsyncMock(side_effect=Exception("Refresh failed"))
         self.camera.blink = mock_blink_instance
 
@@ -281,14 +285,19 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         mock_blink_instance.refresh.assert_called_with(force=True)
         self.mock_logger_error.assert_any_call("Error: Refresh failed")
 
-    @patch('camera.camera.Blink', autospec=True)
-    @patch('camera.camera.aiohttp.ClientSession', autospec=True)
+    @patch('camera.camera.Blink', autospec=False)
+    @patch('camera.camera.aiohttp.ClientSession', autospec=False)
     async def test_blink_snapshot_with_snap_picture_exception(self, mock_client_session, mock_blink):
         mock_blink_instance = mock_blink.return_value
-        mock_blink_instance.refresh = AsyncMock()
-        mock_blink_instance.cameras = {self.config.blink_name: MagicMock()}
-        mock_camera_instance = mock_blink_instance.cameras[self.config.blink_name]
+        # Create an async mock that won't be called - create a coro and close it immediately to avoid warning
+        async def never_called():
+            pass
+        coro = never_called()
+        coro.close()
+        mock_blink_instance.refresh = MagicMock(return_value=coro)
+        mock_camera_instance = MagicMock()
         mock_camera_instance.snap_picture = AsyncMock(side_effect=Exception("Custom exception"))
+        mock_blink_instance.cameras = {self.config.blink_name: mock_camera_instance}
         mock_client_session_instance = mock_client_session.return_value
         self.camera.session = mock_client_session_instance
         self.camera.blink = mock_blink_instance
@@ -296,7 +305,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         result = await self.camera.blink_snapshot()
 
         self.assertFalse(result)
-        mock_blink_instance.refresh.assert_called_with(force=True)
+        mock_blink_instance.refresh.assert_not_called()
         mock_camera_instance.snap_picture.assert_called_once()
         self.mock_logger_error.assert_any_call("Error: Custom exception")
 
@@ -379,19 +388,16 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.camera.logger.info.assert_called_with("saving blink authenticated session infos into config file")
         self.assertTrue(result)
 
-    @patch('camera.camera.Auth.send_auth_key', new_callable=AsyncMock)
-    @patch('camera.camera.Blink.setup_post_verify', new_callable=AsyncMock)
-    async def test_add_2fa_blink_token(self, mock_setup_post_verify, mock_send_auth_key):
+    async def test_add_2fa_blink_token(self):
         task = Camera_Task(blink_mfa="123456")
         self.camera.blink = MagicMock()  # Set the blink attribute
-        self.camera.blink.auth = MagicMock()  # Set the auth attribute
-        self.camera.blink.auth.send_auth_key = mock_send_auth_key  # Mock the send_auth_key method
-        self.camera.blink.setup_post_verify = mock_setup_post_verify  # Mock the setup_post_verify method
+        self.camera.blink.send_2fa_code = AsyncMock()  # Mock the send_2fa_code method
+        self.camera.blink.setup_post_verify = AsyncMock(return_value=True)  # Mock the setup_post_verify method
 
         result = await self.camera.add_2fa_blink_token(task)
 
-        mock_send_auth_key.assert_called_once_with(self.camera.blink, "123456")
-        mock_setup_post_verify.assert_called_once()
+        self.camera.blink.send_2fa_code.assert_called_once_with("123456")
+        self.camera.blink.setup_post_verify.assert_called_once()
         self.camera.logger.debug.assert_any_call("add a 2FA token for authentication")
         self.camera.logger.debug.assert_any_call("verify 2FA token")
         self.camera.logger.info.assert_called_with("added 2FA token 123456")
@@ -502,6 +508,73 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         result = self.camera.adjust_image()
         mock_exists.assert_called_once_with(self.config.photo_image_path)
         self.assertFalse(result)
+
+    @patch('camera.camera.aiohttp.ClientSession', autospec=False)
+    @patch('camera.camera.Blink', autospec=False)
+    async def test_start_with_blink_two_fa_required_error(self, mock_blink, mock_session):
+        """Test start() method when BlinkTwoFARequiredError is raised"""
+        # Setup
+        mock_blink_instance = mock_blink.return_value
+        mock_blink_instance.start = AsyncMock(side_effect=BlinkTwoFARequiredError("2FA required"))
+        self.camera.blink = mock_blink_instance
+        
+        mock_session_instance = mock_session.return_value
+        mock_session_instance.close = AsyncMock()
+        self.camera.session = mock_session_instance
+        
+        # Set running flag to exit loop after first iteration
+        self.camera.running = False
+
+        # Execute
+        with patch.object(self.camera, 'read_blink_config', new_callable=AsyncMock):
+            await self.camera.start()
+        
+        # Assert
+        self.mock_logger_info.assert_any_call("BlinkTwoFARequiredError")
+        self.assertFalse(self.message_task_queue.empty())
+        message_task = self.message_task_queue.get()
+        self.assertIn("BlinkTwoFARequiredError", message_task.data_text)
+
+    @patch('camera.camera.aiohttp.ClientSession', autospec=False)
+    @patch('camera.camera.Blink', autospec=False)
+    @patch('pathlib.Path.exists', return_value=True)
+    @patch('pathlib.Path.unlink')
+    async def test_start_with_unauthorized_error_and_restart(self, mock_unlink, mock_exists, mock_blink, mock_session):
+        """Test start() method when UnauthorizedError is raised and restart is triggered"""
+        # Setup
+        mock_blink_instance = mock_blink.return_value
+        mock_blink_instance.start = AsyncMock(side_effect=UnauthorizedError("Unauthorized"))
+        self.camera.blink = mock_blink_instance
+        
+        mock_session_instance = mock_session.return_value
+        mock_session_instance.close = AsyncMock()
+        self.camera.session = mock_session_instance
+        
+        # Mock camera_task_queue to return None immediately to exit the while loop
+        self.camera.camera_task_queue_async.get = AsyncMock(return_value=None)
+        
+        # Execute
+        with patch.object(self.camera, 'read_blink_config', new_callable=AsyncMock):
+            def handle_create_task(coro):
+                # Close the coroutine to prevent warning
+                coro.close()
+                return MagicMock()
+            
+            with patch('camera.camera.asyncio.create_task', side_effect=handle_create_task) as mock_create_task:
+                await self.camera.start()
+        
+        # Assert
+        self.mock_logger_error.assert_any_call(
+            f"An authorization UnauthorizedError occured at  Blink start: Unauthorized"
+        )
+        self.assertTrue(self.camera.restart)
+        mock_create_task.assert_called_once()
+        self.assertFalse(self.message_task_queue.empty())
+        message_task = self.message_task_queue.get()
+        self.assertIn("UnauthorizedError", message_task.data_text)
+        self.mock_logger_info.assert_any_call(
+            f"{self.config.blink_config_file} deleted because authentication error."
+        )
 
 
 if __name__ == '__main__':

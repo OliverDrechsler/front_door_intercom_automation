@@ -14,19 +14,21 @@ def camera_setup():
     asyncio.set_event_loop(loop)
     camera_queue = asyncio.Queue()
     message_queue = MagicMock()
+    # Ensure message_queue.put returns None to prevent coroutine warnings
+    message_queue.put = MagicMock(return_value=None)
 
     with patch('camera.camera.Blink') as mock_blink, \
          patch('camera.camera.Auth') as mock_auth, \
          patch('camera.camera.json_load') as mock_json_load, \
          patch('camera.camera.aiohttp.ClientSession') as mock_session:
 
-        mock_blink_instance = AsyncMock()
+        mock_blink_instance = MagicMock()
         mock_blink_instance.start = AsyncMock()
         mock_blink.return_value = mock_blink_instance
 
         camera = Camera(config, loop, camera_queue, message_queue)
 
-        mock_session_instance = AsyncMock()
+        mock_session_instance = MagicMock()
         mock_session_instance.close = AsyncMock()
         mock_session.return_value = mock_session_instance
         camera.session = mock_session_instance
@@ -40,7 +42,16 @@ def camera_setup():
         yield camera, camera_queue, message_queue
 
     # Teardown
-    loop.close()
+    try:
+        # Cancel all pending tasks
+        pending = asyncio.all_tasks(loop)
+        for task in pending:
+            task.cancel()
+        loop.run_until_complete(asyncio.sleep(0))
+    except (RuntimeError, ValueError):
+        pass
+    finally:
+        loop.close()
 
 
 @pytest.mark.asyncio
@@ -68,7 +79,7 @@ async def test_start_picam_photo(camera_setup):
 async def test_start_choose_cam(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.picam_enabled = True
-    camera.choose_cam = MagicMock(return_value=True)
+    camera.choose_cam = AsyncMock(return_value=True)
     test_task = Camera_Task(photo=True, chat_id=123456)
     await camera_queue.put(test_task)
     await camera_queue.put(None)
