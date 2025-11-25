@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by @OliverDrechsler &mdash; Front door intercom automation 1.0.0 documentation</title>
+  <title>ChangeLog &mdash; Front door intercom automation 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -55,33 +55,66 @@
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#changelog">ChangeLog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#release-1-0-8">Release 1.0.8</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-11-3">Release 1.11.3</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changes">Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fixes">Fixes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-11-2">Release 1.11.2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-11-1">Release 1.11.1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-11">Release 1.11</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-s-changed">What’s Changed</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#features">🏕 Features</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#release-1-0-7">Release 1.0.7</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">What’s Changed</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">🏕 Features</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="#release-1-0-6">Release 1.0.6</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-10">Release 1.10</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id3">What’s Changed</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#exciting-new-features">Exciting New Features 🎉</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id4">🏕 Features</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#release-1-0-5">Release 1.0.5</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-9">Release 1.0.9</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id5">What’s Changed</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id6">Exciting New Features 🎉</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">🏕 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-8">Release 1.0.8</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id7">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">🏕 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-7">Release 1.0.7</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id9">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">🏕 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-6">Release 1.0.6</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id11">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exciting-new-features">Exciting New Features 🎉</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">🏕 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#release-1-0-5">Release 1.0.5</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id13">What’s Changed</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Exciting New Features 🎉</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies">👒 Dependencies</a></li>
 </ul>
 </li>
@@ -117,7 +150,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler</li>
+      <li class="breadcrumb-item active">ChangeLog</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/CHANGELOG.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -127,18 +160,112 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="unreleased-2025-11-25-n-n-merge-fix-release-process1-237-by-oliverdrechsler">
-<h1>Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by &#64;OliverDrechsler<a class="headerlink" href="#unreleased-2025-11-25-n-n-merge-fix-release-process1-237-by-oliverdrechsler" title="Link to this heading"></a></h1>
-</section>
-<section id="changelog">
+  <section id="changelog">
 <h1>ChangeLog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
 </section>
-<section id="release-1-0-8">
-<h1>Release 1.0.8<a class="headerlink" href="#release-1-0-8" title="Link to this heading"></a></h1>
+<section id="release-1-11-3">
+<h1>Release 1.11.3<a class="headerlink" href="#release-1-11-3" title="Link to this heading"></a></h1>
+<section id="changes">
+<h2>Changes<a class="headerlink" href="#changes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Intro new blinkpy authentication steps with oAuth.</p></li>
+<li><p>Updated library versions</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>blink authentication error</p></li>
+</ul>
+</section>
+</section>
+<section id="release-1-11-2">
+<h1>Release 1.11.2<a class="headerlink" href="#release-1-11-2" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2>Changes<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>chore: update CHANGELOG for PR #237 (#238)</p></li>
+</ul>
+<p><strong>Version bump type:</strong> default patch</p>
+</section>
+</section>
+<section id="release-1-11-1">
+<h1>Release 1.11.1<a class="headerlink" href="#release-1-11-1" title="Link to this heading"></a></h1>
+<section id="id2">
+<h2>Changes<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Fix/release process1 (#239)</p></li>
+<li><p>Fix/release process1 (#237)</p></li>
+<li><p>fix/release_process1: savepoint (#235)</p></li>
+<li><p>Feature/ci release pipelines (#234)</p></li>
+<li><p>Feature/ci release pipelines (#233)</p></li>
+<li><p>Update pyyaml from 6.0.2 to 6.0.3 (#227)</p></li>
+<li><p>Update click from 8.2.2 to 8.3.0 (#225)</p></li>
+<li><p>Scheduled weekly dependency update for week 37 (#224)</p></li>
+<li><p>Scheduled weekly dependency update for week 36 (#223)</p></li>
+<li><p>Update camera.py (#222)</p></li>
+<li><p>Scheduled weekly dependency update for week 30 (#221)</p></li>
+<li><p>fix: requirements.txt to reduce vulnerabilities (#220)</p></li>
+<li><p>fix: requirements.txt to reduce vulnerabilities (#219)</p></li>
+</ul>
+<p><strong>Version bump type:</strong> patch</p>
+</section>
+</section>
+<section id="release-1-11">
+<h1>Release 1.11<a class="headerlink" href="#release-1-11" title="Link to this heading"></a></h1>
 <section id="what-s-changed">
 <h2>What’s Changed<a class="headerlink" href="#what-s-changed" title="Link to this heading"></a></h2>
 <section id="features">
 <h3>🏕 Features<a class="headerlink" href="#features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Scheduled weekly dependency update for week 19 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/217</p></li>
+<li><p>Scheduled weekly dependency update for week 23 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/218</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.10…1.11</p>
+</section>
+</section>
+</section>
+<section id="release-1-10">
+<h1>Release 1.10<a class="headerlink" href="#release-1-10" title="Link to this heading"></a></h1>
+<section id="id3">
+<h2>What’s Changed<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="id4">
+<h3>🏕 Features<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>dependency update</p>
+<ul>
+<li><p>https://github.com/OliverDrechsler/front_door_intercom_automation/pull/209</p></li>
+<li><p>https://github.com/OliverDrechsler/front_door_intercom_automation/pull/210</p></li>
+<li><p>https://github.com/OliverDrechsler/front_door_intercom_automation/pull/211</p></li>
+<li><p>https://github.com/OliverDrechsler/front_door_intercom_automation/pull/215</p></li>
+<li><p>https://github.com/OliverDrechsler/front_door_intercom_automation/pull/216</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.9…1.10</p>
+</section>
+</section>
+</section>
+<section id="release-1-0-9">
+<h1>Release 1.0.9<a class="headerlink" href="#release-1-0-9" title="Link to this heading"></a></h1>
+<section id="id5">
+<h2>What’s Changed<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<section id="id6">
+<h3>🏕 Features<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation/commit/6042c77dcc86035fdb2b9ec148e97d0dea808902">added possibility to set DEBUG level via enironment variable</a></p>
+<ul class="simple">
+<li><p>fix timezone and location detection for dayloght detection under spec… by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/208</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.8…1.0.9</p>
+</section>
+</section>
+</section>
+<section id="release-1-0-8">
+<h1>Release 1.0.8<a class="headerlink" href="#release-1-0-8" title="Link to this heading"></a></h1>
+<section id="id7">
+<h2>What’s Changed<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<section id="id8">
+<h3>🏕 Features<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Scheduled weekly dependency update for week 06 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/206</p></li>
 <li><p>fix image_brightness config variable and added image contrast enhancement by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/207</p></li>
@@ -149,10 +276,10 @@
 </section>
 <section id="release-1-0-7">
 <h1>Release 1.0.7<a class="headerlink" href="#release-1-0-7" title="Link to this heading"></a></h1>
-<section id="id1">
-<h2>What’s Changed<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<section id="id2">
-<h3>🏕 Features<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<section id="id9">
+<h2>What’s Changed<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<section id="id10">
+<h3>🏕 Features<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>added adjust image for picam snapshots at night  by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205</p></li>
 <li><p>added unit tests for camera.py  by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205</p></li>
@@ -163,16 +290,16 @@
 </section>
 <section id="release-1-0-6">
 <h1>Release 1.0.6<a class="headerlink" href="#release-1-0-6" title="Link to this heading"></a></h1>
-<section id="id3">
-<h2>What’s Changed<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="id11">
+<h2>What’s Changed<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
 <section id="exciting-new-features">
 <h3>Exciting New Features 🎉<a class="headerlink" href="#exciting-new-features" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>add changelog generator pipeline by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/194</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>🏕 Features<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<section id="id12">
+<h3>🏕 Features<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Update CHANGELOG.md by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/195</p></li>
 <li><p>Scheduled weekly dependency update for week 48 by &#64;pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/196</p></li>
@@ -188,10 +315,10 @@
 </section>
 <section id="release-1-0-5">
 <h1>Release 1.0.5<a class="headerlink" href="#release-1-0-5" title="Link to this heading"></a></h1>
-<section id="id5">
-<h2>What’s Changed<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
-<section id="id6">
-<h3>Exciting New Features 🎉<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<section id="id13">
+<h2>What’s Changed<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<section id="id14">
+<h3>Exciting New Features 🎉<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>add release notes pipeline by &#64;OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/193</p></li>
 </ul>

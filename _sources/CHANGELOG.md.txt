@@ -1,6 +1,71 @@
-## Unreleased - 2025-11-25\n\n - Merge: Fix/release process1 (#237) by @OliverDrechsler
-
 # ChangeLog
+
+# Release 1.11.3
+### Changes
+- Intro new blinkpy authentication steps with oAuth.
+- Updated library versions
+
+### Fixes
+- blink authentication error
+
+# Release 1.11.2
+### Changes
+- chore: update CHANGELOG for PR #237 (#238)
+
+**Version bump type:** default patch
+
+
+# Release 1.11.1
+### Changes
+- Fix/release process1 (#239)
+- Fix/release process1 (#237)
+- fix/release_process1: savepoint (#235)
+- Feature/ci release pipelines (#234)
+- Feature/ci release pipelines (#233)
+- Update pyyaml from 6.0.2 to 6.0.3 (#227)
+- Update click from 8.2.2 to 8.3.0 (#225)
+- Scheduled weekly dependency update for week 37 (#224)
+- Scheduled weekly dependency update for week 36 (#223)
+- Update camera.py (#222)
+- Scheduled weekly dependency update for week 30 (#221)
+- fix: requirements.txt to reduce vulnerabilities (#220)
+- fix: requirements.txt to reduce vulnerabilities (#219)
+
+**Version bump type:** patch
+
+# Release 1.11
+## What's Changed
+### 🏕 Features
+* Scheduled weekly dependency update for week 19 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/217
+* Scheduled weekly dependency update for week 23 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/218
+
+
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.10...1.11
+
+
+# Release 1.10
+## What's Changed
+### 🏕 Features
+* dependency update 
+   - https://github.com/OliverDrechsler/front_door_intercom_automation/pull/209
+   - https://github.com/OliverDrechsler/front_door_intercom_automation/pull/210
+   - https://github.com/OliverDrechsler/front_door_intercom_automation/pull/211
+   - https://github.com/OliverDrechsler/front_door_intercom_automation/pull/215
+   - https://github.com/OliverDrechsler/front_door_intercom_automation/pull/216
+
+
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.9...1.10
+
+# Release 1.0.9
+## What's Changed
+### 🏕 Features
+[added possibility to set DEBUG level via enironment variable](https://github.com/OliverDrechsler/front_door_intercom_automation/commit/6042c77dcc86035fdb2b9ec148e97d0dea808902)
+
+* fix timezone and location detection for dayloght detection under spec… by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/208
+
+
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.8...1.0.9
+
 # Release 1.0.8
 ## What's Changed
 ### 🏕 Features
