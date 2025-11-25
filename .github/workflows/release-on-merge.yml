@@ -1,0 +1,119 @@
+name: Semantic Release on Merge to Master
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+
+permissions:
+  contents: write  # nötig um Tags und Releases zu erstellen
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # wir brauchen die gesamte Historie
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          git fetch --tags
+          TAG=$(git tag --sort=-creatordate | tail -n 1)
+          echo "latest_tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Determine next semantic version
+        id: next_tag
+        run: |
+          LATEST=${{ steps.get_latest_tag.outputs.latest_tag }}
+          if [ -z "$LATEST" ]; then
+            LATEST="v0.0.0"
+          fi
+          VERSION=$(echo $LATEST | sed 's/^v//')
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+
+          COMMITS=$(git log ${LATEST}..HEAD --pretty=format:"%s%n%b")
+
+          if echo "$COMMITS" | grep -q "BREAKING CHANGE"; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+            BUMP="major"
+          elif echo "$COMMITS" | grep -q "^feat"; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+            BUMP="minor"
+          elif echo "$COMMITS" | grep -q "^fix"; then
+            PATCH=$((PATCH + 1))
+            BUMP="patch"
+          else
+            PATCH=$((PATCH + 1))
+            BUMP="default patch"
+          fi
+
+          NEXT_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+
+          echo "next_tag=${NEXT_TAG}" >> $GITHUB_OUTPUT
+          echo "bump_type=${BUMP}" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          LATEST=${{ steps.get_latest_tag.outputs.latest_tag }}
+          if [ -z "$LATEST" ]; then
+            NOTES=$(git log --oneline)
+          else
+            NOTES=$(git log ${LATEST}..HEAD --pretty=format:"- %s")
+          fi
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create tag (if missing)
+        id: create_tag
+        run: |
+          TAG=${{ steps.next_tag.outputs.next_tag }}
+          git fetch --tags
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+            echo "Tag $TAG already exists; skipping creation"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if release exists for tag
+        id: check_release
+        run: |
+          TAG=${{ steps.next_tag.outputs.next_tag }}
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/$TAG")
+          echo "release_status=$STATUS" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release (if missing)
+        if: steps.check_release.outputs.release_status != '200'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.next_tag.outputs.next_tag }}
+          name: "Release ${{ steps.next_tag.outputs.next_tag }}"
+          body: |
+            ### Changes
+            ${{ steps.notes.outputs.notes }}
+
+            **Version bump type:** ${{ steps.next_tag.outputs.bump_type }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
