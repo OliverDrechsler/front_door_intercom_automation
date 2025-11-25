@@ -28,7 +28,8 @@ jobs:
         id: get_latest_tag
         run: |
           git fetch --tags
-          TAG=$(git tag --sort=-creatordate | tail -n 1)
+          # Get latest semantic version tag (with or without 'v' prefix)
+          TAG=$(git tag --sort=-version:refname | grep -
           echo "latest_tag=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Determine next semantic version
@@ -36,15 +37,20 @@ jobs:
         run: |
           LATEST=${{ steps.get_latest_tag.outputs.latest_tag }}
           if [ -z "$LATEST" ]; then
-            LATEST="v0.0.0"
+            LATEST="0.0.0"
           fi
+          # Remove 'v' prefix if present
           VERSION=$(echo $LATEST | sed 's/^v//')
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f2)
           PATCH=$(echo $VERSION | cut -d. -f3)
 
-          COMMITS=$(git log ${LATEST}..HEAD --pretty=format:"%s%n%b")
-
+          # Use proper commit range for log, handling both tagged and untagged repos
+          if [ "$LATEST" = "0.0.0" ]; then
+            COMMITS=$(git log --all --pretty=format:"%s%n%b")
+          else
+            COMMITS=$(git log $LATEST..HEAD --pretty=format:"%s%n%b")
+          fi
           if echo "$COMMITS" | grep -q "BREAKING CHANGE"; then
             MAJOR=$((MAJOR + 1))
             MINOR=0
@@ -62,7 +68,7 @@ jobs:
             BUMP="default patch"
           fi
 
-          NEXT_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          NEXT_TAG="${MAJOR}.${MINOR}.${PATCH}"
 
           echo "next_tag=${NEXT_TAG}" >> $GITHUB_OUTPUT
           echo "bump_type=${BUMP}" >> $GITHUB_OUTPUT
@@ -74,7 +80,8 @@ jobs:
           if [ -z "$LATEST" ]; then
             NOTES=$(git log --oneline)
           else
-            NOTES=$(git log ${LATEST}..HEAD --pretty=format:"- %s")
+            NOTES=$(git log $LATEST..HEAD --pretty=format:"- %s")
+
           fi
           echo "notes<<EOF" >> $GITHUB_OUTPUT
           echo "$NOTES" >> $GITHUB_OUTPUT

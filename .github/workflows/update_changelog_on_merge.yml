@@ -46,12 +46,23 @@ jobs:
       - name: Commit and push CHANGELOG
         env:
           BASE_REF: "${{ github.event.pull_request.base.ref }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         run: |
           git add CHANGELOG.md
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
+          # Create a new branch for the changelog update
+          BRANCH_NAME="changelog/update-pr-${{ github.event.pull_request.number }}"
+          git checkout -b "$BRANCH_NAME"
           git commit -m "chore: update CHANGELOG for PR #${{ github.event.pull_request.number }}"
-          # push to the base branch of the PR
-          git push origin HEAD:${BASE_REF}
+          git push origin "$BRANCH_NAME"
+          
+          # Create a pull request
+          gh pr create \
+            --title "chore: update CHANGELOG for PR #${{ github.event.pull_request.number }}" \
+            --body "Automatic CHANGELOG update from merged PR #${{ github.event.pull_request.number }}" \
+            --base "${BASE_REF}" \
+            --head "$BRANCH_NAME"
