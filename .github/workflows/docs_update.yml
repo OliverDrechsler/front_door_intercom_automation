@@ -46,64 +46,69 @@ jobs:
 
       - name: Build HTML
         run: |
-          rm -rf docs/_build || true
+#          rm -rf docs/_build || true
           make html
         shell: bash
 
-      - name: Debug git state
-        run: |
-          echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
-          git status --porcelain --untracked-files=no || true
-          git remote -v || true
+      - name: Run ghp-import
+        run: | 
+          ghp-import -n -p -f _build/html
         shell: bash
 
-      - name: Ensure git user is configured
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          echo "git user configured:" $(git config user.name) $(git config user.email)
-        shell: bash
-
-      - name: Inspect built HTML (short)
-        run: |
-          ls -la docs/_build/html | sed -n '1,200p' || true
-        shell: bash
-
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
-          publish_branch: gh-pages
-          keep_files: false
-
-      - name: Comment PR(s) with docs URL
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const commit = context.sha;
-
-            // Find PRs associated with the commit
-            const pulls = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner,
-              repo,
-              commit_sha: commit,
-            });
-
-            if (!pulls.data || pulls.data.length === 0) {
-              console.log('No PRs associated with this commit; skipping comment.');
-              return;
-            }
-
-            const url = `https://${owner}.github.io/${repo}/`;
-            for (const pr of pulls.data) {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: pr.number,
-                body: `Documentation deployed: ${url}`,
-              });
-            }
+#      - name: Debug git state
+#        run: |
+#          echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+#          git status --porcelain --untracked-files=no || true
+#          git remote -v || true
+#        shell: bash
+#
+#      - name: Ensure git user is configured
+#        run: |
+#          git config user.name "github-actions[bot]"
+#          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+#          echo "git user configured:" $(git config user.name) $(git config user.email)
+#        shell: bash
+#
+#      - name: Inspect built HTML (short)
+#        run: |
+#          ls -la docs/_build/html | sed -n '1,200p' || true
+#        shell: bash
+#
+#      - name: Deploy to gh-pages
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./docs/_build/html
+#          publish_branch: gh-pages
+#          keep_files: false
+#
+#      - name: Comment PR(s) with docs URL
+#        uses: actions/github-script@v6
+#        with:
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          script: |
+#            const owner = context.repo.owner;
+#            const repo = context.repo.repo;
+#            const commit = context.sha;
+#
+#            // Find PRs associated with the commit
+#            const pulls = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+#              owner,
+#              repo,
+#              commit_sha: commit,
+#            });
+#
+#            if (!pulls.data || pulls.data.length === 0) {
+#              console.log('No PRs associated with this commit; skipping comment.');
+#              return;
+#            }
+#
+#            const url = `https://${owner}.github.io/${repo}/`;
+#            for (const pr of pulls.data) {
+#              await github.rest.issues.createComment({
+#                owner,
+#                repo,
+#                issue_number: pr.number,
+#                body: `Documentation deployed: ${url}`,
+#              });
+#            }
