@@ -29,8 +29,12 @@ jobs:
         run: |
           git fetch --tags
           # Get latest semantic version tag (with or without 'v' prefix)
-          TAG=$(git tag --sort=-version:refname | grep -E '^[v]?[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-          echo "latest_tag=${TAG}" >> $GITHUB_OUTPUT
+          # Sort tags properly by converting them to a comparable format
+          TAG=$(git tag -l | grep -E '^[v]?[0-9]+\.[0-9]+(\.[0-9]+)?$' | sed 's/^v//' | sort -V | tail -n 1)
+          # Re-add 'v' prefix if original tag had it
+          ORIGINAL_TAG=$(git tag -l | grep -E "^[v]?${TAG}$" | tail -n 1)
+          echo "latest_tag=${ORIGINAL_TAG}" >> $GITHUB_OUTPUT
+          echo "Found latest tag: ${ORIGINAL_TAG}"
 
       - name: Determine next semantic version
         id: next_tag
