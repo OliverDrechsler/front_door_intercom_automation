@@ -128,6 +128,10 @@
 <li><p>shutdown interface and up again to activate settings <code class="docutils literal notranslate"><span class="pre">nmcli</span> <span class="pre">c</span> <span class="pre">down</span> <span class="pre">&quot;Wired</span> <span class="pre">connection</span> <span class="pre">1&quot;</span> <span class="pre">&amp;&amp;</span> <span class="pre">sudo</span> <span class="pre">nmcli</span> <span class="pre">c</span> <span class="pre">up</span> <span class="pre">&quot;Wired</span> <span class="pre">connection</span> <span class="pre">1&quot;</span></code></p></li>
 <li><p>show network config run <code class="docutils literal notranslate"><span class="pre">nmcli</span> <span class="pre">-p</span> <span class="pre">connection</span> <span class="pre">show</span> <span class="pre">&quot;Wired</span> <span class="pre">connection</span> <span class="pre">1&quot;</span></code></p></li>
 <li><p>Now it’s time to install required base software <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">mc</span> <span class="pre">git</span> <span class="pre">screen</span> <span class="pre">curl</span> <span class="pre">python3-pip</span> <span class="pre">python3.11-venv</span> <span class="pre">direnv</span></code></p></li>
+<li><p>For Raspberry PI 1 with less Ram disable RAM /tmp filesystem <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">mask</span> <span class="pre">tmp.mount</span></code> and <code class="docutils literal notranslate"><span class="pre">reboot</span></code></p></li>
+<li><p>disable for Raspberry Pi 1 WPA_SUPPLICANT <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">stop</span> <span class="pre">wpa_supplicant</span></code> &amp;&amp; <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">disable</span> <span class="pre">wpa_supplicant</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nano</span> <span class="pre">/boot/firmware/config.txt</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">dtoverlay=disable-wifi</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">/usr/local/bin</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/OliverDrechsler/front_door_intercom_automation.git</span></code> clone repo.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">front_door_intercom_automation</span></code></p></li>
@@ -143,6 +147,20 @@ layout python-venv $VIRTUAL_ENV
 </div>
 </li>
 <li><p>now run <code class="docutils literal notranslate"><span class="pre">direnv</span> <span class="pre">allow</span></code></p></li>
+<li><p>for pillow on python 3.13+ on RPi1 (armv6 old system install upo max version 12.0)</p></li>
+</ol>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>```
+apt install -y \
+    python3-dev python3-pip python3-setuptools python3-wheel \
+    libjpeg-dev zlib1g-dev libtiff5-dev libfreetype6-dev \
+    liblcms2-dev libwebp-dev libopenjp2-7-dev libjpeg62-turbo-dev \
+    tk-dev tcl-dev
+
+/usr/local/bin/front_door_intercom_automation/.venv/bin/pip3 install --no-cache-dir --force-reinstall Pillow
+```
+</pre></div>
+</div>
+<ol class="arabic simple" start="36">
 <li><p><code class="docutils literal notranslate"><span class="pre">.venv/bin/pip3</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code>to install required libs.</p></li>
 <li><p>configure now <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.venv/bin/python3</span> <span class="pre">-m</span> <span class="pre">fdia</span></code> test run</p></li>
