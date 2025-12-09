@@ -44,6 +44,17 @@ jobs:
           pip3 install sphinx sphinx-rtd-theme sphinx_md ghp-import myst-parser
         shell: bash
 
+      - name: Generate Changelog from GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "# ChangeLog" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          gh release list --limit 50 --exclude-drafts --exclude-pre-releases \
+            --json tagName,name,publishedAt,body \
+            --template '{{range .}}# {{.tagName}} - {{.name}} ({{timefmt "2006-01-02" .publishedAt}}){{"\n\n"}}{{.body}}{{"\n\n"}}{{end}}' >> CHANGELOG.md
+        shell: bash
+
       - name: Build HTML
         run: |
           make html
