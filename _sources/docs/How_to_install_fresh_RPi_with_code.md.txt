@@ -24,21 +24,30 @@
 19. show network config run `nmcli -p connection show "Wired connection 1"`
 20. Now it's time to install required base software `sudo apt install mc git screen curl python3-pip python3.11-venv direnv`
 21. For Raspberry PI 1 with less Ram disable RAM /tmp filesystem `systemctl mask tmp.mount` and `reboot`
-22. `cd /usr/local/bin`
-23. `git clone https://github.com/OliverDrechsler/front_door_intercom_automation.git` clone repo.
-24. `cd front_door_intercom_automation`
-25. `python3 -m venv .venv` create a python virtualenv.
-26. `chmod +x .venv/bin/activate`
-27. `.venv/bin/activate`
-28. add `eval "$(direnv hook bash)"`  to `~/.bashrc`
-29. run `source ~/.bashrc`
-30. create `.envrc`  in fdia dir and add lines 
+22. Remark: With RPi 1 and Debian Trixi above you need to install 
+    ```
+    apt install -y \
+    python3-dev python3-pip python3-setuptools python3-wheel \
+    libjpeg-dev zlib1g-dev libtiff5-dev libfreetype6-dev \
+    liblcms2-dev libwebp-dev libopenjp2-7-dev libjpeg62-turbo-dev \
+    tk-dev tcl-dev
+    ```
+    Because for Pillow 12 on Python 3.13 above it need to be recompiled.
+23. `cd /usr/local/bin`
+24. `git clone https://github.com/OliverDrechsler/front_door_intercom_automation.git` clone repo.
+25. `cd front_door_intercom_automation`
+26. `python3 -m venv .venv` create a python virtualenv.
+27. `chmod +x .venv/bin/activate`
+28. `.venv/bin/activate`
+29. add `eval "$(direnv hook bash)"`  to `~/.bashrc`
+30. run `source ~/.bashrc`
+31. create `.envrc`  in fdia dir and add lines 
     ```
     export VIRTUAL_ENV=./.venv
     layout python-venv $VIRTUAL_ENV
     ```
-31.  now run `direnv allow`
-32.  for pillow on python 3.13+ on RPi1 (armv6 old system install upo max version 12.0) 
+32.  now run `direnv allow`
+33.  for pillow on python 3.13+ on RPi1 (armv6 old system install upo max version 12.0) 
     ```
     apt install -y \
         python3-dev python3-pip python3-setuptools python3-wheel \
@@ -48,15 +57,16 @@
 
     /usr/local/bin/front_door_intercom_automation/.venv/bin/pip3 install --no-cache-dir --force-reinstall Pillow
     ```
-33.  `.venv/bin/pip3 install -r requirements.txt`to install required libs.
-34.    configure now `config.yaml`
-35. `.venv/bin/python3 -m fdia` test run
-36. Edit file `fdia.service` and adjust to your path to `ExecStart=/usr/local/bin/front_door_intercom_automation/.venv/bin/python3 /usr/local/bin/front_door_intercom_automation/fdia.py`  because python fdia code runs in python virtualenv therefore we've to call this python3 executable before.
-37. To run fdia as a service on startup with root permissions  
+34.  `.venv/bin/pip3 install -r requirements.txt`to install required libs.
+35.    configure now `config.yaml`
+36. `.venv/bin/python3 -m fdia` test run
+37. Edit file `fdia.service` and adjust to your path to `ExecStart=/usr/local/bin/front_door_intercom_automation/.venv/bin/python3 /usr/local/bin/front_door_intercom_automation/fdia.py`  because python fdia code runs in python virtualenv therefore we've to call this python3 executable before.
+38. To run fdia as a service on startup with root permissions  
     copy `fdia.service`to `/etc/systemd/system/`to your RPi systemd deamon folder.  
-38. Run `systemctl daemon-reload` and `systemctl start fdia`to start it as a service.
-39. check log output `journalctl -xu fdia -f`
-40. activate new service `systemctl enable fdia.service`
+39. activate new service `systemctl enable fdia.service`
+40. Run `systemctl daemon-reload` and `systemctl start fdia`to start it as a service.
+41. check log output `journalctl -xu fdia -f`
+
 
 
 
