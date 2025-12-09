@@ -1,21 +1,57 @@
 # ChangeLog
 
-# Release 1.11.3
+# 1.11.6 - Release 1.11.6 (2025-12-08)
+
 ### Changes
-- Intro new blinkpy authentication steps with oAuth.
-- Updated library versions
+- Scheduled weekly dependency update for week 49 (#243)
+- master: savepoint
 
-### Fixes
-- blink authentication error
+**Version bump type:** default patch
 
-# Release 1.11.2
+
+
+# 1.11.5 - Release 1.11.5 (2025-12-06)
+
+### Changes
+- fix/urllib3-streaming-API-improperly-handles-highly-compressed-data: savepoint fix urllib (#242)
+
+**Version bump type:** patch
+
+
+
+# 1.11.4 - Release 1.11.4 (2025-12-01)
+
+### Changes
+- Update werkzeug from 3.1.3 to 3.1.4 (#241)
+- master: savepoint CHANGELOG update
+- master: savepoint
+- master: savepoint
+- master: savepoint
+
+**Version bump type:** default patch
+
+
+
+# 1.11.3 - Release 1.11.3 (2025-11-25)
+
+### Changes
+- Feature/new blink authentication changes and update lib versions (#240)
+
+**Version bump type:** default patch
+
+
+
+# 1.11.2 - Release 1.11.2 (2025-11-25)
+
 ### Changes
 - chore: update CHANGELOG for PR #237 (#238)
 
 **Version bump type:** default patch
 
 
-# Release 1.11.1
+
+# 1.11.1 - Release 1.11.1 (2025-11-25)
+
 ### Changes
 - Fix/release process1 (#239)
 - Fix/release process1 (#237)
@@ -33,7 +69,12 @@
 
 **Version bump type:** patch
 
-# Release 1.11
+
+
+# 1.11 - 1.11 (2025-06-10)
+
+<!-- Release notes generated using configuration in .github/release.yml at master -->
+
 ## What's Changed
 ### 🏕 Features
 * Scheduled weekly dependency update for week 19 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/217
@@ -43,7 +84,8 @@
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.10...1.11
 
 
-# Release 1.10
+# 1.10 - 1.10 (2025-05-11)
+
 ## What's Changed
 ### 🏕 Features
 * dependency update 
@@ -56,7 +98,9 @@
 
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.9...1.10
 
-# Release 1.0.9
+
+# 1.0.9 - 1.0.9 (2025-02-14)
+
 ## What's Changed
 ### 🏕 Features
 [added possibility to set DEBUG level via enironment variable](https://github.com/OliverDrechsler/front_door_intercom_automation/commit/6042c77dcc86035fdb2b9ec148e97d0dea808902)
@@ -66,7 +110,9 @@
 
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.8...1.0.9
 
-# Release 1.0.8
+
+# 1.0.8 - 1.0.8 (2025-02-10)
+
 ## What's Changed
 ### 🏕 Features
 * Scheduled weekly dependency update for week 06 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/206
@@ -75,7 +121,11 @@
 
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.7...1.0.8
 
-# Release 1.0.7
+
+# 1.0.7 - 1.0.7 (2025-02-09)
+
+<!-- Release notes generated using configuration in .github/release.yml at master -->
+
 ## What's Changed
 ### 🏕 Features
 - added adjust image for picam snapshots at night  by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205
@@ -83,7 +133,11 @@
 
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.6...1.0.7
 
-# Release 1.0.6
+
+# 1.0.6 - 1.0.6 (2025-02-02)
+
+<!-- Release notes generated using configuration in .github/release.yml at master -->
+
 ## What's Changed
 ### Exciting New Features 🎉
 * add changelog generator pipeline by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/194
@@ -96,12 +150,12 @@
 * Fix/picam request exceptions by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/203
 * Breaking change fix daylight detection from timezone utc to local timezone needs adjustment in config file by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/204
 
+
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.5...1.0.6
 
 
+# 1.0.5 - 1.0.5 (2024-11-25)
 
-
-# Release 1.0.5
 ## What's Changed
 ### Exciting New Features 🎉
 * add release notes pipeline by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/193
@@ -113,39 +167,53 @@
 * Scheduled weekly dependency update for week 45 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/190
 * Scheduled weekly dependency update for week 46 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/191
 * Scheduled weekly dependency update for week 47 https://github.com/OliverDrechsler/front_door_intercom_automation/pull/192
+
+
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.4...1.0.5
 
-## Release 1.0.4
+
+# 1.0.4 - 1.0.4 (2024-08-22)
+
+# Release 1.0.4
 - bumped lib versions
 - updated doc readme.md
 - added unit tests for tools scripts
 - translated static web-ui page from german to english
 
-## Release 1.0.3
-- fix camera PiCam_API download filename
 
-## Release 1.0.2
-- add: door bell gpio button bouncer time 
-- add: enable option for door bell detection 
-- add: enable option for door opening relais board 
-- add: enable option for flask web ui and rest-api 
-- refactor: web log messages 
-- refactor fdia.service 
-- updated: README.md 
-- updated: How_to_install_fresh_RPi_with_Code.md 
+# 1.0.3 -  (2024-08-06)
+
+fix camera  PiCam_API download filename
+
+
+# 1.0.2 - 1.0.2 (2024-08-05)
+
+- add: door bell gpio button bouncer time
+- add: enable option for door bell detection
+- add: enable option for door opening relais board
+- add: enable option for flask web ui and rest-api
+- refactor: web log messages
+- refactor fdia.service
+- updated: README.md
+- updated: How_to_install_fresh_RPi_with_Code.md
 - bump: version updates for:
-  - Update requests from 2.32.2 to 2.32.3 
-  - Update pyTelegramBotAPI from 4.21.0 to 4.22.0. 
+  - Update requests from 2.32.2 to 2.32.3
+  - Update pyTelegramBotAPI from 4.21.0 to 4.22.0.
   - Update aiohttp from 3.9.5 to 3.10.1.
 
-## Release 1.0.1 
-- LICENSE change from GPLv2 to MIT
-- small refactor, 
-- fix camera async
-- migrated from GPIOZERO to RPI.GPIO library
-- web ui add flask host ip
+
+
+# 1.0.1 - 1.0.1 (2024-07-31)
+
+## What's Changed
+- **changed license from GPLv2 to MIT**
 - added more unit tests
-- updated documentation
+- updated docu
+- updated flask settings,
+- refactor bell.py
+- migrated from GPIOZero to Rui.GPIO library
+* Fix/camera door bell web UI by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/173
+
 
 ## Release 1.0.0  - CODE REFACTORED - DOCU UPDATED
 - New version with new feature like:

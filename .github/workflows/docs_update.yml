@@ -1,9 +1,10 @@
 name: build github_pages documentation
 on:
   push:
+    # branches: "**"
      branches:
       - master
-#    branches:  "*"
+
 
 permissions:
   contents: write
@@ -42,6 +43,15 @@ jobs:
         run: |
           pip3 install -r requirements.txt
           pip3 install sphinx sphinx-rtd-theme sphinx_md ghp-import myst-parser
+        shell: bash
+
+      - name: Generate Changelog from GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "# ChangeLog" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          gh api repos/${{ github.repository }}/releases?per_page=50 --jq '.[] | select(.draft==false and .prerelease==false) | "# " + .tag_name + " - " + (.name // .tag_name) + " (" + (.published_at | split("T")[0]) + ")\n\n" + (.body // "") + "\n\n"' >> CHANGELOG.md
         shell: bash
 
       - name: Build HTML
