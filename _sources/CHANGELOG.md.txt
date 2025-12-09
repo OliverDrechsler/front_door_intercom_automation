@@ -1,5 +1,14 @@
 # ChangeLog
 
+# 1.11.7 - Release 1.11.7 (2025-12-09)
+
+### Changes
+- Feature/pipeline build doc auto update changelog (#244)
+
+**Version bump type:** default patch
+
+
+
 # 1.11.6 - Release 1.11.6 (2025-12-08)
 
 ### Changes
