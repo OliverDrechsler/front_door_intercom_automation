@@ -51,9 +51,7 @@ jobs:
         run: |
           echo "# ChangeLog" > CHANGELOG.md
           echo "" >> CHANGELOG.md
-          gh release list --limit 50 --exclude-drafts --exclude-pre-releases \
-            --json tagName,name,publishedAt,body \
-            --template '{{range .}}# {{.tagName}} - {{.name}} ({{timefmt "2006-01-02" .publishedAt}}){{"\n\n"}}{{.body}}{{"\n\n"}}{{end}}' >> CHANGELOG.md
+          gh api repos/${{ github.repository }}/releases?per_page=50 --jq '.[] | select(.draft==false and .prerelease==false) | "# " + .tag_name + " - " + (.name // .tag_name) + " (" + (.published_at | split("T")[0]) + ")\n\n" + (.body // "") + "\n\n"' >> CHANGELOG.md
         shell: bash
 
       - name: Build HTML
