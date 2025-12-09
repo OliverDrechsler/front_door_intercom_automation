@@ -1,9 +1,9 @@
 name: build github_pages documentation
 on:
   push:
-    branches: "**"
-    #  branches:
-    #   - master
+    # branches: "**"
+     branches:
+      - master
 
 
 permissions:
