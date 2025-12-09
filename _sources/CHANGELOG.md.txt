@@ -122,7 +122,7 @@
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.7...1.0.8
 
 
-# 1.0.7 - 1.0.7 (2025-02-09)
+# 1.0.7 - Release 1.0.7 (2025-02-09)
 
 <!-- Release notes generated using configuration in .github/release.yml at master -->
 
@@ -134,7 +134,7 @@
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.6...1.0.7
 
 
-# 1.0.6 - 1.0.6 (2025-02-02)
+# 1.0.6 - Release 1.0.6 (2025-02-02)
 
 <!-- Release notes generated using configuration in .github/release.yml at master -->
 
@@ -154,7 +154,7 @@
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.5...1.0.6
 
 
-# 1.0.5 - 1.0.5 (2024-11-25)
+# 1.0.5 - Release 1.0.5 (2024-11-25)
 
 ## What's Changed
 ### Exciting New Features 🎉
@@ -172,22 +172,24 @@
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.4...1.0.5
 
 
-# 1.0.4 - 1.0.4 (2024-08-22)
+# 1.0.4 - Release 1.0.4 (2024-08-22)
 
-# Release 1.0.4
+## Changes
 - bumped lib versions
 - updated doc readme.md
 - added unit tests for tools scripts
 - translated static web-ui page from german to english
 
 
-# 1.0.3 -  (2024-08-06)
+# 1.0.3 - Release 1.0.3 (2024-08-06)
 
+## Changes
 fix camera  PiCam_API download filename
 
 
-# 1.0.2 - 1.0.2 (2024-08-05)
+# 1.0.2 - Release 1.0.2 (2024-08-05)
 
+## Changes
 - add: door bell gpio button bouncer time
 - add: enable option for door bell detection
 - add: enable option for door opening relais board
@@ -203,9 +205,9 @@ fix camera  PiCam_API download filename
 
 
 
-# 1.0.1 - 1.0.1 (2024-07-31)
+# 1.0.1 - Release 1.0.1 (2024-07-31)
 
-## What's Changed
+## Changes
 - **changed license from GPLv2 to MIT**
 - added more unit tests
 - updated docu
@@ -218,13 +220,33 @@ fix camera  PiCam_API download filename
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.0...1.0.1
 
 
-# 1.0.0 -  (2024-07-18)
+# 1.0.0 - Release 1.0.0  - CODE REFACTORED - DOCU UPDATED (2024-07-18)
+
+## Changes
+- New version with new feature like:
+  python 3.10, 3.11, 3.12 support (deprecated 3.9 and below)
+- WebApp, with browser page and rest api for opening 
+- migrated to pyTelegramBotAPI 
+- updated blinkpy to asyncio 
+- daylight and night vision detect to choose camera 
+- multi threading 
+- using pyOTP instead passlib 
+- detecting Pi Hardware native
 
 
+# v0.0.5 - Release 0.0.5 -  and below uses and supports (2022-04-18)
+
+## Changes
+- python below 3.8 and therefore older OS'es
+- telepot library
+- blinkpy library below 0.20.0
+
+By default older version are not recommended to use because of vulnerabilities.
+Use always latest version.
 
 
-# v0.0.5 - 0.0.5 (2022-04-18)
+## Previous Python Version releases
 
-libs updated
+**If you want use a release which works with python below 3.8 take a look at [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)** 
 
 
