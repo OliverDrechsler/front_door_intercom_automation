@@ -2,7 +2,7 @@ pyyaml==6.0.3
 RPi.GPIO==0.7.1
 urllib3==2.6.2
 requests==2.32.5
-blinkpy==0.24.1
+blinkpy==0.25.2
 astral==3.2
 Flask==3.1.2
 Flask_HTTPAuth==4.8.0
