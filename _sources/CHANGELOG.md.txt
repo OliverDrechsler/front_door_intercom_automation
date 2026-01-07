@@ -1,5 +1,14 @@
 # ChangeLog
 
+# 1.11.9 - Release 1.11.9 (2026-01-07)
+
+### Changes
+- Scheduled weekly dependency update for week 01 (#246)
+
+**Version bump type:** default patch
+
+
+
 # 1.11.8 - Release 1.11.8 (2025-12-15)
 
 ### Changes
