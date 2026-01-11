@@ -1,13 +1,13 @@
 pyyaml==6.0.3
 RPi.GPIO==0.7.1
-urllib3==2.6.2
+urllib3==2.6.3
 requests==2.32.5
 blinkpy==0.25.3
 astral==3.2
 Flask==3.1.2
 Flask_HTTPAuth==4.8.0
 Flask_Session==0.8.0
-Werkzeug==3.1.4
+Werkzeug==3.1.5
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
 astral==3.2
 pyotp==2.9.0
