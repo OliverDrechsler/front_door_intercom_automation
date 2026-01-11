@@ -1,5 +1,14 @@
 # ChangeLog
 
+# 1.11.10 - Release 1.11.10 (2026-01-11)
+
+### Changes
+- fix: requirements.txt to reduce vulnerabilities (#247)
+
+**Version bump type:** patch
+
+
+
 # 1.11.9 - Release 1.11.9 (2026-01-07)
 
 ### Changes
