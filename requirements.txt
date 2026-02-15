@@ -2,16 +2,15 @@ pyyaml==6.0.3
 RPi.GPIO==0.7.1
 urllib3==2.6.3
 requests==2.32.5
-blinkpy==0.25.3
+blinkpy==0.26.0b0
 astral==3.2
 Flask==3.1.2
 Flask_HTTPAuth==4.8.0
 Flask_Session==0.8.0
 Werkzeug==3.1.5
-zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
-astral==3.2
+zipp>=3.23.0
 pyotp==2.9.0
-pyTelegramBotAPI==4.29.1
+pyTelegramBotAPI==4.31.0
 asyncio==3.4.3
 aiohttp==3.13.3
 click==8.3.1
