@@ -1,5 +1,14 @@
 # ChangeLog
 
+# 1.11.12 - Release 1.11.12 (2026-02-15)
+
+### Changes
+- Fix/lib updates (#249)
+
+**Version bump type:** default patch
+
+
+
 # 1.11.11 - Release 1.11.11 (2026-02-15)
 
 ### Changes
