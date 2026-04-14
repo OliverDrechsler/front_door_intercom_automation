@@ -6,6 +6,8 @@
 ![Static Badge](https://img.shields.io/badge/Python-v.3.10-green)
 ![Static Badge](https://img.shields.io/badge/Python-v.3.11-green)
 ![Static Badge](https://img.shields.io/badge/Python-v.3.12-green)  
+![Static Badge](https://img.shields.io/badge/Python-v.3.13-green)
+![Static Badge](https://img.shields.io/badge/Python-v.3.14-green)
 
 [![FDIa](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/ci.yml)
 [![build github_pages](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml/badge.svg)](https://github.com/OliverDrechsler/front_door_intercom_automation/actions/workflows/docs_update.yml)
