@@ -62,7 +62,7 @@ class TestDoorOpener(unittest.TestCase):
 
     def test_open_door_successful(self):
         # Test the open_door method when running on a Raspberry Pi
-        result = self.door_opener.open_door()
+        result = self.door_opener._DoorOpener__open_door()
         self.assertTrue(result)
         self.GPIO.setmode.assert_called_once_with(self.GPIO.BCM)
         self.GPIO.setup.assert_called_once_with(self.mock_config.door_summer, self.GPIO.OUT)
@@ -72,7 +72,7 @@ class TestDoorOpener(unittest.TestCase):
     def test_open_door_not_on_rpi(self):
         # Test the open_door method when not running on a Raspberry Pi
         self.mock_detect_rpi.return_value = False
-        result = self.door_opener.open_door()
+        result = self.door_opener._DoorOpener__open_door()
         self.assertFalse(result)
         self.GPIO.setmode.assert_not_called()
 

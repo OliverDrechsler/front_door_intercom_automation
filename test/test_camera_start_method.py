@@ -37,7 +37,7 @@ def camera_setup():
             camera.blink.auth = AsyncMock()
             return
 
-        camera.read_blink_config = mock_read_config
+        camera._Camera__read_blink_config = mock_read_config
         
         yield camera, camera_queue, message_queue
 
@@ -58,16 +58,16 @@ def camera_setup():
 async def test_start_picam_photo(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.picam_enabled = True
-    camera.picam_request_take_foto = MagicMock(return_value=True)
-    camera.picam_request_download_foto = MagicMock(return_value=True)
+    camera._Camera__picam_request_take_foto = MagicMock(return_value=True)
+    camera._Camera__picam_request_download_foto = MagicMock(return_value=True)
     test_task = Camera_Task(picam_photo=True, chat_id=123456)
     await camera_queue.put(test_task)
     await camera_queue.put(None)  # Stoppsignal
     
     await camera.start()
     
-    camera.picam_request_take_foto.assert_called_once()
-    camera.picam_request_download_foto.assert_called_once()
+    camera._Camera__picam_request_take_foto.assert_called_once()
+    camera._Camera__picam_request_download_foto.assert_called_once()
     message_queue.put.assert_called_once()
     call_args = message_queue.put.call_args[0][0]
     assert isinstance(call_args, Message_Task)
@@ -79,36 +79,36 @@ async def test_start_picam_photo(camera_setup):
 async def test_start_choose_cam(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.picam_enabled = True
-    camera.choose_cam = AsyncMock(return_value=True)
+    camera._Camera__choose_cam = AsyncMock(return_value=True)
     test_task = Camera_Task(photo=True, chat_id=123456)
     await camera_queue.put(test_task)
     await camera_queue.put(None)
 
     await camera.start()
 
-    camera.choose_cam.assert_called_once()
+    camera._Camera__choose_cam.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_start_blink_photo(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.blink_enabled = True
-    camera._blink_foto_helper = MagicMock(return_value=True)
+    camera._Camera__blink_foto_helper = MagicMock(return_value=True)
     test_task = Camera_Task(blink_photo=True, chat_id=123456)
     await camera_queue.put(test_task)
     await camera_queue.put(None)
 
     await camera.start()
 
-    camera._blink_foto_helper.assert_called_once()
+    camera._Camera__blink_foto_helper.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_start_blink_mfa_success(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.blink_enabled = True
-    camera.add_2fa_blink_token = AsyncMock(return_value=True)
-    camera.save_blink_config = AsyncMock(return_value=True)
+    camera._Camera__add_2fa_blink_token = AsyncMock(return_value=True)
+    camera._Camera__save_blink_config = AsyncMock(return_value=True)
     mock_logger_info = MagicMock()
     mock_logger_debug = MagicMock()
     mock_logger_error = MagicMock()
@@ -121,8 +121,8 @@ async def test_start_blink_mfa_success(camera_setup):
 
     await camera.start()
 
-    camera.add_2fa_blink_token.assert_called_once()
-    camera.save_blink_config.assert_called_once()
+    camera._Camera__add_2fa_blink_token.assert_called_once()
+    camera._Camera__save_blink_config.assert_called_once()
     message_queue.put.assert_called_once()
     call_args = message_queue.put.call_args[0][0]
     assert isinstance(call_args, Message_Task)
@@ -142,8 +142,8 @@ async def test_start_blink_mfa_success(camera_setup):
 async def test_start_blink_mfa_saved_failed(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.blink_enabled = True
-    camera.add_2fa_blink_token = AsyncMock(return_value=True)
-    camera.save_blink_config = AsyncMock(return_value=False)
+    camera._Camera__add_2fa_blink_token = AsyncMock(return_value=True)
+    camera._Camera__save_blink_config = AsyncMock(return_value=False)
     mock_logger_info = MagicMock()
     mock_logger_debug = MagicMock()
     mock_logger_error = MagicMock()
@@ -156,8 +156,8 @@ async def test_start_blink_mfa_saved_failed(camera_setup):
 
     await camera.start()
 
-    camera.add_2fa_blink_token.assert_called_once()
-    camera.save_blink_config.assert_called_once()
+    camera._Camera__add_2fa_blink_token.assert_called_once()
+    camera._Camera__save_blink_config.assert_called_once()
     message_queue.put.assert_called_once()
     call_args = message_queue.put.call_args[0][0]
     assert isinstance(call_args, Message_Task)
@@ -179,7 +179,7 @@ async def test_start_blink_mfa_saved_failed(camera_setup):
 async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.blink_enabled = True
-    camera.add_2fa_blink_token = AsyncMock(return_value=False)
+    camera._Camera__add_2fa_blink_token = AsyncMock(return_value=False)
     mock_logger_info = MagicMock()
     mock_logger_debug = MagicMock()
     mock_logger_error = MagicMock()
@@ -192,7 +192,7 @@ async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
 
     await camera.start()
 
-    camera.add_2fa_blink_token.assert_called_once()
+    camera._Camera__add_2fa_blink_token.assert_called_once()
     message_queue.put.assert_called_once()
     call_args = message_queue.put.call_args[0][0]
     assert isinstance(call_args, Message_Task)
@@ -213,7 +213,7 @@ async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
 async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.picam_enabled = True
-    camera._picam_foto_helper = AsyncMock(side_effect=Exception('picam_request_take_foto'))
+    camera._Camera__picam_foto_helper = AsyncMock(side_effect=Exception('picam_request_take_foto'))
     test_task = Camera_Task(picam_photo=True, chat_id=123456)
     await camera_queue.put(test_task)
     await camera_queue.put(None)
@@ -229,7 +229,7 @@ async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
 
     await camera.start()
 
-    camera._picam_foto_helper.assert_called_once()
+    camera._Camera__picam_foto_helper.assert_called_once()
     mock_logger_info.assert_any_call(
         "asyncthread received task: Camera_Task(chat_id=123456, message=None, reply=False, photo=False, blink_photo=False, picam_photo=True, blink_mfa=False)")
     mock_logger_info.assert_any_call("processing task.picam_photo: True")

@@ -54,11 +54,11 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message.from_user.id = "111"
         mock_message.text = "123456"
 
-        self.receiving_message.get_allowed = MagicMock(return_value=True)
-        self.receiving_message.validate_msg_text_has_code = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__validate_msg_text_has_code = MagicMock(return_value=True)
 
         self.receiving_message.receive_any_msg_text(mock_message)
-        self.receiving_message.validate_msg_text_has_code.assert_called_once_with(message=mock_message)
+        self.receiving_message._ReceivingMessage__validate_msg_text_has_code.assert_called_once_with(message=mock_message)
 
     @patch('telebot.types.Message')
     def test_take_foto(self, MockMessage):
@@ -66,7 +66,7 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message.chat.id = "123456"
         mock_message.from_user.id = "111"
 
-        self.receiving_message.get_allowed = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
 
         self.receiving_message.take_foto(mock_message)
         self.camera_task_queue_async.put.assert_called_once()
@@ -77,7 +77,7 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message.chat.id = "123456"
         mock_message.from_user.id = "111"
 
-        self.receiving_message.get_allowed = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
 
         self.receiving_message.take_picam_foto(mock_message)
         self.camera_task_queue_async.put.assert_called_once()
@@ -88,7 +88,7 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message.chat.id = "123456"
         mock_message.from_user.id = "111"
 
-        self.receiving_message.get_allowed = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
 
         self.receiving_message.take_blink_foto(mock_message)
         self.camera_task_queue_async.put.assert_called_once()
@@ -99,19 +99,19 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message.chat.id = "123456"
         mock_message.from_user.id = "111"
 
-        self.receiving_message.get_allowed = MagicMock(return_value=True)
-        self.receiving_message.rcv_blink_auth = MagicMock()
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__rcv_blink_auth = MagicMock()
 
         self.receiving_message.register_bink_authentication(mock_message)
-        self.receiving_message.rcv_blink_auth.assert_called_once_with(mock_message)
+        self.receiving_message._ReceivingMessage__rcv_blink_auth.assert_called_once_with(mock_message)
 
     @patch('telebot.types.Message')
     def test_get_allowed(self, MockMessage):
         mock_message = MockMessage()
         mock_message.chat.id = "123456"
-        self.receiving_message.get_allowed_user = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__get_allowed_user = MagicMock(return_value=True)
 
-        result = self.receiving_message.get_allowed(mock_message)
+        result = self.receiving_message._ReceivingMessage__get_allowed(mock_message)
         self.assertTrue(result)
 
     @patch('telebot.types.Message')
@@ -119,16 +119,16 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message = MockMessage()
         mock_message.from_user.id = "111"
 
-        result = self.receiving_message.get_allowed_user(mock_message)
+        result = self.receiving_message._ReceivingMessage__get_allowed_user(mock_message)
         self.assertTrue(result)
 
     def test_validate_msg_text_has_code(self):
         mock_message = MagicMock()
         mock_message.text = "123456"
 
-        self.receiving_message.verify_otp_code_in_msg = MagicMock(return_value=True)
+        self.receiving_message._ReceivingMessage__verify_otp_code_in_msg = MagicMock(return_value=True)
 
-        result = self.receiving_message.validate_msg_text_has_code(mock_message)
+        result = self.receiving_message._ReceivingMessage__validate_msg_text_has_code(mock_message)
         self.assertTrue(result)
 
     @patch('telebot.types.Message')
@@ -139,7 +139,7 @@ class TestReceivingMessage(unittest.TestCase):
 
         MockVerify.return_value = True
 
-        result = self.receiving_message.verify_otp_code_in_msg(mock_message)
+        result = self.receiving_message._ReceivingMessage__verify_otp_code_in_msg(mock_message)
         self.assertTrue(result)
         self.assertFalse(self.door_open_task_queue.empty())
         task = self.door_open_task_queue.get()

@@ -77,9 +77,9 @@ class ReceivingMessage():
         Returns:
             None
         """
-        if self.get_allowed(message=message):
+        if self.__get_allowed(message=message):
             # check is message text has TOTP code and if correct open door, otherwise do nothing
-            self.validate_msg_text_has_code(message=message)
+            self.__validate_msg_text_has_code(message=message)
 
     def take_foto(self, message: telebot.types.Message) -> None:
         """
@@ -97,7 +97,7 @@ class ReceivingMessage():
         The camera task contains the chat ID, message, reply flag, and photo flag.
         """
         self.logger.debug(f"received foto request with message {message}")
-        if self.get_allowed(message=message):
+        if self.__get_allowed(message=message):
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, photo=True)), self.loop)
@@ -113,7 +113,7 @@ class ReceivingMessage():
             None
         """
         self.logger.debug(f"received /picam request with message {message}")
-        if self.get_allowed(message=message):
+        if self.__get_allowed(message=message):
             # start new thread for taking a foto
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
@@ -135,7 +135,7 @@ class ReceivingMessage():
         The camera task contains the chat ID, message, reply flag, and blink_photo flag.
         """
         self.logger.debug(f"received blink request with message {message}")
-        if self.get_allowed(message=message):
+        if self.__get_allowed(message=message):
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, blink_photo=True)), self.loop)
@@ -152,11 +152,11 @@ class ReceivingMessage():
             None
         """
         self.logger.debug(f"received /blink_auth request with message {message}")
-        if self.get_allowed(message=message):
+        if self.__get_allowed(message=message):
             # start new thread for taking a foto
-            self.rcv_blink_auth(message)
+            self.__rcv_blink_auth(message)
 
-    def rcv_blink_auth(self, message: telebot.types.Message) -> None:
+    def __rcv_blink_auth(self, message: telebot.types.Message) -> None:
 
         self.logger.debug(f"received blink token with message {message}")
         match = re.search(r'^/blink_auth (\d{6})$', message.text, re.IGNORECASE)
@@ -174,7 +174,7 @@ class ReceivingMessage():
         self.bot.reply_to(message=message, text="no blink token detected")
         return
 
-    def get_allowed(self, message: telebot.types.Message) -> bool:
+    def __get_allowed(self, message: telebot.types.Message) -> bool:
         """
         Checks if the message chat ID matches the configured Telegram chat number and calls get_allowed_user
         if the condition is met. Returns True if the user is allowed, False otherwise.
@@ -186,10 +186,10 @@ class ReceivingMessage():
             bool: True if the user is allowed, False otherwise.
         """
         if str(message.chat.id) == self.config.telegram_chat_nr:
-            return self.get_allowed_user(message=message)
+            return self.__get_allowed_user(message=message)
         return False
 
-    def get_allowed_user(self, message: telebot.types.Message) -> bool:
+    def __get_allowed_user(self, message: telebot.types.Message) -> bool:
         """
         Checks if the message from_user ID matches the configured allowed user IDs.
 
@@ -203,7 +203,7 @@ class ReceivingMessage():
             return True
         return False
 
-    def validate_msg_text_has_code(self, message: telebot.types.Message) -> bool:
+    def __validate_msg_text_has_code(self, message: telebot.types.Message) -> bool:
         """
         Validates if the message text contains a code number by using a regex search pattern.
         If a match is found, it calls the 'verify_otp_code_in_msg' method and returns the result.
@@ -222,12 +222,12 @@ class ReceivingMessage():
         self.logger.debug(msg="regex search string")
         match = re.search(regex_search, message.text, re.IGNORECASE)
         if match:
-            return self.verify_otp_code_in_msg(message=message)
+            return self.__verify_otp_code_in_msg(message=message)
 
         self.logger.debug(msg="no code number detected")
         return False
 
-    def verify_otp_code_in_msg(self, message: telebot.types.Message) -> bool:
+    def __verify_otp_code_in_msg(self, message: telebot.types.Message) -> bool:
         """
         Verifies if the received message text contains a valid TOTP code.
         If the code is valid, it logs a message and returns True.

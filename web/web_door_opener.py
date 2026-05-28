@@ -39,7 +39,7 @@ class WebDoorOpener:
             else:
                 auth = request.authorization
                 if not auth or not self.verify_password(auth.username, auth.password):
-                    return self.handle_401_unauthenticated()
+                    return self.__handle_401_unauthenticated()
             return f(self, *args, **kwargs)
 
         decorator.__name__ = f.__name__
@@ -112,9 +112,9 @@ class WebDoorOpener:
         self.log_level = logger.getEffectiveLevel()
 
         self.users = self.transform_values(self.create_password_hash)
-        self.setup_logging()
-        self.setup_routes()
-        self.setup_error_handlers()
+        self.__setup_logging()
+        self.__setup_routes()
+        self.__setup_error_handlers()
 
     def run(self):
         """
@@ -153,7 +153,7 @@ class WebDoorOpener:
             self.server.shutdown()
         self.logger.info("Shutting down web server - done!")
 
-    def setup_logging(self):
+    def __setup_logging(self):
         """
         Set up the logging configuration for the application.
 
@@ -185,7 +185,7 @@ class WebDoorOpener:
         self.app.logger.debug("Authentication: Failed: User %s used password %s", username, password)
         return None
 
-    def get_brwoser_session(self) -> bool:
+    def __get_browser_session(self) -> bool:
         """
         Check the user agent in the request headers to determine if it matches any of the specified browsers.
 
@@ -197,7 +197,7 @@ class WebDoorOpener:
             return True
         return False
 
-    def get_request_username(self) -> str:
+    def __get_request_username(self) -> str:
         """
         Get the username from the request. If the browser session is active, returns the username stored in the session or 'anonymous' if not found.
         If the browser session is not active, attempts to get the username from the request authorization.
@@ -206,7 +206,7 @@ class WebDoorOpener:
         Returns:
             str: The username obtained from the session or request authorization, or 'anonymous' if not found.
         """
-        if self.get_brwoser_session():
+        if self.__get_browser_session():
             return session.get('username', 'anonymous')
         else:
             req_auth = request.authorization
@@ -215,7 +215,7 @@ class WebDoorOpener:
             except AttributeError:
                 return 'anonymous'
 
-    def _get_request_remote_ip(self) -> str:
+    def __get_request_remote_ip(self) -> str:
         """
         Get the remote IP address of the request.
         Either returns the X-Forwarded-For header or the remote IP address from the request.
@@ -242,9 +242,9 @@ class WebDoorOpener:
             redirect: If the user is 'anonymous' and the endpoint is not 'login', 'favicon', or 'static'.
             handle_401_unauthenticated: If the user is 'anonymous' and there is no browser session.
         """
-        browser_session = self.get_brwoser_session()
-        user = self.get_request_username()
-        self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', self._get_request_remote_ip(), user, request.method, request.path)
+        browser_session = self.__get_browser_session()
+        user = self.__get_request_username()
+        self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', self.__get_request_remote_ip(), user, request.method, request.path)
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Request: ==========")
         self.app.logger.debug("")
@@ -258,13 +258,13 @@ class WebDoorOpener:
                 return redirect(url_for('login'))
         else:
             if (user == 'anonymous'):
-                return self.handle_401_unauthenticated()
+                return self.__handle_401_unauthenticated()
 
     def log_response_info(self, response):
         """
         Logs the response information including user, method, path, status, headers, and response data.
         """
-        user = self.get_request_username()
+        user = self.__get_request_username()
 
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Response: ==========")
@@ -324,7 +324,7 @@ class WebDoorOpener:
             - If the provided TOTP code is valid, the function sends a message to open the door and takes a photo, and returns a success response with status code 201 and a message "TOTP is valid! Opening!".
             - If the provided TOTP code is invalid, the function sends a message indicating the invalid TOTP code and returns a bad request response with a message "Invalid TOTP. Retry again -> will notify owner.".
         """
-        auth_user = self.get_request_username()
+        auth_user = self.__get_request_username()
         # auth_user = self.auth.current_user()
         data = request.get_json()
         web_input_totp = data.get('totp')
@@ -339,12 +339,12 @@ class WebDoorOpener:
             asyncio.run_coroutine_threadsafe(
                 self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
                 self.loop)
-            return self.handle_success_response(status_text="success", status=201, message="TOTP is valid! Opening!")
+            return self.__handle_success_response(status_text="success", status=201, message="TOTP is valid! Opening!")
         else:
             self.app.logger.warning('User %s send invalid TOTP %s', auth_user, web_input_totp)
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                      data_text=f"{auth_user} request TOTP code is invalid!"))
-            return self.handle_bad_request(message="Invalid TOTP. Retry again -> will notify owner.")
+            return self.__handle_bad_request(message="Invalid TOTP. Retry again -> will notify owner.")
 
     def handle_exception(self, e):
         """
@@ -355,7 +355,7 @@ class WebDoorOpener:
         :rtype: json
         """
         self.app.logger.error('Error: %s', str(e), exc_info=True)
-        return jsonify(self.error_response_json(status=500, error="Internal Server Error", message=str(e))), 500
+        return jsonify(self.__error_response_json(status=500, error="Internal Server Error", message=str(e))), 500
 
     def handle_not_found(self, error):
         """
@@ -365,9 +365,9 @@ class WebDoorOpener:
         :rtype: json
         """
         self.app.logger.error('Error: %s', str(error), exc_info=True)
-        return jsonify(self.error_response_json(status=404, error="NotFound", message=error.description)), 404
+        return jsonify(self.__error_response_json(status=404, error="NotFound", message=error.description)), 404
 
-    def handle_401_unauthenticated(self):
+    def __handle_401_unauthenticated(self):
         """
         Generates a JSON response for a 401 Unauthorized error.
 
@@ -379,14 +379,14 @@ class WebDoorOpener:
 
         """
         status = 401
-        resp = jsonify(self.error_response_json(status=status, error="Unauthorized",
+        resp = jsonify(self.__error_response_json(status=status, error="Unauthorized",
             message="Access Diened for resource! Authenticate first or send basic Authroization header."))
         resp.status_code = status
         resp.headers['WWW-Authenticate'] = 'Basic realm="Main"'
         resp.headers['Location'] = request.host_url + 'login'
         return resp
 
-    def handle_bad_request(self, message: str):
+    def __handle_bad_request(self, message: str):
         """
         A method to handle a bad request error response.
 
@@ -394,9 +394,9 @@ class WebDoorOpener:
         :return: JSON response with status 400, error details, and the status code 400.
         :rtype: json
         """
-        return jsonify(self.error_response_json(status=400, error="Bad Request", message=message)), 400
+        return jsonify(self.__error_response_json(status=400, error="Bad Request", message=message)), 400
 
-    def error_response_json(self, status, error, message) -> dict:
+    def __error_response_json(self, status, error, message) -> dict:
         """
         Returns a standard error response json
         :param status: Http Status code
@@ -407,7 +407,7 @@ class WebDoorOpener:
         """
         return {'timestamp': datetime.now(tz=timezone.utc), 'status': status, 'error': error, 'message': message}
 
-    def handle_success_response(self, status_text, status, message):
+    def __handle_success_response(self, status_text, status, message):
         """
         Handles to create a success json http response
         :param status_text: Http status code text
@@ -418,7 +418,7 @@ class WebDoorOpener:
         return jsonify({'timestamp': datetime.now(tz=timezone.utc), 'status': status, 'statusText': status_text,
             'message': message}), status
 
-    def setup_routes(self):
+    def __setup_routes(self):
         """
         Setup routes for various URLs in the web application.
         """
@@ -428,7 +428,7 @@ class WebDoorOpener:
         self.app.add_url_rule('/', 'index', self.index, methods=['GET'])
         self.app.add_url_rule('/open', 'open', self.open, methods=['POST'])
 
-    def setup_error_handlers(self):
+    def __setup_error_handlers(self):
         """
         Setup error handlers for the Flask application.
 
