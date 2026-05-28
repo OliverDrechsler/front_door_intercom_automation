@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock, patch, MagicMock, mock_open
 import threading
 import queue
+import time
 from config import config_util
 from config.data_class import Message_Task
 import telebot
@@ -56,6 +57,18 @@ class TestSendMessage(unittest.TestCase):
         self.send_message_instance.bot.stop_polling.assert_called_once()
         self.send_message_instance.bot.remove_webhook.assert_called_once()
         mock_info.assert_called()
+
+    def test_start_stops_when_shutdown_event_is_set(self):
+        worker = threading.Thread(target=self.send_message_instance.start)
+        worker.start()
+
+        time.sleep(0.1)
+        self.shutdown_event.set()
+        worker.join(timeout=1.5)
+
+        self.assertFalse(worker.is_alive())
+        self.send_message_instance.bot.stop_polling.assert_called_once()
+        self.send_message_instance.bot.remove_webhook.assert_called_once()
 
     @patch('logging.Logger.info')
     def test_send_message(self, mock_info):

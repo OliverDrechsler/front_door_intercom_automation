@@ -1,6 +1,5 @@
-__all__: list[str] = ["bell", "opener","detect_rpi"]
+from .bell import DoorBell
+from .detect_rpi import detect_rpi
+from .opener import DoorOpener
 
-from . import bell
-from . import opener
-from . import detect_rpi
-
+__all__: list[str] = ["DoorBell", "DoorOpener", "detect_rpi"]

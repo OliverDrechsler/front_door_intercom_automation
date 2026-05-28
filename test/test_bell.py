@@ -1,4 +1,5 @@
 import unittest
+from concurrent.futures import Future
 from unittest.mock import patch, MagicMock, AsyncMock
 import asyncio
 import threading
@@ -43,7 +44,14 @@ class TestDoorBell(unittest.TestCase):
             finally:
                 self.loop.close()
 
-    @patch('door.bell.detect_rpi.detect_rpi', return_value=True)
+    @staticmethod
+    def _mock_run_coroutine_threadsafe(coroutine, loop):
+        coroutine.close()
+        future = Future()
+        future.set_result(None)
+        return future
+
+    @patch('door.bell.detect_rpi', return_value=True)
     def test_ring_on_rpi(self, mock_detect_rpi):
         # Setup GPIO mocks
         self.GPIO.LOW = 0
@@ -59,6 +67,7 @@ class TestDoorBell(unittest.TestCase):
         config.run_on_raspberry = True
         config.telegram_chat_nr = "test_chat_id"
         config.door_bell = 17  # pin number
+        config.door_bell_bounce_time = 0
         loop = asyncio.new_event_loop()
         self.loop = loop  # Store reference for cleanup
         message_task_queue = queue.Queue()
@@ -68,7 +77,8 @@ class TestDoorBell(unittest.TestCase):
 
         with patch('door.bell.datetime') as mock_datetime:
             mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
-            with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
+            with patch('door.bell.asyncio.run_coroutine_threadsafe',
+                       side_effect=self._mock_run_coroutine_threadsafe):
                 async def async_put_side_effect(item):
                     pass
                 with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock, side_effect=async_put_side_effect) as mock_put:
@@ -104,7 +114,7 @@ class TestDoorBell(unittest.TestCase):
         self.GPIO.setup.assert_called_once_with(17, self.GPIO.IN, pull_up_down=self.GPIO.PUD_UP)
         self.GPIO.cleanup.assert_called_once()
 
-    @patch('door.bell.detect_rpi.detect_rpi', return_value=False)
+    @patch('door.bell.detect_rpi', return_value=False)
     def test_ring_not_on_rpi(self, mock_detect_rpi):
         shutdown_event = threading.Event()
         config = MagicMock(spec=config_util.Configuration)
@@ -121,17 +131,16 @@ class TestDoorBell(unittest.TestCase):
 
         with patch('door.bell.datetime') as mock_datetime:
             mock_datetime.now.return_value.strftime.return_value = "2024-07-12_12:00:00"
-            with patch('asyncio.run_coroutine_threadsafe') as mock_run_coroutine_threadsafe:
+            with patch('door.bell.asyncio.run_coroutine_threadsafe',
+                       side_effect=self._mock_run_coroutine_threadsafe):
                 async def async_put_side_effect(item):
                     pass
                 with patch.object(camera_task_queue_async, 'put', new_callable=AsyncMock, side_effect=async_put_side_effect) as mock_put:
-                    def stop_after_one_ring(*args, **kwargs):
-                        # Trigger shutdown_event after one loop to stop execution
+                    def wait_side_effect(timeout):
                         shutdown_event.set()
-                        return original_sleep(0.01)
+                        return False
 
-                    original_sleep = time.sleep
-                    with patch('time.sleep', side_effect=stop_after_one_ring):
+                    with patch.object(shutdown_event, 'wait', side_effect=wait_side_effect):
                         door_bell.ring(test=True)
                     # Cleanup any pending coroutines
                     try:
@@ -151,6 +160,43 @@ class TestDoorBell(unittest.TestCase):
         self.assertTrue(camera_task.photo)
         self.assertEqual(message_task.chat_id, "test_chat_id")
         self.assertIn("Ding Dong! 2024-07-12_12:00:00", message_task.data_text)
+
+    @patch('door.bell.detect_rpi', return_value=False)
+    def test_ring_not_on_rpi_stops_when_shutdown_is_set(self, mock_detect_rpi):
+        shutdown_event = threading.Event()
+        shutdown_event.set()
+        config = MagicMock(spec=config_util.Configuration)
+        config.run_on_raspberry = False
+        config.testing_bell_msg = True
+        config.telegram_chat_nr = "test_chat_id"
+        config.door_bell = 17
+        loop = asyncio.new_event_loop()
+        self.loop = loop
+
+        door_bell = DoorBell(shutdown_event, config, loop, queue.Queue(), asyncio.Queue())
+
+        with patch.object(shutdown_event, 'wait', wraps=shutdown_event.wait) as mock_wait:
+            door_bell.ring(test=True)
+
+        mock_wait.assert_not_called()
+
+    def test_schedule_camera_task_logs_scheduling_failure(self):
+        shutdown_event = threading.Event()
+        config = MagicMock(spec=config_util.Configuration)
+        config.run_on_raspberry = False
+        config.testing_bell_msg = True
+        config.telegram_chat_nr = "test_chat_id"
+        config.door_bell = 17
+        loop = asyncio.new_event_loop()
+        self.loop = loop
+        door_bell = DoorBell(shutdown_event, config, loop, queue.Queue(), AsyncMock(asyncio.Queue))
+
+        with patch('door.bell.asyncio.run_coroutine_threadsafe',
+                   side_effect=RuntimeError("loop closed")), \
+                patch.object(door_bell.logger, 'error') as mock_error:
+            door_bell._DoorBell__schedule_camera_task(Camera_Task(photo=True, chat_id="test_chat_id"))
+
+        mock_error.assert_called_once()
 
 
 if __name__ == '__main__':

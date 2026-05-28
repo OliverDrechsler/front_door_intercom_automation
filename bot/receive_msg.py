@@ -98,9 +98,9 @@ class ReceivingMessage():
         """
         self.logger.debug(f"received foto request with message {message}")
         if self.__get_allowed(message=message):
-            asyncio.set_event_loop(self.loop)
-            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(chat_id=message.chat.id, message=message, reply=True, photo=True)), self.loop)
+            self.__schedule_camera_task(
+                Camera_Task(chat_id=message.chat.id, message=message, reply=True, photo=True)
+            )
 
     def take_picam_foto(self, message: telebot.types.Message) -> None:
         """
@@ -114,10 +114,9 @@ class ReceivingMessage():
         """
         self.logger.debug(f"received /picam request with message {message}")
         if self.__get_allowed(message=message):
-            # start new thread for taking a foto
-            asyncio.set_event_loop(self.loop)
-            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(chat_id=message.chat.id, message=message, reply=True, picam_photo=True)), self.loop)
+            self.__schedule_camera_task(
+                Camera_Task(chat_id=message.chat.id, message=message, reply=True, picam_photo=True)
+            )
 
     def take_blink_foto(self, message: telebot.types.Message) -> None:
         """
@@ -136,9 +135,9 @@ class ReceivingMessage():
         """
         self.logger.debug(f"received blink request with message {message}")
         if self.__get_allowed(message=message):
-            asyncio.set_event_loop(self.loop)
-            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(chat_id=message.chat.id, message=message, reply=True, blink_photo=True)), self.loop)
+            self.__schedule_camera_task(
+                Camera_Task(chat_id=message.chat.id, message=message, reply=True, blink_photo=True)
+            )
 
     def register_bink_authentication(self, message: telebot.types.Message) -> None:
         """
@@ -157,22 +156,36 @@ class ReceivingMessage():
             self.__rcv_blink_auth(message)
 
     def __rcv_blink_auth(self, message: telebot.types.Message) -> None:
-
         self.logger.debug(f"received blink token with message {message}")
         match = re.search(r'^/blink_auth (\d{6})$', message.text, re.IGNORECASE)
         if match:
             self.logger.info(msg="blink token received - will save config")
             message_text = "Blink token received " + match.group(1)
             self.bot.reply_to(message=message, text=message_text)
-            asyncio.set_event_loop(self.loop)
-            asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                Camera_Task(blink_mfa=match.group(1), chat_id=message.chat.id, message=message, reply=True)), self.loop)
+            self.__schedule_camera_task(
+                Camera_Task(blink_mfa=match.group(1), chat_id=message.chat.id, message=message, reply=True)
+            )
             return
 
         self.logger.debug(msg="no blink token detected")
-        message = "Blink token received " + match.group(1)
         self.bot.reply_to(message=message, text="no blink token detected")
         return
+
+    def __schedule_camera_task(self, task: Camera_Task) -> None:
+        coroutine = self.camera_task_queue_async.put(task)
+        try:
+            future = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
+        except Exception as err:
+            coroutine.close()
+            self.logger.error("Error scheduling camera task: %s", err)
+            return
+        future.add_done_callback(self.__log_camera_task_failure)
+
+    def __log_camera_task_failure(self, future) -> None:
+        try:
+            future.result()
+        except Exception as err:
+            self.logger.error("Error scheduling camera task: %s", err)
 
     def __get_allowed(self, message: telebot.types.Message) -> bool:
         """
@@ -185,7 +198,7 @@ class ReceivingMessage():
         Returns:
             bool: True if the user is allowed, False otherwise.
         """
-        if str(message.chat.id) == self.config.telegram_chat_nr:
+        if str(message.chat.id) == str(self.config.telegram_chat_nr):
             return self.__get_allowed_user(message=message)
         return False
 
@@ -199,7 +212,8 @@ class ReceivingMessage():
         Returns:
             bool: True if the user is allowed, False otherwise.
         """
-        if str(message.from_user.id) in self.config.allowed_user_ids:
+        allowed_user_ids = {str(user_id) for user_id in self.config.allowed_user_ids}
+        if str(message.from_user.id) in allowed_user_ids:
             return True
         return False
 

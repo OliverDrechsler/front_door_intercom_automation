@@ -45,6 +45,12 @@ class TestDetectRpi(unittest.TestCase):
             mock_file.assert_any_call('/sys/firmware/devicetree/base/model', 'r')
             mock_file.assert_any_call('/proc/cpuinfo', 'r')
 
+    def test_detect_rpi_os_error_returns_force_flag(self):
+        with patch('os.name', 'posix'), \
+             patch('io.open', side_effect=OSError):
+            result = detect_rpi(run_on_raspberry=True)
+            self.assertTrue(result)
+
 
 if __name__ == '__main__':
     unittest.main()

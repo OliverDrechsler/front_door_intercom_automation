@@ -31,7 +31,7 @@ class TestDoorOpener(unittest.TestCase):
         self.GPIO = self.mock_gpio['RPi.GPIO']
 
         # Mock the detect_rpi function
-        self.detect_rpi_patcher = patch('door.detect_rpi.detect_rpi', return_value=True)
+        self.detect_rpi_patcher = patch('door.opener.detect_rpi', return_value=True)
         self.mock_detect_rpi = self.detect_rpi_patcher.start()
 
         # Setup mock config
@@ -126,6 +126,16 @@ class TestDoorOpener(unittest.TestCase):
         self.assertEqual(result_task.send, True)
         self.assertEqual(result_task.chat_id, self.mock_config.telegram_chat_nr)
         self.assertEqual(result_task.data_text, "Door opened!")
+
+    def test_start_stops_when_shutdown_event_is_set(self):
+        start_thread = threading.Thread(target=self.door_opener.start)
+        start_thread.start()
+
+        time.sleep(0.1)
+        self.shutdown_event.set()
+        start_thread.join(timeout=1.5)
+
+        self.assertFalse(start_thread.is_alive())
 
 if __name__ == '__main__':
     unittest.main()

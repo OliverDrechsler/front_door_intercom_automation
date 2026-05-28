@@ -6,9 +6,7 @@ import logging
 import os
 from pathlib import Path
 import queue
-import time
 from datetime import datetime, timezone
-from tracemalloc import start
 from zoneinfo import ZoneInfo
 import aiohttp
 import requests
@@ -65,6 +63,8 @@ class Camera:
         self.logger.debug(msg="initialize camera class instance")
         self.running: bool = True
         self.restart: bool = False
+        self.session: aiohttp.ClientSession | None = None
+        self.blink: Blink | None = None
 
     async def start(self) -> None:
         """
@@ -72,6 +72,7 @@ class Camera:
         various camera tasks asynchronously.
         """
         logger.debug(msg="thread camera start")
+        restart_requested = False
 
         if self.config.blink_enabled:
             self.logger.debug("start blink session")
@@ -158,14 +159,18 @@ class Camera:
                 # restart
                 if not self.restart:
                     self.restart = True
-                    # schedule restart of blink session asynchronously
-                    asyncio.create_task(self.start())
+                    restart_requested = True
+
+        if restart_requested:
+            await self.__close_session()
+            await self.start()
+            return
 
         logger.info("camera now start endless loop")
         while self.running:
             try:
                 self.logger.debug("camera_task_queue_async get task")
-                task = await self.camera_task_queue_async.get()
+                task = await asyncio.wait_for(self.camera_task_queue_async.get(), timeout=0.5)
 
                 if task is None:  # Exit signal
                     self.logger.info("no task")
@@ -225,11 +230,13 @@ class Camera:
                                     "processing",
                                 )
                             )
+            except asyncio.TimeoutError:
+                continue
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
 
-        await self.session.close()
+        await self.__close_session()
 
     async def __choose_cam(self, task: Camera_Task):
         """
@@ -619,6 +626,12 @@ class Camera:
             )
             # authentication_success = None
 
+    async def __close_session(self) -> None:
+        if self.session is None:
+            return
+        await self.session.close()
+        self.session = None
+
     async def __save_blink_config(self) -> bool:
         """
         Saves the authenticated session information of the Blink service into a config file.
@@ -712,6 +725,8 @@ class Camera:
         if os.path.exists(path=self.config.photo_image_path):
             logger.debug(msg="deleting already existing file before hand")
             os.remove(path=self.config.photo_image_path)
+        else:
+            os.makedirs(os.path.dirname(self.config.photo_image_path), exist_ok=True)
 
         try:
             with open(self.config.photo_image_path, "wb") as file:
@@ -756,17 +771,25 @@ class Camera:
             image = Image.open(self.config.photo_image_path)
 
             # brightness adjustement (1.0 is normal, <1 darker, >1 lighter)
-            if hasattr(self.config, "image_brightness"):
+            brightness = getattr(
+                self.config,
+                "brightness_enhancer",
+                getattr(self.config, "image_brightness", None),
+            )
+            if brightness is not None:
                 brightness_enhancer = ImageEnhance.Brightness(image)
-                image = brightness_enhancer.enhance(self.config.image_brightness)
-                self.logger.debug(
-                    f"brightness adjusted to {self.config.image_brightness}"
-                )
+                image = brightness_enhancer.enhance(brightness)
+                self.logger.debug(f"brightness adjusted to {brightness}")
 
-            if hasattr(self.config, "image_contrast"):
+            contrast = getattr(
+                self.config,
+                "contrast_enhancer",
+                getattr(self.config, "image_contrast", None),
+            )
+            if contrast is not None:
                 contrast_enhancer = ImageEnhance.Contrast(image)
-                image = contrast_enhancer.enhance(self.config.image_contrast)
-                self.logger.debug(f"contrast adjusted to {self.config.image_contrast}")
+                image = contrast_enhancer.enhance(contrast)
+                self.logger.debug(f"contrast adjusted to {contrast}")
 
             image.save(self.config.photo_image_path)
             self.logger.debug("imgae adjustment done")

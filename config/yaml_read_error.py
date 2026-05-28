@@ -5,11 +5,5 @@ class YamlReadError(Exception):
         message -- explanation of the error
     """
 
-    def __init__(
-            self, message="A YAML config file readerror" + " is occured during parsing file"
-    ):
-        self.message = message
-        super().__init__(self.message)
-
-    def __str__(self):
-        return f"{self.message}"
+    def __init__(self, message="A YAML config file readerror is occured during parsing file"):
+        super().__init__(message)

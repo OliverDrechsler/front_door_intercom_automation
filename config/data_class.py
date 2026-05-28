@@ -30,4 +30,4 @@ class Camera_Task:
     photo: bool = False
     blink_photo: bool = False
     picam_photo: bool = False
-    blink_mfa: bool = False
+    blink_mfa: str = None

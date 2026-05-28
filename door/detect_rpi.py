@@ -41,9 +41,9 @@ def detect_rpi(run_on_raspberry: bool) -> bool:
                     if value.upper() in rpi_hw_chips:
                         logger.info("RPi detected in /poc/cpuinfo chips - successful")
                         return True
-    except Exception:
+    except OSError as err:
         logger.info("no RPi detected - do not use door bell and door opener")
-        pass
+        logger.debug("RPi detection failed due to OS error: %s", err)
     logger.debug(msg="check if force run on RPi boolean is set")
     if run_on_raspberry:
         logger.info(msg="set to force to run on RPi")

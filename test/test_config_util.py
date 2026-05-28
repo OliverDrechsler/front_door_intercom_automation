@@ -119,6 +119,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.picam_night_vision, True)
         self.assertEqual(self.config.picam_image_brightening, True)
         self.assertEqual(self.config.flask_enabled, True)
+        self.assertEqual(self.config.flask_web_host, '0.0.0.0')
         self.assertEqual(self.config.flask_web_port, 5000)
         self.assertEqual(self.config.flask_secret_key, 'dummy_secret')
         self.assertEqual(self.config.flask_browser_session_cookie_lifetime, 3600)
@@ -150,6 +151,44 @@ class TestConfiguration(unittest.TestCase):
         self.config._Configuration__write_yaml_config('new_password')
         mock_file.assert_called_with('/dummy/base/path/config.yaml', 'w')
         self.assertEqual(self.config.config['otp']['password'], base64.b32encode('NEW_PASSWORD'.encode('UTF-8')).decode('UTF-8'))
+
+    @patch('builtins.open', new_callable=mock_open)
+    def test_write_yaml_config_uses_loaded_config_file(self, mock_file):
+        self.config.config_file = '/dummy/base/path/custom.yaml'
+
+        self.config._Configuration__write_yaml_config('new_password')
+
+        mock_file.assert_called_with('/dummy/base/path/custom.yaml', 'w')
+
+    def test_get_web_user_dict_empty(self):
+        self.config.config["web"]["flask_users"] = []
+
+        result = self.config._Configuration__get_web_user_dict()
+
+        self.assertEqual(result, {})
+
+    def test_get_web_user_dict_invalid_type(self):
+        self.config.config["web"]["flask_users"] = "invalid"
+
+        with self.assertRaises(YamlReadError):
+            self.config._Configuration__get_web_user_dict()
+
+    def test_get_web_user_dict_invalid_entry(self):
+        self.config.config["web"]["flask_users"] = [{"user1": "id1"}, "invalid"]
+
+        with self.assertRaises(YamlReadError):
+            self.config._Configuration__get_web_user_dict()
+
+    @patch('builtins.open', new_callable=mock_open, read_data='invalid: [yaml')
+    @patch('yaml.load', side_effect=yaml.YAMLError('parse error'))
+    def test_read_config_yaml_error(self, mock_yaml_load, mock_file):
+        with self.assertRaises(YamlReadError):
+            self.config._Configuration__read_config('/dummy/base/path/config.yaml')
+
+    @patch('builtins.open', side_effect=PermissionError('denied'))
+    def test_read_config_permission_error_is_not_masked(self, mock_file):
+        with self.assertRaises(PermissionError):
+            self.config._Configuration__read_config('/dummy/base/path/config.yaml')
 
 
 if __name__ == '__main__':

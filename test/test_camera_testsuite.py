@@ -457,6 +457,27 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.mock_logger_debug.assert_any_call(msg='end downloading foto')
 
     @patch('camera.camera.requests')
+    @patch('camera.camera.os.path.exists', return_value=False)
+    @patch('camera.camera.os.makedirs')
+    def test_picam_request_download_foto_creates_directory(self, mock_makedirs, mock_exists, mock_requests):
+        self.camera.config.picam_url = "http://example.com"
+        self.camera.config.picam_image_filename = "foto.jpg"
+        self.camera.config.photo_image_path = "/tmp/camera/photo.jpg"
+        self.camera._Camera__detect_daylight = MagicMock(return_value=True)
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b"fake_image_data"
+        mock_requests.get.return_value = mock_response
+
+        mock_file = unittest.mock.mock_open()
+        with patch('builtins.open', mock_file):
+            result = self.camera._Camera__picam_request_download_foto()
+
+        self.assertTrue(result)
+        mock_makedirs.assert_called_once_with("/tmp/camera", exist_ok=True)
+
+    @patch('camera.camera.requests')
     @patch('camera.camera.os.path.exists', return_value=True)
     @patch('camera.camera.os.remove')
     def test_picam_request_download_foto_with_request_exception(self, mock_remove, mock_exists, mock_requests):
@@ -486,8 +507,8 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
     @patch('camera.camera.ImageEnhance.Brightness')
     def test_adjust_image(self, mock_brightness, mock_enhancer, mock_open, mock_exists):
         self.config.photo_image_path = "test_image.jpg"
-        self.config.image_brightness = 3
-        self.config.image_contrast = 2
+        self.config.brightness_enhancer = 3
+        self.config.contrast_enhancer = 2
 
         mock_image = MagicMock()
         mock_open.return_value = mock_image
@@ -499,7 +520,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         mock_exists.assert_called_once_with(self.config.photo_image_path)
         mock_open.assert_called_once_with(self.config.photo_image_path)
         mock_brightness.assert_called_once_with(mock_image)
-        mock_enhancer.enhance.assert_called_once_with(self.config.image_brightness)
+        mock_enhancer.enhance.assert_called_once_with(self.config.brightness_enhancer)
         self.assertTrue(result)
 
     @patch('camera.camera.os.path.exists', return_value=False)
@@ -550,31 +571,32 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         mock_session_instance.close = AsyncMock()
         self.camera.session = mock_session_instance
         
-        # Mock camera_task_queue to return None immediately to exit the while loop
+        # Return None after restart reaches the task loop.
         self.camera.camera_task_queue_async.get = AsyncMock(return_value=None)
         
         # Execute
         with patch.object(self.camera, '_Camera__read_blink_config', new_callable=AsyncMock):
-            def handle_create_task(coro):
-                # Close the coroutine to prevent warning
-                coro.close()
-                return MagicMock()
-            
-            with patch('camera.camera.asyncio.create_task', side_effect=handle_create_task) as mock_create_task:
-                await self.camera.start()
+            await self.camera.start()
         
         # Assert
         self.mock_logger_error.assert_any_call(
             f"An authorization UnauthorizedError occured at  Blink start: Unauthorized"
         )
         self.assertTrue(self.camera.restart)
-        mock_create_task.assert_called_once()
         self.assertFalse(self.message_task_queue.empty())
         message_task = self.message_task_queue.get()
         self.assertIn("UnauthorizedError", message_task.data_text)
         self.mock_logger_info.assert_any_call(
             f"{self.config.blink_config_file} deleted because authentication error."
         )
+
+    async def test_start_without_blink_does_not_require_session(self):
+        self.config.blink_enabled = False
+        self.camera.camera_task_queue_async.get = AsyncMock(side_effect=[None])
+
+        await self.camera.start()
+
+        self.assertIsNone(self.camera.session)
 
 
 if __name__ == '__main__':

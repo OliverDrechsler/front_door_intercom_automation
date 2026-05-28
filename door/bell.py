@@ -7,7 +7,7 @@ try:
 except Exception:
     pass
 from config import config_util
-from door import detect_rpi
+from door.detect_rpi import detect_rpi
 from config.data_class import Message_Task, Camera_Task
 import logging
 import time
@@ -47,9 +47,25 @@ class DoorBell():
         self.camera_task_queue_async: asyncio.Queue = camera_task_queue_async
 
         # Setup GPIO
-        if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
+        if detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.config.door_bell, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    def __schedule_camera_task(self, task: Camera_Task) -> None:
+        coroutine = self.camera_task_queue_async.put(task)
+        try:
+            future = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
+        except Exception as err:
+            coroutine.close()
+            self.logger.error("Error scheduling camera task: %s", err)
+            return
+        future.add_done_callback(self.__log_camera_task_failure)
+
+    def __log_camera_task_failure(self, future) -> None:
+        try:
+            future.result()
+        except Exception as err:
+            self.logger.error("Error scheduling camera task: %s", err)
 
     def ring(self, test=False) -> None:
         """
@@ -67,7 +83,7 @@ class DoorBell():
         """
         self.logger.info(msg="start monitoring door bell")
         asyncio.set_event_loop(self.loop)
-        if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
+        if detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
             self.logger.debug(msg="RPI: start endless loop doorbell monitoring")
             while not self.shutdown_event.is_set():
                 try:
@@ -77,9 +93,10 @@ class DoorBell():
                         now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
                         self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                                  data_text="Ding Dong! " + now))
-                        asyncio.run_coroutine_threadsafe(self.camera_task_queue_async.put(
-                            Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)), self.loop)
-                        time.sleep(self.config.door_bell_bounce_time)
+                        self.__schedule_camera_task(
+                            Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)
+                        )
+                        time.sleep(getattr(self.config, "door_bell_bounce_time", 0))
                 except Exception as err:
                     self.logger.error("Error: {0}".format(err))
                     pass
@@ -90,14 +107,15 @@ class DoorBell():
             self.logger.info(msg="Start: not on RPI - endless door bell loop")
             self.logger.info(msg=f"NOT on RPI: do a test ring every 60 sec = {self.config.testing_bell_msg}")
             while not self.shutdown_event.is_set():
-                time.sleep(60)
+                if self.shutdown_event.wait(60):
+                    break
                 if (self.config.testing_bell_msg):
                     now: str = datetime.now().strftime(format="%Y-%m-%d_%H:%M:%S")
                     self.logger.info(msg="now send door bell ring")
                     self.message_task_queue.put(
                         Message_Task(send=True, chat_id=self.config.telegram_chat_nr, data_text="Ding Dong! " + now))
-                    asyncio.run_coroutine_threadsafe(
-                        self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
-                        self.loop)
+                    self.__schedule_camera_task(
+                        Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)
+                    )
                     # asyncio.get_event_loop().run_forever()
             self.logger.info(msg="STOP: not on RPI - endless door bell loop stopped")

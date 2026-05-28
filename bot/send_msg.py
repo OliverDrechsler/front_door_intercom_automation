@@ -59,7 +59,7 @@ class SendMessage():
 
         while not self.stop_polling.is_set():
             try:
-                task = self.message_task_queue.get()
+                task = self.message_task_queue.get(timeout=0.5)
                 if task is None:  # Exit signal
                     break
                 logging.info(f"received task: {task}")
@@ -70,6 +70,8 @@ class SendMessage():
                         self.__reply_message(chat_id=task.chat_id, message=task.message, text=task.data_text)
                     if (task.photo):
                         self.__send_photo(chat_id=task.chat_id, image_path=task.filename)
+            except queue.Empty:
+                continue
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
@@ -126,5 +128,6 @@ class SendMessage():
         Returns:
             None
         """
-        self.bot.send_photo(chat_id=chat_id, photo=open(file=image_path, mode="rb"))
+        with open(file=image_path, mode="rb") as photo_file:
+            self.bot.send_photo(chat_id=chat_id, photo=photo_file)
         self.logger.info(msg="send a foto: success")

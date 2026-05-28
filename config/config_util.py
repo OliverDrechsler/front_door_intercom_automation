@@ -4,6 +4,7 @@ import base64
 import logging
 import os
 from collections import ChainMap
+from typing import Any
 
 import telebot
 import yaml
@@ -81,7 +82,7 @@ class Configuration:
 
         self.web_user_dict: dict[str, str] = self.__get_web_user_dict()
         self.flask_enabled: bool = self.config["web"]["enabled"]
-        self.flask_web_host: int = self.config["web"]["flask_web_host"]
+        self.flask_web_host: str = self.config["web"]["flask_web_host"]
         self.flask_web_port: int = self.config["web"]["flask_web_port"]
         self.flask_secret_key: str = self.config["web"]["flask_secret_key"]
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
@@ -92,7 +93,14 @@ class Configuration:
         :return: dict of user key and values of telegram id
         :rtype: dict
         """
-        return dict(ChainMap(*self.config["web"]["flask_users"]))
+        flask_users = self.config["web"].get("flask_users", [])
+        if not isinstance(flask_users, list):
+            raise YamlReadError("web.flask_users must be a list of dictionaries")
+        if not flask_users:
+            return {}
+        if not all(isinstance(entry, dict) for entry in flask_users):
+            raise YamlReadError("web.flask_users must contain only dictionaries")
+        return dict(ChainMap(*flask_users))
 
     def __get_base_path(self) -> None:
         """
@@ -101,7 +109,7 @@ class Configuration:
         """
         return os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/"
 
-    def __read_config(self, config_file: str) -> None:
+    def __read_config(self, config_file: str) -> dict[str, Any]:
         """
         Reads config.yaml file into variables.
 
@@ -118,9 +126,9 @@ class Configuration:
         except FileNotFoundError:
             self.logger.error("Could not find %s", self.config_file)
             raise FileNotFoundError("Could not find config file")
-        except:
+        except yaml.YAMLError as err:
             self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
-            raise YamlReadError("a YAML error is occured during parsing file")
+            raise YamlReadError("a YAML error is occured during parsing file") from err
 
     def __define_config_file(self) -> None:
         """
@@ -154,6 +162,10 @@ class Configuration:
         :param new_password: new provided TOTP ASCII password
         :type new_password: string
         """
-        with open(self.base_path + "config.yaml", "w") as yaml_file:
+        target_config_file = self.config_file
+        if target_config_file.endswith("config_template.yaml"):
+            target_config_file = self.base_path + "config.yaml"
+
+        with open(target_config_file, "w") as yaml_file:
             self.config["otp"]["password"] = self.__base32_encode_totp_password(new_password)
             yaml.dump(self.config, yaml_file, default_flow_style=False)
