@@ -6,7 +6,6 @@ from web.web_door_opener import WebDoorOpener
 import threading
 import asyncio
 import queue
-import json
 
 class WebDoorOpenerTestCase(unittest.TestCase):
     @classmethod
@@ -95,7 +94,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
             pass
         self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
         
-        login_response = self.client.post('/login', data={'username': 'testuser', 'password': 'testpassword'})
+        self.client.post('/login', data={'username': 'testuser', 'password': 'testpassword'})
         response = self.client.post('/open', json={'totp': '123456'})
         self.assertEqual(201, response.status_code)
         self.assertIn(b'TOTP is valid! Opening!', response.data)
