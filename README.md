@@ -661,3 +661,71 @@ check for line comments in requirements.txt and remove them temporary.
 
 [Contribution guide](CONTRIBUTING.md)
 Pull request docu can be found [here in docs/pull_request_template.md](docs/pull_request_template.md)
+
+## Local Development Workflow
+
+The following example shows a safe local workflow for checking out the repository, creating a development branch, installing dependencies, running tests, committing your work, and restoring the original `master` branch environment afterwards.
+
+1. Clone the repository and enter the project directory.
+
+```bash
+git clone <your-repository-url>
+cd front_door_intercom_automation_2
+```
+
+2. Create and activate a virtual environment.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
+3. Check out `master`, update it, and create a local development branch.
+
+```bash
+git checkout master
+git pull origin master
+git checkout -b my-local-dev-branch
+```
+
+4. Install the project requirements.
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+5. Make your changes and run the test suite.
+
+```bash
+python -m pytest
+```
+
+6. Commit your changes on the development branch.
+
+```bash
+git status
+git add .
+git commit -m "Describe your change"
+```
+
+7. Switch back to `master`.
+
+```bash
+git checkout master
+```
+
+8. Restore the original dependency file from `master` and reinstall the original requirements.
+
+This step is important if you changed `requirements.txt` while working on your branch and want your local `master` environment to match the repository again.
+
+```bash
+git restore requirements.txt
+python -m pip install --upgrade --force-reinstall -r requirements.txt
+```
+
+9. Optional: remove the local development branch after your work has been merged or is no longer needed.
+
+```bash
+git branch -d my-local-dev-branch
+```
