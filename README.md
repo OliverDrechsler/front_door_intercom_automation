@@ -207,17 +207,27 @@ requirements_licenses.txt # depend library licenses
 
 2. go into project repo `cd front_door_intercom_automation`
 
-3. now run pip3 to install python requirments
-  ```pip3 install requirements.txt```
-  or with poetry
-  ```poetry run install```
+3. create a local virtualenv
+  ```bash
+  python3.11 -m venv .venv
+  ```
 
-4. copy config_template.yaml to config.yaml file
+4. install python requirements into the virtualenv
+  ```bash
+  ./.venv/bin/pip install -r requirements.txt
+  ```
+  or with make
+  ```bash
+  make install
+  ```
+
+5. copy config_template.yaml to config.yaml file
    `cp config_template.yaml config.yaml`
 
-5. edit `config.yaml` file with your favorite editor
+6. edit `config.yaml` file with your favorite editor
 
    - for creation of telegram bot and privat chat channel follow [telegram_bot_setup](docs/telegram_bot_setup.md)
+   - for VS Code select the interpreter `.venv/bin/python`
    - for creation of base32 encrypted timebased one time password master password follow [one_time_password_setup](docs/one_time_password_setup.md)
    - for blink configuration follow [blink_camera setup](docs/blink_camera_setup.md)
    - for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects
@@ -560,7 +570,20 @@ Following important libraries are used and can also be consulted in case where i
 Internal code API docu can be found at github pages linked on top above or in code itself.  
 
 ### How to run unit-tests
-`pytest --cov=./ --cov-report=html`
+```bash
+./.venv/bin/pytest
+```
+
+With coverage:
+```bash
+./.venv/bin/pytest --cov=./ --cov-report=html
+```
+
+Or via make:
+```bash
+make test
+make test-cov
+```
 
 ### GiHub actions pipelines
 

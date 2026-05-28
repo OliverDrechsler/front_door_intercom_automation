@@ -246,10 +246,10 @@ class ReceivingMessage():
             self.logger.info(msg=message.text + " TOTP code correct")
             self.door_open_task_queue.put(
                 Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message=message))
-            self.bot.reply_to(message=message, text="Code accepted.")
+            self.bot.send_message(chat_id=message.chat.id, text="Code accepted.")
             self.logger.info(msg="Door opened for 5 Sec.")
             return True
         else:
             self.logger.info(msg="wrong totp code received " + message.text)
-            self.bot.reply_to(message=message, text="TOTP code is wrong")
+            self.bot.send_message(chat_id=message.chat.id, text="TOTP code is wrong")
             return False

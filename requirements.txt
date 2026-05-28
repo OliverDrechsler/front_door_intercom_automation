@@ -1,6 +1,6 @@
 pyyaml==6.0.3
-RPi.GPIO==0.7.1
-urllib3==2.7.0
+RPi.GPIO==0.7.1; platform_system == "Linux"
+urllib3==2.6.3
 requests==2.34.0
 blinkpy==0.26.0b0
 astral==3.2

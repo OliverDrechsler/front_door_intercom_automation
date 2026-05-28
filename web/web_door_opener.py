@@ -100,7 +100,7 @@ class WebDoorOpener:
 
         self.app = web_app
         self.app.secret_key = self.config.flask_secret_key
-        self.server = make_server(self.config.flask_web_host, self.config.flask_web_port, self.app)
+        self.server = None
         self.app.permanent_session_lifetime = timedelta(days=self.config.flask_browser_session_cookie_lifetime)
 
         self.app.before_request(self.log_request_info)
@@ -131,6 +131,12 @@ class WebDoorOpener:
             None
         """
         self.logger.info("Start web server")
+        if self.server is None:
+            self.server = make_server(
+                self.config.flask_web_host,
+                self.config.flask_web_port,
+                self.app,
+            )
         if (self.str_log_level == "DEBUG"):
             self.app.debug = True
             self.server.serve_forever()
@@ -143,7 +149,8 @@ class WebDoorOpener:
         A description of the entire function, its parameters, and its return types.
         """
         self.logger.info("Shutting down web server")
-        self.server.shutdown()
+        if self.server is not None:
+            self.server.shutdown()
         self.logger.info("Shutting down web server - done!")
 
     def setup_logging(self):
@@ -327,7 +334,7 @@ class WebDoorOpener:
             self.app.logger.info('User %s send TOTP %s is valid -> will open', auth_user, web_input_totp)
             self.door_open_task_queue.put(Open_Door_Task(open=True, chat_id=self.config.telegram_chat_nr))
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
-                                                     data_text=f"{auth_user} request open door - TOTP code {web_input_totp}"))
+                                                     data_text=f"{auth_user} request open door"))
             asyncio.set_event_loop(self.loop)
             asyncio.run_coroutine_threadsafe(
                 self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
@@ -336,7 +343,7 @@ class WebDoorOpener:
         else:
             self.app.logger.warning('User %s send invalid TOTP %s', auth_user, web_input_totp)
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
-                                                     data_text=f"{auth_user} request TOTP code " + f"{web_input_totp} invalid!"))
+                                                     data_text=f"{auth_user} request TOTP code is invalid!"))
             return self.handle_bad_request(message="Invalid TOTP. Retry again -> will notify owner.")
 
     def handle_exception(self, e):
@@ -435,4 +442,3 @@ class WebDoorOpener:
         """
         self.app.register_error_handler(Exception, self.handle_exception)
         self.app.register_error_handler(NotFound, self.handle_not_found)
-
