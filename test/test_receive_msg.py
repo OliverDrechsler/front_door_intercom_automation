@@ -6,7 +6,7 @@ import threading
 import queue
 import telebot
 from config import config_util
-from config.data_class import Camera_Task, Open_Door_Task
+from config.data_class import Camera_Task
 from bot.receive_msg import ReceivingMessage
 
 

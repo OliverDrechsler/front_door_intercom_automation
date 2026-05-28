@@ -1,12 +1,10 @@
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import patch, mock_open
 import yaml
 from config.default_cam_enum import DefaultCam
 from config.yaml_read_error import YamlReadError
 from config.config_util import Configuration
 import base64
-
-import time
 
 
 class TestConfiguration(unittest.TestCase):

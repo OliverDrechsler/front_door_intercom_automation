@@ -9,8 +9,7 @@ import time
 from door.opener import DoorOpener
 import door.opener
 from config import config_util
-from config.data_class import Open_Door_Task, Message_Task
-from door import detect_rpi
+from config.data_class import Open_Door_Task
 
 class TestDoorOpener(unittest.TestCase):
 

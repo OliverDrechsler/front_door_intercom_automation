@@ -218,10 +218,9 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.mock_logger_error.assert_any_call("Invalid Location data: No valid country data provided")
 
     def test_exception_handling(self):
-        with patch('camera.camera.sun', new_callable=MagicMock) as mock_sun:
-            with patch('camera.camera.datetime', new_callable=MagicMock) as mock_datetime:
-                mock_datetime.now.side_effect = Exception("Error in daylight calculation")
-                self.assertTrue(self.camera._Camera__detect_daylight())
+        with patch('camera.camera.datetime', new_callable=MagicMock) as mock_datetime:
+            mock_datetime.now.side_effect = Exception("Error in daylight calculation")
+            self.assertTrue(self.camera._Camera__detect_daylight())
 
     @patch('camera.camera.os.makedirs')
     @patch('camera.camera.os.path.exists', return_value=True)
@@ -578,7 +577,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         
         # Assert
         self.mock_logger_error.assert_any_call(
-            f"An authorization UnauthorizedError occured at  Blink start: Unauthorized"
+            "An authorization UnauthorizedError occured at  Blink start: Unauthorized"
         )
         self.assertTrue(self.camera.restart)
         self.assertFalse(self.message_task_queue.empty())
