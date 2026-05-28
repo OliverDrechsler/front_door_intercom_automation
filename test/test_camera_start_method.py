@@ -231,13 +231,13 @@ async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
 
     camera._Camera__picam_foto_helper.assert_called_once()
     mock_logger_info.assert_any_call(
-        "asyncthread received task: Camera_Task(chat_id=123456, message=None, reply=False, photo=False, blink_photo=False, picam_photo=True, blink_mfa=False)")
+        "asyncthread received task: Camera_Task(chat_id=123456, message=None, reply=False, photo=False, blink_photo=False, picam_photo=True, blink_mfa=None)")
     mock_logger_info.assert_any_call("processing task.picam_photo: True")
     mock_logger_info.assert_any_call("no task")
     mock_logger_debug.assert_any_call("start blink session")
     mock_logger_debug.assert_any_call("add session to blink")
     mock_logger_debug.assert_any_call("camera_task_queue_async get task")
     mock_logger_debug.assert_any_call(
-        "Async Processing Camera_Task with data: Camera_Task(chat_id=123456, message=None, reply=False, photo=False, blink_photo=False, picam_photo=True, blink_mfa=False)")
+        "Async Processing Camera_Task with data: Camera_Task(chat_id=123456, message=None, reply=False, photo=False, blink_photo=False, picam_photo=True, blink_mfa=None)")
     mock_logger_debug.assert_any_call("camera_task_queue_async get task")
     mock_logger_error.assert_any_call("Error: picam_request_take_foto")
