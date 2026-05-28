@@ -16,8 +16,6 @@ from config import config_util
 from config.data_class import Message_Task, Camera_Task, Open_Door_Task
 
 logger: logging.Logger = logging.getLogger(name="web_door_opener")
-web_app = Flask(__name__)
-auth = HTTPBasicAuth()
 
 
 class WebDoorOpener:
@@ -98,7 +96,7 @@ class WebDoorOpener:
         self.blink_json_data: dict[any, any] = {}
 
 
-        self.app = web_app
+        self.app = Flask(__name__)
         self.app.secret_key = self.config.flask_secret_key
         self.server = None
         self.app.permanent_session_lifetime = timedelta(days=self.config.flask_browser_session_cookie_lifetime)
@@ -106,7 +104,7 @@ class WebDoorOpener:
         self.app.before_request(self.log_request_info)
         self.app.after_request(self.log_response_info)
 
-        self.auth = auth
+        self.auth = HTTPBasicAuth()
         self.browsers = ["safari", "firefox", "mozilla", "chrome", "edge"]
         self.str_log_level = logging.getLevelName(logger.getEffectiveLevel())
         self.log_level = logger.getEffectiveLevel()
