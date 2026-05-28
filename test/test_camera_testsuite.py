@@ -1,7 +1,6 @@
 import asyncio
 import os
 
-import pytest
 import requests
 import queue
 import unittest
@@ -49,7 +48,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
 
             result = await self.camera._Camera__blink_foto_helper(task)
 
-            assert result == True
+            assert result
             mock_snapshot.assert_called_once()
             self.assertFalse(self.message_task_queue.empty())
             self.mock_logger_debug.assert_any_call("_blink_foto_helper - blink enabled")
@@ -63,7 +62,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
 
             result = await self.camera._Camera__blink_foto_helper(task)
 
-            assert result == False
+            assert not result
             mock_snapshot.assert_called_once()
             self.assertFalse(self.message_task_queue.empty())
             self.mock_logger_debug.assert_any_call("_blink_foto_helper - blink enabled")
@@ -74,7 +73,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         task = Camera_Task(photo=True, chat_id=1234)
         result = await self.camera._Camera__blink_foto_helper(task)
 
-        assert result == False
+        assert not result
         self.mock_logger_debug.assert_not_called()
         self.mock_logger_info.assert_any_call("_blink_foto_helper - blink disabled")
 
@@ -206,13 +205,12 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
                 self.mock_logger_info.assert_any_call(msg="Is daylight detected: False")
                 self.mock_logger_debug.assert_any_call("using country - city for daylight detection")
 
-    def test_invalid_location_data(self):
-        with patch('camera.camera.sun', new_callable=MagicMock) as mock_sun:
-            with patch('camera.camera.datetime', new_callable=MagicMock) as mock_datetime:
-                mock_datetime.now.side_effect = ValueError("Invalid Location data")
-                self.assertTrue(self.camera._Camera__detect_daylight())
+    def test_invalid_location_data_from_datetime(self):
+        with patch('camera.camera.datetime', new_callable=MagicMock) as mock_datetime:
+            mock_datetime.now.side_effect = ValueError("Invalid Location data")
+            self.assertTrue(self.camera._Camera__detect_daylight())
 
-    def test_invalid_location_data(self):
+    def test_invalid_location_data_without_country(self):
         self.config.lat = None
         self.config.lon = None
         self.config.country = None

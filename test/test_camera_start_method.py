@@ -18,8 +18,8 @@ def camera_setup():
     message_queue.put = MagicMock(return_value=None)
 
     with patch('camera.camera.Blink') as mock_blink, \
-         patch('camera.camera.Auth') as mock_auth, \
-         patch('camera.camera.json_load') as mock_json_load, \
+         patch('camera.camera.Auth'), \
+         patch('camera.camera.json_load'), \
          patch('camera.camera.aiohttp.ClientSession') as mock_session:
 
         mock_blink_instance = MagicMock()
@@ -210,7 +210,7 @@ async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
     mock_logger_debug.assert_any_call("camera_task_queue_async get task")
 
 @pytest.mark.asyncio
-async def test_start_blink_mfa_add_2fa_blink_token_failed(camera_setup):
+async def test_start_picam_photo_helper_exception(camera_setup):
     camera, camera_queue, message_queue = camera_setup
     camera.config.picam_enabled = True
     camera._Camera__picam_foto_helper = AsyncMock(side_effect=Exception('picam_request_take_foto'))

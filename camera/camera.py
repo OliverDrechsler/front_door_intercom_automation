@@ -6,7 +6,7 @@ import logging
 import os
 from pathlib import Path
 import queue
-from datetime import datetime, timezone
+from datetime import datetime
 from zoneinfo import ZoneInfo
 import aiohttp
 import requests
