@@ -16,13 +16,6 @@ aiohttp==3.13.5
 click==8.4.0
 Pillow==12.2.0
 
-myst-parser==3.0.1 # pyup: ignore
-recommonmark==0.7.1 # pyup: ignore
-# sphinx==8.0.2
-sphinx==7.4.7 # pyup: ignore
-sphinx-rtd-theme==2.0.0 # pyup: ignore
-ghp-import==2.1.0
-
 pytest==9.0.3
 pytest-asyncio==1.3.0
 pytest-cov==7.1.0
