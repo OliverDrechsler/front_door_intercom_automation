@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,18 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>web package &mdash; Front door intercom automation 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=8d563738"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -141,7 +139,7 @@
 <span id="web-web-door-opener-module"></span><h2>web.web_door_opener module<a class="headerlink" href="#module-web.web_door_opener" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">web.web_door_opener.</span></span><span class="sig-name descname"><span class="pre">WebDoorOpener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">web.web_door_opener.</span></span><span class="sig-name descname"><span class="pre">WebDoorOpener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -156,13 +154,13 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.custom_auth_required">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">custom_auth_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.custom_auth_required" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">custom_auth_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.custom_auth_required" title="Link to this definition"></a></dt>
 <dd><p>A decorator for custom authentication required function.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.create_password_hash">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_password_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.create_password_hash" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create_password_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.create_password_hash" title="Link to this definition"></a></dt>
 <dd><p>Generates a password hash using the <cite>generate_password_hash</cite> function.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><p>input (str): The password to be hashed.</p>
@@ -207,19 +205,6 @@ non-debug mode by setting <cite>self.app.debug</cite> to <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.setup_logging">
-<span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.setup_logging" title="Link to this definition"></a></dt>
-<dd><p>Set up the logging configuration for the application.</p>
-<p>This function configures the logging level of the application logger based on the value of <cite>self.log_level</cite>.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>None</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.verify_password">
 <span class="sig-name descname"><span class="pre">verify_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.verify_password" title="Link to this definition"></a></dt>
 <dd><p>Verify the provided username and password for authentication.</p>
@@ -228,38 +213,6 @@ non-debug mode by setting <cite>self.app.debug</cite> to <cite>False</cite>.</p>
 password (str): The password corresponding to the username.</p>
 </dd>
 <dt>Returns:</dt><dd><p>str or None: The authenticated username if successful, None otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.get_brwoser_session">
-<span class="sig-name descname"><span class="pre">get_brwoser_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.get_brwoser_session" title="Link to this definition"></a></dt>
-<dd><p>Check the user agent in the request headers to determine if it matches any of the specified browsers.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>bool: True if the user agent matches any of the specified browsers, False otherwise.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.get_request_username">
-<span class="sig-name descname"><span class="pre">get_request_username</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.get_request_username" title="Link to this definition"></a></dt>
-<dd><p>Get the username from the request. If the browser session is active, returns the username stored in the session or ‘anonymous’ if not found.
-If the browser session is not active, attempts to get the username from the request authorization.
-If the username is not found in the request authorization, returns ‘anonymous’.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>str: The username obtained from the session or request authorization, or ‘anonymous’ if not found.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -334,78 +287,6 @@ Results in http status code 500 - internal server error
 :param error: Error object describing the not found error
 :return: JSON response with status 404 and error details
 :rtype: json</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.handle_401_unauthenticated">
-<span class="sig-name descname"><span class="pre">handle_401_unauthenticated</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.handle_401_unauthenticated" title="Link to this definition"></a></dt>
-<dd><p>Generates a JSON response for a 401 Unauthorized error.</p>
-<p>This function sets the status code of the response to 401, sets the ‘WWW-Authenticate’ header to ‘Basic realm=”Main”’,
-and sets the ‘Location’ header to the URL of the login page.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>The JSON response with the error details.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.handle_bad_request">
-<span class="sig-name descname"><span class="pre">handle_bad_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.handle_bad_request" title="Link to this definition"></a></dt>
-<dd><p>A method to handle a bad request error response.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – A string message describing the bad request error.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>JSON response with status 400, error details, and the status code 400.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>json</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.error_response_json">
-<span class="sig-name descname"><span class="pre">error_response_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.error_response_json" title="Link to this definition"></a></dt>
-<dd><p>Returns a standard error response json
-:param status: Http Status code
-:param error: Error Code text
-:param message: Error message
-:return: dictonary
-:rtype: dict</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.handle_success_response">
-<span class="sig-name descname"><span class="pre">handle_success_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.handle_success_response" title="Link to this definition"></a></dt>
-<dd><p>Handles to create a success json http response
-:param status_text: Http status code text
-:param status: http status code integer
-:param message: a response message or dict
-:return: json</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.setup_routes">
-<span class="sig-name descname"><span class="pre">setup_routes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.setup_routes" title="Link to this definition"></a></dt>
-<dd><p>Setup routes for various URLs in the web application.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.setup_error_handlers">
-<span class="sig-name descname"><span class="pre">setup_error_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.setup_error_handlers" title="Link to this definition"></a></dt>
-<dd><p>Setup error handlers for the Flask application.</p>
-<p>Registers error handlers for the <cite>Exception</cite> and <cite>NotFound</cite> exceptions.
-The <cite>handle_exception</cite> method is called when an <cite>Exception</cite> occurs,
-and the <cite>handle_not_found</cite> method is called when a <cite>NotFound</cite> exception occurs.</p>
-<p>This method does not take any parameters.</p>
-<p>This method does not return anything.</p>
 </dd></dl>
 
 </dd></dl>

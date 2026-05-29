@@ -90,6 +90,7 @@ Opening relais board can be buyed and must just be wired.
   - [License](#license)
   - [Security](#security)
   - [Contribution](#contribution)
+  - [Local Development Workflow](#local-development-workflow)
 
 ## Long description
 
@@ -207,17 +208,27 @@ requirements_licenses.txt # depend library licenses
 
 2. go into project repo `cd front_door_intercom_automation`
 
-3. now run pip3 to install python requirments
-  ```pip3 install requirements.txt```
-  or with poetry
-  ```poetry run install```
+3. create a local virtualenv
+  ```bash
+  python3.11 -m venv .venv
+  ```
 
-4. copy config_template.yaml to config.yaml file
+4. install python requirements into the virtualenv
+  ```bash
+  ./.venv/bin/pip install -r requirements.txt
+  ```
+  or with make
+  ```bash
+  make install
+  ```
+
+5. copy config_template.yaml to config.yaml file
    `cp config_template.yaml config.yaml`
 
-5. edit `config.yaml` file with your favorite editor
+6. edit `config.yaml` file with your favorite editor
 
    - for creation of telegram bot and privat chat channel follow [telegram_bot_setup](docs/telegram_bot_setup.md)
+   - for VS Code select the interpreter `.venv/bin/python`
    - for creation of base32 encrypted timebased one time password master password follow [one_time_password_setup](docs/one_time_password_setup.md)
    - for blink configuration follow [blink_camera setup](docs/blink_camera_setup.md)
    - for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects
@@ -560,7 +571,20 @@ Following important libraries are used and can also be consulted in case where i
 Internal code API docu can be found at github pages linked on top above or in code itself.  
 
 ### How to run unit-tests
-`pytest --cov=./ --cov-report=html`
+```bash
+./.venv/bin/pytest
+```
+
+With coverage:
+```bash
+./.venv/bin/pytest --cov=./ --cov-report=html
+```
+
+Or via make:
+```bash
+make test
+make test-cov
+```
 
 ### GiHub actions pipelines
 
@@ -638,3 +662,71 @@ check for line comments in requirements.txt and remove them temporary.
 
 [Contribution guide](CONTRIBUTING.md)
 Pull request docu can be found [here in docs/pull_request_template.md](docs/pull_request_template.md)
+
+## Local Development Workflow
+
+The following example shows a safe local workflow for checking out the repository, creating a development branch, installing dependencies, running tests, committing your work, and restoring the original `master` branch environment afterwards.
+
+1. Clone the repository and enter the project directory.
+
+```bash
+git clone <your-repository-url>
+cd front_door_intercom_automation_2
+```
+
+2. Create and activate a virtual environment.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
+3. Check out `master`, update it, and create a local development branch.
+
+```bash
+git checkout master
+git pull origin master
+git checkout -b my-local-dev-branch
+```
+
+4. Install the project requirements.
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+5. Make your changes and run the test suite.
+
+```bash
+python -m pytest
+```
+
+6. Commit your changes on the development branch.
+
+```bash
+git status
+git add .
+git commit -m "Describe your change"
+```
+
+7. Switch back to `master`.
+
+```bash
+git checkout master
+```
+
+8. Restore the original dependency file from `master` and reinstall the original requirements.
+
+This step is important if you changed `requirements.txt` while working on your branch and want your local `master` environment to match the repository again.
+
+```bash
+git restore requirements.txt
+python -m pip install --upgrade --force-reinstall -r requirements.txt
+```
+
+9. Optional: remove the local development branch after your work has been merged or is no longer needed.
+
+```bash
+git branch -d my-local-dev-branch
+```

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,18 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>bot package &mdash; Front door intercom automation 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=8d563738"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -145,7 +143,7 @@
 <span id="bot-receive-msg-module"></span><h2>bot.receive_msg module<a class="headerlink" href="#module-bot.receive_msg" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bot.receive_msg.</span></span><span class="sig-name descname"><span class="pre">ReceivingMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">bot.receive_msg.</span></span><span class="sig-name descname"><span class="pre">ReceivingMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Receiving Telegram Bot messages</p>
 <dl class="field-list simple">
@@ -190,7 +188,7 @@ If the conditions are met, check if the message text has a TOTP code and open th
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -214,7 +212,7 @@ If the conditions are met, it sets the event loop to the current loop and puts a
 The camera task contains the chat ID, message, reply flag, and photo flag.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -234,7 +232,7 @@ The camera task contains the chat ID, message, reply flag, and photo flag.</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -258,7 +256,7 @@ If the conditions are met, it sets the event loop to the current loop and puts a
 The camera task contains the chat ID, message, reply flag, and blink_photo flag.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -279,110 +277,10 @@ message (telebot.types.Message): the message received</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.rcv_blink_auth">
-<span class="sig-name descname"><span class="pre">rcv_blink_auth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.rcv_blink_auth" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.get_allowed">
-<span class="sig-name descname"><span class="pre">get_allowed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.get_allowed" title="Link to this definition"></a></dt>
-<dd><p>Checks if the message chat ID matches the configured Telegram chat number and calls get_allowed_user
-if the condition is met. Returns True if the user is allowed, False otherwise.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>message (telebot.types.Message): The message object received.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the user is allowed, False otherwise.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.get_allowed_user">
-<span class="sig-name descname"><span class="pre">get_allowed_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.get_allowed_user" title="Link to this definition"></a></dt>
-<dd><p>Checks if the message from_user ID matches the configured allowed user IDs.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>message (telebot.types.Message): The message object received.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the user is allowed, False otherwise.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.validate_msg_text_has_code">
-<span class="sig-name descname"><span class="pre">validate_msg_text_has_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.validate_msg_text_has_code" title="Link to this definition"></a></dt>
-<dd><p>Validates if the message text contains a code number by using a regex search pattern.
-If a match is found, it calls the ‘verify_otp_code_in_msg’ method and returns the result.
-If no match is found, it logs a message and returns False.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>self: The instance of the class.
-message (telebot.types.Message): The message object received.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the message text contains a code number, False otherwise.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.verify_otp_code_in_msg">
-<span class="sig-name descname"><span class="pre">verify_otp_code_in_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.verify_otp_code_in_msg" title="Link to this definition"></a></dt>
-<dd><p>Verifies if the received message text contains a valid TOTP code.
-If the code is valid, it logs a message and returns True.
-If the code is invalid, it logs a message and returns False.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>self: The instance of the class.
-message (telebot.types.Message): The message object received.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the message text contains a valid TOTP code, False otherwise.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<em>Message</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -394,7 +292,7 @@ message (telebot.types.Message): The message object received.</p>
 <span id="bot-send-msg-module"></span><h2>bot.send_msg module<a class="headerlink" href="#module-bot.send_msg" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="bot.send_msg.SendMessage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bot.send_msg.</span></span><span class="sig-name descname"><span class="pre">SendMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.send_msg.SendMessage" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">bot.send_msg.</span></span><span class="sig-name descname"><span class="pre">SendMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.send_msg.SendMessage" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -435,78 +333,6 @@ message (telebot.types.Message): The message object received.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.send_msg.SendMessage.reply_message">
-<span class="sig-name descname"><span class="pre">reply_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.send_msg.SendMessage.reply_message" title="Link to this definition"></a></dt>
-<dd><p>Reply to a message in a chat.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>chat_id (str): The ID of the chat.
-text (str): The text of the reply message.
-message (telebot.types.Message): The message to reply to.</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-<p>This function sends a reply message to a chat using the Telegram Bot API. It uses the <cite>reply_to</cite> method of the <cite>bot</cite> object to send the reply. The reply message contains the provided <cite>text</cite>. The function logs the reply message using the <cite>logger</cite> object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>chat_id</strong> (<em>str</em>)</p></li>
-<li><p><strong>text</strong> (<em>str</em>)</p></li>
-<li><p><strong>message</strong> (<em>Message</em>)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.send_msg.SendMessage.send_message">
-<span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.send_msg.SendMessage.send_message" title="Link to this definition"></a></dt>
-<dd><p>Send a message to a specified chat using the Telegram Bot API.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>chat_id (str): The ID of the chat.
-text (str): The text of the message to be sent.</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>chat_id</strong> (<em>str</em>)</p></li>
-<li><p><strong>text</strong> (<em>str</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bot.send_msg.SendMessage.send_photo">
-<span class="sig-name descname"><span class="pre">send_photo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chat_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.send_msg.SendMessage.send_photo" title="Link to this definition"></a></dt>
-<dd><p>Send a photo to a specified chat using the Telegram Bot API.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>chat_id (str): The ID of the chat.
-image_path (str): The path to the image file to be sent.</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>chat_id</strong> (<em>str</em>)</p></li>
-<li><p><strong>image_path</strong> (<em>str</em>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

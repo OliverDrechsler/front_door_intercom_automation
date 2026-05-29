@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,18 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>camera package &mdash; Front door intercom automation 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=8d563738"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -141,7 +139,7 @@
 <span id="camera-camera"></span><h2>camera.camera<a class="headerlink" href="#module-camera.camera" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="camera.camera.Camera">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">camera.camera.</span></span><span class="sig-name descname"><span class="pre">Camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">camera.camera.</span></span><span class="sig-name descname"><span class="pre">Camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -154,236 +152,12 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="camera.camera.Camera.start">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.start" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.start" title="Link to this definition"></a></dt>
 <dd><p>Initializes the camera, starts a blink session if enabled, and processes
 various camera tasks asynchronously.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.choose_cam">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">choose_cam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.choose_cam" title="Link to this definition"></a></dt>
-<dd><p>Asynchronously chooses a camera based on various conditions such as
-daylight detection, night vision, and default camera type.
-Decision is:
-- daylight detection enabled:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>daylight takes default_camera_type</p></li>
-<li><p>night: takes night vision enabled cam, if two precedence is blink over picam</p></li>
-</ul>
-</div></blockquote>
-<ul class="simple">
-<li><dl class="simple">
-<dt>daylight detection disabled:</dt><dd><ul>
-<li><p>takes default_camera_type</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<dl class="simple">
-<dt>Args:</dt><dd><p>self: The Camera object.
-task (Camera_Task): The task containing information for camera selection.</p>
-</dd>
-<dt>Returns:</dt><dd><p>The result of the camera selection process.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>task</strong> (<em>Camera_Task</em>)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.put_msg_queue_photo">
-<span class="sig-name descname"><span class="pre">put_msg_queue_photo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.put_msg_queue_photo" title="Link to this definition"></a></dt>
-<dd><p>Puts a message queue photo based on the provided task.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>task (Camera_Task): The task to be processed.</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>task</strong> (<em>Camera_Task</em>)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.put_msg_queue_error">
-<span class="sig-name descname"><span class="pre">put_msg_queue_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.put_msg_queue_error" title="Link to this definition"></a></dt>
-<dd><p>Puts a message queue error based on the provided task and message.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>task (Camera_Task): The task to be processed.
-message (str): The error message to be added to the queue.</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>task</strong> (<em>Camera_Task</em>)</p></li>
-<li><p><strong>message</strong> (<em>str</em>)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.detect_daylight">
-<span class="sig-name descname"><span class="pre">detect_daylight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.detect_daylight" title="Link to this definition"></a></dt>
-<dd><p>Detects whether it is currently daylight based on sunrise and sunset times.</p>
-<p>The method uses either the configured coordinates (latitude and longitude)
-or the configured country to calculate sun times.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>bool: True if it is daylight (between sunrise and sunset),</dt><dd><p>False if it is dark
-Incase of error True is returned as daylight</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.blink_snapshot">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blink_snapshot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.blink_snapshot" title="Link to this definition"></a></dt>
-<dd><p>Asynchronously takes a snapshot from a Blink camera and saves it to a specified file path.
-If detect_daylight is night and when image_brightning is enabled, the image will be adjusted.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>bool: True if the snapshot was successfully taken and saved, False otherwise.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.read_blink_config">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_blink_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.read_blink_config" title="Link to this definition"></a></dt>
-<dd><p>Asynchronously reads the Blink configuration file and authenticates with Blink.</p>
-<p>This function checks if the Blink configuration file exists. If it does, it loads
-the configuration file using the <cite>json_load</cite> function, creates an <cite>Auth</cite> object
-with the loaded configuration, sets the <cite>auth</cite> attribute of the <cite>blink</cite> object to
-the created <cite>Auth</cite> object, logs a message indicating that the authentication was
-done using the file, and sets the <cite>authentication_success</cite> variable to <cite>True</cite>.</p>
-<p>If the Blink configuration file does not exist, it logs a message indicating that
-the file was not found and that a 2FA authentication token is required. It creates
-an <cite>Auth</cite> object with the provided Blink username and password, sets the <cite>auth</cite>
-attribute of the <cite>blink</cite> object to the created <cite>Auth</cite> object, and sets the
-<cite>authentication_success</cite> variable to <cite>None</cite>.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>self (object): The instance of the class.</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.save_blink_config">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_blink_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.save_blink_config" title="Link to this definition"></a></dt>
-<dd><p>Saves the authenticated session information of the Blink service into a config file.</p>
-<p>This function saves the authenticated session information of the Blink service into a config file.
-It logs a message indicating that the session information is being saved.
-Then it calls the <cite>save</cite> method of the <cite>blink</cite> object, passing the <cite>blink_config_file</cite> attribute
-of the <cite>config</cite> object as the file path.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>self (object): The instance of the class.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the session information is successfully saved.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.add_2fa_blink_token">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_2fa_blink_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.add_2fa_blink_token" title="Link to this definition"></a></dt>
-<dd><p>Adds a required 2FA token to blink session.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>self (object): The instance of the class.
-task (Camera_Task): The task containing the 2FA token information.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the token is successfully added.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>task</strong> (<em>Camera_Task</em>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.picam_request_take_foto">
-<span class="sig-name descname"><span class="pre">picam_request_take_foto</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.picam_request_take_foto" title="Link to this definition"></a></dt>
-<dd><p>A function to request taking a photo using PiCam, sending a POST request with specific parameters, and logging the process.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if the HTTP request status code is 200, otherwise False</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.picam_request_download_foto">
-<span class="sig-name descname"><span class="pre">picam_request_download_foto</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.picam_request_download_foto" title="Link to this definition"></a></dt>
-<dd><p>Downloads a photo from the PiCam REST-API.</p>
-<p>This function sends a GET request to the PiCam API to download a photo.
-The photo is saved to the file specified in the <cite>photo_image_path</cite>
-configuration.
-If detect_daylight night and when image_brightning is enabled, the image will be adjusted.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>bool: True if the HTTP request status code is 200, otherwise False.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="camera.camera.Camera.adjust_image">
-<span class="sig-name descname"><span class="pre">adjust_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#camera.camera.Camera.adjust_image" title="Link to this definition"></a></dt>
-<dd><p>Adjusts brightness and contrast of the stored photo based on the
-configuration values.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>bool: True if adjustment was successful, False on errors</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>

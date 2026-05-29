@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -6,18 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>door package &mdash; Front door intercom automation 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=8d563738"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -100,7 +98,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#door.detect_rpi.detect_rpi"><code class="docutils literal notranslate"><span class="pre">detect_rpi()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-door">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-door">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#door.DoorBell"><code class="docutils literal notranslate"><span class="pre">DoorBell</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#door.DoorOpener"><code class="docutils literal notranslate"><span class="pre">DoorOpener</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#door.detect_rpi"><code class="docutils literal notranslate"><span class="pre">detect_rpi()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="web.html">web package</a></li>
@@ -149,7 +152,7 @@
 <span id="door-bell-module"></span><h2>door.bell module<a class="headerlink" href="#module-door.bell" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="door.bell.DoorBell">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">door.bell.</span></span><span class="sig-name descname"><span class="pre">DoorBell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.bell.DoorBell" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">door.bell.</span></span><span class="sig-name descname"><span class="pre">DoorBell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.bell.DoorBell" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Front door subclass of configuration config watches the door bell and
 triggers sends telegram message and camera photo.</p>
@@ -189,7 +192,7 @@ triggers sends telegram message and camera photo.</p>
 <span id="door-opener-module"></span><h2>door.opener module<a class="headerlink" href="#module-door.opener" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="door.opener.DoorOpener">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">door.opener.</span></span><span class="sig-name descname"><span class="pre">DoorOpener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.opener.DoorOpener" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">door.opener.</span></span><span class="sig-name descname"><span class="pre">DoorOpener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.opener.DoorOpener" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -214,23 +217,6 @@ triggers sends telegram message and camera photo.</p>
 <dt>Parameters:</dt><dd><p>None</p>
 </dd>
 <dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="door.opener.DoorOpener.open_door">
-<span class="sig-name descname"><span class="pre">open_door</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#door.opener.DoorOpener.open_door" title="Link to this definition"></a></dt>
-<dd><p>A function that opens the door based on Raspberry Pi detection.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>self: The object instance.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the door is successfully opened, False otherwise.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -264,6 +250,97 @@ retrieved from ‘/sys/firmware/devicetree/base/model’ or ‘/proc/cpuinfo’.
 </section>
 <section id="module-door">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-door" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="door.DoorBell">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">door.</span></span><span class="sig-name descname"><span class="pre">DoorBell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_task_queue_async</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.DoorBell" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Front door subclass of configuration config watches the door bell and
+triggers sends telegram message and camera photo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>threading.Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>config_util.Configuration</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>queue.Queue</em>)</p></li>
+<li><p><strong>camera_task_queue_async</strong> (<em>asyncio.Queue</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="door.DoorBell.ring">
+<span class="sig-name descname"><span class="pre">ring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.DoorBell.ring" title="Link to this definition"></a></dt>
+<dd><p>Monitors the door bell and triggers a series of actions when the bell rings.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>test (bool, optional): If True, the function will exit after the first ring. Defaults to False.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+<dt>Raises:</dt><dd><p>Exception: If an error occurs during the execution of the function.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="door.DoorOpener">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">door.</span></span><span class="sig-name descname"><span class="pre">DoorOpener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown_event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_task_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">door_open_task_queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.DoorOpener" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shutdown_event</strong> (<em>Event</em>)</p></li>
+<li><p><strong>config</strong> (<em>Configuration</em>)</p></li>
+<li><p><strong>message_task_queue</strong> (<em>Queue</em>)</p></li>
+<li><p><strong>door_open_task_queue</strong> (<em>Queue</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="door.DoorOpener.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#door.DoorOpener.start" title="Link to this definition"></a></dt>
+<dd><p>Starts the thread endless loop to open the door.</p>
+<p>This method runs in an infinite loop until the <cite>shutdown_event</cite> is set. It continuously retrieves tasks from the <cite>door_open_task_queue</cite> and processes them. If a task is an instance of <cite>Open_Door_Task</cite>, it performs the following actions based on the task attributes:
+- If <cite>task.open</cite> is True, it logs the received task and opens the door by calling the <cite>open_door</cite> method.
+- If <cite>task.reply</cite> is True and <cite>task.message</cite> is not None, it puts a <cite>Message_Task</cite> object with the reply flag set to True, the chat ID from the task, the message from the task, and the data text “Door opened!” into the <cite>message_task_queue</cite>.
+- If <cite>task.reply</cite> is False, it puts a <cite>Message_Task</cite> object with the send flag set to True, the chat ID from the configuration, and the data text “Door opened!” into the <cite>message_task_queue</cite>.
+- If an exception occurs during the execution of the loop, it logs the error and continues.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="door.detect_rpi">
+<span class="sig-prename descclassname"><span class="pre">door.</span></span><span class="sig-name descname"><span class="pre">detect_rpi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_on_raspberry</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#door.detect_rpi" title="Link to this definition"></a></dt>
+<dd><p>Detects whether the system is running on a Raspberry Pi based on the model information
+retrieved from ‘/sys/firmware/devicetree/base/model’ or ‘/proc/cpuinfo’.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>run_on_raspberry (bool): A boolean indicating whether to force the function to run on a Raspberry Pi.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if a Raspberry Pi is detected, False otherwise.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>run_on_raspberry</strong> (<em>bool</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
