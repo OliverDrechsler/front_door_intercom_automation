@@ -1,13 +1,17 @@
 import asyncio
+import hmac
+import ipaddress
 import logging
 import os
 import queue
+import secrets
 import threading
+from functools import wraps
 from datetime import datetime, timezone, timedelta
 
 import pyotp
-from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for, session
-from flask_httpauth import HTTPBasicAuth
+from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for, session, g
+from werkzeug.exceptions import HTTPException
 from werkzeug.exceptions import NotFound
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.serving import make_server
@@ -26,21 +30,21 @@ class WebDoorOpener:
             A decorator for custom authentication required function.
         """
 
+        @wraps(f)
         def decorator(self, *args, **kwargs):
             """
-            A description of the entire function, its parameters, and its return types.
+            Allows either session-based authentication for the browser UI or
+            HTTP basic authentication for API clients without relying on the
+            user agent.
             """
-            user_agent = request.headers.get('User-Agent')
-            if any(browser in user_agent.lower() for browser in self.browsers):
-                if 'username' not in session:
+            auth_user = self.__authenticate_request()
+            if auth_user is None:
+                if request.endpoint == "index":
                     return redirect(url_for('login'))
-            else:
-                auth = request.authorization
-                if not auth or not self.verify_password(auth.username, auth.password):
-                    return self.__handle_401_unauthenticated()
-            return f(self, *args, **kwargs)
+                return self.__handle_401_unauthenticated()
 
-        decorator.__name__ = f.__name__
+            g.auth_user = auth_user
+            return f(self, *args, **kwargs)
         return decorator
 
     @staticmethod
@@ -100,12 +104,16 @@ class WebDoorOpener:
         self.app.secret_key = self.config.flask_secret_key
         self.server = None
         self.app.permanent_session_lifetime = timedelta(days=self.config.flask_browser_session_cookie_lifetime)
+        self.app.config.update(
+            PERMANENT_SESSION_LIFETIME=timedelta(days=self.config.flask_browser_session_cookie_lifetime),
+            SESSION_COOKIE_HTTPONLY=True,
+            SESSION_COOKIE_SAMESITE="Strict",
+            SESSION_COOKIE_SECURE=True,
+        )
 
         self.app.before_request(self.log_request_info)
         self.app.after_request(self.log_response_info)
 
-        self.auth = HTTPBasicAuth()
-        self.browsers = ["safari", "firefox", "mozilla", "chrome", "edge"]
         self.str_log_level = logging.getLevelName(logger.getEffectiveLevel())
         self.log_level = logger.getEffectiveLevel()
 
@@ -183,46 +191,107 @@ class WebDoorOpener:
         self.app.logger.debug("Authentication: Failed: User %s used password %s", username, password)
         return None
 
-    def __get_browser_session(self) -> bool:
+    def __get_authenticated_session_user(self) -> str | None:
         """
-        Check the user agent in the request headers to determine if it matches any of the specified browsers.
+        Returns the session user when the browser UI is authenticated.
+        """
+        return session.get('username')
 
-        Returns:
-            bool: True if the user agent matches any of the specified browsers, False otherwise.
+    def __get_authenticated_basic_user(self) -> str | None:
         """
-        user_agent = request.headers.get('User-Agent')
-        if any(browser in user_agent.lower() for browser in self.browsers):
-            return True
-        return False
+        Returns the authenticated basic auth user if valid credentials were provided.
+        """
+        auth = request.authorization
+        if not auth:
+            return None
+        return self.verify_password(auth.username, auth.password)
+
+    def __authenticate_request(self) -> str | None:
+        """
+        Authenticates the current request either via HTTP basic auth or via the
+        existing browser session.
+        """
+        basic_user = self.__get_authenticated_basic_user()
+        if basic_user is not None:
+            return basic_user
+        return self.__get_authenticated_session_user()
+
+    @staticmethod
+    def __get_or_create_csrf_token() -> str:
+        """
+        Stores and returns a session-bound CSRF token for browser requests.
+        """
+        token = session.get("csrf_token")
+        if token is None:
+            token = secrets.token_urlsafe(32)
+            session["csrf_token"] = token
+        return token
+
+    def __is_session_authenticated(self) -> bool:
+        """
+        Returns True when the request is authenticated by the browser session
+        and not by HTTP basic auth.
+        """
+        return self.__get_authenticated_basic_user() is None and self.__get_authenticated_session_user() is not None
+
+    def __validate_csrf(self) -> bool:
+        """
+        Validates the CSRF token for unsafe session-authenticated requests.
+        """
+        expected_token = session.get("csrf_token")
+        if not expected_token:
+            return False
+
+        provided_token = request.headers.get("X-CSRF-Token")
+        if provided_token is None:
+            if request.is_json:
+                payload = request.get_json(silent=True) or {}
+                provided_token = payload.get("csrf_token")
+            else:
+                provided_token = request.form.get("csrf_token")
+
+        return isinstance(provided_token, str) and hmac.compare_digest(provided_token, expected_token)
 
     def __get_request_username(self) -> str:
         """
-        Get the username from the request. If the browser session is active, returns the username stored in the session or 'anonymous' if not found.
-        If the browser session is not active, attempts to get the username from the request authorization.
-        If the username is not found in the request authorization, returns 'anonymous'.
+        Returns the authenticated user name for logging purposes.
 
         Returns:
-            str: The username obtained from the session or request authorization, or 'anonymous' if not found.
+            str: The username obtained from auth context or 'anonymous' if not found.
         """
-        if self.__get_browser_session():
-            return session.get('username', 'anonymous')
-        else:
-            req_auth = request.authorization
-            try:
-                return req_auth.username
-            except AttributeError:
-                return 'anonymous'
+        auth_user = getattr(g, "auth_user", None)
+        if auth_user is not None:
+            return auth_user
+
+        authenticated_user = self.__authenticate_request()
+        if authenticated_user is not None:
+            g.auth_user = authenticated_user
+            return authenticated_user
+
+        return 'anonymous'
 
     def __get_request_remote_ip(self) -> str:
         """
         Get the remote IP address of the request.
-        Either returns the X-Forwarded-For header or the remote IP address from the request.
+        Only trusts X-Forwarded-For when the direct peer is a configured
+        reverse proxy.
         :return: String containing the remote IP address
         """
-        if (request.headers.get('X-Forwarded-For') is not None):
-            return request.headers.get('X-Forwarded-For')
-        else:
-            return request.remote_addr
+        remote_addr = request.remote_addr or "unknown"
+        trusted_proxies = set(self.config.flask_trusted_reverse_proxies)
+        if remote_addr not in trusted_proxies:
+            return remote_addr
+
+        forwarded_for = request.headers.get('X-Forwarded-For')
+        if not forwarded_for:
+            return remote_addr
+
+        client_ip = forwarded_for.split(",")[0].strip()
+        try:
+            return str(ipaddress.ip_address(client_ip))
+        except ValueError:
+            self.app.logger.warning("Ignoring invalid X-Forwarded-For value: %s", forwarded_for)
+            return remote_addr
 
     def log_request_info(self):
         """
@@ -240,7 +309,7 @@ class WebDoorOpener:
             redirect: If the user is 'anonymous' and the endpoint is not 'login', 'favicon', or 'static'.
             handle_401_unauthenticated: If the user is 'anonymous' and there is no browser session.
         """
-        browser_session = self.__get_browser_session()
+        g.csp_nonce = secrets.token_urlsafe(16)
         user = self.__get_request_username()
         self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', self.__get_request_remote_ip(), user, request.method, request.path)
         self.app.logger.debug("")
@@ -251,12 +320,22 @@ class WebDoorOpener:
         self.app.logger.debug('Request Data: %s', request.get_data())
         self.app.logger.debug("======== HTTP Request END ==========")
 
-        if browser_session:
-            if (user == 'anonymous' and request.endpoint not in ['login', 'favicon', 'static']):
+        if request.endpoint == 'login':
+            self.__get_or_create_csrf_token()
+
+        if request.method in {"POST", "PUT", "PATCH", "DELETE"} and self.__is_session_authenticated():
+            if not self.__validate_csrf():
+                return self.__handle_bad_request(message="CSRF validation failed.")
+
+        if request.endpoint in ['favicon', 'static']:
+            return None
+
+        if user == 'anonymous':
+            if request.endpoint == 'login':
+                return None
+            if request.endpoint == 'index':
                 return redirect(url_for('login'))
-        else:
-            if (user == 'anonymous'):
-                return self.__handle_401_unauthenticated()
+            return self.__handle_401_unauthenticated()
 
     def log_response_info(self, response):
         """
@@ -275,6 +354,25 @@ class WebDoorOpener:
             self.app.logger.debug('Response Data: %s', response.get_data(as_text=True))
         self.app.logger.debug("======== HTTP Response END ==========")
 
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+        response.headers['Cache-Control'] = 'no-store'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            f"script-src 'self' 'nonce-{g.csp_nonce}'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data:; "
+            "connect-src 'self'; "
+            "form-action 'self'; "
+            "base-uri 'self'; "
+            "frame-ancestors 'none'; "
+            "object-src 'none'; "
+            "manifest-src 'self'"
+        )
+
         return response
 
     def login(self) -> str:
@@ -284,15 +382,21 @@ class WebDoorOpener:
         :rtype: str
         """
         if request.method == 'POST':
+            if not self.__validate_csrf():
+                return render_template("login_invalid.html", csrf_token=self.__get_or_create_csrf_token()), 400
+
             username = request.form['username']
             password = request.form['password']
             if username in self.users and check_password_hash(self.users.get(username), password):
+                session.clear()
+                session.permanent = True
                 session['username'] = username
+                session['csrf_token'] = secrets.token_urlsafe(32)
                 return redirect(url_for('index'))
             else:
-                return render_template("login_invalid.html")
+                return render_template("login_invalid.html", csrf_token=self.__get_or_create_csrf_token())
 
-        return render_template("login.html")
+        return render_template("login.html", csrf_token=self.__get_or_create_csrf_token())
 
     def favicon(self):
         """
@@ -306,7 +410,7 @@ class WebDoorOpener:
         """
         A function that returns the homepage HTML content as a string after ensuring custom authentication.
         """
-        return render_template("homepage.html")
+        return render_template("homepage.html", csrf_token=self.__get_or_create_csrf_token(), csp_nonce=g.csp_nonce)
 
     @custom_auth_required
     def open(self):
@@ -323,8 +427,9 @@ class WebDoorOpener:
             - If the provided TOTP code is invalid, the function sends a message indicating the invalid TOTP code and returns a bad request response with a message "Invalid TOTP. Retry again -> will notify owner.".
         """
         auth_user = self.__get_request_username()
-        # auth_user = self.auth.current_user()
-        data = request.get_json()
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return self.__handle_bad_request(message="Request body must be valid JSON.")
         web_input_totp = data.get('totp')
         totp_config = pyotp.TOTP(s=self.config.otp_password, digits=self.config.otp_length,
                                  digest=self.config.hash_type, interval=self.config.otp_interval)
@@ -353,7 +458,13 @@ class WebDoorOpener:
         :rtype: json
         """
         self.app.logger.error('Error: %s', str(e), exc_info=True)
-        return jsonify(self.__error_response_json(status=500, error="Internal Server Error", message=str(e))), 500
+        if isinstance(e, HTTPException):
+            return jsonify(self.__error_response_json(status=e.code, error=e.name, message=e.description)), e.code
+        return jsonify(self.__error_response_json(
+            status=500,
+            error="Internal Server Error",
+            message="An internal server error occurred."
+        )), 500
 
     def handle_not_found(self, error):
         """
@@ -420,7 +531,6 @@ class WebDoorOpener:
         """
         Setup routes for various URLs in the web application.
         """
-        self.auth.verify_password(self.verify_password)
         self.app.add_url_rule('/favicon.ico', 'favicon', self.favicon)
         self.app.add_url_rule('/login', 'login', self.login, methods=['GET', 'POST'])
         self.app.add_url_rule('/', 'index', self.index, methods=['GET'])

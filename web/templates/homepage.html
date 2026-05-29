@@ -23,25 +23,31 @@
     <meta name="msapplication-TileImage" content="/static/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <script>
+    <script nonce="{{ csp_nonce }}">
         async function verifyTOTP(event) {
             event.preventDefault();
             const totp = document.getElementById('totp').value;
             const response = await fetch('/open', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': '{{ csrf_token }}'
                 },
                 body: JSON.stringify({ totp })
             });
             const result = await response.json();
             alert(result.message);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('door-open-form');
+            form.addEventListener('submit', verifyTOTP);
+        });
     </script>
 </head>
 <body>
     <h1>Please insert door code</h1>
-    <form onsubmit="verifyTOTP(event)">
+    <form id="door-open-form" method="POST" action="/open">
         <input type="text" id="totp" name="totp" placeholder="OTP Code">
         <input type="submit" value="Öffnen">
     </form>
