@@ -2,8 +2,7 @@ name: build github_pages documentation
 on:
   push:
     branches:
-      - feture/refactor_github_pages_pipeline
-
+      - master
 
 permissions:
   contents: write
