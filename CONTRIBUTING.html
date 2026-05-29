@@ -90,6 +90,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#write-documentation">Write Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submit-code">Submit code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submit-feedback">Submit Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-development-workflow">Local Development Workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
@@ -166,6 +167,73 @@ Anything tagged with “enhancement” and “help wanted” is open to whoever 
 <li><p>Keep the scope as narrow as possible, to make it easier to implement.</p></li>
 <li><p>Remember that this is a volunteer-driven project, and that contributions are welcome :)</p></li>
 </ul>
+</section>
+<section id="local-development-workflow">
+<h2>Local Development Workflow<a class="headerlink" href="#local-development-workflow" title="Link to this heading"></a></h2>
+<p>The following example shows a safe local workflow for checking out the repository, creating a development branch, installing dependencies, running tests, committing your work, and restoring the original <code class="docutils literal notranslate"><span class="pre">master</span></code> branch environment afterwards.</p>
+<ol class="arabic simple">
+<li><p>Clone the repository and enter the project directory.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>&lt;your-repository-url&gt;
+<span class="nb">cd</span><span class="w"> </span>front_door_intercom_automation_2
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create and activate a virtual environment.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Check out <code class="docutils literal notranslate"><span class="pre">master</span></code>, update it, and create a local development branch.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>master
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>master
+git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>my-local-dev-branch
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Install the project requirements.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Make your changes and run the test suite.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p>Commit your changes on the development branch.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>status
+git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Describe your change&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p>Switch back to <code class="docutils literal notranslate"><span class="pre">master</span></code>.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>master
+</pre></div>
+</div>
+<ol class="arabic simple" start="8">
+<li><p>Restore the original dependency file from <code class="docutils literal notranslate"><span class="pre">master</span></code> and reinstall the original requirements.</p></li>
+</ol>
+<p>This step is important if you changed <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> while working on your branch and want your local <code class="docutils literal notranslate"><span class="pre">master</span></code> environment to match the repository again.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>restore<span class="w"> </span>requirements.txt
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--force-reinstall<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+<ol class="arabic simple" start="9">
+<li><p>Optional: remove the local development branch after your work has been merged or is no longer needed.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>branch<span class="w"> </span>-d<span class="w"> </span>my-local-dev-branch
+</pre></div>
+</div>
 </section>
 </section>
 
