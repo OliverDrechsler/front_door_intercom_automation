@@ -8,6 +8,9 @@ on:
   pull_request:
     branches: [master, main]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,31 +33,7 @@ jobs:
           pip install ruff
           ruff check --output-format=github .
         continue-on-error: true
-#
-#      - name: black - static security code check
-#        run: |
-#          pip install black
-#          black --verbose camera/.
-#          black --verbose config/.
-#          black --verbose door/.
-#          black --verbose bot/.
-#          black --verbose fdia.py
-#
-#
-#      - name: vulernability check in dependcies
-#        run: |
-#          pip install safety
-#          safety check --full-report
-          
-      # - name: Run Snyk to check for vulnerabilities
-      #   uses: snyk/actions/node@master
-      #   env:
-      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      # - name: SonarCloud scanner
-      #   uses: sonarsource/sonarcloud-github-action@master
-      #   env:
-      #     # GITHUB_TOKEN: ${​{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${​{ secrets.SONAR_TOKEN }}
+
   test:
     runs-on: ubuntu-latest
     strategy:
