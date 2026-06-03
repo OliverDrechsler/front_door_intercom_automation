@@ -143,8 +143,6 @@ The project offers the following functionality:
 - [ ] Integration offering in [HomeAssistant](https://www.home-assistant.io/)
 - [ ] Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.  
 - [ ] add docker container build, image at GHCR and support via docker-compose.yaml
-- [ ] Blink door bell notification
-- [ ] Support Google / Microsoft Authentication App with their format
 
 ## Get started
 
