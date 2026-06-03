@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import queue
 from datetime import datetime
+from urllib.parse import urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
 import aiohttp
 import requests
@@ -681,7 +682,8 @@ class Camera:
         :rtype: bool
         """
         self.logger.info(msg="take a PiCam snapshot")
-        self.logger.debug(msg=f"post url={self.config.picam_url}")
+        picam_url = self.__get_picam_api_url()
+        self.logger.debug(msg=f"post url={picam_url}")
         self.picam_photo_id = None
         payload: dict[str, int | str] = {
             "rotation": self.config.picam_rotation,
@@ -695,7 +697,7 @@ class Camera:
         self.logger.debug(msg=headers)
         try:
             response: requests.Response = requests.post(
-                url=self.config.picam_url, json=payload, headers=headers
+                url=picam_url, json=payload, headers=headers
             )
             response.raise_for_status()
             response_json = response.json()
@@ -730,6 +732,7 @@ class Camera:
         if not self.picam_photo_id:
             self.logger.error("No PiCam photo_id available for download")
             return False
+        picam_url = self.__get_picam_api_url()
         if os.path.exists(path=self.config.photo_image_path):
             logger.debug(msg="deleting already existing file before hand")
             os.remove(path=self.config.photo_image_path)
@@ -739,7 +742,7 @@ class Camera:
         try:
             with open(self.config.photo_image_path, "wb") as file:
                 response: requests.Response = requests.get(
-                    url=self.config.picam_url,
+                    url=picam_url,
                     params={"photo_id": self.picam_photo_id},
                 )
                 response.raise_for_status()
@@ -757,6 +760,25 @@ class Camera:
             self.logger.error("Error: {0}".format(e))
             self.logger.error("Error args: {0}".format(e.args))
         return False
+
+    def __get_picam_api_url(self) -> str:
+        """
+        Returns the PiCam API endpoint without legacy query parameters.
+
+        Older configurations used values like `/foto/?filename=foto.jpg`.
+        The current API requires a clean `/foto/` endpoint plus a `photo_id`
+        query parameter added by the client during download.
+        """
+        picam_url = self.config.picam_url.strip()
+        url_parts = urlsplit(picam_url)
+        if url_parts.query or url_parts.fragment:
+            self.logger.warning(
+                "PiCam URL contains legacy query or fragment data; stripping it: %s",
+                picam_url,
+            )
+        return urlunsplit(
+            (url_parts.scheme, url_parts.netloc, url_parts.path, "", "")
+        )
 
     def __adjust_image(self) -> bool:
         """

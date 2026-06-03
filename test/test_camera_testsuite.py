@@ -22,9 +22,9 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.config.lat = 52.5200
         self.config.lon = 13.4050
         self.config.blink_enabled = True
-        self.config.picam_url = MagicMock()
-        self.config.blink_config_file = MagicMock()
-        self.config.photo_image_path = MagicMock()
+        self.config.picam_url = "http://example.com/foto/"
+        self.config.blink_config_file = "/tmp/blink_config.json"
+        self.config.photo_image_path = "/tmp/photo.jpg"
 
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
@@ -425,6 +425,29 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result)
 
     @patch('camera.camera.requests')
+    def test_picam_request_take_foto_strips_legacy_query_from_url(self, mock_requests):
+        self.camera.config.picam_url = "http://example.com/foto/?filename=foto.jpg"
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"photo_id": "photo-123"}
+        mock_requests.post.return_value = mock_response
+
+        result = self.camera._Camera__picam_request_take_foto()
+
+        self.assertTrue(result)
+        mock_requests.post.assert_called_once_with(
+            url="http://example.com/foto/",
+            json={
+                "rotation": self.camera.config.picam_rotation,
+                "width": self.camera.config.picam_image_width,
+                "height": self.camera.config.picam_image_hight,
+                "exposure": self.camera.config.picam_exposure,
+                "iso": self.camera.config.picam_iso,
+            },
+            headers={"content-type": "application/json"},
+        )
+
+    @patch('camera.camera.requests')
     def test_picam_request_take_foto_exception(self, mock_requests):
         mock_response = mock_requests.post.return_value
         mock_response.status_code = 404
@@ -481,6 +504,30 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.mock_logger_info.assert_any_call(msg='downloading PiCam foto')
         self.mock_logger_debug.assert_any_call(msg='downloading foto ended with status 200')
         self.mock_logger_debug.assert_any_call(msg='end downloading foto')
+
+    @patch('camera.camera.requests')
+    @patch('camera.camera.os.path.exists', return_value=True)
+    @patch('camera.camera.os.remove')
+    def test_picam_request_download_foto_strips_legacy_query_from_url(self, mock_remove, mock_exists, mock_requests):
+        self.camera.config.picam_url = "http://example.com/foto/?filename=foto.jpg"
+        self.camera.config.photo_image_path = "/tmp/photo.jpg"
+        self.camera.picam_photo_id = "photo-123"
+        self.camera._Camera__detect_daylight = MagicMock(return_value=True)
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b"fake_image_data"
+        mock_requests.get.return_value = mock_response
+
+        mock_file = unittest.mock.mock_open()
+        with patch('builtins.open', mock_file):
+            result = self.camera._Camera__picam_request_download_foto()
+
+        self.assertTrue(result)
+        mock_requests.get.assert_called_once_with(
+            url="http://example.com/foto/",
+            params={"photo_id": "photo-123"},
+        )
 
     @patch('camera.camera.requests')
     @patch('camera.camera.os.path.exists', return_value=False)
