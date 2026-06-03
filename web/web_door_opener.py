@@ -6,6 +6,7 @@ import os
 import queue
 import secrets
 import threading
+from urllib.parse import parse_qsl, urlencode
 from functools import wraps
 from datetime import datetime, timezone, timedelta
 
@@ -108,7 +109,7 @@ class WebDoorOpener:
             PERMANENT_SESSION_LIFETIME=timedelta(days=self.config.flask_browser_session_cookie_lifetime),
             SESSION_COOKIE_HTTPONLY=True,
             SESSION_COOKIE_SAMESITE="Strict",
-            SESSION_COOKIE_SECURE=True,
+            SESSION_COOKIE_SECURE=self.config.flask_session_cookie_secure,
         )
 
         self.app.before_request(self.log_request_info)
@@ -317,7 +318,7 @@ class WebDoorOpener:
         self.app.logger.debug("")
         self.app.logger.info('User: %s, Method: %s, Path: %s', user, request.method, request.path)
         self.app.logger.debug('Request Headers: %s', request.headers)
-        self.app.logger.debug('Request Data: %s', request.get_data())
+        self.app.logger.debug('Request Data: %s', self.__get_sanitized_request_data())
         self.app.logger.debug("======== HTTP Request END ==========")
 
         if request.endpoint == 'login':
@@ -336,6 +337,38 @@ class WebDoorOpener:
             if request.endpoint == 'index':
                 return redirect(url_for('login'))
             return self.__handle_401_unauthenticated()
+
+    @staticmethod
+    def __mask_secret(value: str) -> str:
+        """
+        Returns a fixed marker for sensitive values to avoid logging secrets.
+        """
+        return "***"
+
+    def __get_sanitized_request_data(self) -> bytes:
+        """
+        Returns request data with common secret fields redacted for logging.
+        """
+        secret_fields = {"password", "csrf_token", "totp"}
+
+        if request.is_json:
+            payload = request.get_json(silent=True)
+            if isinstance(payload, dict):
+                sanitized_payload = {
+                    key: self.__mask_secret(value) if key in secret_fields else value
+                    for key, value in payload.items()
+                }
+                return str(sanitized_payload).encode("utf-8")
+
+        if request.content_type and "application/x-www-form-urlencoded" in request.content_type:
+            form_items = parse_qsl(request.get_data(as_text=True), keep_blank_values=True)
+            sanitized_items = [
+                (key, self.__mask_secret(value) if key in secret_fields else value)
+                for key, value in form_items
+            ]
+            return urlencode(sanitized_items).encode("utf-8")
+
+        return request.get_data()
 
     def log_response_info(self, response):
         """

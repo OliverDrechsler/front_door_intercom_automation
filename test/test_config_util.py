@@ -74,6 +74,7 @@ class TestConfiguration(unittest.TestCase):
                 'flask_web_port': 5000,
                 'flask_secret_key': 'dummy_secret',
                 'browser_session_cookie_lifetime': 3600,
+                'session_cookie_secure': False,
                 'flask_users': [{'user1': 'id1'}, {'user2': 'id2'}]
             }
         }
@@ -121,6 +122,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.flask_web_port, 5000)
         self.assertEqual(self.config.flask_secret_key, 'dummy_secret')
         self.assertEqual(self.config.flask_browser_session_cookie_lifetime, 3600)
+        self.assertFalse(self.config.flask_session_cookie_secure)
         self.assertEqual(self.config.web_user_dict, {'user1': 'id1', 'user2': 'id2'})
 
     @patch('os.path.isfile', return_value=True)

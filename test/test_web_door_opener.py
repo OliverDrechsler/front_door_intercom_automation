@@ -22,6 +22,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         cls.mock_config.flask_web_host = '127.0.0.1'
         cls.mock_config.telegram_chat_nr = 123456789
         cls.mock_config.flask_browser_session_cookie_lifetime = 1
+        cls.mock_config.flask_session_cookie_secure = False
         cls.mock_config.flask_trusted_reverse_proxies = ['127.0.0.1']
 
         # Mock event and queues - don't use asyncio.Queue in sync context
@@ -222,6 +223,28 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.assertEqual('strict-origin-when-cross-origin', response.headers['Referrer-Policy'])
         self.assertEqual('no-store', response.headers['Cache-Control'])
         self.assertIn("frame-ancestors 'none'", response.headers['Content-Security-Policy'])
+
+    def test_login_uses_configured_non_secure_session_cookie_for_http(self):
+        response = self.client.get('/login')
+        self.assertIn('HttpOnly', response.headers['Set-Cookie'])
+        self.assertNotIn('Secure', response.headers['Set-Cookie'])
+
+    def test_log_request_info_redacts_form_secrets(self):
+        with self.web_door_opener.app.test_request_context(
+            '/login',
+            method='POST',
+            data={
+                'username': 'testuser',
+                'password': 'testpassword',
+                'csrf_token': 'csrf-secret',
+            },
+        ):
+            sanitized = self.web_door_opener._WebDoorOpener__get_sanitized_request_data()
+
+        self.assertEqual(
+            sanitized,
+            b'username=testuser&password=%2A%2A%2A&csrf_token=%2A%2A%2A',
+        )
 
     def test_get_request_remote_ip_uses_trusted_forwarded_for(self):
         with self.web_door_opener.app.test_request_context(

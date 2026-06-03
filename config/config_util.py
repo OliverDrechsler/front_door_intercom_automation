@@ -86,6 +86,7 @@ class Configuration:
         self.flask_web_port: int = self.config["web"]["flask_web_port"]
         self.flask_secret_key: str = self.config["web"]["flask_secret_key"]
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
+        self.flask_session_cookie_secure: bool = self.config["web"].get("session_cookie_secure", False)
         self.flask_trusted_reverse_proxies: list[str] = self.config["web"].get("trusted_reverse_proxies", [])
 
     def __get_web_user_dict(self) -> dict:
