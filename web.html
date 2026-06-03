@@ -54,6 +54,13 @@
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id1">2.0.0 - 2.0.0 (2026-06-03)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#breaking-changes">Breaking changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#fixes">Fixes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#features">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#pipelines">Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#documentation">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-12-0-2026-06-03">1.12.0 - Release 1.12.0 (2026-06-03)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-14-2026-05-12">1.11.14 - Release 1.11.14 (2026-05-12)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-13-2026-04-14">1.11.13 - Release 1.11.13 (2026-04-14)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-12-2026-02-15">1.11.12 - Release 1.11.12 (2026-02-15)</a></li>
@@ -68,10 +75,10 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-3-2025-11-25">1.11.3 - Release 1.11.3 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-2-2025-11-25">1.11.2 - Release 1.11.2 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-1-2025-11-25">1.11.1 - Release 1.11.1 (2025-11-25)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id14">1.11 - 1.11 (2025-06-10)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id15">1.10 - 1.10 (2025-05-11)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id18">1.0.9 - 1.0.9 (2025-02-14)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id21">1.0.8 - 1.0.8 (2025-02-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id17">1.11 - 1.11 (2025-06-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id20">1.10 - 1.10 (2025-05-11)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id23">1.0.9 - 1.0.9 (2025-02-14)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id26">1.0.8 - 1.0.8 (2025-02-10)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7-2025-02-09">1.0.7 - Release 1.0.7 (2025-02-09)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6-2025-02-02">1.0.6 - Release 1.0.6 (2025-02-02)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5-2024-11-25">1.0.5 - Release 1.0.5 (2024-11-25)</a></li>
@@ -260,14 +267,29 @@ handle_401_unauthenticated: If the user is ‘anonymous’ and there is no brows
 
 <dl class="py method">
 <dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.index">
-<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.index" title="Link to this definition"></a></dt>
-<dd><p>A description of the entire function, its parameters, and its return types.</p>
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.index" title="Link to this definition"></a></dt>
+<dd><p>A function that returns the homepage HTML content as a string after ensuring custom authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="web.web_door_opener.WebDoorOpener.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.open" title="Link to this definition"></a></dt>
-<dd><p>A description of the entire function, its parameters, and its return types.</p>
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#web.web_door_opener.WebDoorOpener.open" title="Link to this definition"></a></dt>
+<dd><p>A function to open the door when a valid TOTP code is provided.</p>
+<p>This function is decorated with <cite>&#64;custom_auth_required</cite>, which ensures that the user is authenticated before accessing this endpoint.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>If the provided TOTP code is valid, the function sends a message to open the door and takes a photo, and returns a success response with status code 201 and a message “TOTP is valid! Opening!”.</p></li>
+<li><p>If the provided TOTP code is invalid, the function sends a message indicating the invalid TOTP code and returns a bad request response with a message “Invalid TOTP. Retry again -&gt; will notify owner.”.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

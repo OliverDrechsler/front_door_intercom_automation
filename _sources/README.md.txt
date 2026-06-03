@@ -437,7 +437,7 @@ Here you can specify multiple users which are allowed to access the Web page and
   
 For TLS cert encryption it's recommend to use a NGINX reverse proxy with TLS cert configuration. 
 See sample Docker container project here [https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt](https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt)  
-**Important: I do not recommend to expose the Web-UI to the internet! It is not hardend nor pentested**  
+**Important: I do not recommend to expose the Web-UI to the internet! It is not hardend nor pentested nor from security safe - it is just a proof of concept**  
 To access the Web-Ui/REST-API while you roam - i recommend to setup a VPN Tunnel in your ISP Router.    
 Activate VPN Tunnel before you send the web request.    
 

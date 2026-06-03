@@ -1,5 +1,57 @@
 # ChangeLog
 
+# 2.0.0 - 2.0.0 (2026-06-03)
+
+# Breaking changes
+
+- [picam_api_2](https://github.com/OliverDrechsler/PiCam_API_2/) breaking change adjustment for response / request model according to breaking change there
+
+# Fixes
+
+- update library versions
+- fixed vscode pytest detection
+- fix pyproject and make file settings
+- fixed unit tests and added new onces
+
+# Features
+
+- refactored and improved flask web security
+- removed TOTP tin telegram reply message
+- refactor internal method names
+- code refactor and improvements
+- small web refactor improvement
+
+# Pipelines
+
+- fix pipeline ruff errors
+- fix pipeline build log errors
+- improved pipeline security
+
+# Documentation
+
+- added contribution readme for local development with branches
+- updated readme
+- updated and refactored github pages build pipeline
+
+<!-- Release notes generated using configuration in .github/release.yml at master -->
+
+## What's Changed
+### 🏕 Features
+* feature / breaking change / refactor code / picam api change / pipelines changes / GitHub pges changes by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/252
+
+
+**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.11.14...2.0.0
+
+
+# 1.12.0 - Release 1.12.0 (2026-06-03)
+
+### Changes
+- feature / breaking change / refactor code / picam api change / pipelines changes / GitHub pges changes (#252)
+
+**Version bump type:** minor
+
+
+
 # 1.11.14 - Release 1.11.14 (2026-05-12)
 
 ### Changes
