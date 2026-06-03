@@ -8,15 +8,18 @@ on:
   pull_request:
     branches: [master, main]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Set up Python 3.14
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Install dependencies
@@ -30,40 +33,16 @@ jobs:
           pip install ruff
           ruff check --output-format=github .
         continue-on-error: true
-#
-#      - name: black - static security code check
-#        run: |
-#          pip install black
-#          black --verbose camera/.
-#          black --verbose config/.
-#          black --verbose door/.
-#          black --verbose bot/.
-#          black --verbose fdia.py
-#
-#
-#      - name: vulernability check in dependcies
-#        run: |
-#          pip install safety
-#          safety check --full-report
-          
-      # - name: Run Snyk to check for vulnerabilities
-      #   uses: snyk/actions/node@master
-      #   env:
-      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      # - name: SonarCloud scanner
-      #   uses: sonarsource/sonarcloud-github-action@master
-      #   env:
-      #     # GITHUB_TOKEN: ${​{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${​{ secrets.SONAR_TOKEN }}
+
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -78,6 +57,6 @@ jobs:
         pytest --cov=./ --cov-report=xml
 
     - name: Upload coverage reports to Codecov with GitHub Action
-      uses: codecov/codecov-action@v4.2.0
+      uses: codecov/codecov-action@v6
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

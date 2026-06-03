@@ -27,9 +27,6 @@ def define_config_file():
     # Get the parent directory
     parent_dir = os.path.dirname(current_dir)
 
-    # Construct the path to config.yaml in the parent directory
-    config_path = os.path.join(parent_dir, 'config.yaml')
-
     if os.path.isfile(current_dir + "/config.yaml"):
         return current_dir + "/config.yaml"
     elif os.path.isfile(parent_dir + "/config.yaml"):

@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 import os
 from pathlib import Path
 import queue
-import time
-from datetime import datetime, timezone
-from tracemalloc import start
+from datetime import datetime
+from urllib.parse import urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
 import aiohttp
 import requests
@@ -65,6 +63,9 @@ class Camera:
         self.logger.debug(msg="initialize camera class instance")
         self.running: bool = True
         self.restart: bool = False
+        self.session: aiohttp.ClientSession | None = None
+        self.blink: Blink | None = None
+        self.picam_photo_id: str | None = None
 
     async def start(self) -> None:
         """
@@ -72,13 +73,14 @@ class Camera:
         various camera tasks asynchronously.
         """
         logger.debug(msg="thread camera start")
+        restart_requested = False
 
         if self.config.blink_enabled:
             self.logger.debug("start blink session")
             self.session = aiohttp.ClientSession()
             self.logger.debug("add session to blink")
             self.blink = Blink(session=self.session, refresh_rate=3)
-            await self.read_blink_config()
+            await self.__read_blink_config()
             try:
                 self.logger.info("start blink")
                 await self.blink.start()
@@ -158,14 +160,18 @@ class Camera:
                 # restart
                 if not self.restart:
                     self.restart = True
-                    # schedule restart of blink session asynchronously
-                    asyncio.create_task(self.start())
+                    restart_requested = True
+
+        if restart_requested:
+            await self.__close_session()
+            await self.start()
+            return
 
         logger.info("camera now start endless loop")
         while self.running:
             try:
                 self.logger.debug("camera_task_queue_async get task")
-                task = await self.camera_task_queue_async.get()
+                task = await asyncio.wait_for(self.camera_task_queue_async.get(), timeout=0.5)
 
                 if task is None:  # Exit signal
                     self.logger.info("no task")
@@ -176,26 +182,26 @@ class Camera:
                     self.logger.debug(f"Async Processing Camera_Task with data: {task}")
                     if task.photo:
                         self.logger.info(f"processing task.photo: {task.photo}")
-                        await self.choose_cam(task)
+                        await self.__choose_cam(task)
 
                     elif task.picam_photo:
                         self.logger.info(
                             f"processing task.picam_photo: {task.picam_photo}"
                         )
-                        await self._picam_foto_helper(task)
+                        await self.__picam_foto_helper(task)
 
                     elif task.blink_photo:
                         self.logger.info(
                             f"processing task.blink_photo: {task.blink_photo}"
                         )
-                        await self._blink_foto_helper(task)
+                        await self.__blink_foto_helper(task)
 
                     elif task.blink_mfa:
                         self.logger.info(f"processing task.blink_mfa: {task.blink_mfa}")
 
-                        result = await self.add_2fa_blink_token(task)
+                        result = await self.__add_2fa_blink_token(task)
                         if result:
-                            result = await self.save_blink_config()
+                            result = await self.__save_blink_config()
                             if result:
                                 self.message_task_queue.put(
                                     Message_Task(
@@ -225,13 +231,15 @@ class Camera:
                                     "processing",
                                 )
                             )
+            except asyncio.TimeoutError:
+                continue
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
 
-        await self.session.close()
+        await self.__close_session()
 
-    async def choose_cam(self, task: Camera_Task):
+    async def __choose_cam(self, task: Camera_Task):
         """
         Asynchronously chooses a camera based on various conditions such as
         daylight detection, night vision, and default camera type.
@@ -255,18 +263,18 @@ class Camera:
             self.logger.debug("daylight detection is enabled")
 
             # detect daylight = true or night = false
-            if self.detect_daylight():
+            if self.__detect_daylight():
                 self.logger.info("daylight detected")
 
                 if self.config.default_camera_type == DefaultCam.BLINK:
                     self.logger.debug("blink night_vision is disabled")
-                    result = await self._blink_foto_helper(task)
-                    return await self._check_blink_result(task, result)
+                    result = await self.__blink_foto_helper(task)
+                    return await self.__check_blink_result(task, result)
 
                 if self.config.default_camera_type == DefaultCam.PICAM:
                     self.logger.debug("picam night_vision is disabled")
-                    result = await self._picam_foto_helper(task)
-                    return await self._check_picam_result(task, result)
+                    result = await self.__picam_foto_helper(task)
+                    return await self.__check_picam_result(task, result)
 
             else:
                 self.logger.info("night detected is enabled")
@@ -275,8 +283,8 @@ class Camera:
                 # ToDo: further extended unit tests required here
                 if self.config.blink_night_vision:
                     self.logger.debug("blink night_vision is enabled")
-                    result = await self._blink_foto_helper(task)
-                    return await self._check_blink_result(task, result)
+                    result = await self.__blink_foto_helper(task)
+                    return await self.__check_blink_result(task, result)
 
                 if (
                     self.config.picam_night_vision
@@ -288,21 +296,21 @@ class Camera:
                     self.logger.debug(
                         f"picam image_brightening is {self.config.picam_image_brightening}"
                     )
-                    result = await self._picam_foto_helper(task)
-                    return await self._check_picam_result(task, result)
+                    result = await self.__picam_foto_helper(task)
+                    return await self.__check_picam_result(task, result)
 
         else:
             if self.config.default_camera_type == DefaultCam.BLINK:
                 self.logger.debug("blink as default cam choosen")
-                result = await self._blink_foto_helper(task)
-                return await self._check_blink_result(task, result)
+                result = await self.__blink_foto_helper(task)
+                return await self.__check_blink_result(task, result)
 
             if self.config.default_camera_type == DefaultCam.PICAM:
                 self.logger.debug("picam as default cam is choosen")
-                result = await self._picam_foto_helper(task)
-                return await self._check_picam_result(task, result)
+                result = await self.__picam_foto_helper(task)
+                return await self.__check_picam_result(task, result)
 
-    async def _picam_foto_helper(self, task: Camera_Task) -> bool:
+    async def __picam_foto_helper(self, task: Camera_Task) -> bool:
         """
         A helper function for the PiCam to take and download a photo, log
         success and errors, and manage the message queue.
@@ -315,27 +323,27 @@ class Camera:
         """
         if self.config.picam_enabled:
             self.logger.debug("_picam_foto_helper - picam enabled")
-            result = self.picam_request_take_foto()
+            result = self.__picam_request_take_foto()
             if result:
                 self.logger.debug("picam snapshot success")
-                result = self.picam_request_download_foto()
+                result = self.__picam_request_download_foto()
                 if result:
                     self.logger.debug("picam snapshot download success")
-                    self.put_msg_queue_photo(task)
+                    self.__put_msg_queue_photo(task)
                 else:
                     self.logger.error("picam snapshot download error")
-                    self.put_msg_queue_error(
+                    self.__put_msg_queue_error(
                         task, "an error occured during PiCam foto download "
                     )
             else:
                 self.logger.error("picam snapshot error")
-                self.put_msg_queue_error(task, "an error occured during PiCam snapshot")
+                self.__put_msg_queue_error(task, "an error occured during PiCam snapshot")
         else:
             self.logger.info("_picam_foto_helper - picam disabled")
             return False
         return result
 
-    async def _blink_foto_helper(self, task: Camera_Task) -> bool:
+    async def __blink_foto_helper(self, task: Camera_Task) -> bool:
         """
         Asynchronously takes a photo using the Blink camera if enabled in the configuration.
 
@@ -353,13 +361,13 @@ class Camera:
         """
         if self.config.blink_enabled:
             self.logger.debug("_blink_foto_helper - blink enabled")
-            result = await self.blink_snapshot()
+            result = await self.__blink_snapshot()
             if result:
                 self.logger.debug("blink snapshot success")
-                self.put_msg_queue_photo(task)
+                self.__put_msg_queue_photo(task)
             else:
                 self.logger.error("blink snapshot error detected")
-                self.put_msg_queue_error(
+                self.__put_msg_queue_error(
                     task, "an error occured during pocessing Blink foto task"
                 )
         else:
@@ -367,7 +375,7 @@ class Camera:
             return False
         return result
 
-    async def _check_picam_result(self, task: Camera_Task, result: bool) -> bool:
+    async def __check_picam_result(self, task: Camera_Task, result: bool) -> bool:
         """
         Check the result of the picam function.
 
@@ -389,14 +397,14 @@ class Camera:
             self.logger.debug("_check_picam_result FALSE")
             if self.config.blink_enabled:
                 self.logger.error("_check_picam_result - second try now with blink")
-                return await self._blink_foto_helper(task)
+                return await self.__blink_foto_helper(task)
             else:
                 self.logger.error(
                     "_check_picam_result - blink not enabled for second try"
                 )
         return result
 
-    async def _check_blink_result(self, task: Camera_Task, result: bool) -> bool:
+    async def __check_blink_result(self, task: Camera_Task, result: bool) -> bool:
         """
         Check the result of the picam function.
 
@@ -418,14 +426,14 @@ class Camera:
             self.logger.debug("blink _check_blink_result FALSE")
             if self.config.picam_enabled:
                 self.logger.error("_check_blink_result - second try now with picam")
-                return await self._picam_foto_helper(task)
+                return await self.__picam_foto_helper(task)
             else:
                 self.logger.error(
                     "_check_blink_result - picam not enabled for second try"
                 )
         return result
 
-    def put_msg_queue_photo(self, task: Camera_Task):
+    def __put_msg_queue_photo(self, task: Camera_Task):
         """
         Puts a message queue photo based on the provided task.
 
@@ -453,7 +461,7 @@ class Camera:
                 )
             )
 
-    def put_msg_queue_error(self, task: Camera_Task, message: str):
+    def __put_msg_queue_error(self, task: Camera_Task, message: str):
         """
         Puts a message queue error based on the provided task and message.
 
@@ -478,7 +486,7 @@ class Camera:
                 Message_Task(send=True, data_text=message, chat_id=task.chat_id)
             )
 
-    def detect_daylight(self) -> bool:
+    def __detect_daylight(self) -> bool:
         """
         Detects whether it is currently daylight based on sunrise and sunset times.
 
@@ -525,7 +533,7 @@ class Camera:
             self.logger.error("Error in daylight calculation: " + str(e))
             return True
 
-    async def blink_snapshot(self) -> bool:
+    async def __blink_snapshot(self) -> bool:
         """
         Asynchronously takes a snapshot from a Blink camera and saves it to a specified file path.
         If detect_daylight is night and when image_brightning is enabled, the image will be adjusted.
@@ -565,8 +573,8 @@ class Camera:
                 self.logger.debug("directory created for the photo image path")
             self.logger.info("saving blink foto")
             await camera.image_to_file(self.config.photo_image_path)
-            if not self.detect_daylight() and self.config.blink_image_brightening:
-                self.adjust_image()
+            if not self.__detect_daylight() and self.config.blink_image_brightening:
+                self.__adjust_image()
         # ToDo: further exception handlinhg required here  / improvement
         except Exception as err:
             self.logger.error("Error: {0}".format(err))
@@ -575,7 +583,7 @@ class Camera:
 
         return True
 
-    async def read_blink_config(self):
+    async def __read_blink_config(self):
         """
         Asynchronously reads the Blink configuration file and authenticates with Blink.
 
@@ -619,7 +627,13 @@ class Camera:
             )
             # authentication_success = None
 
-    async def save_blink_config(self) -> bool:
+    async def __close_session(self) -> None:
+        if self.session is None:
+            return
+        await self.session.close()
+        self.session = None
+
+    async def __save_blink_config(self) -> bool:
         """
         Saves the authenticated session information of the Blink service into a config file.
 
@@ -638,7 +652,7 @@ class Camera:
         await self.blink.save(self.config.blink_config_file)
         return True
 
-    async def add_2fa_blink_token(self, task: Camera_Task) -> bool:
+    async def __add_2fa_blink_token(self, task: Camera_Task) -> bool:
         """
         Adds a required 2FA token to blink session.
 
@@ -660,7 +674,7 @@ class Camera:
             self.logger.error("an error occured during verifying 2FA token")
             return False
 
-    def picam_request_take_foto(self) -> bool:
+    def __picam_request_take_foto(self) -> bool:
         """
         A function to request taking a photo using PiCam, sending a POST request with specific parameters, and logging the process.
 
@@ -668,11 +682,12 @@ class Camera:
         :rtype: bool
         """
         self.logger.info(msg="take a PiCam snapshot")
-        self.logger.debug(msg=f"post url={self.config.picam_url}")
-        payload: dict[str, any] = {
+        picam_url = self.__get_picam_api_url()
+        self.logger.debug(msg=f"post url={picam_url}")
+        self.picam_photo_id = None
+        payload: dict[str, int | str] = {
             "rotation": self.config.picam_rotation,
             "width": self.config.picam_image_width,
-            "filename": self.config.picam_image_filename,
             "height": self.config.picam_image_hight,
             "exposure": self.config.picam_exposure,
             "iso": self.config.picam_iso,
@@ -682,9 +697,14 @@ class Camera:
         self.logger.debug(msg=headers)
         try:
             response: requests.Response = requests.post(
-                url=self.config.picam_url, data=json.dumps(obj=payload), headers=headers
+                url=picam_url, json=payload, headers=headers
             )
             response.raise_for_status()
+            response_json = response.json()
+            self.picam_photo_id = response_json.get("photo_id")
+            if not self.picam_photo_id:
+                self.logger.error("PiCam response does not contain a photo_id")
+                return False
             self.logger.debug(
                 msg="make a snapshot ended with http status {}".format(
                     response.status_code
@@ -696,7 +716,7 @@ class Camera:
             self.logger.error("Exception: {}".format(e))
         return False
 
-    def picam_request_download_foto(self) -> bool:
+    def __picam_request_download_foto(self) -> bool:
         """
         Downloads a photo from the PiCam REST-API.
 
@@ -709,21 +729,26 @@ class Camera:
             bool: True if the HTTP request status code is 200, otherwise False.
         """
         self.logger.info(msg="downloading PiCam foto")
+        if not self.picam_photo_id:
+            self.logger.error("No PiCam photo_id available for download")
+            return False
+        picam_url = self.__get_picam_api_url()
         if os.path.exists(path=self.config.photo_image_path):
             logger.debug(msg="deleting already existing file before hand")
             os.remove(path=self.config.photo_image_path)
+        else:
+            os.makedirs(os.path.dirname(self.config.photo_image_path), exist_ok=True)
 
         try:
             with open(self.config.photo_image_path, "wb") as file:
                 response: requests.Response = requests.get(
-                    url=self.config.picam_url
-                    + "?filename="
-                    + self.config.picam_image_filename
+                    url=picam_url,
+                    params={"photo_id": self.picam_photo_id},
                 )
                 response.raise_for_status()
                 file.write(response.content)
-                if not self.detect_daylight() and self.config.picam_image_brightening:
-                    self.adjust_image()
+                if not self.__detect_daylight() and self.config.picam_image_brightening:
+                    self.__adjust_image()
 
             self.logger.debug(
                 msg="downloading foto ended with status {}".format(response.status_code)
@@ -736,7 +761,26 @@ class Camera:
             self.logger.error("Error args: {0}".format(e.args))
         return False
 
-    def adjust_image(self) -> bool:
+    def __get_picam_api_url(self) -> str:
+        """
+        Returns the PiCam API endpoint without legacy query parameters.
+
+        Older configurations used values like `/foto/?filename=foto.jpg`.
+        The current API requires a clean `/foto/` endpoint plus a `photo_id`
+        query parameter added by the client during download.
+        """
+        picam_url = self.config.picam_url.strip()
+        url_parts = urlsplit(picam_url)
+        if url_parts.query or url_parts.fragment:
+            self.logger.warning(
+                "PiCam URL contains legacy query or fragment data; stripping it: %s",
+                picam_url,
+            )
+        return urlunsplit(
+            (url_parts.scheme, url_parts.netloc, url_parts.path, "", "")
+        )
+
+    def __adjust_image(self) -> bool:
         """
         Adjusts brightness and contrast of the stored photo based on the
         configuration values.
@@ -756,17 +800,25 @@ class Camera:
             image = Image.open(self.config.photo_image_path)
 
             # brightness adjustement (1.0 is normal, <1 darker, >1 lighter)
-            if hasattr(self.config, "image_brightness"):
+            brightness = getattr(
+                self.config,
+                "brightness_enhancer",
+                getattr(self.config, "image_brightness", None),
+            )
+            if brightness is not None:
                 brightness_enhancer = ImageEnhance.Brightness(image)
-                image = brightness_enhancer.enhance(self.config.image_brightness)
-                self.logger.debug(
-                    f"brightness adjusted to {self.config.image_brightness}"
-                )
+                image = brightness_enhancer.enhance(brightness)
+                self.logger.debug(f"brightness adjusted to {brightness}")
 
-            if hasattr(self.config, "image_contrast"):
+            contrast = getattr(
+                self.config,
+                "contrast_enhancer",
+                getattr(self.config, "image_contrast", None),
+            )
+            if contrast is not None:
                 contrast_enhancer = ImageEnhance.Contrast(image)
-                image = contrast_enhancer.enhance(self.config.image_contrast)
-                self.logger.debug(f"contrast adjusted to {self.config.image_contrast}")
+                image = contrast_enhancer.enhance(contrast)
+                self.logger.debug(f"contrast adjusted to {contrast}")
 
             image.save(self.config.photo_image_path)
             self.logger.debug("imgae adjustment done")

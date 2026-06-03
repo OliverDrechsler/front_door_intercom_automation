@@ -1,7 +1,7 @@
 import unittest
 import base64
 from click.testing import CliRunner
-from tools.encrypt_decrypt_password_with_base32 import program_start, encryption, decryption
+from tools.encrypt_decrypt_password_with_base32 import program_start
 
 class TestEncryptDecryptPassword(unittest.TestCase):
 

@@ -59,17 +59,19 @@ class SendMessage():
 
         while not self.stop_polling.is_set():
             try:
-                task = self.message_task_queue.get()
+                task = self.message_task_queue.get(timeout=0.5)
                 if task is None:  # Exit signal
                     break
                 logging.info(f"received task: {task}")
                 if isinstance(task, Message_Task):
                     if (task.send):
-                        self.send_message(chat_id=task.chat_id, text=task.data_text)
+                        self.__send_message(chat_id=task.chat_id, text=task.data_text)
                     if (task.reply):
-                        self.reply_message(chat_id=task.chat_id, message=task.message, text=task.data_text)
+                        self.__reply_message(chat_id=task.chat_id, message=task.message, text=task.data_text)
                     if (task.photo):
-                        self.send_photo(chat_id=task.chat_id, image_path=task.filename)
+                        self.__send_photo(chat_id=task.chat_id, image_path=task.filename)
+            except queue.Empty:
+                continue
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
@@ -84,7 +86,7 @@ class SendMessage():
         self.logger.info(msg="stop bot remove webhook")
         self.bot.remove_webhook()
 
-    def reply_message(self, chat_id: str, text: str, message: telebot.types.Message):
+    def __reply_message(self, chat_id: str, text: str, message: telebot.types.Message):
         """
         Reply to a message in a chat.
 
@@ -101,7 +103,7 @@ class SendMessage():
         self.bot.reply_to(message=message, text=text)
         self.logger.info("reply message : " + text)
 
-    def send_message(self, chat_id: str, text: str) -> None:
+    def __send_message(self, chat_id: str, text: str) -> None:
         """
         Send a message to a specified chat using the Telegram Bot API.
 
@@ -115,7 +117,7 @@ class SendMessage():
         self.bot.send_message(chat_id=chat_id, text=text)
         self.logger.info("send message : " + text)
 
-    def send_photo(self, chat_id: str, image_path: str) -> None:
+    def __send_photo(self, chat_id: str, image_path: str) -> None:
         """
         Send a photo to a specified chat using the Telegram Bot API.
 
@@ -126,5 +128,6 @@ class SendMessage():
         Returns:
             None
         """
-        self.bot.send_photo(chat_id=chat_id, photo=open(file=image_path, mode="rb"))
+        with open(file=image_path, mode="rb") as photo_file:
+            self.bot.send_photo(chat_id=chat_id, photo=photo_file)
         self.logger.info(msg="send a foto: success")

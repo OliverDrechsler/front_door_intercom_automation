@@ -9,8 +9,7 @@ import time
 from door.opener import DoorOpener
 import door.opener
 from config import config_util
-from config.data_class import Open_Door_Task, Message_Task
-from door import detect_rpi
+from config.data_class import Open_Door_Task
 
 class TestDoorOpener(unittest.TestCase):
 
@@ -31,7 +30,7 @@ class TestDoorOpener(unittest.TestCase):
         self.GPIO = self.mock_gpio['RPi.GPIO']
 
         # Mock the detect_rpi function
-        self.detect_rpi_patcher = patch('door.detect_rpi.detect_rpi', return_value=True)
+        self.detect_rpi_patcher = patch('door.opener.detect_rpi', return_value=True)
         self.mock_detect_rpi = self.detect_rpi_patcher.start()
 
         # Setup mock config
@@ -62,7 +61,7 @@ class TestDoorOpener(unittest.TestCase):
 
     def test_open_door_successful(self):
         # Test the open_door method when running on a Raspberry Pi
-        result = self.door_opener.open_door()
+        result = self.door_opener._DoorOpener__open_door()
         self.assertTrue(result)
         self.GPIO.setmode.assert_called_once_with(self.GPIO.BCM)
         self.GPIO.setup.assert_called_once_with(self.mock_config.door_summer, self.GPIO.OUT)
@@ -72,7 +71,7 @@ class TestDoorOpener(unittest.TestCase):
     def test_open_door_not_on_rpi(self):
         # Test the open_door method when not running on a Raspberry Pi
         self.mock_detect_rpi.return_value = False
-        result = self.door_opener.open_door()
+        result = self.door_opener._DoorOpener__open_door()
         self.assertFalse(result)
         self.GPIO.setmode.assert_not_called()
 
@@ -126,6 +125,16 @@ class TestDoorOpener(unittest.TestCase):
         self.assertEqual(result_task.send, True)
         self.assertEqual(result_task.chat_id, self.mock_config.telegram_chat_nr)
         self.assertEqual(result_task.data_text, "Door opened!")
+
+    def test_start_stops_when_shutdown_event_is_set(self):
+        start_thread = threading.Thread(target=self.door_opener.start)
+        start_thread.start()
+
+        time.sleep(0.1)
+        self.shutdown_event.set()
+        start_thread.join(timeout=1.5)
+
+        self.assertFalse(start_thread.is_alive())
 
 if __name__ == '__main__':
     unittest.main()

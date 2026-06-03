@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock, patch, MagicMock, mock_open
 import threading
 import queue
+import time
 from config import config_util
 from config.data_class import Message_Task
 import telebot
@@ -42,11 +43,11 @@ class TestSendMessage(unittest.TestCase):
         self.message_task_queue.put(task)
         self.message_task_queue.put(None)  # Signal to stop the loop
 
-        self.send_message_instance.send_message = Mock()
+        self.send_message_instance._SendMessage__send_message = Mock()
 
         self.send_message_instance.start()
 
-        self.send_message_instance.send_message.assert_called_once_with(chat_id="123", text="Hello")
+        self.send_message_instance._SendMessage__send_message.assert_called_once_with(chat_id="123", text="Hello")
         mock_debug.assert_called()
         mock_info.assert_called()
 
@@ -57,11 +58,23 @@ class TestSendMessage(unittest.TestCase):
         self.send_message_instance.bot.remove_webhook.assert_called_once()
         mock_info.assert_called()
 
+    def test_start_stops_when_shutdown_event_is_set(self):
+        worker = threading.Thread(target=self.send_message_instance.start)
+        worker.start()
+
+        time.sleep(0.1)
+        self.shutdown_event.set()
+        worker.join(timeout=1.5)
+
+        self.assertFalse(worker.is_alive())
+        self.send_message_instance.bot.stop_polling.assert_called_once()
+        self.send_message_instance.bot.remove_webhook.assert_called_once()
+
     @patch('logging.Logger.info')
     def test_send_message(self, mock_info):
         chat_id = "123"
         text = "Hello"
-        self.send_message_instance.send_message(chat_id=chat_id, text=text)
+        self.send_message_instance._SendMessage__send_message(chat_id=chat_id, text=text)
         self.send_message_instance.bot.send_message.assert_called_once_with(chat_id=chat_id, text=text)
         mock_info.assert_called_with("send message : Hello")
 
@@ -70,7 +83,7 @@ class TestSendMessage(unittest.TestCase):
         chat_id = "123"
         text = "Reply"
         message = Mock(spec=telebot.types.Message)
-        self.send_message_instance.reply_message(chat_id=chat_id, text=text, message=message)
+        self.send_message_instance._SendMessage__reply_message(chat_id=chat_id, text=text, message=message)
         self.send_message_instance.bot.reply_to.assert_called_once_with(message=message, text=text)
         mock_info.assert_called_with("reply message : Reply")
 
@@ -84,7 +97,7 @@ class TestSendMessage(unittest.TestCase):
         mock_file.return_value.write = MagicMock(return_value=None)
         mock_file.return_value.close = MagicMock(return_value=None)
         
-        self.send_message_instance.send_photo(chat_id=chat_id, image_path=image_path)
+        self.send_message_instance._SendMessage__send_photo(chat_id=chat_id, image_path=image_path)
         
         self.send_message_instance.bot.send_photo.assert_called_once()
         mock_info.assert_called()

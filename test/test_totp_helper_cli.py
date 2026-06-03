@@ -1,10 +1,8 @@
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import patch, mock_open
 import os
-import yaml
-import pyotp
 from click.testing import CliRunner
-from tools.totp_helper_cli import define_config_file, read_config, get_otp, verify_otp, cli
+from tools.totp_helper_cli import define_config_file, read_config, get_otp, verify_otp
 
 class TestTOTPHelperCLI(unittest.TestCase):
 

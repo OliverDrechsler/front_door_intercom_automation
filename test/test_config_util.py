@@ -1,19 +1,17 @@
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import patch, mock_open
 import yaml
 from config.default_cam_enum import DefaultCam
 from config.yaml_read_error import YamlReadError
 from config.config_util import Configuration
 import base64
 
-import time
-
 
 class TestConfiguration(unittest.TestCase):
 
-    @patch('config.config_util.Configuration.get_base_path')
-    @patch('config.config_util.Configuration.read_config')
-    @patch('config.config_util.Configuration.define_config_file')
+    @patch('config.config_util.Configuration._Configuration__get_base_path')
+    @patch('config.config_util.Configuration._Configuration__read_config')
+    @patch('config.config_util.Configuration._Configuration__define_config_file')
     @patch('telebot.TeleBot', autospec=True)
     def setUp(self, mock_telebot, mock_define_config_file, mock_read_config, mock_get_base_path):
         self.mock_config = {
@@ -76,6 +74,7 @@ class TestConfiguration(unittest.TestCase):
                 'flask_web_port': 5000,
                 'flask_secret_key': 'dummy_secret',
                 'browser_session_cookie_lifetime': 3600,
+                'session_cookie_secure': False,
                 'flask_users': [{'user1': 'id1'}, {'user2': 'id2'}]
             }
         }
@@ -119,37 +118,77 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.picam_night_vision, True)
         self.assertEqual(self.config.picam_image_brightening, True)
         self.assertEqual(self.config.flask_enabled, True)
+        self.assertEqual(self.config.flask_web_host, '0.0.0.0')
         self.assertEqual(self.config.flask_web_port, 5000)
         self.assertEqual(self.config.flask_secret_key, 'dummy_secret')
         self.assertEqual(self.config.flask_browser_session_cookie_lifetime, 3600)
+        self.assertFalse(self.config.flask_session_cookie_secure)
         self.assertEqual(self.config.web_user_dict, {'user1': 'id1', 'user2': 'id2'})
 
     @patch('os.path.isfile', return_value=True)
     def test_define_config_file_exists(self, mock_isfile):
-        config_file = self.config.define_config_file()
+        config_file = self.config._Configuration__define_config_file()
         self.assertEqual(config_file, '/dummy/base/path/config.yaml')
 
     @patch('os.path.isfile', return_value=False)
     @patch('os.path.exists', return_value=True)
     def test_define_config_file_template_exists(self, mock_exists, mock_isfile):
-        config_file = self.config.define_config_file()
+        config_file = self.config._Configuration__define_config_file()
         self.assertEqual(config_file, '/dummy/base/path/config_template.yaml')
 
     @patch('os.path.isfile', return_value=False)
     @patch('os.path.exists', return_value=False)
     def test_define_config_file_not_exists(self, mock_exists, mock_isfile):
         with self.assertRaises(NameError):
-            self.config.define_config_file()
+            self.config._Configuration__define_config_file()
 
     def test_base32_encode_totp_password(self):
-        encoded_password = self.config.base32_encode_totp_password('new_password')
+        encoded_password = self.config._Configuration__base32_encode_totp_password('new_password')
         self.assertEqual(encoded_password, base64.b32encode('NEW_PASSWORD'.encode('UTF-8')).decode('UTF-8'))
 
     @patch('builtins.open', new_callable=mock_open)
     def test_write_yaml_config(self, mock_file):
-        self.config.write_yaml_config('new_password')
+        self.config._Configuration__write_yaml_config('new_password')
         mock_file.assert_called_with('/dummy/base/path/config.yaml', 'w')
         self.assertEqual(self.config.config['otp']['password'], base64.b32encode('NEW_PASSWORD'.encode('UTF-8')).decode('UTF-8'))
+
+    @patch('builtins.open', new_callable=mock_open)
+    def test_write_yaml_config_uses_loaded_config_file(self, mock_file):
+        self.config.config_file = '/dummy/base/path/custom.yaml'
+
+        self.config._Configuration__write_yaml_config('new_password')
+
+        mock_file.assert_called_with('/dummy/base/path/custom.yaml', 'w')
+
+    def test_get_web_user_dict_empty(self):
+        self.config.config["web"]["flask_users"] = []
+
+        result = self.config._Configuration__get_web_user_dict()
+
+        self.assertEqual(result, {})
+
+    def test_get_web_user_dict_invalid_type(self):
+        self.config.config["web"]["flask_users"] = "invalid"
+
+        with self.assertRaises(YamlReadError):
+            self.config._Configuration__get_web_user_dict()
+
+    def test_get_web_user_dict_invalid_entry(self):
+        self.config.config["web"]["flask_users"] = [{"user1": "id1"}, "invalid"]
+
+        with self.assertRaises(YamlReadError):
+            self.config._Configuration__get_web_user_dict()
+
+    @patch('builtins.open', new_callable=mock_open, read_data='invalid: [yaml')
+    @patch('yaml.load', side_effect=yaml.YAMLError('parse error'))
+    def test_read_config_yaml_error(self, mock_yaml_load, mock_file):
+        with self.assertRaises(YamlReadError):
+            self.config._Configuration__read_config('/dummy/base/path/config.yaml')
+
+    @patch('builtins.open', side_effect=PermissionError('denied'))
+    def test_read_config_permission_error_is_not_masked(self, mock_file):
+        with self.assertRaises(PermissionError):
+            self.config._Configuration__read_config('/dummy/base/path/config.yaml')
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ import base64
 import logging
 import os
 from collections import ChainMap
+from typing import Any
 
 import telebot
 import yaml
@@ -26,9 +27,9 @@ class Configuration:
         :rtype: None
         """
         self.logger = logging.getLogger("config")
-        self.base_path = self.get_base_path()
-        self.config_file = self.define_config_file()
-        self.config = self.read_config(self.config_file)
+        self.base_path = self.__get_base_path()
+        self.config_file = self.__define_config_file()
+        self.config = self.__read_config(self.config_file)
 
         self.bot: telebot.TeleBot = None
 
@@ -79,29 +80,38 @@ class Configuration:
         self.picam_night_vision: bool = self.config["picam"]["night_vision"]
         self.picam_image_brightening: bool = self.config["picam"].get("image_brightening", False)  # optional value see config_template.yaml for more information
 
-        self.web_user_dict: dict[str, str] = self.get_web_user_dict()
+        self.web_user_dict: dict[str, str] = self.__get_web_user_dict()
         self.flask_enabled: bool = self.config["web"]["enabled"]
-        self.flask_web_host: int = self.config["web"]["flask_web_host"]
+        self.flask_web_host: str = self.config["web"]["flask_web_host"]
         self.flask_web_port: int = self.config["web"]["flask_web_port"]
         self.flask_secret_key: str = self.config["web"]["flask_secret_key"]
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
+        self.flask_session_cookie_secure: bool = self.config["web"].get("session_cookie_secure", False)
+        self.flask_trusted_reverse_proxies: list[str] = self.config["web"].get("trusted_reverse_proxies", [])
 
-    def get_web_user_dict(self) -> dict:
+    def __get_web_user_dict(self) -> dict:
         """Get user dict from list of yaml telegram.list
 
         :return: dict of user key and values of telegram id
         :rtype: dict
         """
-        return dict(ChainMap(*self.config["web"]["flask_users"]))
+        flask_users = self.config["web"].get("flask_users", [])
+        if not isinstance(flask_users, list):
+            raise YamlReadError("web.flask_users must be a list of dictionaries")
+        if not flask_users:
+            return {}
+        if not all(isinstance(entry, dict) for entry in flask_users):
+            raise YamlReadError("web.flask_users must contain only dictionaries")
+        return dict(ChainMap(*flask_users))
 
-    def get_base_path(self) -> None:
+    def __get_base_path(self) -> None:
         """
         Get from fdia base path. This normally one folder
         up from the config_util.py
         """
         return os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/"
 
-    def read_config(self, config_file: str) -> None:
+    def __read_config(self, config_file: str) -> dict[str, Any]:
         """
         Reads config.yaml file into variables.
 
@@ -118,11 +128,11 @@ class Configuration:
         except FileNotFoundError:
             self.logger.error("Could not find %s", self.config_file)
             raise FileNotFoundError("Could not find config file")
-        except:
+        except yaml.YAMLError as err:
             self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
-            raise YamlReadError("a YAML error is occured during parsing file")
+            raise YamlReadError("a YAML error is occured during parsing file") from err
 
-    def define_config_file(self) -> None:
+    def __define_config_file(self) -> None:
         """
         Checks and defines Config yaml file path.
 
@@ -139,7 +149,7 @@ class Configuration:
             raise (NameError("No config file found!"))
         return self.base_path + "config_template.yaml"
 
-    def base32_encode_totp_password(self, new_password):
+    def __base32_encode_totp_password(self, new_password):
         """
         Encodes a new provided password into BASE32 string
 
@@ -148,12 +158,16 @@ class Configuration:
         """
         return (base64.b32encode(new_password.upper().encode("UTF-8"))).decode("UTF-8")
 
-    def write_yaml_config(self, new_password):
+    def __write_yaml_config(self, new_password):
         """Writes or updates the config.yaml file with the new provided TOTP password
 
         :param new_password: new provided TOTP ASCII password
         :type new_password: string
         """
-        with open(self.base_path + "config.yaml", "w") as yaml_file:
-            self.config["otp"]["password"] = self.base32_encode_totp_password(new_password)
+        target_config_file = self.config_file
+        if target_config_file.endswith("config_template.yaml"):
+            target_config_file = self.base_path + "config.yaml"
+
+        with open(target_config_file, "w") as yaml_file:
+            self.config["otp"]["password"] = self.__base32_encode_totp_password(new_password)
             yaml.dump(self.config, yaml_file, default_flow_style=False)

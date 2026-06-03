@@ -1,10 +1,5 @@
-from bot import *
-from camera import *
-from config.yaml_read_error import YamlReadError
-from config.default_cam_enum import DefaultCam
-from config.config_util import Configuration
-from config import *
-from door import *
-from web import *
+"""Test package for pytest discovery.
 
-import unittest
+Keep this module free of application imports so test collection does not fail
+before individual test modules are loaded.
+"""

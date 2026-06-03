@@ -74,6 +74,9 @@ web:
   flask_web_port: 5001                            # flask webserver port
   flask_secret_key: "my_super_flask_secret_key"   # provide here your own flask secret key
   browser_session_cookie_lifetime: 30             # browser cookie key
+  session_cookie_secure: False                    # set True only when the web UI is served via HTTPS
+  trusted_reverse_proxies:                        # only these proxy IPs may supply X-Forwarded-For
+    - "127.0.0.1"
   flask_users:             # list of flask app login user for webpage and/or rest api call
     - WebUser1: "password"
     - WebUser2: "password"

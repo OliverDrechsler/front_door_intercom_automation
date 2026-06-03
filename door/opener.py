@@ -3,7 +3,7 @@ import queue
 import threading
 import time
 
-from door import detect_rpi
+from door.detect_rpi import detect_rpi
 
 try:
     import RPi.GPIO as GPIO
@@ -58,14 +58,14 @@ class DoorOpener():
         self.logger.info(msg="thread endless loop open door")
         while not self.shutdown_event.is_set():
             try:
-                task = self.door_open_task_queue.get()
+                task = self.door_open_task_queue.get(timeout=0.5)
                 if task is None:  # Exit signal
                     break
                 self.logger.info(f"received task: {task}")
                 if isinstance(task, Open_Door_Task):
                     if (task.open):
                         self.logger.info(f"Processing open door: {task}")
-                        self.open_door()
+                        self.__open_door()
                         if (task.reply and task.message is not None):
                             self.message_task_queue.put(
                                 Message_Task(reply=True, chat_id=task.chat_id, message=task.message,
@@ -74,12 +74,14 @@ class DoorOpener():
                             self.message_task_queue.put(
                                 Message_Task(send=True, chat_id=self.config.telegram_chat_nr, data_text="Door opened!"))
                 time.sleep(0.1)
+            except queue.Empty:
+                continue
             except Exception as err:
                 self.logger.error("Error: {0}".format(err))
                 pass
         self.logger.info(msg="stop endless loop door opener")
 
-    def open_door(self) -> bool:
+    def __open_door(self) -> bool:
         """
         A function that opens the door based on Raspberry Pi detection.
 
@@ -89,7 +91,7 @@ class DoorOpener():
         Returns:
             bool: True if the door is successfully opened, False otherwise.
         """
-        if detect_rpi.detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
+        if detect_rpi(run_on_raspberry=self.config.run_on_raspberry):
             logger.info(msg="opening the door")
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.config.door_summer, GPIO.OUT)

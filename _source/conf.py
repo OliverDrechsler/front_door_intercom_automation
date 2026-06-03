@@ -1,8 +1,5 @@
 import os
 import sys
-from os import getenv
-
-from recommonmark.parser import CommonMarkParser
 
 ## sys.path.insert(0, os.path.abspath('../'))
 # Add project root so autodoc can import the package/module
@@ -24,7 +21,6 @@ release = '1.0.0'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.githubpages',  # Keep this one
               'myst_parser',
-              'sphinx_md',
               'sphinx.ext.todo', ]
 
 templates_path = ['_templates']
@@ -36,30 +32,30 @@ html_theme = "sphinx_rtd_theme"
 
 html_context = {'github_user_name': 'OliverDrechsler', 'github_repo_name': 'front_door_intercom_automation',
                 'project_name': 'Front Door intercom automation'}
-html_static_path = ['_static']
+html_static_path = []
 
 # -- Extension configuration -------------------------------------------------
 
 
-source_parsers = {'.md': CommonMarkParser, }
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
 
-source_suffix = ['.rst', '.md']
-
-sphinx_md_useGitHubURL = True
-baseBranch = "master"
-commitSHA = getenv('GITHUB_SHA')
-githubBaseURL = 'https://github.com/' + (
-        getenv('GITHUB_REPOSITORY') or 'OliverDrechsler/front_door_intercom_automation') + '/'
-githubFileURL = githubBaseURL + "blob/"
-githubDirURL = githubBaseURL + "tree/"
-if commitSHA:
-    githubFileURL = githubFileURL + commitSHA + "/"
-    githubDirURL = githubDirURL + commitSHA + "/"
-else:
-    githubFileURL = githubFileURL + baseBranch + "/"
-    githubDirURL = githubDirURL + baseBranch + "/"
-sphinx_md_githubFileURL = githubFileURL
-sphinx_md_githubDirURL = githubDirURL
+# Keep the docs build independent from the application's runtime dependencies.
+autodoc_mock_imports = [
+    'aiohttp',
+    'astral',
+    'blinkpy',
+    'flask',
+    'flask_httpauth',
+    'PIL',
+    'pyotp',
+    'requests',
+    'telebot',
+    'werkzeug',
+    'yaml',
+]
 
 # Autodoc options
 autodoc_member_order = "bysource"
