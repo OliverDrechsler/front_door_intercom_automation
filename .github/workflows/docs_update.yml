@@ -4,13 +4,21 @@ on:
     branches:
       - master
 
-permissions:
-  contents: write
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+concurrency:
+  group: docs-update-${{ github.ref }}
+  cancel-in-progress: true
  
 jobs:
  
   build_docs_job:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v6
@@ -24,39 +32,33 @@ jobs:
           python-version: '3.14'
 
       - name: Install system dependencies
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sudo apt-get update
           sudo apt-get install -y git rsync gh
-        shell: bash
 
       - name: Install docs dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-docs.txt
-        shell: bash
 
       - name: Generate Changelog from GitHub Releases
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           echo "# ChangeLog" > CHANGELOG.md
           echo "" >> CHANGELOG.md
           gh api repos/${{ github.repository }}/releases?per_page=50 --jq '.[] | select(.draft==false and .prerelease==false) | "# " + .tag_name + " - " + (.name // .tag_name) + " (" + (.published_at | split("T")[0]) + ")\n\n" + (.body // "") + "\n\n"' >> CHANGELOG.md
-        shell: bash
 
       - name: Build HTML
         run: |
           make html
-        shell: bash
 
       - name: Deploy docs to gh-pages
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: | 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
           ghp-import -n -f _build/html
           git push --force origin gh-pages
-        shell: bash

@@ -5,24 +5,36 @@ on:
     types: [closed]
     branches: [master]
 
-permissions:
-  contents: write  # nötig um Tags und Releases zu erstellen
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+concurrency:
+  group: release-on-merge-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   release:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write  # nötig um Tags und Releases zu erstellen
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0  # wir brauchen die gesamte Historie
+          persist-credentials: false
 
       - name: Set up Git
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
 
       - name: Get latest tag
         id: get_latest_tag
@@ -116,7 +128,7 @@ jobs:
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/$TAG")
           echo "release_status=$STATUS" >> $GITHUB_OUTPUT
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Create GitHub Release (if missing)
         if: steps.check_release.outputs.release_status != '200'
@@ -130,5 +142,5 @@ jobs:
 
             **Version bump type:** ${{ steps.next_tag.outputs.bump_type }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           
