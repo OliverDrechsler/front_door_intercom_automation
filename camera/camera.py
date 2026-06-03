@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 import os
 from pathlib import Path
@@ -65,6 +64,7 @@ class Camera:
         self.restart: bool = False
         self.session: aiohttp.ClientSession | None = None
         self.blink: Blink | None = None
+        self.picam_photo_id: str | None = None
 
     async def start(self) -> None:
         """
@@ -682,10 +682,10 @@ class Camera:
         """
         self.logger.info(msg="take a PiCam snapshot")
         self.logger.debug(msg=f"post url={self.config.picam_url}")
-        payload: dict[str, any] = {
+        self.picam_photo_id = None
+        payload: dict[str, int | str] = {
             "rotation": self.config.picam_rotation,
             "width": self.config.picam_image_width,
-            "filename": self.config.picam_image_filename,
             "height": self.config.picam_image_hight,
             "exposure": self.config.picam_exposure,
             "iso": self.config.picam_iso,
@@ -695,9 +695,14 @@ class Camera:
         self.logger.debug(msg=headers)
         try:
             response: requests.Response = requests.post(
-                url=self.config.picam_url, data=json.dumps(obj=payload), headers=headers
+                url=self.config.picam_url, json=payload, headers=headers
             )
             response.raise_for_status()
+            response_json = response.json()
+            self.picam_photo_id = response_json.get("photo_id")
+            if not self.picam_photo_id:
+                self.logger.error("PiCam response does not contain a photo_id")
+                return False
             self.logger.debug(
                 msg="make a snapshot ended with http status {}".format(
                     response.status_code
@@ -722,6 +727,9 @@ class Camera:
             bool: True if the HTTP request status code is 200, otherwise False.
         """
         self.logger.info(msg="downloading PiCam foto")
+        if not self.picam_photo_id:
+            self.logger.error("No PiCam photo_id available for download")
+            return False
         if os.path.exists(path=self.config.photo_image_path):
             logger.debug(msg="deleting already existing file before hand")
             os.remove(path=self.config.photo_image_path)
@@ -731,9 +739,8 @@ class Camera:
         try:
             with open(self.config.photo_image_path, "wb") as file:
                 response: requests.Response = requests.get(
-                    url=self.config.picam_url
-                    + "?filename="
-                    + self.config.picam_image_filename
+                    url=self.config.picam_url,
+                    params={"photo_id": self.picam_photo_id},
                 )
                 response.raise_for_status()
                 file.write(response.content)
