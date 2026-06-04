@@ -9,6 +9,7 @@ import threading
 import time
 from argparse import ArgumentParser
 
+import certifi
 import telebot
 
 from bot import receive_msg, send_msg
@@ -47,6 +48,23 @@ actual_log_level = logging.getLevelName(level=logger.getEffectiveLevel())
 logger.info(msg=f"set logging level to: {actual_log_level}")
 if actual_log_level is not logging.INFO:
     telebot.logger.setLevel(level=actual_log_level)
+
+
+def __configure_ssl_certificates() -> None:
+    """
+    Ensure Python HTTP clients use the bundled CA certificate store.
+
+    This is especially important for PyInstaller onefile binaries on macOS,
+    where the system CA bundle path may not be available inside the packaged
+    runtime.
+    """
+    ca_bundle = certifi.where()
+    os.environ.setdefault("SSL_CERT_FILE", ca_bundle)
+    os.environ.setdefault("REQUESTS_CA_BUNDLE", ca_bundle)
+    os.environ.setdefault("CURL_CA_BUNDLE", ca_bundle)
+
+
+__configure_ssl_certificates()
 
 
 def __run_web_app(shutdown_event: threading.Event, config: config_util.Configuration, loop,
