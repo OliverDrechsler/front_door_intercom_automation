@@ -9,7 +9,7 @@ COPY requirements.txt ./
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-        gcc \
+        build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir --upgrade pip \

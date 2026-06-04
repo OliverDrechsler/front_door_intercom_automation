@@ -1,31 +1,33 @@
 name: Semantic Release on Merge to Master
 
 on:
-  pull_request:
-    types: [closed]
-    branches: [master]
+  workflow_run:
+    workflows: ["ci build and test code"]
+    types: [completed]
 
 defaults:
   run:
     shell: bash --noprofile --norc -euo pipefail {0}
 
 concurrency:
-  group: release-on-merge-${{ github.ref }}
+  group: release-on-merge-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
 jobs:
   release:
-    if: github.event.pull_request.merged == true
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'master'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
-      contents: write  # nötig um Tags und Releases zu erstellen
+      actions: read
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0  # wir brauchen die gesamte Historie
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Git
@@ -40,43 +42,40 @@ jobs:
         id: get_latest_tag
         run: |
           git fetch --tags
-          # Get latest semantic version tag (with or without 'v' prefix)
-          # Sort tags properly by converting them to a comparable format
-          TAG=$(git tag -l | grep -E '^[v]?[0-9]+\.[0-9]+(\.[0-9]+)?$' | sed 's/^v//' | sort -V | tail -n 1)
-          # Re-add 'v' prefix if original tag had it
-          ORIGINAL_TAG=$(git tag -l | grep -E "^[v]?${TAG}$" | tail -n 1)
-          echo "latest_tag=${ORIGINAL_TAG}" >> $GITHUB_OUTPUT
+          TAG=$(git tag -l | grep -E '^[v]?[0-9]+\.[0-9]+(\.[0-9]+)?$' | sed 's/^v//' | sort -V | tail -n 1 || true)
+          ORIGINAL_TAG=$(git tag -l | grep -E "^[v]?${TAG}$" | tail -n 1 || true)
+          echo "latest_tag=${ORIGINAL_TAG}" >> "${GITHUB_OUTPUT}"
           echo "Found latest tag: ${ORIGINAL_TAG}"
 
       - name: Determine next semantic version
         id: next_tag
         run: |
           LATEST=${{ steps.get_latest_tag.outputs.latest_tag }}
-          if [ -z "$LATEST" ]; then
+          if [ -z "${LATEST}" ]; then
             LATEST="0.0.0"
           fi
-          # Remove 'v' prefix if present
-          VERSION=$(echo $LATEST | sed 's/^v//')
-          MAJOR=$(echo $VERSION | cut -d. -f1)
-          MINOR=$(echo $VERSION | cut -d. -f2)
-          PATCH=$(echo $VERSION | cut -d. -f3)
 
-          # Use proper commit range for log, handling both tagged and untagged repos
-          if [ "$LATEST" = "0.0.0" ]; then
+          VERSION=$(echo "${LATEST}" | sed 's/^v//')
+          MAJOR=$(echo "${VERSION}" | cut -d. -f1)
+          MINOR=$(echo "${VERSION}" | cut -d. -f2)
+          PATCH=$(echo "${VERSION}" | cut -d. -f3)
+
+          if [ "${LATEST}" = "0.0.0" ]; then
             COMMITS=$(git log --all --pretty=format:"%s%n%b")
           else
-            COMMITS=$(git log $LATEST..HEAD --pretty=format:"%s%n%b")
+            COMMITS=$(git log "${LATEST}"..HEAD --pretty=format:"%s%n%b")
           fi
-          if echo "$COMMITS" | grep -q "BREAKING CHANGE"; then
+
+          if echo "${COMMITS}" | grep -q "BREAKING CHANGE"; then
             MAJOR=$((MAJOR + 1))
             MINOR=0
             PATCH=0
             BUMP="major"
-          elif echo "$COMMITS" | grep -q "^feat"; then
+          elif echo "${COMMITS}" | grep -q "^feat"; then
             MINOR=$((MINOR + 1))
             PATCH=0
             BUMP="minor"
-          elif echo "$COMMITS" | grep -q "^fix"; then
+          elif echo "${COMMITS}" | grep -q "^fix"; then
             PATCH=$((PATCH + 1))
             BUMP="patch"
           else
@@ -85,62 +84,85 @@ jobs:
           fi
 
           NEXT_TAG="${MAJOR}.${MINOR}.${PATCH}"
-
-          echo "next_tag=${NEXT_TAG}" >> $GITHUB_OUTPUT
-          echo "bump_type=${BUMP}" >> $GITHUB_OUTPUT
+          echo "next_tag=${NEXT_TAG}" >> "${GITHUB_OUTPUT}"
+          echo "bump_type=${BUMP}" >> "${GITHUB_OUTPUT}"
 
       - name: Generate release notes
         id: notes
         run: |
           LATEST=${{ steps.get_latest_tag.outputs.latest_tag }}
-          if [ -z "$LATEST" ]; then
+          if [ -z "${LATEST}" ]; then
             NOTES=$(git log --oneline)
           else
-            NOTES=$(git log $LATEST..HEAD --pretty=format:"- %s")
+            NOTES=$(git log "${LATEST}"..HEAD --pretty=format:"- %s")
           fi
-          echo "notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$NOTES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "notes<<EOF" >> "${GITHUB_OUTPUT}"
+          echo "${NOTES}" >> "${GITHUB_OUTPUT}"
+          echo "EOF" >> "${GITHUB_OUTPUT}"
 
-      - name: Create tag (if missing)
+      - name: Create tag if missing
         id: create_tag
         run: |
           TAG=${{ steps.next_tag.outputs.next_tag }}
           git fetch --tags
-          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            echo "tag_exists=true" >> $GITHUB_OUTPUT
-            echo "Tag $TAG already exists; skipping creation"
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            echo "tag_exists=true" >> "${GITHUB_OUTPUT}"
+            echo "Tag ${TAG} already exists; skipping creation"
           else
-            git tag "$TAG"
-            if ! git push origin "$TAG" 2>&1; then
-              echo "⚠️  Failed to push tag. Check repository rules at:"
-              echo "https://github.com/${{ github.repository }}/rules?ref=refs%2Ftags%2F$TAG"
-              echo "tag_exists=false" >> $GITHUB_OUTPUT
-              exit 1
-            fi
-            echo "tag_exists=false" >> $GITHUB_OUTPUT
+            git tag "${TAG}"
+            git push origin "${TAG}"
+            echo "tag_exists=false" >> "${GITHUB_OUTPUT}"
           fi
 
-      - name: Check if release exists for tag
-        id: check_release
+      - name: Download CI artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
-          TAG=${{ steps.next_tag.outputs.next_tag }}
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/$TAG")
-          echo "release_status=$STATUS" >> $GITHUB_OUTPUT
+          mkdir -p release-artifacts
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" > release-artifacts/artifacts.json
+
+          ARTIFACT_COUNT=$(jq '.artifacts | length' release-artifacts/artifacts.json)
+          if [ "${ARTIFACT_COUNT}" -eq 0 ]; then
+            echo "No CI artifacts found for workflow run ${RUN_ID}" >&2
+            exit 1
+          fi
+
+          jq -r '.artifacts[] | [.id, .name] | @tsv' release-artifacts/artifacts.json | while IFS=$'\t' read -r artifact_id artifact_name; do
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "release-artifacts/${artifact_name}.zip"
+          done
+
+      - name: Write release body
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          {
+            echo "### Changes"
+            echo "${{ steps.notes.outputs.notes }}"
+            echo
+            echo "**Version bump type:** ${{ steps.next_tag.outputs.bump_type }}"
+            echo
+            echo "### CI Build"
+            echo "Artifacts were produced by CI workflow run:"
+            echo "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}"
+            echo
+            echo "The attached release assets are the zipped CI artifacts for all successful target builds."
+          } > release-body.md
+
+      - name: Create or update GitHub Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.next_tag.outputs.next_tag }}
+        run: |
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release edit "${TAG}" --title "Release ${TAG}" --notes-file release-body.md
+          else
+            gh release create "${TAG}" --title "Release ${TAG}" --notes-file release-body.md
+          fi
 
-      - name: Create GitHub Release (if missing)
-        if: steps.check_release.outputs.release_status != '200'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.next_tag.outputs.next_tag }}
-          name: "Release ${{ steps.next_tag.outputs.next_tag }}"
-          body: |
-            ### Changes
-            ${{ steps.notes.outputs.notes }}
-
-            **Version bump type:** ${{ steps.next_tag.outputs.bump_type }}
+      - name: Upload release assets
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          
+          TAG: ${{ steps.next_tag.outputs.next_tag }}
+        run: |
+          gh release upload "${TAG}" release-artifacts/*.zip --clobber

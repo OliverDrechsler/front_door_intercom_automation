@@ -99,7 +99,7 @@ jobs:
             artifact_name: fdia-linux-arm64
             binary_path: dist/fdia
           - name: macos-intel
-            os: macos-13
+            os: macos-15-intel
             artifact_name: fdia-macos-intel
             binary_path: dist/fdia
           - name: macos-arm64
@@ -155,10 +155,9 @@ jobs:
           arch: armv7
           distro: ubuntu22.04
           githubToken: ${{ github.token }}
-          setup: |
-            apt-get update
-            apt-get install -y python3 python3-pip python3-venv
           install: |
+            apt-get update
+            apt-get install -y python3 python3-pip python3-venv build-essential
             python3 -m pip install --upgrade pip
             pip3 install -r requirements.txt
             pip3 install pyinstaller
