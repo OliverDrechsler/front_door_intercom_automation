@@ -10,6 +10,8 @@ COPY requirements.txt ./
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         build-essential \
+        libjpeg-dev \
+        zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir --upgrade pip \
