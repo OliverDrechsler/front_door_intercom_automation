@@ -87,6 +87,7 @@ jobs:
       matrix:
         include:
           - name: windows-x64
+            # os: windows-2025
             os: windows-latest
             artifact_name: fdia-windows-x64
             binary_path: dist/fdia.exe
@@ -141,7 +142,7 @@ jobs:
             --name fdia fdia.py
 
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact_name }}
           path: ${{ matrix.binary_path }}
@@ -180,7 +181,7 @@ jobs:
               --name fdia fdia.py
 
       - name: Upload ARMv7 binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fdia-linux-armv7
           path: dist/fdia
