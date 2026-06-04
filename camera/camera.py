@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import certifi
 import logging
 import os
 from pathlib import Path
 import queue
+import ssl
 from datetime import datetime
 from urllib.parse import urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
@@ -67,6 +69,17 @@ class Camera:
         self.blink: Blink | None = None
         self.picam_photo_id: str | None = None
 
+    def __create_blink_session(self) -> aiohttp.ClientSession:
+        """
+        Create an aiohttp session with an explicit CA bundle.
+
+        PyInstaller binaries on macOS may not reliably inherit system CA paths,
+        so we bind aiohttp directly to certifi's trust store.
+        """
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        connector = aiohttp.TCPConnector(ssl=ssl_context)
+        return aiohttp.ClientSession(connector=connector)
+
     async def start(self) -> None:
         """
         Initializes the camera, starts a blink session if enabled, and processes
@@ -77,7 +90,7 @@ class Camera:
 
         if self.config.blink_enabled:
             self.logger.debug("start blink session")
-            self.session = aiohttp.ClientSession()
+            self.session = self.__create_blink_session()
             self.logger.debug("add session to blink")
             self.blink = Blink(session=self.session, refresh_rate=3)
             await self.__read_blink_config()
