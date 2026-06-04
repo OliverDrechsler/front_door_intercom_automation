@@ -128,7 +128,17 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --clean --noconfirm --onefile --collect-data certifi --name fdia fdia.py
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            DATA_SEP=";"
+          else
+            DATA_SEP=":"
+          fi
+          pyinstaller --clean --noconfirm --onefile \
+            --collect-data certifi \
+            --add-data "web/templates${DATA_SEP}web/templates" \
+            --add-data "web/static${DATA_SEP}web/static" \
+            --add-data "config_template.yaml${DATA_SEP}." \
+            --name fdia fdia.py
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
@@ -162,7 +172,12 @@ jobs:
             python3 -m pip install --upgrade pip
             pip3 install -r requirements.txt
             pip3 install pyinstaller
-            pyinstaller --clean --noconfirm --onefile --collect-data certifi --name fdia fdia.py
+            pyinstaller --clean --noconfirm --onefile \
+              --collect-data certifi \
+              --add-data "web/templates:web/templates" \
+              --add-data "web/static:web/static" \
+              --add-data "config_template.yaml:." \
+              --name fdia fdia.py
 
       - name: Upload ARMv7 binary artifact
         uses: actions/upload-artifact@v4
