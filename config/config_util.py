@@ -107,7 +107,7 @@ class Configuration:
             raise YamlReadError("web.flask_users must contain only dictionaries")
         return dict(ChainMap(*flask_users))
 
-    def __get_base_path(self) -> None:
+    def __get_base_path(self) -> str:
         """
         Get the runtime base path.
 
@@ -150,7 +150,7 @@ class Configuration:
             self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
             raise YamlReadError("a YAML error is occured during parsing file") from err
 
-    def __define_config_file(self) -> None:
+    def __define_config_file(self) -> str:
         """
         Checks and defines Config yaml file path.
 

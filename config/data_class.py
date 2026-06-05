@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
+from typing import Optional
 import telebot
 
 @dataclass
@@ -30,4 +31,4 @@ class Camera_Task:
     photo: bool = False
     blink_photo: bool = False
     picam_photo: bool = False
-    blink_mfa: str = None
+    blink_mfa: Optional[str] = None
