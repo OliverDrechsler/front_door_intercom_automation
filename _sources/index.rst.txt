@@ -16,6 +16,8 @@ Welcome to Front door intercom automation's documentation!
 
    Blink camera setup <docs/blink_camera_setup.md>
 
+   BTIcino door intercom specific wiring plans <docs/BTIcino_Intercom-wiring.md>
+
    GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage <docs/GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md>
 
    Timebased One Time Password setup <docs/one_time_password_setup.md>
@@ -23,6 +25,8 @@ Welcome to Front door intercom automation's documentation!
    TOTP helper cli - get and verify a TOTP code  <docs/totp_helper_cli.md>
 
    How to  install on a fresh RPi with code <docs/How_to_install_fresh_RPi_with_code.md>
+
+   How to start FDIA Docker container on Raspberry Pi <docs/How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md>
 
    How to setup OTP App on mobile phone <docs/How_to_setup_OTP_App_on_mobile_phone.md>
 
@@ -37,6 +41,8 @@ Welcome to Front door intercom automation's documentation!
    Security issue guide <SECURITY.md>
 
    Contribution guide <CONTRIBUTING.md>
+
+   Pull request template <docs/pull_request_template.md>
 
    View Code on GitHub <https://github.com/OliverDrechsler/front_door_intercom_automation>
    Imprint / Impressum on GitHub <https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md>

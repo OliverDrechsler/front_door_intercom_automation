@@ -227,10 +227,10 @@ requirements_licenses.txt # depend library licenses
 
 6. edit `config.yaml` file with your favorite editor
 
-   - for creation of telegram bot and privat chat channel follow [telegram_bot_setup](docs/telegram_bot_setup.md)
+   - for creation of telegram bot and privat chat channel follow [telegram_bot_setup](docs/telegram_bot_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/telegram_bot_setup.html)
    - for VS Code select the interpreter `.venv/bin/python`
-   - for creation of base32 encrypted timebased one time password master password follow [one_time_password_setup](docs/one_time_password_setup.md)
-   - for blink configuration follow [blink_camera setup](docs/blink_camera_setup.md)
+   - for creation of base32 encrypted timebased one time password master password follow [one_time_password_setup](docs/one_time_password_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/one_time_password_setup.html)
+   - for blink configuration follow [blink_camera_setup](docs/blink_camera_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/blink_camera_setup.html)
    - for picam configuration follow config_template.yaml doc remarks or PiCam_API Projects
    - for flask web config follow description in `config_template.yaml`
 
@@ -282,7 +282,7 @@ requirements_licenses.txt # depend library licenses
 
 ### Docker on Raspberry Pi
 
-For container-based installation and exact Docker start commands on Raspberry Pi including GPIO device mapping, see [How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md](docs/How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md).
+For container-based installation and exact Docker start commands on Raspberry Pi including GPIO device mapping, see [How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md](docs/How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/How_to_start_FDIA_Docker_container_on_Raspberry_Pi.html).
 
 
 9. setup app to run as daemon / service in linux follow [System service setup](#system-service-setup)
@@ -292,10 +292,10 @@ For container-based installation and exact Docker start commands on Raspberry Pi
 ### Helper tools
 
 #### Encrypt and decrypt a password with base32 for totp
-see further docu [docs/one_time_password_setup.md](docs/one_time_password_setup.md)
+see further docu [docs/one_time_password_setup.md](docs/one_time_password_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/one_time_password_setup.html)
 
 #### get a OTP password or verify a OTP via cli
-see further docu [docs/totp_helper_cli.md](docs/totp_helper_cli.md)
+see further docu [docs/totp_helper_cli.md](docs/totp_helper_cli.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/totp_helper_cli.html)
 
 
 ### System service setup
@@ -318,9 +318,9 @@ In this yaml file you'll find after `#` comments / hints for which the line is w
 ### blink_config.json
 
 If you have configured in the `config.yaml` your blink camera  
-( followed by this docu [blink_camera setup](docs/blink_camera_setup.md) )  
+( followed by this docu [blink_camera_setup](docs/blink_camera_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/blink_camera_setup.html) )  
 after starting `fdia.py` application you can send your received blink 2 factor token via telegram channel
-to the application ( [/blink_auth here_your_blink_otp_code](docs/blink_camera_setup.md) ).  
+to the application ( [/blink_auth here_your_blink_otp_code](docs/blink_camera_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/blink_camera_setup.html) ).  
 It starts to authenticate via 2FA(FactorAuthentication) / MFA (multi factor authentication) and saves afterwards the 
 blink config to the file `blink_config.json`. From now on it is getting used and normally no further
 2FA / MFA authentication is not anymore required.  
@@ -333,7 +333,7 @@ You can run the the cli script `encrypt_decrypt_password_with_base32.py` in `too
 Than you get a base32 hashed password.  
 Please store this password in the `config.yaml` under section `otp:` `password:`
 
-For further docu refer to [docs/one_time_password_setup.md](docs/one_time_password_setup.md)
+For further docu refer to [docs/one_time_password_setup.md](docs/one_time_password_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/one_time_password_setup.html)
 
 ## Cameras
 
@@ -362,7 +362,7 @@ Die Vorlage ist auch als reine [HTML Datei](docs/GDPR_Germany_hint_camera_monito
 
 ### Blink Cameras
 
-For configuration of the blink camera please procceed with further [docu/blink_camera_setup.md](docs/blink_camera_setup.md).  
+For configuration of the blink camera please procceed with further [docs/blink_camera_setup.md](docs/blink_camera_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/blink_camera_setup.html).  
 
 
 ### Raspberry Pi Camera Project PiCam_API
@@ -373,7 +373,7 @@ For configuration of the PiCam_API please procceed with the [PiCam_API Project](
 ## Telegram
 
 ### Telegram setup
-please follow exra documentation here [telegram_bot_setup](docs/telegram_bot_setup.md)
+please follow exra documentation here [telegram_bot_setup](docs/telegram_bot_setup.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/telegram_bot_setup.html)
 
 ### Telegram receiving message commands and interactions
 
@@ -525,7 +525,7 @@ see additional [Smart Saint Relais Jumper and circuit layout plan](docs/SmartSai
 ![Relai Wiring_2](./docs/_static/Build_Relai_Opener_2.jpeg)  
 
 ### BTIcino  door intercom specific wiring plans
-see [BTIcino_Intercom_wiring](docs/BTIcino_Intercom-wiring.md)
+see [BTIcino_Intercom_wiring](docs/BTIcino_Intercom-wiring.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/BTIcino_Intercom-wiring.html)
 
 ## Help
 
@@ -661,12 +661,12 @@ check for line comments in requirements.txt and remove them temporary.
 
 ## Security
 
-[Security issue guide](SECURITY.md)
+[Security issue guide](SECURITY.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/SECURITY.html)
 
 ## Contribution
 
 [Contribution guide](CONTRIBUTING.md)
-Pull request docu can be found [here in docs/pull_request_template.md](docs/pull_request_template.md)
+Pull request docu can be found [here in docs/pull_request_template.md](docs/pull_request_template.md) on GitHub or [the GitHub Pages version](https://oliverdrechsler.github.io/front_door_intercom_automation/docs/pull_request_template.html)
 
 ## Local Development Workflow
 
