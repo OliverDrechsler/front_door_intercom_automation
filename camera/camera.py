@@ -77,6 +77,7 @@ class Camera:
         so we bind aiohttp directly to certifi's trust store.
         """
         ssl_context = ssl.create_default_context(cafile=certifi.where())
+        ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
         connector = aiohttp.TCPConnector(ssl=ssl_context)
         return aiohttp.ClientSession(connector=connector)
 

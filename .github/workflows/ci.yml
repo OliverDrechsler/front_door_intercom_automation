@@ -12,7 +12,6 @@ defaults:
 
 permissions:
   contents: read
-  packages: write
 
 env:
   PYTHON_BUILD_VERSION: "3.14"
@@ -193,6 +192,9 @@ jobs:
     needs: [build, test]
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v6
