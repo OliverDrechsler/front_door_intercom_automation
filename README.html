@@ -59,6 +59,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#code-tree-structure">Code tree structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-on-raspberry-pi">Docker on Raspberry Pi</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#helper-tools">Helper tools</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#encrypt-and-decrypt-a-password-with-base32-for-totp">Encrypt and decrypt a password with base32 for totp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#get-a-otp-password-or-verify-a-otp-via-cli">get a OTP password or verify a OTP via cli</a></li>
@@ -255,6 +256,7 @@ Opening relais board can be buyed and must just be wired.</p>
 </ul>
 </li>
 <li><p><a class="reference internal" href="#system-service-setup"><span class="xref myst">System service setup</span></a></p></li>
+<li><p><a class="reference internal" href="#docker-on-raspberry-pi"><span class="xref myst">Docker on Raspberry Pi</span></a></p></li>
 <li><p><a class="reference internal" href="#configuration---config-files"><span class="xref myst">Configuration - config files</span></a></p></li>
 <li><p><a class="reference internal" href="#configyaml---config_templateyaml"><span class="xref myst">config.yaml - config_template.yaml</span></a></p></li>
 <li><p><a class="reference internal" href="#blink_configjson"><span class="xref myst">blink_config.json</span></a></p></li>
@@ -467,6 +469,7 @@ The project offers the following functionality:</p>
 │   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html   # HTML DSGVO Template for door camera
 │   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md # DSGVO Template for door camera
 │   ├── How_to_install_fresh_RPi_with_code.md   # Install software code with a fresh Raspbian Image
+│   ├── How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md # Start FDIA as Docker container on Raspberry Pi
 │   ├── How_to_setup_OTP_App_on_mobile_phone.md # Setup OTP App on mobile phone
 │   ├── one_time_password_setup.md              # How to setup otp config
 │   ├── pull_request_template.md                # Pull request template
@@ -572,10 +575,16 @@ If you’re using Python 3, make sure to run:<br />
 <li><p>run app
 <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">fdia.py</span></code>
 and check log output
-or with poetry
-<code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">run</span> <span class="pre">start</span></code></p>
+or with poetry</p>
+<p><code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">run</span> <span class="pre">start</span></code></p>
 <p>for troubleshooting see <a class="reference internal" href="#help"><span class="xref myst">Help</span></a></p>
 </li>
+</ol>
+</section>
+<section id="docker-on-raspberry-pi">
+<h3>Docker on Raspberry Pi<a class="headerlink" href="#docker-on-raspberry-pi" title="Link to this heading"></a></h3>
+<p>For container-based installation and exact Docker start commands on Raspberry Pi including GPIO device mapping, see <span class="xref myst">How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md</span>.</p>
+<ol class="arabic simple" start="9">
 <li><p>setup app to run as daemon / service in linux follow <a class="reference internal" href="#system-service-setup"><span class="xref myst">System service setup</span></a></p></li>
 </ol>
 </section>

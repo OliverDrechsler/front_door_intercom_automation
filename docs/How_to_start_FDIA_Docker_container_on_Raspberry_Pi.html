@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to start FDIA Docker container on Raspberry Pi &mdash; Front door intercom automation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Front door intercom automation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Project Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="telegram_bot_setup.html">Telegram bot setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blink_camera_setup.html">Blink camera setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html">GDPDR EU and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland - Vorlage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="one_time_password_setup.html">Timebased One Time Password setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="totp_helper_cli.html">TOTP helper cli - get and verify a TOTP code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_install_fresh_RPi_with_code.html">How to  install on a fresh RPi with code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id1">2.0.0 - 2.0.0 (2026-06-03)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#breaking-changes">Breaking changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#fixes">Fixes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#features">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#pipelines">Pipelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#documentation">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-12-0-2026-06-03">1.12.0 - Release 1.12.0 (2026-06-03)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-14-2026-05-12">1.11.14 - Release 1.11.14 (2026-05-12)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-13-2026-04-14">1.11.13 - Release 1.11.13 (2026-04-14)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-12-2026-02-15">1.11.12 - Release 1.11.12 (2026-02-15)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-11-2026-02-15">1.11.11 - Release 1.11.11 (2026-02-15)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-10-2026-01-11">1.11.10 - Release 1.11.10 (2026-01-11)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-9-2026-01-07">1.11.9 - Release 1.11.9 (2026-01-07)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-8-2025-12-15">1.11.8 - Release 1.11.8 (2025-12-15)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-7-2025-12-09">1.11.7 - Release 1.11.7 (2025-12-09)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-6-2025-12-08">1.11.6 - Release 1.11.6 (2025-12-08)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-5-2025-12-06">1.11.5 - Release 1.11.5 (2025-12-06)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-4-2025-12-01">1.11.4 - Release 1.11.4 (2025-12-01)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-3-2025-11-25">1.11.3 - Release 1.11.3 (2025-11-25)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-2-2025-11-25">1.11.2 - Release 1.11.2 (2025-11-25)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-1-2025-11-25">1.11.1 - Release 1.11.1 (2025-11-25)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id17">1.11 - 1.11 (2025-06-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id20">1.10 - 1.10 (2025-05-11)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id23">1.0.9 - 1.0.9 (2025-02-14)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id26">1.0.8 - 1.0.8 (2025-02-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-7-2025-02-09">1.0.7 - Release 1.0.7 (2025-02-09)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-6-2025-02-02">1.0.6 - Release 1.0.6 (2025-02-02)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-5-2024-11-25">1.0.5 - Release 1.0.5 (2024-11-25)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-4-2024-08-22">1.0.4 - Release 1.0.4 (2024-08-22)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-3-2024-08-06">1.0.3 - Release 1.0.3 (2024-08-06)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-2-2024-08-05">1.0.2 - Release 1.0.2 (2024-08-05)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-1-2024-07-31">1.0.1 - Release 1.0.1 (2024-07-31)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-0-code-refactored-docu-updated-2024-07-18">1.0.0 - Release 1.0.0  - CODE REFACTORED - DOCU UPDATED (2024-07-18)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#v0-0-5-release-0-0-5-and-below-uses-and-supports-2022-04-18">v0.0.5 - Release 0.0.5 -  and below uses and supports (2022-04-18)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Advanced API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SECURITY.html">Security issue guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#types-of-contributions">Types of Contributions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/front_door_intercom_automation">View Code on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/IMPRESSUM.md">Imprint / Impressum on GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/OliverDrechsler/OliverDrechsler/blob/Imprint_and_GDPR/DSGVO.md">GDPDR / DSGVO in GitHub</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Front door intercom automation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">How to start FDIA Docker container on Raspberry Pi</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="how-to-start-fdia-docker-container-on-raspberry-pi">
+<h1>How to start FDIA Docker container on Raspberry Pi<a class="headerlink" href="#how-to-start-fdia-docker-container-on-raspberry-pi" title="Link to this heading"></a></h1>
+<p>This document explains how to run the FDIA Docker container on a Raspberry Pi with GPIO access.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#how-to-start-fdia-docker-container-on-raspberry-pi"><span class="xref myst">How to start FDIA Docker container on Raspberry Pi</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#purpose"><span class="xref myst">Purpose</span></a></p></li>
+<li><p><a class="reference internal" href="#prerequisites"><span class="xref myst">Prerequisites</span></a></p></li>
+<li><p><a class="reference internal" href="#important-gpio-requirement"><span class="xref myst">Important GPIO requirement</span></a></p></li>
+<li><p><a class="reference internal" href="#required-container-rights-for-gpio-access"><span class="xref myst">Required container rights for GPIO access</span></a></p></li>
+<li><p><a class="reference internal" href="#prepare-configuration-files"><span class="xref myst">Prepare configuration files</span></a></p></li>
+<li><p><a class="reference internal" href="#build-the-container-locally"><span class="xref myst">Build the container locally</span></a></p></li>
+<li><p><a class="reference internal" href="#start-the-container-from-a-local-image"><span class="xref myst">Start the container from a local image</span></a></p></li>
+<li><p><a class="reference internal" href="#start-the-container-from-ghcr"><span class="xref myst">Start the container from GHCR</span></a></p></li>
+<li><p><a class="reference internal" href="#recommended-volume-mappings"><span class="xref myst">Recommended volume mappings</span></a></p></li>
+<li><p><a class="reference internal" href="#optional-fallback-with-devmem"><span class="xref myst">Optional fallback with /dev/mem</span></a></p></li>
+<li><p><a class="reference internal" href="#host-permission-notes"><span class="xref myst">Host permission notes</span></a></p></li>
+<li><p><a class="reference internal" href="#container-behavior"><span class="xref myst">Container behavior</span></a></p></li>
+<li><p><a class="reference internal" href="#logs"><span class="xref myst">Logs</span></a></p></li>
+<li><p><a class="reference internal" href="#update-the-container"><span class="xref myst">Update the container</span></a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting"><span class="xref myst">Troubleshooting</span></a></p></li>
+<li><p><a class="reference internal" href="#recommendation"><span class="xref myst">Recommendation</span></a></p></li>
+</ul>
+</li>
+</ul>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>The FDIA application can access Raspberry Pi GPIO pins for:</p>
+<ul class="simple">
+<li><p>door bell detection</p></li>
+<li><p>door opener relay control</p></li>
+</ul>
+<p>Because Docker containers are isolated from the host system by default, GPIO access must be explicitly enabled when the container is started.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Required:</p>
+<ul class="simple">
+<li><p>Raspberry Pi</p></li>
+<li><p>Raspberry Pi OS or another Linux distribution running on the Pi</p></li>
+<li><p>Docker installed</p></li>
+<li><p>a valid <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code></p></li>
+<li><p>optional <code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code> if Blink camera support is used</p></li>
+</ul>
+<p>Check Docker:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="important-gpio-requirement">
+<h2>Important GPIO requirement<a class="headerlink" href="#important-gpio-requirement" title="Link to this heading"></a></h2>
+<p>The container needs access to the Raspberry Pi GPIO device.</p>
+<p>Preferred device mapping:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem
+</pre></div>
+</div>
+<p>Optional fallback for older systems:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>--device<span class="w"> </span>/dev/mem:/dev/mem
+</pre></div>
+</div>
+<p>If these devices are not provided, the container entrypoint stops with an error message.</p>
+</section>
+<section id="required-container-rights-for-gpio-access">
+<h2>Required container rights for GPIO access<a class="headerlink" href="#required-container-rights-for-gpio-access" title="Link to this heading"></a></h2>
+<p>For this project, the container does not need full privileged mode.</p>
+<p>Minimum required rights:</p>
+<ul class="simple">
+<li><p>device mapping for <code class="docutils literal notranslate"><span class="pre">/dev/gpiomem</span></code></p></li>
+<li><p>a container user that can read and write that device</p></li>
+</ul>
+<p>Recommended setup:</p>
+<ul class="simple">
+<li><p>run the container with <code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">/dev/gpiomem:/dev/gpiomem</span></code></p></li>
+<li><p>run the process as <code class="docutils literal notranslate"><span class="pre">root</span></code> inside the container</p></li>
+</ul>
+<p>The current image starts as <code class="docutils literal notranslate"><span class="pre">root</span></code> by default. That is the simplest and most robust option for <code class="docutils literal notranslate"><span class="pre">RPi.GPIO</span></code>.</p>
+<p>Not required in the normal case:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--privileged</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--cap-add</span> <span class="pre">SYS_RAWIO</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--cap-add</span> <span class="pre">ALL</span></code></p></li>
+<li><p>host network mode only because of GPIO</p></li>
+</ul>
+<p>Optional only for special legacy setups:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">/dev/mem:/dev/mem</span></code></p></li>
+</ul>
+<p>If you intentionally run the container as a non-root user, that user must have access to the same numeric group as the mapped GPIO device on the host.</p>
+<p>Check the device owner and group on the Raspberry Pi host:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>/dev/gpiomem
+stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#39;</span><span class="w"> </span>/dev/gpiomem
+</pre></div>
+</div>
+<p>Example for a non-root container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--user<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--group-add<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#39;</span><span class="w"> </span>/dev/gpiomem<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+</pre></div>
+</div>
+<p>If you do not have a specific reason to run as non-root, use the default root user.</p>
+</section>
+<section id="prepare-configuration-files">
+<h2>Prepare configuration files<a class="headerlink" href="#prepare-configuration-files" title="Link to this heading"></a></h2>
+<p>Create your configuration before starting the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>config_template.yaml<span class="w"> </span>config.yaml
+</pre></div>
+</div>
+<p>Then edit <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> with your real settings.</p>
+<p>If Blink is used, also provide your <code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code>.</p>
+</section>
+<section id="build-the-container-locally">
+<h2>Build the container locally<a class="headerlink" href="#build-the-container-locally" title="Link to this heading"></a></h2>
+<p>From the project root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>fdia:local<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="start-the-container-from-a-local-image">
+<h2>Start the container from a local image<a class="headerlink" href="#start-the-container-from-a-local-image" title="Link to this heading"></a></h2>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>fdia:local
+</pre></div>
+</div>
+</section>
+<section id="start-the-container-from-ghcr">
+<h2>Start the container from GHCR<a class="headerlink" href="#start-the-container-from-ghcr" title="Link to this heading"></a></h2>
+<p>If the image was published by GitHub Actions, use the package from GHCR.</p>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+</pre></div>
+</div>
+<p>If you do not use Blink, remove the <code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code> volume mapping.</p>
+</section>
+<section id="recommended-volume-mappings">
+<h2>Recommended volume mappings<a class="headerlink" href="#recommended-volume-mappings" title="Link to this heading"></a></h2>
+<p>Typical mappings:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> to <code class="docutils literal notranslate"><span class="pre">/app/config.yaml</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code> to <code class="docutils literal notranslate"><span class="pre">/app/blink_config.json</span></code></p></li>
+</ul>
+<p>Example without Blink:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+</pre></div>
+</div>
+</section>
+<section id="optional-fallback-with-dev-mem">
+<h2>Optional fallback with /dev/mem<a class="headerlink" href="#optional-fallback-with-dev-mem" title="Link to this heading"></a></h2>
+<p>Some environments may still require <code class="docutils literal notranslate"><span class="pre">/dev/mem</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/mem:/dev/mem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+</pre></div>
+</div>
+</section>
+<section id="host-permission-notes">
+<h2>Host permission notes<a class="headerlink" href="#host-permission-notes" title="Link to this heading"></a></h2>
+<p>The host system must allow GPIO access.</p>
+<p>Useful checks on the Raspberry Pi host:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>/dev/gpiomem
+getent<span class="w"> </span>group<span class="w"> </span>gpio
+groups
+</pre></div>
+</div>
+<p>If needed, add your host user to the <code class="docutils literal notranslate"><span class="pre">gpio</span></code> group:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>gpio<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$USER</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Then log out and log in again.</p>
+<p>Important distinction:</p>
+<ul class="simple">
+<li><p>the host user needs permission to talk to Docker</p></li>
+<li><p>the container process needs permission for <code class="docutils literal notranslate"><span class="pre">/dev/gpiomem</span></code></p></li>
+</ul>
+<p>With the default image, the container runs as <code class="docutils literal notranslate"><span class="pre">root</span></code>, so the main required runtime right is the <code class="docutils literal notranslate"><span class="pre">--device</span></code> mapping.</p>
+</section>
+<section id="container-behavior">
+<h2>Container behavior<a class="headerlink" href="#container-behavior" title="Link to this heading"></a></h2>
+<p>The container starts <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">fdia.py</span></code>.</p>
+<p>Before the application starts, the entrypoint checks whether GPIO device access is available.</p>
+<p>Default behavior:</p>
+<ul class="simple">
+<li><p>GPIO access is required</p></li>
+<li><p>startup fails if no GPIO device is available</p></li>
+</ul>
+<p>Optional override:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-e<span class="w"> </span><span class="nv">FDIA_REQUIRE_GPIO</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+<p>This is only useful for testing without real GPIO hardware.</p>
+</section>
+<section id="logs">
+<h2>Logs<a class="headerlink" href="#logs" title="Link to this heading"></a></h2>
+<p>Show logs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>fdia
+</pre></div>
+</div>
+<p>Stop container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>stop<span class="w"> </span>fdia
+</pre></div>
+</div>
+<p>Remove container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>fdia
+</pre></div>
+</div>
+</section>
+<section id="update-the-container">
+<h2>Update the container<a class="headerlink" href="#update-the-container" title="Link to this heading"></a></h2>
+<p>For a locally built image:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>fdia:local<span class="w"> </span>.
+docker<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>fdia
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>fdia:local
+</pre></div>
+</div>
+<p>For an image from GHCR:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+docker<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>fdia
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+</pre></div>
+</div>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="error-gpio-device-access-is-not-available">
+<h3>Error: GPIO device access is not available<a class="headerlink" href="#error-gpio-device-access-is-not-available" title="Link to this heading"></a></h3>
+<p>Cause:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--device</span> <span class="pre">/dev/gpiomem:/dev/gpiomem</span></code> was not passed</p></li>
+</ul>
+<p>Fix:</p>
+<ul class="simple">
+<li><p>start the container again with the GPIO device mapping</p></li>
+</ul>
+</section>
+<section id="error-gpio-device-exists-but-is-not-readable-and-writable-inside-the-container">
+<h3>Error: GPIO device exists but is not readable and writable inside the container<a class="headerlink" href="#error-gpio-device-exists-but-is-not-readable-and-writable-inside-the-container" title="Link to this heading"></a></h3>
+<p>Cause:</p>
+<ul class="simple">
+<li><p>the container was started as a non-root user without the matching GPIO group</p></li>
+</ul>
+<p>Fix:</p>
+<ul class="simple">
+<li><p>run the container with the default root user</p></li>
+<li><p>or add the host GPIO group with <code class="docutils literal notranslate"><span class="pre">--group-add</span> <span class="pre">&quot;$(stat</span> <span class="pre">-c</span> <span class="pre">'%g'</span> <span class="pre">/dev/gpiomem)&quot;</span></code></p></li>
+</ul>
+</section>
+<section id="container-starts-but-door-opener-or-bell-detection-does-not-work">
+<h3>Container starts but door opener or bell detection does not work<a class="headerlink" href="#container-starts-but-door-opener-or-bell-detection-does-not-work" title="Link to this heading"></a></h3>
+<p>Possible causes:</p>
+<ul class="simple">
+<li><p>wrong GPIO pin numbers in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code></p></li>
+<li><p>hardware wiring issue</p></li>
+<li><p>host permissions are missing</p></li>
+<li><p>application is configured with <code class="docutils literal notranslate"><span class="pre">run_on_raspberry:</span> <span class="pre">false</span></code></p></li>
+</ul>
+</section>
+<section id="blink-config-file-not-found">
+<h3>Blink config file not found<a class="headerlink" href="#blink-config-file-not-found" title="Link to this heading"></a></h3>
+<p>Cause:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code> is not mounted into <code class="docutils literal notranslate"><span class="pre">/app</span></code></p></li>
+</ul>
+<p>Fix:</p>
+<ul class="simple">
+<li><p>add the volume mapping or disable Blink usage in the config</p></li>
+</ul>
+</section>
+</section>
+<section id="recommendation">
+<h2>Recommendation<a class="headerlink" href="#recommendation" title="Link to this heading"></a></h2>
+<p>For productive Raspberry Pi usage:</p>
+<ul class="simple">
+<li><p>use <code class="docutils literal notranslate"><span class="pre">--restart</span> <span class="pre">unless-stopped</span></code></p></li>
+<li><p>mount <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> from the host</p></li>
+<li><p>pass <code class="docutils literal notranslate"><span class="pre">/dev/gpiomem</span></code></p></li>
+<li><p>keep the default container user <code class="docutils literal notranslate"><span class="pre">root</span></code> unless you have a specific hardening requirement</p></li>
+<li><p>only add <code class="docutils literal notranslate"><span class="pre">/dev/mem</span></code> if your setup actually needs it</p></li>
+<li><p>do not use <code class="docutils literal notranslate"><span class="pre">--privileged</span></code> unless you have a separate reason unrelated to FDIA GPIO access</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Oliver Drechsler.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
