@@ -1,5 +1,37 @@
 # ChangeLog
 
+# 2.0.2 - Release 2.0.2 (2026-06-05)
+
+### Changes
+- include codeql-config-yml
+
+**Version bump type:** default patch
+
+### CI Build
+Artifacts were produced by CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27042013472
+
+The attached release assets are the zipped CI artifacts for all successful target builds.
+
+
+
+# 2.0.1 - Release 2.0.1 (2026-06-05)
+
+### Changes
+- Feature/new build artifacts and docker container pipelines (#253)
+- small readme update
+- fixed and improved pipelines security
+
+**Version bump type:** patch
+
+### CI Build
+Artifacts were produced by CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27041827089
+
+The attached release assets are the zipped CI artifacts for all successful target builds.
+
+
+
 # 2.0.0 - 2.0.0 (2026-06-03)
 
 # Breaking changes
