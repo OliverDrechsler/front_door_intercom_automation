@@ -1,7 +1,5 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 name: ci build and test code
+
 on:
   push:
     branches: "**"
@@ -14,6 +12,9 @@ defaults:
 
 permissions:
   contents: read
+
+env:
+  PYTHON_BUILD_VERSION: "3.14"
 
 jobs:
   build:
@@ -29,6 +30,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: 3.14
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -47,27 +49,192 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
     steps:
-    - uses: actions/checkout@v6
-      with:
-        persist-credentials: false
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: pip
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
 
-    - name: Run tests
-      run: |
-        pytest --cov=./ --cov-report=xml
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Upload coverage reports to Codecov with GitHub Action
-      if: github.event_name == 'push'
-      uses: codecov/codecov-action@v6
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Run tests
+        run: |
+          pytest --cov=./ --cov-report=term-missing --cov-report=xml
+
+      - name: Upload coverage reports to Codecov with GitHub Action
+        if: github.event_name == 'push'
+        uses: codecov/codecov-action@v6
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  build-binaries:
+    name: Build binary (${{ matrix.name }})
+    if: github.event_name == 'push' && github.ref_name == 'master'
+    needs: [build, test]
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-x64
+            # os: windows-2025
+            os: windows-latest
+            artifact_name: fdia-windows-x64
+            binary_path: dist/fdia.exe
+          - name: linux-x64
+            os: ubuntu-latest
+            artifact_name: fdia-linux-x64
+            binary_path: dist/fdia
+          - name: linux-arm64
+            os: ubuntu-24.04-arm
+            artifact_name: fdia-linux-arm64
+            binary_path: dist/fdia
+          - name: macos-intel
+            os: macos-15-intel
+            artifact_name: fdia-macos-intel
+            binary_path: dist/fdia
+          - name: macos-arm64
+            os: macos-14
+            artifact_name: fdia-macos-arm64
+            binary_path: dist/fdia
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_BUILD_VERSION }}
+          cache: pip
+
+      - name: Install runtime dependencies and PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build executable
+        run: |
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            DATA_SEP=";"
+          else
+            DATA_SEP=":"
+          fi
+          pyinstaller --clean --noconfirm --onefile \
+            --collect-data certifi \
+            --add-data "web/templates${DATA_SEP}web/templates" \
+            --add-data "web/static${DATA_SEP}web/static" \
+            --add-data "config_template.yaml${DATA_SEP}." \
+            --name fdia fdia.py
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.binary_path }}
+          if-no-files-found: error
+
+  build-linux-armv7-binary:
+    name: Build binary (linux-armv7)
+    if: github.event_name == 'push' && github.ref_name == 'master'
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Build ARMv7 executable
+        uses: uraimo/run-on-arch-action@v3
+        with:
+          arch: armv7
+          distro: ubuntu22.04
+          githubToken: ${{ github.token }}
+          install: |
+            apt-get update
+            apt-get install -y python3 python3-pip python3-venv build-essential libjpeg-dev zlib1g-dev
+          run: |
+            python3 -m pip install --upgrade pip
+            pip3 install -r requirements.txt
+            pip3 install pyinstaller
+            pyinstaller --clean --noconfirm --onefile \
+              --collect-data certifi \
+              --add-data "web/templates:web/templates" \
+              --add-data "web/static:web/static" \
+              --add-data "config_template.yaml:." \
+              --name fdia fdia.py
+
+      - name: Upload ARMv7 binary artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: fdia-linux-armv7
+          path: dist/fdia
+          if-no-files-found: error
+
+  build-and-push-container:
+    name: Build and push Docker image
+    if: github.event_name == 'push' && github.ref_name == 'master'
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set image name
+        run: |
+          IMAGE_NAME="$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
+          echo "IMAGE_NAME=ghcr.io/${IMAGE_NAME}" >> "${GITHUB_ENV}"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest,enable=${{ github.ref_name == 'master' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

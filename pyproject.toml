@@ -11,6 +11,22 @@ python = ">=3.10"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.coverage.run]
+omit = [
+    "test/*",
+]
+
+[tool.coverage.report]
+omit = [
+    "test/*",
+]
+
+[tool.ruff]
+extend-exclude = [
+    "test",
+]
+force-exclude = true
+
 [scripts]
 install = """
 #!/bin/bash

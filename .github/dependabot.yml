@@ -2,6 +2,8 @@ version: 2
 updates:
 - package-ecosystem: pip
   directory: "/"
+  exclude-paths:
+    - "test/**"
   schedule:
     interval: daily
     time: "04:00"

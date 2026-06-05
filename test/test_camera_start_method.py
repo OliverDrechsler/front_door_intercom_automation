@@ -20,7 +20,7 @@ def camera_setup():
     with patch('camera.camera.Blink') as mock_blink, \
          patch('camera.camera.Auth'), \
          patch('camera.camera.json_load'), \
-         patch('camera.camera.aiohttp.ClientSession') as mock_session:
+         patch.object(Camera, '_Camera__create_blink_session') as mock_create_blink_session:
 
         mock_blink_instance = MagicMock()
         mock_blink_instance.start = AsyncMock()
@@ -30,7 +30,7 @@ def camera_setup():
 
         mock_session_instance = MagicMock()
         mock_session_instance.close = AsyncMock()
-        mock_session.return_value = mock_session_instance
+        mock_create_blink_session.return_value = mock_session_instance
         camera.session = mock_session_instance
 
         async def mock_read_config():

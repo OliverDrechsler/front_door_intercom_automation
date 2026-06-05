@@ -52,6 +52,7 @@ Opening relais board can be buyed and must just be wired.
       - [Encrypt and decrypt a password with base32 for totp](#encrypt-and-decrypt-a-password-with-base32-for-totp)
       - [get a OTP password or verify a OTP via cli](#get-a-otp-password-or-verify-a-otp-via-cli)
     - [System service setup](#system-service-setup)
+    - [Docker on Raspberry Pi](#docker-on-raspberry-pi)
     - [Configuration - config files](#configuration---config-files)
     - [config.yaml - config\_template.yaml](#configyaml---config_templateyaml)
     - [blink\_config.json](#blink_configjson)
@@ -172,6 +173,7 @@ Software:
 │   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.html   # HTML DSGVO Template for door camera
 │   ├── GDPR_Germany_hint_camera_monitoring_-_DSGVO_Fotografische_Ueberwachung.md # DSGVO Template for door camera
 │   ├── How_to_install_fresh_RPi_with_code.md   # Install software code with a fresh Raspbian Image
+│   ├── How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md # Start FDIA as Docker container on Raspberry Pi
 │   ├── How_to_setup_OTP_App_on_mobile_phone.md # Setup OTP App on mobile phone
 │   ├── one_time_password_setup.md              # How to setup otp config
 │   ├── pull_request_template.md                # Pull request template
@@ -272,10 +274,15 @@ requirements_licenses.txt # depend library licenses
    `python3 fdia.py`
    and check log output
    or with poetry 
+
    `poetry run start`
 
   
    for troubleshooting see [Help](#help)
+
+### Docker on Raspberry Pi
+
+For container-based installation and exact Docker start commands on Raspberry Pi including GPIO device mapping, see [How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md](docs/How_to_start_FDIA_Docker_container_on_Raspberry_Pi.md).
 
 
 9. setup app to run as daemon / service in linux follow [System service setup](#system-service-setup)

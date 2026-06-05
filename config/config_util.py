@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import logging
 import os
+import sys
 from collections import ChainMap
 from typing import Any
 
@@ -28,7 +29,9 @@ class Configuration:
         """
         self.logger = logging.getLogger("config")
         self.base_path = self.__get_base_path()
+        self.bundle_base_path = self.__get_bundle_base_path()
         self.config_file = self.__define_config_file()
+        self.config_dir = os.path.dirname(self.config_file)
         self.config = self.__read_config(self.config_file)
 
         self.bot: telebot.TeleBot = None
@@ -65,7 +68,7 @@ class Configuration:
         self.blink_username: str = self.config["blink"]["username"]
         self.blink_password: str = self.config["blink"]["password"]
         self.blink_name: str = self.config["blink"]["name"]
-        self.blink_config_file: str = self.base_path + self.config["blink"]["config_file"]
+        self.blink_config_file: str = self.__resolve_runtime_path(self.config["blink"]["config_file"])
         self.blink_night_vision: bool = self.config["blink"]["night_vision"]
         self.blink_image_brightening: bool = self.config["blink"].get("image_brightening", False) # optional value see config_template.yaml for more information
 
@@ -104,12 +107,27 @@ class Configuration:
             raise YamlReadError("web.flask_users must contain only dictionaries")
         return dict(ChainMap(*flask_users))
 
-    def __get_base_path(self) -> None:
+    def __get_base_path(self) -> str:
         """
-        Get from fdia base path. This normally one folder
-        up from the config_util.py
+        Get the runtime base path.
+
+        For PyInstaller binaries this is the directory of the executable.
+        For source execution this is the project root.
         """
+        if getattr(sys, "frozen", False):
+            return os.path.dirname(os.path.abspath(sys.executable)) + "/"
         return os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/"
+
+    def __get_bundle_base_path(self) -> str:
+        """
+        Get the path containing bundled application resources.
+
+        In a PyInstaller onefile build this points to the temporary extraction
+        directory. In source execution it equals the project root.
+        """
+        if getattr(sys, "frozen", False):
+            return getattr(sys, "_MEIPASS", self.base_path) + "/"
+        return self.base_path
 
     def __read_config(self, config_file: str) -> dict[str, Any]:
         """
@@ -132,7 +150,7 @@ class Configuration:
             self.logger.error("a YAML error is occured during parsing file %s ", self.config_file)
             raise YamlReadError("a YAML error is occured during parsing file") from err
 
-    def __define_config_file(self) -> None:
+    def __define_config_file(self) -> str:
         """
         Checks and defines Config yaml file path.
 
@@ -140,14 +158,48 @@ class Configuration:
         :rtype: None
         """
         self.logger.debug("checking if config.yaml file exists")
+        config_candidates: list[str] = []
+        launch_dir = os.getcwd() + "/"
 
-        if os.path.isfile(self.base_path + "config.yaml"):
-            return self.base_path + "config.yaml"
+        for candidate in (
+            launch_dir + "config.yaml",
+            self.base_path + "config.yaml",
+            self.bundle_base_path + "config.yaml",
+        ):
+            if candidate not in config_candidates:
+                config_candidates.append(candidate)
+
+        for candidate in config_candidates:
+            if os.path.isfile(candidate):
+                self.logger.info("Using config file: %s", candidate)
+                return candidate
 
         self.logger.info("No config.yaml file detected. Using" + " temeplate one.")
+        template_candidates: list[str] = []
+        for candidate in (
+            launch_dir + "config_template.yaml",
+            self.base_path + "config_template.yaml",
+            self.bundle_base_path + "config_template.yaml",
+        ):
+            if candidate not in template_candidates:
+                template_candidates.append(candidate)
+
+        for candidate in template_candidates:
+            if os.path.exists(candidate):
+                self.logger.info("Using template config file: %s", candidate)
+                return candidate
+
         if not os.path.exists(self.base_path + "config_template.yaml"):
             raise (NameError("No config file found!"))
         return self.base_path + "config_template.yaml"
+
+    def __resolve_runtime_path(self, path: str) -> str:
+        """
+        Resolve relative runtime files against the active config directory.
+        """
+        if os.path.isabs(path):
+            return path
+        return os.path.join(self.config_dir, path)
 
     def __base32_encode_totp_password(self, new_password):
         """
@@ -166,7 +218,7 @@ class Configuration:
         """
         target_config_file = self.config_file
         if target_config_file.endswith("config_template.yaml"):
-            target_config_file = self.base_path + "config.yaml"
+            target_config_file = os.path.join(self.base_path, "config.yaml")
 
         with open(target_config_file, "w") as yaml_file:
             self.config["otp"]["password"] = self.__base32_encode_totp_password(new_password)

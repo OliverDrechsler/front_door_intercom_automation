@@ -9,11 +9,13 @@ import base64
 
 class TestConfiguration(unittest.TestCase):
 
+    @patch('config.config_util.Configuration._Configuration__get_bundle_base_path')
     @patch('config.config_util.Configuration._Configuration__get_base_path')
     @patch('config.config_util.Configuration._Configuration__read_config')
     @patch('config.config_util.Configuration._Configuration__define_config_file')
     @patch('telebot.TeleBot', autospec=True)
-    def setUp(self, mock_telebot, mock_define_config_file, mock_read_config, mock_get_base_path):
+    def setUp(self, mock_telebot, mock_define_config_file, mock_read_config, mock_get_base_path,
+              mock_get_bundle_base_path):
         self.mock_config = {
             'telegram': {
                 'token': 'dummy_token',
@@ -79,6 +81,7 @@ class TestConfiguration(unittest.TestCase):
             }
         }
         mock_get_base_path.return_value = '/dummy/base/path/'
+        mock_get_bundle_base_path.return_value = '/dummy/bundle/path/'
         mock_define_config_file.return_value = '/dummy/base/path/config.yaml'
         mock_read_config.return_value = self.mock_config
 
@@ -125,20 +128,29 @@ class TestConfiguration(unittest.TestCase):
         self.assertFalse(self.config.flask_session_cookie_secure)
         self.assertEqual(self.config.web_user_dict, {'user1': 'id1', 'user2': 'id2'})
 
-    @patch('os.path.isfile', return_value=True)
-    def test_define_config_file_exists(self, mock_isfile):
+    @patch('os.getcwd', return_value='/launch/path')
+    @patch('os.path.isfile', side_effect=lambda path: path == '/launch/path/config.yaml')
+    def test_define_config_file_prefers_launch_dir(self, mock_isfile, mock_getcwd):
+        config_file = self.config._Configuration__define_config_file()
+        self.assertEqual(config_file, '/launch/path/config.yaml')
+
+    @patch('os.getcwd', return_value='/launch/path')
+    @patch('os.path.isfile', side_effect=lambda path: path == '/dummy/base/path/config.yaml')
+    def test_define_config_file_uses_base_path_when_launch_config_missing(self, mock_isfile, mock_getcwd):
         config_file = self.config._Configuration__define_config_file()
         self.assertEqual(config_file, '/dummy/base/path/config.yaml')
 
+    @patch('os.getcwd', return_value='/launch/path')
     @patch('os.path.isfile', return_value=False)
-    @patch('os.path.exists', return_value=True)
-    def test_define_config_file_template_exists(self, mock_exists, mock_isfile):
+    @patch('os.path.exists', side_effect=lambda path: path == '/launch/path/config_template.yaml')
+    def test_define_config_file_template_exists(self, mock_exists, mock_isfile, mock_getcwd):
         config_file = self.config._Configuration__define_config_file()
-        self.assertEqual(config_file, '/dummy/base/path/config_template.yaml')
+        self.assertEqual(config_file, '/launch/path/config_template.yaml')
 
+    @patch('os.getcwd', return_value='/launch/path')
     @patch('os.path.isfile', return_value=False)
     @patch('os.path.exists', return_value=False)
-    def test_define_config_file_not_exists(self, mock_exists, mock_isfile):
+    def test_define_config_file_not_exists(self, mock_exists, mock_isfile, mock_getcwd):
         with self.assertRaises(NameError):
             self.config._Configuration__define_config_file()
 
@@ -159,6 +171,18 @@ class TestConfiguration(unittest.TestCase):
         self.config._Configuration__write_yaml_config('new_password')
 
         mock_file.assert_called_with('/dummy/base/path/custom.yaml', 'w')
+
+    def test_resolve_runtime_path_uses_config_dir_for_relative_files(self):
+        self.config.config_dir = '/dummy/runtime'
+
+        result = self.config._Configuration__resolve_runtime_path('blink_config.yaml')
+
+        self.assertEqual(result, '/dummy/runtime/blink_config.yaml')
+
+    def test_resolve_runtime_path_preserves_absolute_paths(self):
+        result = self.config._Configuration__resolve_runtime_path('/absolute/blink_config.yaml')
+
+        self.assertEqual(result, '/absolute/blink_config.yaml')
 
     def test_get_web_user_dict_empty(self):
         self.config.config["web"]["flask_users"] = []
