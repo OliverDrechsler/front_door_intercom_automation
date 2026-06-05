@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   release:
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'master'
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'master' && github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: refs/heads/master
           fetch-depth: 0
           persist-credentials: false
 
@@ -136,11 +136,23 @@ jobs:
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
+          IMAGE_REPOSITORY="$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
+          IMAGE_NAME="ghcr.io/${IMAGE_REPOSITORY}"
+          PACKAGE_NAME="$(basename "${IMAGE_REPOSITORY}")"
+          PACKAGE_URL="https://github.com/${GITHUB_REPOSITORY}/pkgs/container/${PACKAGE_NAME}"
+
           {
             echo "### Changes"
             echo "${{ steps.notes.outputs.notes }}"
             echo
             echo "**Version bump type:** ${{ steps.next_tag.outputs.bump_type }}"
+            echo
+            echo "### Docker Image"
+            echo "GitHub Container Registry package: ${PACKAGE_URL}"
+            echo
+            echo '```bash'
+            echo "docker pull ${IMAGE_NAME}:latest"
+            echo '```'
             echo
             echo "### CI Build"
             echo "Artifacts were produced by CI workflow run:"
