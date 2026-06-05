@@ -78,7 +78,7 @@ jobs:
 
   build-binaries:
     name: Build binary (${{ matrix.name }})
-    if: github.event_name == 'push' && (github.ref_name == 'master' || github.ref_name == 'feature/build_artifact_and_container')
+    if: github.event_name == 'push' && github.ref_name == 'master'
     needs: [build, test]
     timeout-minutes: 60
     strategy:
@@ -149,7 +149,7 @@ jobs:
 
   build-linux-armv7-binary:
     name: Build binary (linux-armv7)
-    if: github.event_name == 'push' && (github.ref_name == 'master' || github.ref_name == 'feature/build_artifact_and_container')
+    if: github.event_name == 'push' && github.ref_name == 'master'
     needs: [build, test]
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -188,7 +188,7 @@ jobs:
 
   build-and-push-container:
     name: Build and push Docker image
-    if: github.event_name == 'push' && (github.ref_name == 'master' || github.ref_name == 'feature/build_artifact_and_container')
+    if: github.event_name == 'push' && github.ref_name == 'master'
     needs: [build, test]
     runs-on: ubuntu-latest
     timeout-minutes: 60
