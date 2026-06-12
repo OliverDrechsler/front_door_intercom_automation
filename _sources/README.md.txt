@@ -40,10 +40,6 @@ Opening relais board can be buyed and must just be wired.
   - [Demo](#demo)
   - [Long description](#long-description)
   - [Features advantage comparision FDIA, Blink, Ring and PiCamAPI](#features-advantage-comparision-fdia-blink-ring-and-picamapi)
-  - [Outlook/Ideas - Improvements plan](#outlookideas---improvements-plan)
-    - [in development](#in-development)
-    - [Plan](#plan)
-    - [Ideas](#ideas)
   - [Get started](#get-started)
     - [Requirements](#requirements)
     - [Code tree structure](#code-tree-structure)
@@ -71,6 +67,7 @@ Opening relais board can be buyed and must just be wired.
       - [Telegram and OTP App - mobile usage](#telegram-and-otp-app---mobile-usage)
     - [Apple IOS Shortcuts App - How to automate door opening](#apple-ios-shortcuts-app---how-to-automate-door-opening)
   - [Web UI \& REST-API usage](#web-ui--rest-api-usage)
+  - [Apple IOS FDIA-App - Proof of Conecpt](#apple-ios-fdia-app---proof-of-conecpt)
   - [Hardware Circuits](#hardware-circuits)
     - [Door bell detection](#door-bell-detection)
       - [required HW parts](#required-hw-parts)
@@ -130,20 +127,6 @@ The project offers the following functionality:
 | Multi user door opening | ✅ | ✅ | ❌ | ❌ |  
 | GDPR data storage | ✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed | ❌ Camaera Internet / Cloud exposed | ✅ no data Exposure |  
 | possible local usage without Internet (door opening only) | ✅ | ✅opening - ❌ no camera snapshot | ❌ | ✅ |  
-
-## Outlook/Ideas - Improvements plan
-
-### in development
-- [x] Integrate Ring Cameras(video Doorbell too) (depends on lack of hardware - donation welcome - or temporary provision for development)
-
-### Plan
-- [ ] Same solution is in development as JAVA Spring Boot app too.   
-- [ ] Next it's planned to extend the Web-UI with more features (like show snapshots and other things)
-
-### Ideas
-- [ ] Integration offering in [HomeAssistant](https://www.home-assistant.io/)
-- [ ] Further it's planed to integrate door opening in Amazon Alexa as ProofOfConcept.  
-- [ ] add docker container build, image at GHCR and support via docker-compose.yaml
 
 ## Get started
 
@@ -463,6 +446,10 @@ curl -X POST http://127.0.0.1:<FLASK_WEB_PORT>/open \
      -d '{"totp": "<YOUR_TOTP_CODE>"}'
 ```
 The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
+
+
+## Apple IOS FDIA-App - Proof of Conecpt
+checkout out here for more detail on IOS developed Application [FDIA-IOS-App](https://github.com/OliverDrechsler/FDIA_IOS_App)
 
 ## Hardware Circuits
 
