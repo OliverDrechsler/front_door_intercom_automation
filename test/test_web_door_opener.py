@@ -107,7 +107,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         
         # Mock the async queue put method to return a coroutine
         async def async_put(item):
-            pass
+            return item
         self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
 
         csrf_token = self._get_csrf_token()
@@ -132,7 +132,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         
         # Mock the async queue put method to return a coroutine
         async def async_put(item):
-            pass
+            return item
         self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
         
         auth_header = {
@@ -147,7 +147,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.web_door_opener.users = {'testuser': 'hashed-password'}
 
         async def async_put(item):
-            pass
+            return item
 
         self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
 
@@ -289,7 +289,8 @@ class WebDoorOpenerTestCase(unittest.TestCase):
             cls.loop.stop()
             cls.loop.close()
         except Exception:
-            pass
+            # Test teardown should not fail when the loop is already closed or partially cleaned up.
+            return
 
 if __name__ == '__main__':
     unittest.main()

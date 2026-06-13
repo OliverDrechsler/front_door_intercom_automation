@@ -23,29 +23,40 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          ref: refs/heads/master
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Set up Git
+      - name: Set up release environment
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Get latest tag
         id: get_latest_tag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          git fetch --tags
-          TAG=$(git tag -l | grep -E '^[v]?[0-9]+\.[0-9]+(\.[0-9]+)?$' | sed 's/^v//' | sort -V | tail -n 1 || true)
-          ORIGINAL_TAG=$(git tag -l | grep -E "^[v]?${TAG}$" | tail -n 1 || true)
+          TAGS=$(gh api "repos/${GITHUB_REPOSITORY}/tags?per_page=100" --paginate --jq '.[].name')
+          TAG=$(printf '%s\n' "${TAGS}" | grep -E '^[v]?[0-9]+\.[0-9]+(\.[0-9]+)?$' | sed 's/^v//' | sort -V | tail -n 1 || true)
+          ORIGINAL_TAG=$(printf '%s\n' "${TAGS}" | grep -E "^[v]?${TAG}$" | tail -n 1 || true)
           echo "latest_tag=${ORIGINAL_TAG}" >> "${GITHUB_OUTPUT}"
           echo "Found latest tag: ${ORIGINAL_TAG}"
+
+      - name: Collect commit metadata
+        id: commits
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          LATEST=${{ steps.get_latest_tag.outputs.latest_tag }}
+          if [ -z "${LATEST}" ]; then
+            gh api "repos/${GITHUB_REPOSITORY}/commits?sha=${HEAD_SHA}&per_page=100" --paginate > commits.json
+            jq -r '.[].commit.message' commits.json > commit_messages.txt
+            jq -r '.[] | "- " + .commit.message | split("\n")[0]' commits.json > release_notes.txt
+          else
+            gh api "repos/${GITHUB_REPOSITORY}/compare/${LATEST}...${HEAD_SHA}" > compare.json
+            jq -r '.commits[].commit.message' compare.json > commit_messages.txt
+            jq -r '.commits[] | "- " + .commit.message | split("\n")[0]' compare.json > release_notes.txt
+          fi
 
       - name: Determine next semantic version
         id: next_tag
@@ -60,11 +71,7 @@ jobs:
           MINOR=$(echo "${VERSION}" | cut -d. -f2)
           PATCH=$(echo "${VERSION}" | cut -d. -f3)
 
-          if [ "${LATEST}" = "0.0.0" ]; then
-            COMMITS=$(git log --all --pretty=format:"%s%n%b")
-          else
-            COMMITS=$(git log "${LATEST}"..HEAD --pretty=format:"%s%n%b")
-          fi
+          COMMITS=$(cat commit_messages.txt)
 
           if echo "${COMMITS}" | grep -q "BREAKING CHANGE"; then
             MAJOR=$((MAJOR + 1))
@@ -90,27 +97,25 @@ jobs:
       - name: Generate release notes
         id: notes
         run: |
-          LATEST=${{ steps.get_latest_tag.outputs.latest_tag }}
-          if [ -z "${LATEST}" ]; then
-            NOTES=$(git log --oneline)
-          else
-            NOTES=$(git log "${LATEST}"..HEAD --pretty=format:"- %s")
-          fi
+          NOTES=$(cat release_notes.txt)
           echo "notes<<EOF" >> "${GITHUB_OUTPUT}"
           echo "${NOTES}" >> "${GITHUB_OUTPUT}"
           echo "EOF" >> "${GITHUB_OUTPUT}"
 
       - name: Create tag if missing
         id: create_tag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           TAG=${{ steps.next_tag.outputs.next_tag }}
-          git fetch --tags
-          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" >/dev/null 2>&1; then
             echo "tag_exists=true" >> "${GITHUB_OUTPUT}"
             echo "Tag ${TAG} already exists; skipping creation"
           else
-            git tag "${TAG}"
-            git push origin "${TAG}"
+            gh api "repos/${GITHUB_REPOSITORY}/git/refs" \
+              -f ref="refs/tags/${TAG}" \
+              -f sha="${HEAD_SHA}" >/dev/null
             echo "tag_exists=false" >> "${GITHUB_OUTPUT}"
           fi
 
