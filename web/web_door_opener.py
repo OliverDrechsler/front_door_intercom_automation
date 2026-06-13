@@ -6,6 +6,7 @@ import os
 import queue
 import secrets
 import threading
+import time
 from urllib.parse import parse_qsl, urlencode
 from functools import wraps
 from datetime import datetime, timezone, timedelta
@@ -14,7 +15,6 @@ import pyotp
 from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for, session, g
 from werkzeug.exceptions import HTTPException
 from werkzeug.exceptions import NotFound
-from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.serving import make_server
 
 from config import config_util
@@ -47,32 +47,6 @@ class WebDoorOpener:
             g.auth_user = auth_user
             return f(self, *args, **kwargs)
         return decorator
-
-    @staticmethod
-    def create_password_hash(input):
-        """
-        Generates a password hash using the `generate_password_hash` function.
-
-        Parameters:
-            input (str): The password to be hashed.
-
-        Returns:
-            str: The hashed password.
-        """
-        return generate_password_hash(input)
-
-    def transform_values(self, func):
-        """
-        Transforms the values of the `web_user_dict` dictionary in the `config` object
-        using the provided `func` function.
-
-        Args:
-            func (function): The function to apply to each value in the dictionary.
-
-        Returns:
-            dict: A new dictionary with the transformed values.
-        """
-        return {k: func(v) for k, v in self.config.web_user_dict.items()}
 
     def __init__(self, shutdown_event: threading.Event, config: config_util.Configuration, loop,
                  message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue,
@@ -118,7 +92,7 @@ class WebDoorOpener:
         self.str_log_level = logging.getLevelName(logger.getEffectiveLevel())
         self.log_level = logger.getEffectiveLevel()
 
-        self.users = self.transform_values(self.create_password_hash)
+        self.users = dict(self.config.web_user_dict)
         self.__setup_logging()
         self.__setup_routes()
         self.__setup_error_handlers()
@@ -185,7 +159,8 @@ class WebDoorOpener:
         Returns:
             str or None: The authenticated username if successful, None otherwise.
         """
-        if username in self.users and check_password_hash(self.users.get(username), password):
+        configured_password = self.users.get(username)
+        if configured_password is not None and hmac.compare_digest(configured_password, password):
             self.app.logger.debug("Authentication: Success: User %s authenticated", username)
             return username
         self.app.logger.info("Authentication: Failed: User: %s - user or password wrong", username)
@@ -212,10 +187,21 @@ class WebDoorOpener:
         Authenticates the current request either via HTTP basic auth or via the
         existing browser session.
         """
+        if hasattr(g, "auth_checked"):
+            return getattr(g, "auth_user", None)
+
         basic_user = self.__get_authenticated_basic_user()
         if basic_user is not None:
+            g.auth_checked = True
+            g.auth_user = basic_user
+            g.auth_via_basic = True
             return basic_user
-        return self.__get_authenticated_session_user()
+
+        session_user = self.__get_authenticated_session_user()
+        g.auth_checked = True
+        g.auth_user = session_user
+        g.auth_via_basic = False
+        return session_user
 
     @staticmethod
     def __get_or_create_csrf_token() -> str:
@@ -233,7 +219,8 @@ class WebDoorOpener:
         Returns True when the request is authenticated by the browser session
         and not by HTTP basic auth.
         """
-        return self.__get_authenticated_basic_user() is None and self.__get_authenticated_session_user() is not None
+        auth_user = self.__authenticate_request()
+        return auth_user is not None and not getattr(g, "auth_via_basic", False)
 
     def __validate_csrf(self) -> bool:
         """
@@ -310,13 +297,19 @@ class WebDoorOpener:
             redirect: If the user is 'anonymous' and the endpoint is not 'login', 'favicon', or 'static'.
             handle_401_unauthenticated: If the user is 'anonymous' and there is no browser session.
         """
+        g.request_started_at = time.perf_counter()
         g.csp_nonce = secrets.token_urlsafe(16)
+
+        auth_started_at = time.perf_counter()
         user = self.__get_request_username()
+        auth_duration_ms = round((time.perf_counter() - auth_started_at) * 1000, 2)
+
         self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', self.__get_request_remote_ip(), user, request.method, request.path)
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Request: ==========")
         self.app.logger.debug("")
         self.app.logger.info('User: %s, Method: %s, Path: %s', user, request.method, request.path)
+        self.app.logger.info('Request auth timing: %.2f ms', auth_duration_ms)
         self.app.logger.debug('Request Headers: %s', request.headers)
         self.app.logger.debug('Request Data: %s', self.__get_sanitized_request_data())
         self.app.logger.debug("======== HTTP Request END ==========")
@@ -325,7 +318,11 @@ class WebDoorOpener:
             self.__get_or_create_csrf_token()
 
         if request.method in {"POST", "PUT", "PATCH", "DELETE"} and self.__is_session_authenticated():
-            if not self.__validate_csrf():
+            csrf_started_at = time.perf_counter()
+            csrf_valid = self.__validate_csrf()
+            csrf_duration_ms = round((time.perf_counter() - csrf_started_at) * 1000, 2)
+            self.app.logger.info('Request CSRF timing: %.2f ms', csrf_duration_ms)
+            if not csrf_valid:
                 return self.__handle_bad_request(message="CSRF validation failed.")
 
         if request.endpoint in ['favicon', 'static']:
@@ -385,6 +382,10 @@ class WebDoorOpener:
 
         if (request.endpoint not in ['favicon', 'static']):
             self.app.logger.debug('Response Data: %s', response.get_data(as_text=True))
+        request_started_at = getattr(g, "request_started_at", None)
+        if request_started_at is not None:
+            total_duration_ms = round((time.perf_counter() - request_started_at) * 1000, 2)
+            self.app.logger.info('Request total timing: %.2f ms', total_duration_ms)
         self.app.logger.debug("======== HTTP Response END ==========")
 
         response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -420,7 +421,8 @@ class WebDoorOpener:
 
             username = request.form['username']
             password = request.form['password']
-            if username in self.users and check_password_hash(self.users.get(username), password):
+            configured_password = self.users.get(username)
+            if configured_password is not None and hmac.compare_digest(configured_password, password):
                 session.clear()
                 session.permanent = True
                 session['username'] = username
@@ -460,14 +462,24 @@ class WebDoorOpener:
             - If the provided TOTP code is invalid, the function sends a message indicating the invalid TOTP code and returns a bad request response with a message "Invalid TOTP. Retry again -> will notify owner.".
         """
         auth_user = self.__get_request_username()
+        handler_started_at = time.perf_counter()
+
+        json_started_at = time.perf_counter()
         data = request.get_json(silent=True)
+        json_duration_ms = round((time.perf_counter() - json_started_at) * 1000, 2)
         if not isinstance(data, dict):
             return self.__handle_bad_request(message="Request body must be valid JSON.")
         web_input_totp = data.get('totp')
         totp_config = pyotp.TOTP(s=self.config.otp_password, digits=self.config.otp_length,
                                  digest=self.config.hash_type, interval=self.config.otp_interval)
-        if totp_config.verify(web_input_totp):
+
+        totp_started_at = time.perf_counter()
+        is_totp_valid = totp_config.verify(web_input_totp)
+        totp_duration_ms = round((time.perf_counter() - totp_started_at) * 1000, 2)
+
+        if is_totp_valid:
             self.app.logger.info('User %s send TOTP %s is valid -> will open', auth_user, web_input_totp)
+            enqueue_started_at = time.perf_counter()
             self.door_open_task_queue.put(Open_Door_Task(open=True, chat_id=self.config.telegram_chat_nr))
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                      data_text=f"{auth_user} request open door"))
@@ -475,11 +487,22 @@ class WebDoorOpener:
             asyncio.run_coroutine_threadsafe(
                 self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
                 self.loop)
+            enqueue_duration_ms = round((time.perf_counter() - enqueue_started_at) * 1000, 2)
+            handler_duration_ms = round((time.perf_counter() - handler_started_at) * 1000, 2)
+            self.app.logger.info(
+                'Open timing: json=%.2f ms, totp=%.2f ms, enqueue=%.2f ms, handler_total=%.2f ms',
+                json_duration_ms, totp_duration_ms, enqueue_duration_ms, handler_duration_ms
+            )
             return self.__handle_success_response(status_text="success", status=201, message="TOTP is valid! Opening!")
         else:
             self.app.logger.warning('User %s send invalid TOTP %s', auth_user, web_input_totp)
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                      data_text=f"{auth_user} request TOTP code is invalid!"))
+            handler_duration_ms = round((time.perf_counter() - handler_started_at) * 1000, 2)
+            self.app.logger.info(
+                'Open timing: json=%.2f ms, totp=%.2f ms, handler_total=%.2f ms',
+                json_duration_ms, totp_duration_ms, handler_duration_ms
+            )
             return self.__handle_bad_request(message="Invalid TOTP. Retry again -> will notify owner.")
 
     def handle_exception(self, e):
