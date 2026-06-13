@@ -153,6 +153,25 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.assertIn(b'TOTP is valid! Opening!', response.data)
 
     @patch('pyotp.TOTP.verify', return_value=True)
+    def test_open_with_basic_auth_verifies_password_once_per_request(self, mock_verify):
+        self.web_door_opener.users = {'testuser': 'hashed-password'}
+
+        async def async_put(item):
+            pass
+
+        self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
+
+        auth_header = {
+            'Authorization': 'Basic ' + b64encode(b'testuser:testpassword').decode('utf-8')
+        }
+
+        with patch.object(self.web_door_opener, 'verify_password', return_value='testuser') as mock_verify_password:
+            response = self.client.post('/open', headers=auth_header, json={'totp': '123456'})
+
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(1, mock_verify_password.call_count)
+
+    @patch('pyotp.TOTP.verify', return_value=True)
     def test_open_with_web_session_missing_csrf_fails(self, mock_verify):
         hashed_password = generate_password_hash('testpassword')
         self.web_door_opener.users = {'testuser': hashed_password}
