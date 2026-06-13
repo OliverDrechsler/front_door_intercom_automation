@@ -171,10 +171,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           TAG: ${{ steps.next_tag.outputs.next_tag }}
         run: |
-          if gh release view "${TAG}" >/dev/null 2>&1; then
-            gh release edit "${TAG}" --title "Release ${TAG}" --notes-file release-body.md
+          if gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            gh release edit "${TAG}" --repo "${GITHUB_REPOSITORY}" --title "Release ${TAG}" --notes-file release-body.md
           else
-            gh release create "${TAG}" --title "Release ${TAG}" --notes-file release-body.md
+            gh release create "${TAG}" --repo "${GITHUB_REPOSITORY}" --title "Release ${TAG}" --notes-file release-body.md
           fi
 
       - name: Upload release assets
@@ -182,4 +182,4 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           TAG: ${{ steps.next_tag.outputs.next_tag }}
         run: |
-          gh release upload "${TAG}" release-artifacts/*.zip --clobber
+          gh release upload "${TAG}" release-artifacts/*.zip --repo "${GITHUB_REPOSITORY}" --clobber
