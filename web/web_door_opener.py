@@ -15,7 +15,6 @@ import pyotp
 from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for, session, g
 from werkzeug.exceptions import HTTPException
 from werkzeug.exceptions import NotFound
-from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.serving import make_server
 
 from config import config_util
@@ -48,32 +47,6 @@ class WebDoorOpener:
             g.auth_user = auth_user
             return f(self, *args, **kwargs)
         return decorator
-
-    @staticmethod
-    def create_password_hash(input):
-        """
-        Generates a password hash using the `generate_password_hash` function.
-
-        Parameters:
-            input (str): The password to be hashed.
-
-        Returns:
-            str: The hashed password.
-        """
-        return generate_password_hash(input)
-
-    def transform_values(self, func):
-        """
-        Transforms the values of the `web_user_dict` dictionary in the `config` object
-        using the provided `func` function.
-
-        Args:
-            func (function): The function to apply to each value in the dictionary.
-
-        Returns:
-            dict: A new dictionary with the transformed values.
-        """
-        return {k: func(v) for k, v in self.config.web_user_dict.items()}
 
     def __init__(self, shutdown_event: threading.Event, config: config_util.Configuration, loop,
                  message_task_queue: queue.Queue, camera_task_queue_async: asyncio.Queue,
@@ -119,7 +92,7 @@ class WebDoorOpener:
         self.str_log_level = logging.getLevelName(logger.getEffectiveLevel())
         self.log_level = logger.getEffectiveLevel()
 
-        self.users = self.transform_values(self.create_password_hash)
+        self.users = dict(self.config.web_user_dict)
         self.__setup_logging()
         self.__setup_routes()
         self.__setup_error_handlers()
@@ -186,7 +159,8 @@ class WebDoorOpener:
         Returns:
             str or None: The authenticated username if successful, None otherwise.
         """
-        if username in self.users and check_password_hash(self.users.get(username), password):
+        configured_password = self.users.get(username)
+        if configured_password is not None and hmac.compare_digest(configured_password, password):
             self.app.logger.debug("Authentication: Success: User %s authenticated", username)
             return username
         self.app.logger.info("Authentication: Failed: User: %s - user or password wrong", username)
@@ -447,7 +421,8 @@ class WebDoorOpener:
 
             username = request.form['username']
             password = request.form['password']
-            if username in self.users and check_password_hash(self.users.get(username), password):
+            configured_password = self.users.get(username)
+            if configured_password is not None and hmac.compare_digest(configured_password, password):
                 session.clear()
                 session.permanent = True
                 session['username'] = username

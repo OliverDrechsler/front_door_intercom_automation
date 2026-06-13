@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from werkzeug.security import generate_password_hash, check_password_hash
 from base64 import b64encode
 from web.web_door_opener import WebDoorOpener
 import threading
@@ -62,14 +61,8 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         with self.client.session_transaction() as session:
             return session['csrf_token']
 
-    def test_transform_values(self):
-        result = self.web_door_opener.transform_values(self.web_door_opener.create_password_hash)
-        self.assertIn('testuser', result)
-        self.assertTrue(check_password_hash(result['testuser'], 'testpassword'))
-
     def test_verify_password(self):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         self.assertTrue(self.web_door_opener.verify_password('testuser', 'testpassword'))
         self.assertFalse(self.web_door_opener.verify_password('testuser', 'wrongpassword'))
 
@@ -80,8 +73,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.assertIn(b'Login', response.data)
 
     def test_login_post_success(self):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         csrf_token = self._get_csrf_token()
         response = self.client.post('/login', data={
             'username': 'testuser',
@@ -110,8 +102,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
 
     @patch('pyotp.TOTP.verify', return_value=True)
     def test_open_success_with_web_session(self, mock_verify):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         self.web_door_opener.browsers = ["werkzeug"]
         
         # Mock the async queue put method to return a coroutine
@@ -136,8 +127,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
 
     @patch('pyotp.TOTP.verify', return_value=True)
     def test_open_success_with_basic_auth(self, mock_verify):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         self.web_door_opener.browsers = ["api_call"]
         
         # Mock the async queue put method to return a coroutine
@@ -173,8 +163,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
 
     @patch('pyotp.TOTP.verify', return_value=True)
     def test_open_with_web_session_missing_csrf_fails(self, mock_verify):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
 
         csrf_token = self._get_csrf_token()
         self.client.post('/login', data={
@@ -188,8 +177,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
 
     @patch('pyotp.TOTP.verify', return_value=False)
     def test_open_failure(self, mock_verify):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         self.web_door_opener.browsers = ["api_call"]
         auth_header = {
             'Authorization': 'Basic ' + b64encode(b'testuser:testpassword').decode('utf-8')
@@ -199,8 +187,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.assertIn(b'Invalid TOTP. Retry again -> will notify owner.', response.data)
 
     def test_open_rejects_invalid_json(self):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         auth_header = {
             'Authorization': 'Basic ' + b64encode(b'testuser:testpassword').decode('utf-8')
         }
@@ -209,8 +196,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.assertIn(b'Request body must be valid JSON.', response.data)
 
     def test_handle_not_found(self):
-        hashed_password = generate_password_hash('testpassword')
-        self.web_door_opener.users = {'testuser': hashed_password}
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         csrf_token = self._get_csrf_token()
         self.client.post('/login', data={
             'username': 'testuser',
