@@ -1,59 +1,66 @@
-# Setup OTP
+# TOTP Setup
 
-To store a master password for *totp* *time pased one time password* it must be encoded with base32 as a hash.
-You can run the the cli script `encrypt_decrypt_password_with_base32.py` in `tools` diretory.
-Command examples see below.  
-Than you get a base32 hashed password and now have to store this password in the `config.yaml` under section `otp:` `password:`
+FDIA uses a Base32-encoded secret to generate time-based one-time passwords (TOTP). This secret must be stored in the `otp.password` field in `config.yaml`.
 
-This password is you supre secure password for the time based one time password generation.  
-For the TOTP genenration it's required that you specify some more config settings in `config.yaml`.  
-TOTP section in `config.yaml` section
-```
+Use the helper script `tools/encrypt_decrypt_password_with_base32.py` to encode your secret before storing it.
+
+Example `otp` section:
+
+```yaml
 otp:
   password: "KRSXG5CQIASCIVZQOJCA===="
   length: 6
   interval: 30
   hash_type: sha256
 ```
-- The `password` is your generated base32 hashed password
-- The `length` is the length of the one time password code.  
-  By default mostly used is 6 but it recommended to use a higher value upt to 10.
-- The `interval`is the time interval how long the password is valid for your input / sending to app.  
-  By default mostly used in the internet is 30 (seconds).
-- The `hash_type` is the time based one time password hash algorythm to use.  
-  Most broadly used ist `sha256` (equal to sha2) but i recommend to use `sha512` which is equal to sha3.  
-  Do not use sha1!  
-  
-**It is important to remember this this seetings since these will be required to configure on your Mobile OTP / Authenticator App**
-The generated otp code will than send via telegram chat channel to `fdia` app to open the door.
 
+Field descriptions:
 
+- `password`: your Base32-encoded secret
+- `length`: the number of digits in the generated code; values up to 10 are supported
+- `interval`: the validity period of each TOTP code in seconds
+- `hash_type`: the hash algorithm used for TOTP generation
 
-## Script command options
+Recommendations:
 
-The script `tools/encrypt_decrypt_password_with_base32.py` has
-following command options:
-- `--encrypt <here password to encrypt>`
-- `--decrypt <here password to decrypt>`
+- Use at least 9 digits for stronger codes.
+- Use `sha512` if you want a stronger hash option.
+- Avoid `sha1` unless you need compatibility with older setups.
 
-### Example encrypt command:
-Command:
-```
+Important:
+
+- Keep these settings consistent between FDIA and your mobile OTP app.
+- FDIA will only accept codes that were generated with the same secret, hash, length, and interval.
+
+The generated code is typically sent to FDIA through the Telegram chat to open the door.
+
+## Script Options
+
+The helper script supports:
+
+- `--encrypt <password>`
+- `--decrypt <base32-secret>`
+
+### Example: Encrypt a Password
+
+```bash
 tools/encrypt_decrypt_password_with_base32.py --encrypt mySuperSecurePassW0Rd1
 ```
-Output:
-```
+
+Example output:
+
+```text
 NV4VG5LQMVZFGZLDOVZGKUDBONZVOMCSMQYQ====
 ```
 
-### Example decrypt command
-Command:
-```
+### Example: Decrypt a Secret
+
+```bash
 tools/encrypt_decrypt_password_with_base32.py --decrypt NV4VG5LQMVZFGZLDOVZGKUDBONZVOMCSMQYQ====
 ```
 
-Output:
-```
+Example output:
+
+```text
 mySuperSecurePassW0Rd1
 ```
-

@@ -1,20 +1,21 @@
-## Description 📋
+## Description
 
-Please include a summary of the changes made in this PR and provide any context necessary for the change.
-Fixes # (issues)
+Provide a clear summary of the changes in this pull request and include any relevant background or context.
 
-## Type of change 🤔
+Fixes #<issue-number>
 
-Please tick any that are relevant to this PR and remove any that aren't.
+## Type of Change
 
-- [ ] Bugfix (non breaking change which resolve an issue)
-- [ ] Feature (non breaking change which adds functionality)
-- [ ] Breaking Change (a change which would cause existing functionality to not work as expected)
-- [ ] Documentation (a change to documentation)
+Select all categories that apply and remove any that do not.
 
-## Submission checklist ✅
+- [ ] Bug fix: a non-breaking change that resolves an issue
+- [ ] Feature: a non-breaking change that adds functionality
+- [ ] Breaking change: a change that affects existing behavior or compatibility
+- [ ] Documentation: a change that updates or improves documentation
 
-- [ ] I have performed a self review of my changes
-- [ ] I have updated the documentation where relevant
-- [ ] My changes are well written and all ci is passing
-- [ ] I checked GitHub Action FDIa ci.yml run successful and added unit-tests
+## Submission Checklist
+
+- [ ] I performed a self-review of my changes
+- [ ] I updated the documentation where relevant
+- [ ] My changes are clear, maintainable, and all CI checks are passing
+- [ ] I verified that the GitHub Actions workflow passed and added or updated tests where appropriate

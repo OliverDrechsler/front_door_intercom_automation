@@ -1,7 +1,10 @@
-# Smart Saint Relais Jumper and circuit layout plan
+# SainSmart Relay Jumper and Wiring Layout
 
-![SaintSmart diagram](_static/saintsmart_wiring1.png)  
+The following diagrams show jumper positions and general wiring layouts for SainSmart relay boards.
 
-![SaintSmart 4 relay diagram](_static/saintsmart1_wiring2.png)  
+![SainSmart diagram](_static/saintsmart_wiring1.png)
+![SainSmart 4-relay diagram](_static/saintsmart1_wiring2.png)
 
-or see [wiring layout see at stackexchange](https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules)
+Additional reference:
+
+- [Relay module jumper explanation on Raspberry Pi Stack Exchange](https://raspberrypi.stackexchange.com/questions/39348/jumper-function-on-relay-modules)

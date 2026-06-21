@@ -1,49 +1,52 @@
-# Time based One Time Password  helper command line interface
+# TOTP Helper Command-Line Interface
 
-This script `tools/totp_helper_cli.py` is a cli helper tool to get  
-a one time password based on your provided config `config.yaml` file.  
-  
-It prints out the TOTP code or it can verify a given input totp code.  
+The script `tools/totp_helper_cli.py` is a small CLI utility that reads your `config.yaml` file and either generates or verifies a TOTP code.
 
-Script help:
-```
+## Help Output
+
+```bash
 tools/totp_helper_cli.py --help
+```
+
+Example:
+
+```text
 Usage: totp_helper_cli.py [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help  Show this message and exit.
 
 Commands:
-  get-otp     Generates an OTP based on the configuration.
-  verify-otp  Verifies an OTP based on the configuration.
+  get-otp     Generate an OTP based on the configuration.
+  verify-otp  Verify an OTP based on the configuration.
 ```
 
-## Get a TOTP code
+## Generate a TOTP Code
 
-Example command
-```
+```bash
 tools/totp_helper_cli.py get-otp
 ```
 
-Output
-```
+Example output:
+
+```text
 123456
 ```
 
+## Verify a TOTP Code
 
-## Verify a TOTP code
-
-Example command
-```
+```bash
 tools/totp_helper_cli.py verify-otp 123456
 ```
 
-Output
-```
+Example valid output:
+
+```text
 OTP is valid
 ```
-or 
-Output
-```
+
+Example invalid output:
+
+```text
 OTP is invalid
 ```

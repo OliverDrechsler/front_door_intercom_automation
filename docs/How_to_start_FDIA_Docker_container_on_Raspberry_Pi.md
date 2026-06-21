@@ -1,29 +1,12 @@
-# How to start FDIA Docker container on Raspberry Pi
+# How to Start the FDIA Docker Container on Raspberry Pi
 
-This document explains how to run the FDIA Docker container on a Raspberry Pi with GPIO access.
-
-- [How to start FDIA Docker container on Raspberry Pi](#how-to-start-fdia-docker-container-on-raspberry-pi)
-  - [Purpose](#purpose)
-  - [Prerequisites](#prerequisites)
-  - [Important GPIO requirement](#important-gpio-requirement)
-  - [Required container rights for GPIO access](#required-container-rights-for-gpio-access)
-  - [Prepare configuration files](#prepare-configuration-files)
-  - [Build the container locally](#build-the-container-locally)
-  - [Start the container from a local image](#start-the-container-from-a-local-image)
-  - [Start the container from GHCR](#start-the-container-from-ghcr)
-  - [Recommended volume mappings](#recommended-volume-mappings)
-  - [Optional fallback with /dev/mem](#optional-fallback-with-devmem)
-  - [Host permission notes](#host-permission-notes)
-  - [Container behavior](#container-behavior)
-  - [Logs](#logs)
-  - [Update the container](#update-the-container)
-  - [Troubleshooting](#troubleshooting)
-  - [Recommendation](#recommendation)
+This document explains how to run FDIA in Docker on a Raspberry Pi, including the GPIO access required for bell detection and door opener control.
 
 ## Purpose
 
-The FDIA application can access Raspberry Pi GPIO pins for:
-- door bell detection
+FDIA can access Raspberry Pi GPIO pins for:
+
+- doorbell detection
 - door opener relay control
 
 Because Docker containers are isolated from the host system by default, GPIO access must be explicitly enabled when the container is started.
@@ -31,21 +14,22 @@ Because Docker containers are isolated from the host system by default, GPIO acc
 ## Prerequisites
 
 Required:
+
 - Raspberry Pi
 - Raspberry Pi OS or another Linux distribution running on the Pi
 - Docker installed
 - a valid `config.yaml`
-- optional `blink_config.json` if Blink camera support is used
+- optional `blink_config.json` if Blink support is enabled
 
-Check Docker:
+Check the Docker installation:
 
 ```bash
 docker --version
 ```
 
-## Important GPIO requirement
+## Important GPIO Requirement
 
-The container needs access to the Raspberry Pi GPIO device.
+The container must be given access to the Raspberry Pi GPIO device.
 
 Preferred device mapping:
 
@@ -59,32 +43,36 @@ Optional fallback for older systems:
 --device /dev/mem:/dev/mem
 ```
 
-If these devices are not provided, the container entrypoint stops with an error message.
+If neither device is provided, the container entrypoint stops with an error.
 
-## Required container rights for GPIO access
+## Required Container Rights for GPIO Access
 
-For this project, the container does not need full privileged mode.
+The container does not need full privileged mode.
 
-Minimum required rights:
+Minimum requirements:
+
 - device mapping for `/dev/gpiomem`
-- a container user that can read and write that device
+- a process user that can read and write the mapped device
 
 Recommended setup:
-- run the container with `--device /dev/gpiomem:/dev/gpiomem`
+
+- map `/dev/gpiomem`
 - run the process as `root` inside the container
 
-The current image starts as `root` by default. That is the simplest and most robust option for `RPi.GPIO`.
+The current image runs as `root` by default, which is the simplest and most reliable option for `RPi.GPIO`.
 
-Not required in the normal case:
+Usually not required:
+
 - `--privileged`
 - `--cap-add SYS_RAWIO`
 - `--cap-add ALL`
-- host network mode only because of GPIO
+- host network mode only for GPIO access
 
-Optional only for special legacy setups:
+Legacy fallback only if needed:
+
 - `--device /dev/mem:/dev/mem`
 
-If you intentionally run the container as a non-root user, that user must have access to the same numeric group as the mapped GPIO device on the host.
+If you intentionally run the container as a non-root user, that user must be able to access the GPIO device group from the host.
 
 Check the device owner and group on the Raspberry Pi host:
 
@@ -107,9 +95,9 @@ docker run -d \
   ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 ```
 
-If you do not have a specific reason to run as non-root, use the default root user.
+If you do not need a non-root container, use the default root user.
 
-## Prepare configuration files
+## Prepare Configuration Files
 
 Create your configuration before starting the container:
 
@@ -117,11 +105,11 @@ Create your configuration before starting the container:
 cp config_template.yaml config.yaml
 ```
 
-Then edit `config.yaml` with your real settings.
+Then update `config.yaml` with your real settings.
 
-If Blink is used, also provide your `blink_config.json`.
+If Blink support is enabled, also provide `blink_config.json`.
 
-## Build the container locally
+## Build the Container Locally
 
 From the project root:
 
@@ -129,7 +117,7 @@ From the project root:
 docker build -t fdia:local .
 ```
 
-## Start the container from a local image
+## Start the Container from a Local Image
 
 Example:
 
@@ -144,9 +132,9 @@ docker run -d \
   fdia:local
 ```
 
-## Start the container from GHCR
+## Start the Container from GHCR
 
-If the image was published by GitHub Actions, use the package from GHCR.
+If the image is published by GitHub Actions, you can pull and run it from GitHub Container Registry.
 
 Example:
 
@@ -163,9 +151,10 @@ docker run -d \
 
 If you do not use Blink, remove the `blink_config.json` volume mapping.
 
-## Recommended volume mappings
+## Recommended Volume Mappings
 
 Typical mappings:
+
 - `config.yaml` to `/app/config.yaml`
 - `blink_config.json` to `/app/blink_config.json`
 
@@ -181,9 +170,9 @@ docker run -d \
   ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 ```
 
-## Optional fallback with /dev/mem
+## Optional Fallback with `/dev/mem`
 
-Some environments may still require `/dev/mem`.
+Some older environments may still require `/dev/mem`.
 
 Example:
 
@@ -198,7 +187,7 @@ docker run -d \
   ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 ```
 
-## Host permission notes
+## Host Permission Notes
 
 The host system must allow GPIO access.
 
@@ -216,123 +205,4 @@ If needed, add your host user to the `gpio` group:
 sudo usermod -aG gpio "$USER"
 ```
 
-Then log out and log in again.
-
-Important distinction:
-- the host user needs permission to talk to Docker
-- the container process needs permission for `/dev/gpiomem`
-
-With the default image, the container runs as `root`, so the main required runtime right is the `--device` mapping.
-
-## Container behavior
-
-The container starts `python fdia.py`.
-
-Before the application starts, the entrypoint checks whether GPIO device access is available.
-
-Default behavior:
-- GPIO access is required
-- startup fails if no GPIO device is available
-
-Optional override:
-
-```bash
--e FDIA_REQUIRE_GPIO=0
-```
-
-This is only useful for testing without real GPIO hardware.
-
-## Logs
-
-Show logs:
-
-```bash
-docker logs -f fdia
-```
-
-Stop container:
-
-```bash
-docker stop fdia
-```
-
-Remove container:
-
-```bash
-docker rm -f fdia
-```
-
-## Update the container
-
-For a locally built image:
-
-```bash
-docker build -t fdia:local .
-docker rm -f fdia
-docker run -d \
-  --name fdia \
-  --restart unless-stopped \
-  --device /dev/gpiomem:/dev/gpiomem \
-  -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
-  -e TZ=Europe/Berlin \
-  fdia:local
-```
-
-For an image from GHCR:
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-docker rm -f fdia
-docker run -d \
-  --name fdia \
-  --restart unless-stopped \
-  --device /dev/gpiomem:/dev/gpiomem \
-  -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
-  -e TZ=Europe/Berlin \
-  ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-## Troubleshooting
-
-### Error: GPIO device access is not available
-
-Cause:
-- `--device /dev/gpiomem:/dev/gpiomem` was not passed
-
-Fix:
-- start the container again with the GPIO device mapping
-
-### Error: GPIO device exists but is not readable and writable inside the container
-
-Cause:
-- the container was started as a non-root user without the matching GPIO group
-
-Fix:
-- run the container with the default root user
-- or add the host GPIO group with `--group-add "$(stat -c '%g' /dev/gpiomem)"`
-
-### Container starts but door opener or bell detection does not work
-
-Possible causes:
-- wrong GPIO pin numbers in `config.yaml`
-- hardware wiring issue
-- host permissions are missing
-- application is configured with `run_on_raspberry: false`
-
-### Blink config file not found
-
-Cause:
-- `blink_config.json` is not mounted into `/app`
-
-Fix:
-- add the volume mapping or disable Blink usage in the config
-
-## Recommendation
-
-For productive Raspberry Pi usage:
-- use `--restart unless-stopped`
-- mount `config.yaml` from the host
-- pass `/dev/gpiomem`
-- keep the default container user `root` unless you have a specific hardening requirement
-- only add `/dev/mem` if your setup actually needs it
-- do not use `--privileged` unless you have a separate reason unrelated to FDIA GPIO access
+Then log out and log in again so the group change takes effect.
