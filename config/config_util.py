@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import json
 import logging
 import os
 import sys
@@ -36,9 +37,13 @@ class Configuration:
 
         self.bot: telebot.TeleBot = None
 
+        self.admin_users: list[str] = self.config.get("general", {}).get("admin_users", [])
         self.telegram_token: str = self.config["telegram"]["token"]
         self.telegram_chat_nr = self.config["telegram"]["chat_number"]
-        self.allowed_user_ids = self.config["telegram"]["allowed_user_ids"]
+        self.allowed_user_ids = self.__get_allowed_user_dict()
+        self.telegram_user_state_file: str = self.__resolve_runtime_path(
+            self.config.get("telegram", {}).get("user_state_file", "telegram_user_state.json")
+        )
 
         self.otp_password: str = self.config["otp"]["password"]
         self.otp_length: int = self.config["otp"]["length"]
@@ -91,6 +96,43 @@ class Configuration:
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
         self.flask_session_cookie_secure: bool = self.config["web"].get("session_cookie_secure", False)
         self.flask_trusted_reverse_proxies: list[str] = self.config["web"].get("trusted_reverse_proxies", [])
+
+    def __get_allowed_user_dict(self) -> dict[str, str]:
+        """Get configured telegram users as username to user-id mapping."""
+        allowed_user_ids = self.config["telegram"].get("allowed_user_ids", {})
+        if not isinstance(allowed_user_ids, dict):
+            raise YamlReadError("telegram.allowed_user_ids must be a dictionary of username to user id")
+        return {str(username): str(user_id) for username, user_id in allowed_user_ids.items()}
+
+    def get_telegram_user_state(self) -> dict[str, list[str]]:
+        """
+        Load enabled/disabled telegram users from the runtime json file.
+        Missing files are initialized with all configured users enabled.
+        """
+        default_state = {"enabled": list(self.allowed_user_ids.keys()), "disabled": []}
+        if not os.path.exists(self.telegram_user_state_file):
+            self.write_telegram_user_state(default_state)
+            return default_state
+
+        with open(self.telegram_user_state_file, "r", encoding="utf-8") as json_file:
+            state = json.load(json_file)
+
+        enabled = [str(username) for username in state.get("enabled", []) if str(username) in self.allowed_user_ids]
+        disabled = [str(username) for username in state.get("disabled", []) if str(username) in self.allowed_user_ids]
+        enabled = [username for username in enabled if username not in disabled]
+        normalized_state = {"enabled": enabled, "disabled": disabled}
+        if normalized_state != state:
+            self.write_telegram_user_state(normalized_state)
+        return normalized_state
+
+    def write_telegram_user_state(self, state: dict[str, list[str]]) -> None:
+        """Persist enabled/disabled telegram users into the runtime json file."""
+        normalized_state = {
+            "enabled": [str(username) for username in state.get("enabled", [])],
+            "disabled": [str(username) for username in state.get("disabled", [])],
+        }
+        with open(self.telegram_user_state_file, "w", encoding="utf-8") as json_file:
+            json.dump(normalized_state, json_file, indent=4)
 
     def __get_web_user_dict(self) -> dict:
         """Get user dict from list of yaml telegram.list

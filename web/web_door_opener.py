@@ -159,19 +159,31 @@ class WebDoorOpener:
         Returns:
             str or None: The authenticated username if successful, None otherwise.
         """
-        configured_password = self.users.get(username)
-        if configured_password is not None and hmac.compare_digest(configured_password, password):
+        if self.__has_valid_web_credentials(username, password) and self.__is_web_user_enabled(username):
             self.app.logger.debug("Authentication: Success: User %s authenticated", username)
             return username
         self.app.logger.info("Authentication: Failed: User: %s - user or password wrong", username)
         self.app.logger.debug("Authentication: Failed: User %s used password %s", username, password)
         return None
 
+    def __has_valid_web_credentials(self, username: str, password: str) -> bool:
+        """
+        Verify web credentials using constant-time password comparison.
+        """
+        configured_password = self.users.get(username)
+        return configured_password is not None and hmac.compare_digest(configured_password, password)
+
     def __get_authenticated_session_user(self) -> str | None:
         """
         Returns the session user when the browser UI is authenticated.
         """
-        return session.get('username')
+        username = session.get('username')
+        if username is None:
+            return None
+        if self.__is_web_user_enabled(username):
+            return username
+        session.clear()
+        return None
 
     def __get_authenticated_basic_user(self) -> str | None:
         """
@@ -202,6 +214,20 @@ class WebDoorOpener:
         g.auth_user = session_user
         g.auth_via_basic = False
         return session_user
+
+    def __is_web_user_enabled(self, username: str) -> bool:
+        """
+        Check whether a web user is currently enabled via the shared user state.
+        """
+        if username not in self.config.web_user_dict:
+            return False
+
+        state = self.config.get_telegram_user_state()
+        if username in state.get("disabled", []):
+            return False
+        if username in state.get("enabled", []):
+            return True
+        return False
 
     @staticmethod
     def __get_or_create_csrf_token() -> str:
@@ -421,8 +447,7 @@ class WebDoorOpener:
 
             username = request.form['username']
             password = request.form['password']
-            configured_password = self.users.get(username)
-            if configured_password is not None and hmac.compare_digest(configured_password, password):
+            if self.__has_valid_web_credentials(username, password) and self.__is_web_user_enabled(username):
                 session.clear()
                 session.permanent = True
                 session['username'] = username

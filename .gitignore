@@ -20,6 +20,7 @@ coverage.xml
 htmlcov/
 licenses.sh
 blink_config.json
+telegram_user_state.json
 jpynb/*
 .idea/*
 venv/*

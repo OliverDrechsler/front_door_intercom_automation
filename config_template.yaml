@@ -1,9 +1,13 @@
+general:
+  admin_users:
+    - "admin_user"
+
 telegram:
   token: "telegram_bot_token_code_here"    # telegram bot token password
   chat_number: "-4321"                     # telegram chat channel 
-  allowed_user_ids:                        # list of allowed telegram user id to act on
-    - "123456789"
-    - "987654321"
+  allowed_user_ids:                        # dict of allowed telegram usernames to user ids
+    user1: "123456789"
+    user2: "987654321"
 
 otp:
   password: "KRSXG5CQIASCIVZQOJCA===="  # base32 encoded password here password: "Base32CodePasswordHere"

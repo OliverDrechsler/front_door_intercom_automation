@@ -34,10 +34,14 @@ class ReceivingMessage():
         blink_list: list[str] = ["blink", "Blink", "BLINK"]
         picam_list: list[str] = ["picam", "Picam", "PICAM", "PiCam"]
         blink_auth_list: list[str] = ["blink_auth", "Blink_auth", "Blink_Auth", "BLINK_AUTH"]
+        enable_list: list[str] = ["enable", "Enable", "ENABLE"]
+        disable_list: list[str] = ["disable", "Disable", "DISABLE"]
         self.foto_command = self.bot.message_handler(commands=foto_list)(self.take_foto)
         self.blink_command = self.bot.message_handler(commands=blink_list)(self.take_blink_foto)
         self.picam_command = self.bot.message_handler(commands=picam_list)(self.take_picam_foto)
         self.blink_auth_command = self.bot.message_handler(commands=blink_auth_list)(self.register_bink_authentication)
+        self.enable_command = self.bot.message_handler(commands=enable_list)(self.enable_user)
+        self.disable_command = self.bot.message_handler(commands=disable_list)(self.disable_user)
         self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(
             self.receive_any_msg_text)
 
@@ -155,6 +159,14 @@ class ReceivingMessage():
             # start new thread for taking a foto
             self.__rcv_blink_auth(message)
 
+    def enable_user(self, message: telebot.types.Message) -> None:
+        """Enable a configured telegram user via /enable <username>."""
+        self.__set_user_state(message=message, enabled=True)
+
+    def disable_user(self, message: telebot.types.Message) -> None:
+        """Disable a configured telegram user via /disable <username>."""
+        self.__set_user_state(message=message, enabled=False)
+
     def __rcv_blink_auth(self, message: telebot.types.Message) -> None:
         self.logger.debug(f"received blink token with message {message}")
         match = re.search(r'^/blink_auth (\d{6})$', message.text, re.IGNORECASE)
@@ -187,6 +199,44 @@ class ReceivingMessage():
         except Exception as err:
             self.logger.error("Error scheduling camera task: %s", err)
 
+    def __set_user_state(self, message: telebot.types.Message, enabled: bool) -> None:
+        """
+        Update enabled/disabled status for a configured telegram username.
+        Only configured admins in the configured chat may use this command.
+        """
+        if not self.__is_admin(message=message):
+            return
+
+        match = re.search(r"^/(enable|disable)\s+([A-Za-z0-9_]+)$", message.text or "", re.IGNORECASE)
+        if not match:
+            command = "enable" if enabled else "disable"
+            self.bot.reply_to(message=message, text=f"Usage: /{command} <username>")
+            return
+
+        username = match.group(2)
+        if username not in self.config.allowed_user_ids:
+            return
+
+        state = self.config.get_telegram_user_state()
+        enabled_users = [user for user in state["enabled"] if user != username]
+        disabled_users = [user for user in state["disabled"] if user != username]
+
+        if enabled:
+            enabled_users.append(username)
+        else:
+            disabled_users.append(username)
+
+        new_state = {"enabled": enabled_users, "disabled": disabled_users}
+        self.config.write_telegram_user_state(new_state)
+        self.bot.reply_to(message=message, text=f"{username} {'enabled' if enabled else 'disabled'}")
+
+    def __is_admin(self, message: telebot.types.Message) -> bool:
+        """Return True when the telegram user may manage enable/disable commands."""
+        if str(message.chat.id) != str(self.config.telegram_chat_nr):
+            return False
+        username = self.__get_message_username(message=message)
+        return username in self.config.admin_users
+
     def __get_allowed(self, message: telebot.types.Message) -> bool:
         """
         Checks if the message chat ID matches the configured Telegram chat number and calls get_allowed_user
@@ -212,10 +262,29 @@ class ReceivingMessage():
         Returns:
             bool: True if the user is allowed, False otherwise.
         """
-        allowed_user_ids = {str(user_id) for user_id in self.config.allowed_user_ids}
-        if str(message.from_user.id) in allowed_user_ids:
+        username = self.__get_username_for_user_id(message=message)
+        if username is None:
+            return False
+
+        state = self.config.get_telegram_user_state()
+        if username in state.get("disabled", []):
+            return False
+        if username in state.get("enabled", []):
             return True
         return False
+
+    def __get_username_for_user_id(self, message: telebot.types.Message) -> str | None:
+        """Return configured username for the telegram user id in the message."""
+        message_user_id = str(message.from_user.id)
+        for username, user_id in self.config.allowed_user_ids.items():
+            if str(user_id) == message_user_id:
+                return username
+        return None
+
+    def __get_message_username(self, message: telebot.types.Message) -> str:
+        """Return telegram username without leading @."""
+        username = getattr(message.from_user, "username", "") or ""
+        return username.removeprefix("@")
 
     def __validate_msg_text_has_code(self, message: telebot.types.Message) -> bool:
         """

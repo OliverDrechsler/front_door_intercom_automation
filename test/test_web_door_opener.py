@@ -1,4 +1,5 @@
 import unittest
+import hmac
 from unittest.mock import patch, MagicMock
 from base64 import b64encode
 from web.web_door_opener import WebDoorOpener
@@ -13,6 +14,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         cls.mock_config = MagicMock()
         cls.mock_config.flask_secret_key = 'test_secret_key'
         cls.mock_config.web_user_dict = {'testuser': 'testpassword'}
+        cls.mock_config.get_telegram_user_state = MagicMock(return_value={"enabled": ["testuser"], "disabled": ["disableduser"]})
         cls.mock_config.otp_password = 'base32secret3232'
         cls.mock_config.otp_length = 6
         cls.mock_config.hash_type = 'sha1'
@@ -55,6 +57,12 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         # Clear session data for each test
         # Create a fresh test client for each test to isolate sessions
         self.client = self.web_door_opener.app.test_client()
+        self.web_door_opener.users = {'testuser': 'testpassword'}
+        self.web_door_opener.config.web_user_dict = {'testuser': 'testpassword', 'disableduser': 'testpassword'}
+        self.web_door_opener.config.get_telegram_user_state.return_value = {
+            "enabled": ["testuser"],
+            "disabled": ["disableduser"]
+        }
 
     def _get_csrf_token(self):
         self.client.get('/login')
@@ -65,6 +73,12 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.web_door_opener.users = {'testuser': 'testpassword'}
         self.assertTrue(self.web_door_opener.verify_password('testuser', 'testpassword'))
         self.assertFalse(self.web_door_opener.verify_password('testuser', 'wrongpassword'))
+
+    def test_verify_password_rejects_disabled_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.web_user_dict = {'disableduser': 'testpassword'}
+
+        self.assertFalse(self.web_door_opener.verify_password('disableduser', 'testpassword'))
 
     def test_login_get(self):
         self.web_door_opener.browsers = ["werkzeug"]
@@ -82,11 +96,36 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         })
         self.assertEqual(302, response.status_code)  # Redirects to index
 
+    def test_login_post_uses_compare_digest(self):
+        csrf_token = self._get_csrf_token()
+
+        with patch('web.web_door_opener.hmac.compare_digest', wraps=hmac.compare_digest) as mock_compare_digest:
+            response = self.client.post('/login', data={
+                'username': 'testuser',
+                'password': 'testpassword',
+                'csrf_token': csrf_token,
+            })
+
+        self.assertEqual(302, response.status_code)
+        mock_compare_digest.assert_called()
+
     def test_login_post_failure(self):
         csrf_token = self._get_csrf_token()
         response = self.client.post('/login', data={
             'username': 'testuser',
             'password': 'wrongpassword',
+            'csrf_token': csrf_token,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Invalid credentials, please try again.', response.data)
+
+    def test_login_post_failure_for_disabled_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.web_user_dict = {'disableduser': 'testpassword'}
+        csrf_token = self._get_csrf_token()
+        response = self.client.post('/login', data={
+            'username': 'disableduser',
+            'password': 'testpassword',
             'csrf_token': csrf_token,
         })
         self.assertEqual(response.status_code, 200)
@@ -220,6 +259,30 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         })
         self.assertEqual(401, response.status_code)
         self.assertIn(b'Unauthorized', response.data)
+
+    def test_open_with_basic_auth_rejects_disabled_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.web_user_dict = {'disableduser': 'testpassword'}
+        response = self.client.post('/open', headers={
+            'Authorization': 'Basic ' + b64encode(b'disableduser:testpassword').decode('utf-8')
+        })
+        self.assertEqual(401, response.status_code)
+        self.assertIn(b'Unauthorized', response.data)
+
+    def test_session_user_becomes_unauthorized_when_disabled(self):
+        self.web_door_opener.users = {'testuser': 'testpassword'}
+        csrf_token = self._get_csrf_token()
+        self.client.post('/login', data={
+            'username': 'testuser',
+            'password': 'testpassword',
+            'csrf_token': csrf_token,
+        })
+        self.web_door_opener.config.get_telegram_user_state.return_value = {"enabled": [], "disabled": ["testuser"]}
+
+        response = self.client.get('/')
+
+        self.assertEqual(302, response.status_code)
+        self.assertIn('/login', response.location)
 
     def test_login_response_contains_security_headers(self):
         response = self.client.get('/login')
