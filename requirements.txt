@@ -13,7 +13,7 @@ zipp>=3.23.0
 pyotp==2.9.0
 pyTelegramBotAPI==4.34.0
 asyncio==4.0.0
-aiohttp==3.14.0
+aiohttp==3.14.1
 click==8.4.1
 Pillow==12.2.0
 
