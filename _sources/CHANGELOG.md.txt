@@ -1,5 +1,49 @@
 # ChangeLog
 
+# 2.0.9 - Release 2.0.9 (2026-06-13)
+
+### Changes
+- test (#255)
+
+**Version bump type:** default patch
+
+### Docker Image
+GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
+
+```bash
+docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+```
+
+### CI Build
+Artifacts were produced by CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27478072313
+
+The attached release assets are the zipped CI artifacts for all successful target builds.
+
+
+
+# 2.0.8 - Release 2.0.8 (2026-06-13)
+
+### Changes
+- fix gh release
+
+**Version bump type:** patch
+
+### Docker Image
+GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
+
+```bash
+docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+```
+
+### CI Build
+Artifacts were produced by CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27477788626
+
+The attached release assets are the zipped CI artifacts for all successful target builds.
+
+
+
 # 2.0.6 - Release 2.0.6 (2026-06-13)
 
 ### Changes
