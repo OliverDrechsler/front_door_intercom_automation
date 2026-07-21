@@ -1,5 +1,27 @@
 # ChangeLog
 
+# 2.0.10 - Release 2.0.10 (2026-06-30)
+
+### Changes
+- Update blinkpy version to 0.25.7 (#256)
+
+**Version bump type:** default patch
+
+### Docker Image
+GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
+
+```bash
+docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+```
+
+### CI Build
+Artifacts were produced by CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/28470190776
+
+The attached release assets are the zipped CI artifacts for all successful target builds.
+
+
+
 # 2.0.9 - Release 2.0.9 (2026-06-13)
 
 ### Changes
