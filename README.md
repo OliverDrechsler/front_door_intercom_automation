@@ -44,11 +44,11 @@ Opening relais board can be buyed and must just be wired.
     - [Requirements](#requirements)
     - [Code tree structure](#code-tree-structure)
     - [Installation](#installation)
+    - [Docker on Raspberry Pi](#docker-on-raspberry-pi)
     - [Helper tools](#helper-tools)
       - [Encrypt and decrypt a password with base32 for totp](#encrypt-and-decrypt-a-password-with-base32-for-totp)
       - [get a OTP password or verify a OTP via cli](#get-a-otp-password-or-verify-a-otp-via-cli)
     - [System service setup](#system-service-setup)
-    - [Docker on Raspberry Pi](#docker-on-raspberry-pi)
     - [Configuration - config files](#configuration---config-files)
     - [config.yaml - config\_template.yaml](#configyaml---config_templateyaml)
     - [blink\_config.json](#blink_configjson)
@@ -110,6 +110,7 @@ The project offers the following functionality:
 - Multi camera type support - Blink camera or PiCam_API camera photo snapshot and sending on Telegram message request.
 - Automatic camera selection between Blink or PiCam_APi possible.
 - Fallback camera selection if one fails.
+- Admin-controlled activation and deactivation of configured Telegram users via chat commands.
 - Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) website to open the front door with the browser using a time-based one-time password.
 - Internal Flask REST-API to open the front door (via time-based one-time password).
 - Possibility to enable / disable Flask Web-UI / REST-API - run without web interface
@@ -367,6 +368,16 @@ Received Telegram chat channel message command to action
 - `/PiCam` = request to take a PiCam_API foto and send it in the telegram chat channel
 - `/Blink_auth <here your 6 digit security code>` = request to do a blink 2FA / MFA authentication and store blink config  
 - `<time based one time password code>` = validate totp, take a foto send it and open door.
+
+If you configure `general.admin_users`, those Telegram usernames can manage user activation for all configured
+Telegram users:
+
+- `/enable <username>` = activate a configured Telegram user
+- `/disable <username>` = deactivate a configured Telegram user
+
+The enabled/disabled state is stored in a runtime JSON file, defaulting to `telegram_user_state.json`.
+You can override the file name or path with `telegram.user_state_file` in the config.
+The same user state is also used for the Web UI and REST-API login, so disabled users lose access there as well.
 
 
 
