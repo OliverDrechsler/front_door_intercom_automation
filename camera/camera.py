@@ -65,11 +65,11 @@ class Camera:
         self.logger.debug(msg="initialize camera class instance")
         self.running: bool = True
         self.restart: bool = False
-        
+
         self.trace = aiohttp.TraceConfig()
-        self.trace.on_request_start.append(on_request_start)
-        self.trace.on_request_end.append(on_request_end)
-        self.session = aiohttp.ClientSession(trace_configs=[trace])
+        self.trace.on_request_start.append(self.on_request_start)
+        self.trace.on_request_end.append(self.on_request_end)
+        self.session = aiohttp.ClientSession(self.trace_configs=[trace])
         # self.session: aiohttp.ClientSession | None = None
 
         self.blink: Blink | None = None
