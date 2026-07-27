@@ -77,14 +77,14 @@ class Camera:
 
 
     async def on_request_start(session, trace_config_ctx, params):
-        log.debug(">>> %s %s", params.method, params.url)
-        log.debug("Headers: %s", params.headers)
+        self.logger.debug(">>> %s %s", params.method, params.url)
+        self.logger.debug("Headers: %s", params.headers)
 
     async def on_request_end(session, trace_config_ctx, params):
-        log.debug("<<< %s %s", params.response.status, params.response.reason)
-        log.debug("Headers: %s", params.response.headers)
+        self.logger.debug("<<< %s %s", params.response.status, params.response.reason)
+        self.logger.debug("Headers: %s", params.response.headers)
         body = await params.response.text()
-        log.debug("Body: %s", body)
+        self.logger.debug("Body: %s", body)
 
     def __create_blink_session(self) -> aiohttp.ClientSession:
         """
