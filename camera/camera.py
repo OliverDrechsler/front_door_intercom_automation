@@ -65,9 +65,26 @@ class Camera:
         self.logger.debug(msg="initialize camera class instance")
         self.running: bool = True
         self.restart: bool = False
-        self.session: aiohttp.ClientSession | None = None
+        
+        self.trace = aiohttp.TraceConfig()
+        self.trace.on_request_start.append(on_request_start)
+        self.trace.on_request_end.append(on_request_end)
+        self.session = aiohttp.ClientSession(trace_configs=[trace])
+        # self.session: aiohttp.ClientSession | None = None
+
         self.blink: Blink | None = None
         self.picam_photo_id: str | None = None
+
+
+    async def on_request_start(session, trace_config_ctx, params):
+        log.debug(">>> %s %s", params.method, params.url)
+        log.debug("Headers: %s", params.headers)
+
+    async def on_request_end(session, trace_config_ctx, params):
+        log.debug("<<< %s %s", params.response.status, params.response.reason)
+        log.debug("Headers: %s", params.response.headers)
+        body = await params.response.text()
+        log.debug("Body: %s", body)
 
     def __create_blink_session(self) -> aiohttp.ClientSession:
         """
