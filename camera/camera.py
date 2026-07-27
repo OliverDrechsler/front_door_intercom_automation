@@ -69,7 +69,7 @@ class Camera:
         self.trace = aiohttp.TraceConfig()
         self.trace.on_request_start.append(self.on_request_start)
         self.trace.on_request_end.append(self.on_request_end)
-        self.session = aiohttp.ClientSession(self.trace_configs=[trace])
+        self.session = aiohttp.ClientSession(trace_configs=[self.trace])
         # self.session: aiohttp.ClientSession | None = None
 
         self.blink: Blink | None = None
