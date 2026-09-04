@@ -1,5 +1,25 @@
 # ChangeLog
 
+# Branch feature/admin_user and possibility to manage user activation
+- **Admin-managed Telegram user activation state**
+  - New admin command set: `/enable <username>`, `/disable <username>`, `/list_user`, `/help`
+  - Activation/deactivation applies to configured `telegram.allowed_user_ids`
+  - Admin users cannot be disabled
+
+- **Persistent Telegram user state file**
+  - Enabled/disabled users are persisted in a runtime JSON file (`telegram_user_state.json` by default)
+  - State is normalized on load (unknown users removed, admin users enforced as enabled)
+  - Optional config key `telegram.user_state_file` allows custom location
+
+- **Web login now respects shared enable/disable state**
+  - Web users are only authenticated when their username is currently enabled
+  - If a user gets disabled, existing browser session for that user is invalidated
+
+- **Web/API hardening improvements**
+  - Support for trusted reverse proxy forwarding (`web.trusted_reverse_proxies`) when resolving client IP
+  - Redaction of sensitive request fields (`password`, `csrf_token`, `totp`) in logs
+  - Stronger request validation and logging details around auth/CSRF/timing
+
 # 1.11.6 - Release 1.11.6 (2025-12-08)
 
 ### Changes
