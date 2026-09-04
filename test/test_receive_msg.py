@@ -175,7 +175,21 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message = MockMessage()
         mock_message.chat.id = "123456"
         mock_message.text = "/enable user2"
-        mock_message.from_user.username = "admin_user"
+        mock_message.from_user.id = "333"  # admin_user ID
+
+        self.receiving_message.enable_user(mock_message)
+
+        self.config.write_telegram_user_state.assert_called_once_with(
+            {"enabled": ["user1", "user2"], "disabled": []}
+        )
+        self.bot.reply_to.assert_called_once_with(message=mock_message, text="user2 enabled")
+
+    @patch('telebot.types.Message')
+    def test_enable_user_matches_case_insensitive(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.text = "/enable UsEr2"
+        mock_message.from_user.id = "333"  # admin_user ID
 
         self.receiving_message.enable_user(mock_message)
 
@@ -189,7 +203,7 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message = MockMessage()
         mock_message.chat.id = "123456"
         mock_message.text = "/disable user1"
-        mock_message.from_user.username = "admin_user"
+        mock_message.from_user.id = "333"  # admin_user ID
 
         self.receiving_message.disable_user(mock_message)
 
@@ -199,15 +213,99 @@ class TestReceivingMessage(unittest.TestCase):
         self.bot.reply_to.assert_called_once_with(message=mock_message, text="user1 disabled")
 
     @patch('telebot.types.Message')
+    def test_disable_user_blocks_admin(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.text = "/disable admin_user"
+        mock_message.from_user.id = "333"  # admin_user ID
+
+        self.receiving_message.disable_user(mock_message)
+
+        self.config.write_telegram_user_state.assert_not_called()
+        self.bot.reply_to.assert_called_once_with(
+            message=mock_message, text="admin_user is admin and cannot be disabled"
+        )
+
+    @patch('telebot.types.Message')
     def test_enable_user_ignores_non_admin(self, MockMessage):
         mock_message = MockMessage()
         mock_message.chat.id = "123456"
         mock_message.text = "/enable user2"
-        mock_message.from_user.username = "user1"
+        mock_message.from_user.id = "111"  # user1 ID
 
         self.receiving_message.enable_user(mock_message)
 
         self.config.write_telegram_user_state.assert_not_called()
+
+    @patch('telebot.types.Message')
+    def test_enable_user_accepts_admin_id(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.text = "/enable user2"
+        mock_message.from_user.id = "333"  # admin_user ID
+
+        self.config.admin_users = ["333"]
+
+        self.receiving_message.enable_user(mock_message)
+
+        self.config.write_telegram_user_state.assert_called_once_with(
+            {"enabled": ["user1", "user2"], "disabled": []}
+        )
+
+    @patch('telebot.types.Message')
+    def test_list_user_sends_user_status(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
+
+        self.receiving_message.list_user(mock_message)
+
+        self.bot.reply_to.assert_called_once_with(
+            message=mock_message,
+            text="Enabled users:\n- user1\n\nDisabled users:\n- user2"
+        )
+
+    @patch('telebot.types.Message')
+    def test_list_user_ignores_not_allowed_user(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "999"
+
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=False)
+
+        self.receiving_message.list_user(mock_message)
+
+        self.bot.reply_to.assert_not_called()
+
+    @patch('telebot.types.Message')
+    def test_send_help_sends_command_overview(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
+
+        self.receiving_message.send_help(mock_message)
+
+        self.bot.send_message.assert_called_once()
+        kwargs = self.bot.send_message.call_args.kwargs
+        self.assertEqual(kwargs["chat_id"], mock_message.chat.id)
+        self.assertIn("/list_user", kwargs["text"])
+        self.assertIn("/help", kwargs["text"])
+
+    @patch('telebot.types.Message')
+    def test_send_help_ignores_not_allowed_user(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "999"
+
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=False)
+
+        self.receiving_message.send_help(mock_message)
+
+        self.bot.reply_to.assert_not_called()
 
     def test_schedule_camera_task_logs_scheduling_failure(self):
         with patch('bot.receive_msg.asyncio.run_coroutine_threadsafe',

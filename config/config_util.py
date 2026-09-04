@@ -117,9 +117,19 @@ class Configuration:
         with open(self.telegram_user_state_file, "r", encoding="utf-8") as json_file:
             state = json.load(json_file)
 
+        if not state.get("enabled", []) and not state.get("disabled", []) and self.allowed_user_ids:
+            self.write_telegram_user_state(default_state)
+            return default_state
+
         enabled = [str(username) for username in state.get("enabled", []) if str(username) in self.allowed_user_ids]
         disabled = [str(username) for username in state.get("disabled", []) if str(username) in self.allowed_user_ids]
         enabled = [username for username in enabled if username not in disabled]
+
+        admin_users = [str(username) for username in self.admin_users if str(username) in self.allowed_user_ids]
+        for admin_user in admin_users:
+            if admin_user not in enabled:
+                enabled.append(admin_user)
+            disabled = [user for user in disabled if user != admin_user]
         normalized_state = {"enabled": enabled, "disabled": disabled}
         if normalized_state != state:
             self.write_telegram_user_state(normalized_state)

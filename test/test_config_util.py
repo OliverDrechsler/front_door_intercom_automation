@@ -229,6 +229,24 @@ class TestConfiguration(unittest.TestCase):
 
         self.assertEqual(result, {"enabled": ["user1"], "disabled": []})
 
+    @patch('os.path.exists', return_value=True)
+    @patch('builtins.open', new_callable=mock_open, read_data='{"enabled": [], "disabled": ["admin_user"]}')
+    def test_get_telegram_user_state_keeps_admin_enabled(self, mock_file, mock_exists):
+        self.config.admin_users = ["admin_user"]
+        self.config.allowed_user_ids = {"admin_user": "123"}
+        result = self.config.get_telegram_user_state()
+
+        self.assertEqual(result, {"enabled": ["admin_user"], "disabled": []})
+
+    @patch('os.path.exists', return_value=True)
+    @patch.object(Configuration, 'write_telegram_user_state')
+    @patch('builtins.open', new_callable=mock_open, read_data='{"enabled": [], "disabled": []}')
+    def test_get_telegram_user_state_rebuilds_empty_state(self, mock_file, mock_write_state, mock_exists):
+        result = self.config.get_telegram_user_state()
+
+        self.assertEqual(result, {"enabled": ["user1"], "disabled": []})
+        mock_write_state.assert_called_once_with({"enabled": ["user1"], "disabled": []})
+
     @patch('builtins.open', new_callable=mock_open)
     def test_write_telegram_user_state(self, mock_file):
         self.config.write_telegram_user_state({"enabled": ["user1"], "disabled": ["user2"]})

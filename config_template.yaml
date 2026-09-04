@@ -1,6 +1,6 @@
 general:
   admin_users:
-    - "admin_user"
+    - "user1"
 
 telegram:
   token: "telegram_bot_token_code_here"    # telegram bot token password
