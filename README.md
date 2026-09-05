@@ -22,7 +22,7 @@ Raspberry Pi intercom front door automation for recognising doorbells, opening d
 Notify via your own privat Telegram chat channel.  
 Opening the front door via the private Telegram chat channel.  
 Furthermore, a separate website & REST API is offered to open the front door.  
-It supports [Blink](https://blinkforhome.com) camera's and my simple [PiCam_API](https://github.com/OliverDrechsler/PiCam_API) project.  
+It supports [Blink](https://blinkforhome.com) camera's and my simple [PiCam_API_2](https://https://github.com/OliverDrechsler/PiCam_API_2) project.  
 Door opening authorization is handled by timebased one time passwords.  
 Door bell detection circuit and door opening relais board can nearly handle any door intercom which is not connected to internet.  
 Bell circuit must be build by your self, but it is documented below.  
@@ -56,7 +56,7 @@ Opening relais board can be buyed and must just be wired.
   - [Cameras](#cameras)
     - [GDPDR EuropeanUnion and Germany hint - DSGVO Hinweis zur Kameraüberwachung in Deutschland](#gdpdr-europeanunion-and-germany-hint---dsgvo-hinweis-zur-kameraüberwachung-in-deutschland)
     - [Blink Cameras](#blink-cameras)
-    - [Raspberry Pi Camera Project PiCam\_API](#raspberry-pi-camera-project-picam_api)
+    - [Raspberry Pi Camera Project \_API](#raspberry-pi-camera-project-picam_api)
   - [Telegram](#telegram)
     - [Telegram setup](#telegram-setup)
     - [Telegram receiving message commands and interactions](#telegram-receiving-message-commands-and-interactions)
