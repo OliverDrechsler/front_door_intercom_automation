@@ -509,6 +509,11 @@ class WebDoorOpener:
                 session['csrf_token'] = secrets.token_urlsafe(32)
                 return redirect(url_for('index'))
             else:
+                self.app.logger.warning(
+                    "Failed login request for username '%s' from %s",
+                    username,
+                    self.__get_request_remote_ip(),
+                )
                 return render_template("login_invalid.html", csrf_token=self.__get_or_create_csrf_token())
 
         return render_template("login.html", csrf_token=self.__get_or_create_csrf_token())

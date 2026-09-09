@@ -124,13 +124,18 @@ class WebDoorOpenerTestCase(unittest.TestCase):
 
     def test_login_post_failure(self):
         csrf_token = self._get_csrf_token()
-        response = self.client.post('/login', data={
-            'username': 'testuser',
-            'password': 'wrongpassword',
-            'csrf_token': csrf_token,
-        })
+        with patch.object(self.web_door_opener.app.logger, 'warning') as mock_warning:
+            response = self.client.post('/login', data={
+                'username': 'testuser',
+                'password': 'wrongpassword',
+                'csrf_token': csrf_token,
+            })
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Invalid credentials, please try again.', response.data)
+        self.assertTrue(any(
+            "Failed login request" in str(call)
+            for call in mock_warning.call_args_list
+        ))
 
     def test_login_post_failure_for_disabled_user(self):
         self.web_door_opener.users = {'disableduser': 'testpassword'}
