@@ -159,29 +159,70 @@ class WebDoorOpener:
         Returns:
             str or None: The authenticated username if successful, None otherwise.
         """
-        if self.__has_valid_web_credentials(username, password) and self.__is_web_user_enabled(username):
-            self.app.logger.debug("Authentication: Success: User %s authenticated", username)
-            return username
+        authenticated_username = self.__authenticate_web_credentials(username, password)
+        if authenticated_username is not None and self.__is_web_user_enabled(authenticated_username):
+            self.app.logger.debug("Authentication: Success: User %s authenticated", authenticated_username)
+            return authenticated_username
         self.app.logger.info("Authentication: Failed: User: %s - user or password wrong", username)
         self.app.logger.debug("Authentication: Failed: User %s used password %s", username, password)
+        return None
+
+    @staticmethod
+    def __resolve_username_case_insensitive(username: str | None, usernames) -> str | None:
+        """
+        Returns the configured username matching the provided user name
+        case-insensitively.
+        """
+        if not isinstance(username, str):
+            return None
+
+        username_casefold = username.casefold()
+        for configured_username in usernames:
+            if isinstance(configured_username, str) and configured_username.casefold() == username_casefold:
+                return configured_username
+        return None
+
+    def __authenticate_web_credentials(self, username: str, password: str) -> str | None:
+        """
+        Returns the configured username when username and password are valid.
+        Username matching is case-insensitive.
+        """
+        configured_username = self.__resolve_username_case_insensitive(username, self.users.keys())
+        if configured_username is None:
+            return None
+
+        configured_password = self.users.get(configured_username)
+        if configured_password is None:
+            return None
+
+        if hmac.compare_digest(configured_password, password):
+            return configured_username
         return None
 
     def __has_valid_web_credentials(self, username: str, password: str) -> bool:
         """
         Verify web credentials using constant-time password comparison.
         """
-        configured_password = self.users.get(username)
-        return configured_password is not None and hmac.compare_digest(configured_password, password)
+        return self.__authenticate_web_credentials(username, password) is not None
 
     def __get_authenticated_session_user(self) -> str | None:
         """
         Returns the session user when the browser UI is authenticated.
         """
-        username = session.get('username')
-        if username is None:
+        session_username = session.get('username')
+        if session_username is None:
             return None
-        if self.__is_web_user_enabled(username):
-            return username
+
+        configured_username = self.__resolve_username_case_insensitive(session_username, self.config.web_user_dict.keys())
+        if configured_username is None:
+            session.clear()
+            return None
+
+        if self.__is_web_user_enabled(configured_username):
+            if session_username != configured_username:
+                session['username'] = configured_username
+            return configured_username
+
         session.clear()
         return None
 
@@ -219,13 +260,26 @@ class WebDoorOpener:
         """
         Check whether a web user is currently enabled via the shared user state.
         """
-        if username not in self.config.web_user_dict:
+        configured_username = self.__resolve_username_case_insensitive(username, self.config.web_user_dict.keys())
+        if configured_username is None:
             return False
 
         state = self.config.get_telegram_user_state()
-        if username in state.get("disabled", []):
+        normalized_disabled_users = {
+            state_username.casefold()
+            for state_username in state.get("disabled", [])
+            if isinstance(state_username, str)
+        }
+        normalized_enabled_users = {
+            state_username.casefold()
+            for state_username in state.get("enabled", [])
+            if isinstance(state_username, str)
+        }
+
+        configured_username_casefold = configured_username.casefold()
+        if configured_username_casefold in normalized_disabled_users:
             return False
-        if username in state.get("enabled", []):
+        if configured_username_casefold in normalized_enabled_users:
             return True
         return False
 
@@ -447,10 +501,11 @@ class WebDoorOpener:
 
             username = request.form['username']
             password = request.form['password']
-            if self.__has_valid_web_credentials(username, password) and self.__is_web_user_enabled(username):
+            authenticated_username = self.__authenticate_web_credentials(username, password)
+            if authenticated_username is not None and self.__is_web_user_enabled(authenticated_username):
                 session.clear()
                 session.permanent = True
-                session['username'] = username
+                session['username'] = authenticated_username
                 session['csrf_token'] = secrets.token_urlsafe(32)
                 return redirect(url_for('index'))
             else:

@@ -72,6 +72,7 @@ class WebDoorOpenerTestCase(unittest.TestCase):
     def test_verify_password(self):
         self.web_door_opener.users = {'testuser': 'testpassword'}
         self.assertTrue(self.web_door_opener.verify_password('testuser', 'testpassword'))
+        self.assertTrue(self.web_door_opener.verify_password('TestUser', 'testpassword'))
         self.assertFalse(self.web_door_opener.verify_password('testuser', 'wrongpassword'))
 
     def test_verify_password_rejects_disabled_user(self):
@@ -95,6 +96,18 @@ class WebDoorOpenerTestCase(unittest.TestCase):
             'csrf_token': csrf_token,
         })
         self.assertEqual(302, response.status_code)  # Redirects to index
+
+    def test_login_post_success_with_case_insensitive_username(self):
+        self.web_door_opener.users = {'testuser': 'testpassword'}
+        csrf_token = self._get_csrf_token()
+        response = self.client.post('/login', data={
+            'username': 'TestUser',
+            'password': 'testpassword',
+            'csrf_token': csrf_token,
+        })
+        self.assertEqual(302, response.status_code)
+        with self.client.session_transaction() as session:
+            self.assertEqual('testuser', session['username'])
 
     def test_login_post_uses_compare_digest(self):
         csrf_token = self._get_csrf_token()
@@ -176,6 +189,22 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         
         auth_header = {
             'Authorization': 'Basic ' + b64encode(b'testuser:testpassword').decode('utf-8')
+        }
+        response = self.client.post('/open', headers=auth_header, json={'totp': '123456'})
+        self.assertEqual(201, response.status_code)
+        self.assertIn(b'TOTP is valid! Opening!', response.data)
+
+    @patch('pyotp.TOTP.verify', return_value=True)
+    def test_open_success_with_basic_auth_case_insensitive_username(self, mock_verify):
+        self.web_door_opener.users = {'testuser': 'testpassword'}
+
+        async def async_put(item):
+            return item
+
+        self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
+
+        auth_header = {
+            'Authorization': 'Basic ' + b64encode(b'TestUser:testpassword').decode('utf-8')
         }
         response = self.client.post('/open', headers=auth_header, json={'totp': '123456'})
         self.assertEqual(201, response.status_code)
