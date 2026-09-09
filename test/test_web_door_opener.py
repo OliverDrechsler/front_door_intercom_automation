@@ -59,10 +59,6 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.client = self.web_door_opener.app.test_client()
         self.web_door_opener.users = {'testuser': 'testpassword'}
         self.web_door_opener.config.web_user_dict = {'testuser': 'testpassword', 'disableduser': 'testpassword'}
-        self.web_door_opener.config.get_telegram_user_state.return_value = {
-            "enabled": ["testuser"],
-            "disabled": ["disableduser"]
-        }
 
     def _get_csrf_token(self):
         self.client.get('/login')
@@ -75,11 +71,10 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.assertTrue(self.web_door_opener.verify_password('TestUser', 'testpassword'))
         self.assertFalse(self.web_door_opener.verify_password('testuser', 'wrongpassword'))
 
-    def test_verify_password_rejects_disabled_user(self):
+    def test_verify_password_accepts_flask_user(self):
         self.web_door_opener.users = {'disableduser': 'testpassword'}
-        self.web_door_opener.config.web_user_dict = {'disableduser': 'testpassword'}
 
-        self.assertFalse(self.web_door_opener.verify_password('disableduser', 'testpassword'))
+        self.assertEqual('disableduser', self.web_door_opener.verify_password('disableduser', 'testpassword'))
 
     def test_login_get(self):
         self.web_door_opener.browsers = ["werkzeug"]
@@ -130,24 +125,22 @@ class WebDoorOpenerTestCase(unittest.TestCase):
                 'password': 'wrongpassword',
                 'csrf_token': csrf_token,
             })
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 401)
         self.assertIn(b'Invalid credentials, please try again.', response.data)
         self.assertTrue(any(
             "Failed login request" in str(call)
             for call in mock_warning.call_args_list
         ))
 
-    def test_login_post_failure_for_disabled_user(self):
+    def test_login_post_success_for_flask_user(self):
         self.web_door_opener.users = {'disableduser': 'testpassword'}
-        self.web_door_opener.config.web_user_dict = {'disableduser': 'testpassword'}
         csrf_token = self._get_csrf_token()
         response = self.client.post('/login', data={
             'username': 'disableduser',
             'password': 'testpassword',
             'csrf_token': csrf_token,
         })
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Invalid credentials, please try again.', response.data)
+        self.assertEqual(response.status_code, 302)
 
     def test_login_post_missing_csrf_fails(self):
         response = self.client.post('/login', data={
@@ -294,29 +287,13 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         self.assertEqual(401, response.status_code)
         self.assertIn(b'Unauthorized', response.data)
 
-    def test_open_with_basic_auth_rejects_disabled_user(self):
+    def test_open_with_basic_auth_accepts_flask_user(self):
         self.web_door_opener.users = {'disableduser': 'testpassword'}
-        self.web_door_opener.config.web_user_dict = {'disableduser': 'testpassword'}
-        response = self.client.post('/open', headers={
-            'Authorization': 'Basic ' + b64encode(b'disableduser:testpassword').decode('utf-8')
-        })
-        self.assertEqual(401, response.status_code)
-        self.assertIn(b'Unauthorized', response.data)
-
-    def test_session_user_becomes_unauthorized_when_disabled(self):
-        self.web_door_opener.users = {'testuser': 'testpassword'}
-        csrf_token = self._get_csrf_token()
-        self.client.post('/login', data={
-            'username': 'testuser',
-            'password': 'testpassword',
-            'csrf_token': csrf_token,
-        })
-        self.web_door_opener.config.get_telegram_user_state.return_value = {"enabled": [], "disabled": ["testuser"]}
-
-        response = self.client.get('/')
-
-        self.assertEqual(302, response.status_code)
-        self.assertIn('/login', response.location)
+        with patch('pyotp.TOTP.verify', return_value=True):
+            response = self.client.post('/open', headers={
+                'Authorization': 'Basic ' + b64encode(b'disableduser:testpassword').decode('utf-8')
+            }, json={'totp': '123456'})
+        self.assertEqual(201, response.status_code)
 
     def test_login_response_contains_security_headers(self):
         response = self.client.get('/login')

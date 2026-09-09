@@ -374,6 +374,17 @@ Telegram users:
 
 - `/enable <username>` = activate a configured Telegram user
 - `/disable <username>` = deactivate a configured Telegram user
+- `/camera_get` = show current camera config (active default camera and related options)
+- `/camera_switch` = switch `photo_general.default_camera_type` between `blink` and `picam` (admin only)
+- `/camera_set <section> <option> <on|off>` = update camera options and store in `config.yaml` (admin only)
+  - supported section/option keys:
+    - `photo_general enable_detect_daylight`
+    - `blink enabled`
+    - `blink night_vision`
+    - `blink image_brightening`
+    - `picam enabled`
+    - `picam night_vision`
+    - `picam image_brightening`
 
 The enabled/disabled state is stored in a runtime JSON file, defaulting to `telegram_user_state.json`.
 You can override the file name or path with `telegram.user_state_file` in the config.

@@ -244,7 +244,7 @@ class TestReceivingMessage(unittest.TestCase):
         mock_message.text = "/enable user2"
         mock_message.from_user.id = "333"  # admin_user ID
 
-        self.config.admin_users = ["333"]
+        self.config.admin_users = ["admin_user"]
 
         self.receiving_message.enable_user(mock_message)
 
@@ -293,6 +293,9 @@ class TestReceivingMessage(unittest.TestCase):
         kwargs = self.bot.send_message.call_args.kwargs
         self.assertEqual(kwargs["chat_id"], mock_message.chat.id)
         self.assertIn("/list_user", kwargs["text"])
+        self.assertIn("/camera_get", kwargs["text"])
+        self.assertIn("/camera_switch", kwargs["text"])
+        self.assertIn("/camera_set", kwargs["text"])
         self.assertIn("/help", kwargs["text"])
 
     @patch('telebot.types.Message')
@@ -306,6 +309,73 @@ class TestReceivingMessage(unittest.TestCase):
         self.receiving_message.send_help(mock_message)
 
         self.bot.reply_to.assert_not_called()
+
+    @patch('telebot.types.Message')
+    def test_get_camera_config_sends_state(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
+        self.config.get_camera_config_state = MagicMock(return_value={
+            "photo_general": {"default_camera_type": "blink", "enable_detect_daylight": True},
+            "blink": {"enabled": True, "night_vision": False, "image_brightening": True},
+            "picam": {"enabled": True, "night_vision": True, "image_brightening": False},
+        })
+
+        self.receiving_message.get_camera_config(mock_message)
+
+        self.bot.reply_to.assert_called_once()
+        kwargs = self.bot.reply_to.call_args.kwargs
+        self.assertIn("photo_general.default_camera_type: blink", kwargs["text"])
+        self.assertIn("blink.night_vision: False", kwargs["text"])
+
+    @patch('telebot.types.Message')
+    def test_switch_camera_calls_config_for_admin(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "333"
+
+        self.receiving_message._ReceivingMessage__is_admin = MagicMock(return_value=True)
+        self.config.switch_default_camera_type = MagicMock(return_value="picam")
+
+        self.receiving_message.switch_camera(mock_message)
+
+        self.config.switch_default_camera_type.assert_called_once()
+        self.bot.reply_to.assert_called_once_with(message=mock_message, text="default_camera_type switched to picam")
+
+    @patch('telebot.types.Message')
+    def test_set_camera_config_updates_bool_option(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "333"
+        mock_message.text = "/camera_set blink night_vision off"
+
+        self.receiving_message._ReceivingMessage__is_admin = MagicMock(return_value=True)
+        self.config.set_camera_bool_option = MagicMock(return_value=False)
+
+        self.receiving_message.set_camera_config(mock_message)
+
+        self.config.set_camera_bool_option.assert_called_once_with(
+            section="blink", option="night_vision", value=False
+        )
+        self.bot.reply_to.assert_called_once_with(message=mock_message, text="blink.night_vision set to False")
+
+    @patch('telebot.types.Message')
+    def test_set_camera_config_invalid_usage(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "333"
+        mock_message.text = "/camera_set"
+
+        self.receiving_message._ReceivingMessage__is_admin = MagicMock(return_value=True)
+
+        self.receiving_message.set_camera_config(mock_message)
+
+        self.bot.reply_to.assert_called_once_with(
+            message=mock_message,
+            text="Usage: /camera_set <section> <option> <on|off>",
+        )
 
     def test_schedule_camera_task_logs_scheduling_failure(self):
         with patch('bot.receive_msg.asyncio.run_coroutine_threadsafe',

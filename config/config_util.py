@@ -144,6 +144,68 @@ class Configuration:
         with open(self.telegram_user_state_file, "w", encoding="utf-8") as json_file:
             json.dump(normalized_state, json_file, indent=4)
 
+    def get_camera_config_state(self) -> dict[str, Any]:
+        """Return current camera-related runtime configuration."""
+        return {
+            "photo_general": {
+                "default_camera_type": self.default_camera_type.value.lower(),
+                "enable_detect_daylight": self.enable_detect_daylight,
+            },
+            "blink": {
+                "enabled": self.blink_enabled,
+                "night_vision": self.blink_night_vision,
+                "image_brightening": self.blink_image_brightening,
+            },
+            "picam": {
+                "enabled": self.picam_enabled,
+                "night_vision": self.picam_night_vision,
+                "image_brightening": self.picam_image_brightening,
+            },
+        }
+
+    def switch_default_camera_type(self) -> str:
+        """Toggle default camera type between blink and picam and persist the config."""
+        new_camera_type = "picam" if self.default_camera_type == DefaultCam.BLINK else "blink"
+        return self.set_default_camera_type(new_camera_type)
+
+    def set_default_camera_type(self, camera_type: str) -> str:
+        """Set photo_general.default_camera_type to blink or picam and persist the config."""
+        normalized_camera_type = str(camera_type).strip().lower()
+        if normalized_camera_type not in ("blink", "picam"):
+            raise ValueError("default_camera_type must be blink or picam")
+
+        self.config["photo_general"]["default_camera_type"] = normalized_camera_type
+        self.default_camera_type = DefaultCam(normalized_camera_type.upper())
+        self.__write_full_yaml_config()
+        return normalized_camera_type
+
+    def set_camera_bool_option(self, section: str, option: str, value: bool) -> bool:
+        """Set a camera-related bool option and persist the config."""
+        allowed_options: dict[str, dict[str, str]] = {
+            "photo_general": {"enable_detect_daylight": "enable_detect_daylight"},
+            "blink": {
+                "enabled": "blink_enabled",
+                "night_vision": "blink_night_vision",
+                "image_brightening": "blink_image_brightening",
+            },
+            "picam": {
+                "enabled": "picam_enabled",
+                "night_vision": "picam_night_vision",
+                "image_brightening": "picam_image_brightening",
+            },
+        }
+        section_key = str(section).strip().lower()
+        option_key = str(option).strip().lower()
+        section_mapping = allowed_options.get(section_key)
+        if section_mapping is None or option_key not in section_mapping:
+            raise ValueError(f"unsupported camera option: {section}.{option}")
+
+        bool_value = bool(value)
+        self.config[section_key][option_key] = bool_value
+        setattr(self, section_mapping[option_key], bool_value)
+        self.__write_full_yaml_config()
+        return bool_value
+
     def __get_web_user_dict(self) -> dict:
         """Get user dict from list of yaml telegram.list
 
@@ -271,7 +333,14 @@ class Configuration:
         target_config_file = self.config_file
         if target_config_file.endswith("config_template.yaml"):
             target_config_file = os.path.join(self.base_path, "config.yaml")
+        self.config["otp"]["password"] = self.__base32_encode_totp_password(new_password)
+        self.__write_full_yaml_config(target_config_file=target_config_file)
 
-        with open(target_config_file, "w") as yaml_file:
-            self.config["otp"]["password"] = self.__base32_encode_totp_password(new_password)
-            yaml.dump(self.config, yaml_file, default_flow_style=False)
+    def __write_full_yaml_config(self, target_config_file: str | None = None) -> None:
+        """Persist the complete in-memory yaml configuration to disk."""
+        target_file = target_config_file or self.config_file
+        if target_file.endswith("config_template.yaml"):
+            target_file = os.path.join(self.base_path, "config.yaml")
+
+        with open(target_file, "w") as yaml_file:
+            yaml.dump(self.config, yaml_file, default_flow_style=False, sort_keys=False)

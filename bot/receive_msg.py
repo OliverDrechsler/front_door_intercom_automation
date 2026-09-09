@@ -37,6 +37,9 @@ class ReceivingMessage():
         enable_list: list[str] = ["enable", "Enable", "ENABLE"]
         disable_list: list[str] = ["disable", "Disable", "DISABLE"]
         list_user_list: list[str] = ["list_user", "List_user", "List_User", "LIST_USER"]
+        camera_get_list: list[str] = ["camera_get", "Camera_get", "CAMERA_GET"]
+        camera_switch_list: list[str] = ["camera_switch", "Camera_switch", "CAMERA_SWITCH"]
+        camera_set_list: list[str] = ["camera_set", "Camera_set", "CAMERA_SET"]
         help_list: list[str] = ["help", "Help", "HELP"]
         self.foto_command = self.bot.message_handler(commands=foto_list)(self.take_foto)
         self.blink_command = self.bot.message_handler(commands=blink_list)(self.take_blink_foto)
@@ -45,6 +48,9 @@ class ReceivingMessage():
         self.enable_command = self.bot.message_handler(commands=enable_list)(self.enable_user)
         self.disable_command = self.bot.message_handler(commands=disable_list)(self.disable_user)
         self.list_user_command = self.bot.message_handler(commands=list_user_list)(self.list_user)
+        self.camera_get_command = self.bot.message_handler(commands=camera_get_list)(self.get_camera_config)
+        self.camera_switch_command = self.bot.message_handler(commands=camera_switch_list)(self.switch_camera)
+        self.camera_set_command = self.bot.message_handler(commands=camera_set_list)(self.set_camera_config)
         self.help_command = self.bot.message_handler(commands=help_list)(self.send_help)
         self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(
             self.receive_any_msg_text)
@@ -198,16 +204,91 @@ class ReceivingMessage():
             "Available commands:\n"
             "\n"
             "<send only code to open>\n"
-            "/foto\n"
-            "/blink\n"
-            "/picam\n"
-            "/blink_auth <token>\n"
+            "\n"
+            "/foto   # take from default camera a foto\n"
+            "/blink  # takes a blink camera foto\n"
+            "/picam. # takes a picam camera foto\n"
+            "/blink_auth <token>  # authenticates required blink 2FA again with given code\n"
             "/enable <username>\n"
             "/disable <username>\n"
             "/list_user\n"
-            "/help\n"
+            "/camera_get  # shows camera config\n"
+            "/camera_switch  # switches active camera between blink and picam\n"
+            "/camera_set <section> <option> <on|off>  # changes camera config option\n"
+            "/help  # this help\n"
         )
         self.bot.send_message(chat_id=message.chat.id, text=help_text)
+
+    def get_camera_config(self, message: telebot.types.Message) -> None:
+        """Send current camera configuration state."""
+        self.logger.debug(f"camera_get message {message}")
+        if not self.__get_allowed(message=message):
+            return
+
+        state = self.config.get_camera_config_state()
+        message_text = (
+            "Camera config:\n"
+            f"photo_general.default_camera_type: {state['photo_general']['default_camera_type']}\n"
+            f"photo_general.enable_detect_daylight: {state['photo_general']['enable_detect_daylight']}\n"
+            f"blink.enabled: {state['blink']['enabled']}\n"
+            f"blink.night_vision: {state['blink']['night_vision']}\n"
+            f"blink.image_brightening: {state['blink']['image_brightening']}\n"
+            f"picam.enabled: {state['picam']['enabled']}\n"
+            f"picam.night_vision: {state['picam']['night_vision']}\n"
+            f"picam.image_brightening: {state['picam']['image_brightening']}"
+        )
+        self.bot.reply_to(message=message, text=message_text)
+
+    def switch_camera(self, message: telebot.types.Message) -> None:
+        """Switch default camera type between blink and picam."""
+        self.logger.debug(f"camera_switch message {message}")
+        if not self.__is_admin(message=message):
+            return
+
+        try:
+            new_type = self.config.switch_default_camera_type()
+        except Exception as err:
+            self.logger.error("switch camera failed: %s", err)
+            self.bot.reply_to(message=message, text="Failed to switch camera")
+            return
+
+        self.bot.reply_to(message=message, text=f"default_camera_type switched to {new_type}")
+
+    def set_camera_config(self, message: telebot.types.Message) -> None:
+        """Set mutable camera config options via /camera_set <section> <option> <on|off>."""
+        self.logger.debug(f"camera_set message {message}")
+        if not self.__is_admin(message=message):
+            return
+
+        match = re.search(
+            r"^/camera_set\s+([A-Za-z_]+)\s+([A-Za-z_]+)\s+(on|off|true|false|1|0)$",
+            message.text or "",
+            re.IGNORECASE,
+        )
+        if not match:
+            self.bot.reply_to(message=message, text="Usage: /camera_set <section> <option> <on|off>")
+            return
+
+        section = match.group(1).lower()
+        option = match.group(2).lower()
+        value_raw = match.group(3).lower()
+        bool_value = value_raw in ("on", "true", "1")
+
+        if section == "photo_general" and option == "default_camera_type":
+            self.bot.reply_to(message=message, text="Use /camera_switch for default_camera_type")
+            return
+
+        try:
+            self.config.set_camera_bool_option(section=section, option=option, value=bool_value)
+        except ValueError:
+            self.bot.reply_to(message=message, text=f"Unsupported option {section}.{option}")
+            return
+        except Exception as err:
+            self.logger.error("camera_set failed: %s", err)
+            self.bot.reply_to(message=message, text="Failed to write config")
+            return
+
+        self.bot.reply_to(message=message, text=f"{section}.{option} set to {bool_value}")
 
     def __rcv_blink_auth(self, message: telebot.types.Message) -> None:
         self.logger.debug(f"received blink token with message {message}")
@@ -289,10 +370,9 @@ class ReceivingMessage():
         if str(message.chat.id) != str(self.config.telegram_chat_nr):
             return False
         username = self.__get_username_for_user_id(message=message)
-        message_user_id = str(message.from_user.id)
         admin_users = [str(admin_user) for admin_user in self.config.admin_users]
-        self.logger.debug(f"__is_admin {username}/{message_user_id} in {admin_users}")
-        return username in admin_users or message_user_id in admin_users
+        self.logger.debug(f"__is_admin {username} in {admin_users}")
+        return username in admin_users
 
     def __get_allowed(self, message: telebot.types.Message) -> bool:
         """

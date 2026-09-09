@@ -253,6 +253,46 @@ class TestConfiguration(unittest.TestCase):
 
         mock_file.assert_called_with('/dummy/base/path/telegram_user_state.json', 'w', encoding='utf-8')
 
+    def test_get_camera_config_state(self):
+        result = self.config.get_camera_config_state()
+
+        self.assertEqual(result["photo_general"]["default_camera_type"], "blink")
+        self.assertTrue(result["photo_general"]["enable_detect_daylight"])
+        self.assertTrue(result["blink"]["enabled"])
+        self.assertTrue(result["blink"]["night_vision"])
+        self.assertTrue(result["blink"]["image_brightening"])
+        self.assertTrue(result["picam"]["enabled"])
+        self.assertTrue(result["picam"]["night_vision"])
+        self.assertTrue(result["picam"]["image_brightening"])
+
+    @patch.object(Configuration, '_Configuration__write_full_yaml_config')
+    def test_switch_default_camera_type(self, mock_write):
+        self.assertEqual(self.config.default_camera_type, DefaultCam.BLINK)
+
+        result = self.config.switch_default_camera_type()
+
+        self.assertEqual(result, "picam")
+        self.assertEqual(self.config.default_camera_type, DefaultCam.PICAM)
+        self.assertEqual(self.config.config["photo_general"]["default_camera_type"], "picam")
+        mock_write.assert_called_once()
+
+    def test_set_default_camera_type_invalid(self):
+        with self.assertRaises(ValueError):
+            self.config.set_default_camera_type("invalid")
+
+    @patch.object(Configuration, '_Configuration__write_full_yaml_config')
+    def test_set_camera_bool_option(self, mock_write):
+        result = self.config.set_camera_bool_option("blink", "night_vision", False)
+
+        self.assertFalse(result)
+        self.assertFalse(self.config.blink_night_vision)
+        self.assertFalse(self.config.config["blink"]["night_vision"])
+        mock_write.assert_called_once()
+
+    def test_set_camera_bool_option_invalid(self):
+        with self.assertRaises(ValueError):
+            self.config.set_camera_bool_option("blink", "unsupported", True)
+
     @patch('builtins.open', new_callable=mock_open, read_data='invalid: [yaml')
     @patch('yaml.load', side_effect=yaml.YAMLError('parse error'))
     def test_read_config_yaml_error(self, mock_yaml_load, mock_file):

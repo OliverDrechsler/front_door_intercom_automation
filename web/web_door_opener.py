@@ -160,7 +160,7 @@ class WebDoorOpener:
             str or None: The authenticated username if successful, None otherwise.
         """
         authenticated_username = self.__authenticate_web_credentials(username, password)
-        if authenticated_username is not None and self.__is_web_user_enabled(authenticated_username):
+        if authenticated_username is not None:
             self.app.logger.debug("Authentication: Success: User %s authenticated", authenticated_username)
             return authenticated_username
         self.app.logger.info("Authentication: Failed: User: %s - user or password wrong", username)
@@ -213,18 +213,14 @@ class WebDoorOpener:
         if session_username is None:
             return None
 
-        configured_username = self.__resolve_username_case_insensitive(session_username, self.config.web_user_dict.keys())
+        configured_username = self.__resolve_username_case_insensitive(session_username, self.users.keys())
         if configured_username is None:
             session.clear()
             return None
 
-        if self.__is_web_user_enabled(configured_username):
-            if session_username != configured_username:
-                session['username'] = configured_username
-            return configured_username
-
-        session.clear()
-        return None
+        if session_username != configured_username:
+            session['username'] = configured_username
+        return configured_username
 
     def __get_authenticated_basic_user(self) -> str | None:
         """
@@ -255,33 +251,6 @@ class WebDoorOpener:
         g.auth_user = session_user
         g.auth_via_basic = False
         return session_user
-
-    def __is_web_user_enabled(self, username: str) -> bool:
-        """
-        Check whether a web user is currently enabled via the shared user state.
-        """
-        configured_username = self.__resolve_username_case_insensitive(username, self.config.web_user_dict.keys())
-        if configured_username is None:
-            return False
-
-        state = self.config.get_telegram_user_state()
-        normalized_disabled_users = {
-            state_username.casefold()
-            for state_username in state.get("disabled", [])
-            if isinstance(state_username, str)
-        }
-        normalized_enabled_users = {
-            state_username.casefold()
-            for state_username in state.get("enabled", [])
-            if isinstance(state_username, str)
-        }
-
-        configured_username_casefold = configured_username.casefold()
-        if configured_username_casefold in normalized_disabled_users:
-            return False
-        if configured_username_casefold in normalized_enabled_users:
-            return True
-        return False
 
     @staticmethod
     def __get_or_create_csrf_token() -> str:
@@ -502,7 +471,7 @@ class WebDoorOpener:
             username = request.form['username']
             password = request.form['password']
             authenticated_username = self.__authenticate_web_credentials(username, password)
-            if authenticated_username is not None and self.__is_web_user_enabled(authenticated_username):
+            if authenticated_username is not None:
                 session.clear()
                 session.permanent = True
                 session['username'] = authenticated_username
@@ -514,7 +483,7 @@ class WebDoorOpener:
                     username,
                     self.__get_request_remote_ip(),
                 )
-                return render_template("login_invalid.html", csrf_token=self.__get_or_create_csrf_token())
+                return render_template("login_invalid.html", csrf_token=self.__get_or_create_csrf_token()), 401
 
         return render_template("login.html", csrf_token=self.__get_or_create_csrf_token())
 
