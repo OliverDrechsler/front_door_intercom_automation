@@ -1,15 +1,17 @@
 # ChangeLog
 
 # Branch feature/admin_user and possibility to manage user activation
-- **Admin-managed Telegram user activation state**
+- **Admin-managed Telegram chat user activation state**
   - New admin command set: `/enable <username>`, `/disable <username>`, `/list_user`, `/help`
   - Activation/deactivation applies to configured `telegram.allowed_user_ids`
   - Admin users cannot be disabled
+  - User can be activated for Flask web ui / rest api too
+  - added capability to change via telegram chat some generic camera setting - see readme
 
-- **Persistent Telegram user state file**
-  - Enabled/disabled users are persisted in a runtime JSON file (`telegram_user_state.json` by default)
+- **Persistent user state file**
+  - Telegram and Flask user activation states are persisted independently in `user_state.json` by default
   - State is normalized on load (unknown users removed, admin users enforced as enabled)
-  - Optional config key `telegram.user_state_file` allows custom location
+  - Optional config key `general.user_state_file` allows a custom location
 
 - **Web login now respects shared enable/disable state**
   - Web users are only authenticated when their username is currently enabled
@@ -19,6 +21,8 @@
   - Support for trusted reverse proxy forwarding (`web.trusted_reverse_proxies`) when resolving client IP
   - Redaction of sensitive request fields (`password`, `csrf_token`, `totp`) in logs
   - Stronger request validation and logging details around auth/CSRF/timing
+
+- **Fix PiCam error during network request** queue got stuck
 
 # 1.11.6 - Release 1.11.6 (2025-12-08)
 

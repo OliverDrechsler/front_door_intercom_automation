@@ -711,12 +711,19 @@ class Camera:
         self.logger.debug(msg=headers)
         try:
             response: requests.Response = requests.post(
-                url=picam_url, json=payload, headers=headers
+                url=picam_url,
+                json=payload,
+                headers=headers,
+                timeout=20,
             )
             response.raise_for_status()
             response_json = response.json()
-            self.picam_photo_id = response_json.get("photo_id")
-            if not self.picam_photo_id:
+            self.picam_photo_id = (
+                response_json.get("photo_id")
+                if isinstance(response_json, dict)
+                else None
+            )
+            if not isinstance(self.picam_photo_id, str) or not self.picam_photo_id.strip():
                 self.logger.error("PiCam response does not contain a photo_id")
                 return False
             self.logger.debug(
@@ -758,8 +765,12 @@ class Camera:
                 response: requests.Response = requests.get(
                     url=picam_url,
                     params={"photo_id": self.picam_photo_id},
+                    timeout=20,
                 )
                 response.raise_for_status()
+                if not response.content:
+                    self.logger.error("PiCam download response does not contain image data")
+                    return False
                 file.write(response.content)
                 if not self.__detect_daylight() and self.config.picam_image_brightening:
                     self.__adjust_image()

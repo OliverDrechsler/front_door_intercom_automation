@@ -27,8 +27,56 @@ log_level = allowed_levels.get(default_log_level, logging.INFO)
 
 
 """Define code logging"""
-format = "%(asctime)s - %(name)s - %(threadName)s - %(funcName)s : %(message)s"
-logging.basicConfig(format=format, level=default_log_level, datefmt="%Y-%m-%d %H:%M:%S")
+format = "%(asctime)s - %(levelname)s - %(name)s - %(threadName)s - %(funcName)s : %(message)s"
+
+
+class AnsiLevelFormatter(logging.Formatter):
+    """Color log levels when output is connected to an ANSI-capable terminal."""
+
+    level_colors = {
+        "DEBUG": "\033[36m",
+        "INFO": "\033[32m",
+        "WARNING": "\033[33m",
+        "ERROR": "\033[31m",
+        "CRITICAL": "\033[1;31m",
+    }
+    reset = "\033[0m"
+
+    def __init__(self, *args, color: bool = False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.color = color
+
+    def format(self, record: logging.LogRecord) -> str:
+        message = super().format(record)
+        if not self.color:
+            return message
+
+        level_color = self.level_colors.get(record.levelname)
+        if level_color is None:
+            return message
+        colored_level = f"{level_color}{record.levelname}{self.reset}"
+        return message.replace(f" - {record.levelname} - ", f" - {colored_level} - ", 1)
+
+
+def __supports_ansi_terminal(stream) -> bool:
+    """Return whether a stream is an interactive terminal suitable for ANSI codes."""
+    return (
+        "NO_COLOR" not in os.environ
+        and os.environ.get("TERM", "").lower() != "dumb"
+        and hasattr(stream, "isatty")
+        and stream.isatty()
+    )
+
+
+log_handler = logging.StreamHandler()
+log_handler.setFormatter(
+    AnsiLevelFormatter(
+        format,
+        datefmt="%Y-%m-%d %H:%M:%S",
+        color=__supports_ansi_terminal(log_handler.stream),
+    )
+)
+logging.basicConfig(handlers=[log_handler], level=default_log_level)
 logger: logging.Logger = logging.getLogger(name="fdia")
 
 allowed_levels = {'critical': logging.CRITICAL, 'error': logging.ERROR, 'warning': logging.WARNING,

@@ -164,7 +164,6 @@ class WebDoorOpener:
             self.app.logger.debug("Authentication: Success: User %s authenticated", authenticated_username)
             return authenticated_username
         self.app.logger.info("Authentication: Failed: User: %s - user or password wrong", username)
-        self.app.logger.debug("Authentication: Failed: User %s used password %s", username, password)
         return None
 
     @staticmethod
@@ -195,6 +194,11 @@ class WebDoorOpener:
         if configured_password is None:
             return None
 
+        state = self.config.get_web_user_state()
+        if configured_username not in state.get("enabled", []):
+            self.app.logger.info("Authentication: Failed: User %s is disabled", configured_username)
+            return None
+
         if hmac.compare_digest(configured_password, password):
             return configured_username
         return None
@@ -215,6 +219,11 @@ class WebDoorOpener:
 
         configured_username = self.__resolve_username_case_insensitive(session_username, self.users.keys())
         if configured_username is None:
+            session.clear()
+            return None
+
+        state = self.config.get_web_user_state()
+        if configured_username not in state.get("enabled", []):
             session.clear()
             return None
 
@@ -307,6 +316,13 @@ class WebDoorOpener:
 
         return 'anonymous'
 
+    @staticmethod
+    def __get_login_attempt_username() -> str | None:
+        """Return the username submitted by a browser login request."""
+        if request.endpoint != "login" or request.method != "POST":
+            return None
+        return request.form.get("username") or "<empty>"
+
     def __get_request_remote_ip(self) -> str:
         """
         Get the remote IP address of the request.
@@ -351,9 +367,12 @@ class WebDoorOpener:
 
         auth_started_at = time.perf_counter()
         user = self.__get_request_username()
+        login_attempt_username = self.__get_login_attempt_username()
         auth_duration_ms = round((time.perf_counter() - auth_started_at) * 1000, 2)
 
         self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', self.__get_request_remote_ip(), user, request.method, request.path)
+        if login_attempt_username is not None:
+            self.app.logger.info('Login attempt in UI for user: %s', login_attempt_username)
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Request: ==========")
         self.app.logger.debug("")

@@ -33,6 +33,9 @@ class TestReceivingMessage(unittest.TestCase):
         self.config.otp_interval = 30
         self.config.get_telegram_user_state = MagicMock(return_value={"enabled": ["user1"], "disabled": ["user2"]})
         self.config.write_telegram_user_state = MagicMock()
+        self.config.web_user_dict = {"admin_user": "webadminpw", "web_user": "webpw"}
+        self.config.get_web_user_state = MagicMock(return_value={"enabled": ["admin_user"], "disabled": ["web_user"]})
+        self.config.write_web_user_state = MagicMock()
 
         self.receiving_message = ReceivingMessage(
             self.shutdown_event,
@@ -87,6 +90,25 @@ class TestReceivingMessage(unittest.TestCase):
             self.receiving_message.take_foto(mock_message)
 
         self.camera_task_queue_async.put.assert_called_once()
+
+    @patch('telebot.types.Message')
+    def test_command_logs_sender_username_and_id(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.text = "/foto extra-value"
+        mock_message.from_user.id = "111"
+        mock_message.from_user.username = "telegram_user"
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=False)
+
+        with patch.object(self.receiving_message.logger, "info") as mock_info:
+            self.receiving_message.take_foto(mock_message)
+
+        mock_info.assert_called_once_with(
+            "Received Telegram command %s with value %s from user %s (id=%s)",
+            "/foto",
+            "extra-value",
+            "telegram_user",
+            "111",
+        )
 
     @patch('telebot.types.Message')
     def test_take_picam_foto(self, MockMessage):
@@ -264,7 +286,54 @@ class TestReceivingMessage(unittest.TestCase):
 
         self.bot.reply_to.assert_called_once_with(
             message=mock_message,
-            text="Enabled users:\n- user1\n\nDisabled users:\n- user2"
+            text=(
+                "Telegram users:\nEnabled users:\n- user1\n\nDisabled users:\n- user2\n\n"
+                "Web users:\nEnabled users:\n- admin_user\n\nDisabled users:\n- web_user"
+            )
+        )
+
+    @patch('telebot.types.Message')
+    def test_web_enable_user_updates_json_state(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.text = "/web_enable web_user"
+        mock_message.from_user.id = "333"  # admin_user ID
+
+        self.receiving_message.enable_web_user(mock_message)
+
+        self.config.write_web_user_state.assert_called_once_with(
+            {"enabled": ["admin_user", "web_user"], "disabled": []}
+        )
+        self.bot.reply_to.assert_called_once_with(message=mock_message, text="web user web_user enabled")
+
+    @patch('telebot.types.Message')
+    def test_web_disable_user_blocks_admin(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.text = "/web_disable admin_user"
+        mock_message.from_user.id = "333"  # admin_user ID
+
+        self.config.get_web_user_state = MagicMock(return_value={"enabled": ["admin_user", "web_user"], "disabled": []})
+        self.receiving_message.disable_web_user(mock_message)
+
+        self.config.write_web_user_state.assert_not_called()
+        self.bot.reply_to.assert_called_once_with(
+            message=mock_message, text="admin_user is admin and cannot be disabled"
+        )
+
+    @patch('telebot.types.Message')
+    def test_list_web_user_sends_user_status(self, MockMessage):
+        mock_message = MockMessage()
+        mock_message.chat.id = "123456"
+        mock_message.from_user.id = "111"
+
+        self.receiving_message._ReceivingMessage__get_allowed = MagicMock(return_value=True)
+
+        self.receiving_message.list_web_user(mock_message)
+
+        self.bot.reply_to.assert_called_once_with(
+            message=mock_message,
+            text="Enabled web users:\n- admin_user\n\nDisabled web users:\n- web_user"
         )
 
     @patch('telebot.types.Message')

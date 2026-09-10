@@ -110,7 +110,8 @@ The project offers the following functionality:
 - Multi camera type support - Blink camera or PiCam_API camera photo snapshot and sending on Telegram message request.
 - Automatic camera selection between Blink or PiCam_APi possible.
 - Fallback camera selection if one fails.
-- Admin-controlled activation and deactivation of configured Telegram users via chat commands.
+- Admin-controlled activation and deactivation of configured Telegram and flask web users via chat commands.
+- Telegram chat admin-controlled possiblity to change of a few cammera settings see [telegram commands](#telegram-receiving-message-commands-and-interactions)
 - Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) website to open the front door with the browser using a time-based one-time password.
 - Internal Flask REST-API to open the front door (via time-based one-time password).
 - Possibility to enable / disable Flask Web-UI / REST-API - run without web interface
@@ -386,8 +387,8 @@ Telegram users:
     - `picam night_vision`
     - `picam image_brightening`
 
-The enabled/disabled state is stored in a runtime JSON file, defaulting to `telegram_user_state.json`.
-You can override the file name or path with `telegram.user_state_file` in the config.
+The enabled/disabled state is stored in the shared runtime JSON file `user_state.json`.
+You can override the file name or path with `general.user_state_file` in the config.
 The same user state is also used for the Web UI and REST-API login, so disabled users lose access there as well.
 
 

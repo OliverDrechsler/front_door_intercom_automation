@@ -41,8 +41,8 @@ class Configuration:
         self.telegram_token: str = self.config["telegram"]["token"]
         self.telegram_chat_nr = self.config["telegram"]["chat_number"]
         self.allowed_user_ids = self.__get_allowed_user_dict()
-        self.telegram_user_state_file: str = self.__resolve_runtime_path(
-            self.config.get("telegram", {}).get("user_state_file", "telegram_user_state.json")
+        self.user_state_file: str = self.__resolve_runtime_path(
+            self.config.get("general", {}).get("user_state_file", "user_state.json")
         )
 
         self.otp_password: str = self.config["otp"]["password"]
@@ -109,40 +109,170 @@ class Configuration:
         Load enabled/disabled telegram users from the runtime json file.
         Missing files are initialized with all configured users enabled.
         """
-        default_state = {"enabled": list(self.allowed_user_ids.keys()), "disabled": []}
-        if not os.path.exists(self.telegram_user_state_file):
-            self.write_telegram_user_state(default_state)
-            return default_state
-
-        with open(self.telegram_user_state_file, "r", encoding="utf-8") as json_file:
-            state = json.load(json_file)
-
-        if not state.get("enabled", []) and not state.get("disabled", []) and self.allowed_user_ids:
-            self.write_telegram_user_state(default_state)
-            return default_state
-
-        enabled = [str(username) for username in state.get("enabled", []) if str(username) in self.allowed_user_ids]
-        disabled = [str(username) for username in state.get("disabled", []) if str(username) in self.allowed_user_ids]
-        enabled = [username for username in enabled if username not in disabled]
-
-        admin_users = [str(username) for username in self.admin_users if str(username) in self.allowed_user_ids]
-        for admin_user in admin_users:
-            if admin_user not in enabled:
-                enabled.append(admin_user)
-            disabled = [user for user in disabled if user != admin_user]
-        normalized_state = {"enabled": enabled, "disabled": disabled}
-        if normalized_state != state:
-            self.write_telegram_user_state(normalized_state)
-        return normalized_state
+        if not os.path.exists(self.user_state_file):
+            return self.__initialize_user_state()["telegram"]
+        return self.__get_user_state_for_domain(
+            domain="telegram",
+            allowed_users=list(self.allowed_user_ids.keys()),
+            admin_users=self.__get_domain_admin_users(self.allowed_user_ids),
+        )
 
     def write_telegram_user_state(self, state: dict[str, list[str]]) -> None:
         """Persist enabled/disabled telegram users into the runtime json file."""
-        normalized_state = {
-            "enabled": [str(username) for username in state.get("enabled", [])],
-            "disabled": [str(username) for username in state.get("disabled", [])],
+        self.__write_user_state_for_domain(
+            domain="telegram",
+            state=state,
+            allowed_users=list(self.allowed_user_ids.keys()),
+            admin_users=self.__get_domain_admin_users(self.allowed_user_ids),
+        )
+
+    def get_web_user_state(self) -> dict[str, list[str]]:
+        """Load enabled/disabled web users from the runtime json file."""
+        if not os.path.exists(self.user_state_file):
+            return self.__initialize_user_state()["web"]
+        return self.__get_user_state_for_domain(
+            domain="web",
+            allowed_users=list(self.web_user_dict.keys()),
+            admin_users=self.__get_domain_admin_users(self.web_user_dict),
+        )
+
+    def write_web_user_state(self, state: dict[str, list[str]]) -> None:
+        """Persist enabled/disabled web users into the runtime json file."""
+        self.__write_user_state_for_domain(
+            domain="web",
+            state=state,
+            allowed_users=list(self.web_user_dict.keys()),
+            admin_users=self.__get_domain_admin_users(self.web_user_dict),
+        )
+
+    def __initialize_user_state(self) -> dict[str, dict[str, list[str]]]:
+        """Create and normalize the shared state for all configured user domains."""
+        raw_state = self.__read_user_state_raw()
+        state = {
+            "telegram": self.__normalize_domain_user_state(
+            state=raw_state.get("telegram", {}),
+            allowed_users=list(self.allowed_user_ids.keys()),
+            admin_users=self.__get_domain_admin_users(self.allowed_user_ids),
+            ),
+            "web": self.__normalize_domain_user_state(
+            state=raw_state.get("web", {}),
+            allowed_users=list(self.web_user_dict.keys()),
+            admin_users=self.__get_domain_admin_users(self.web_user_dict),
+            ),
         }
-        with open(self.telegram_user_state_file, "w", encoding="utf-8") as json_file:
-            json.dump(normalized_state, json_file, indent=4)
+        self.__write_user_state_raw(state)
+        return state
+
+    def __get_domain_admin_users(self, users: dict[str, Any]) -> list[str]:
+        """Return configured admin names using the domain's canonical casing."""
+        users_by_casefold = {str(username).casefold(): str(username) for username in users}
+        return [
+            users_by_casefold[admin_user.casefold()]
+            for admin_user in map(str, self.admin_users)
+            if admin_user.casefold() in users_by_casefold
+        ]
+
+    def __normalize_domain_user_state(
+        self,
+        state: dict[str, Any],
+        allowed_users: list[str],
+        admin_users: list[str],
+    ) -> dict[str, list[str]]:
+        """Normalize enabled/disabled user state for one domain."""
+        allowed_lookup = {str(username).casefold(): str(username) for username in allowed_users}
+
+        enabled_input = state.get("enabled", []) if isinstance(state, dict) else []
+        disabled_input = state.get("disabled", []) if isinstance(state, dict) else []
+        if not isinstance(enabled_input, list):
+            enabled_input = []
+        if not isinstance(disabled_input, list):
+            disabled_input = []
+
+        enabled: list[str] = []
+        for username in enabled_input:
+            username_key = allowed_lookup.get(str(username).casefold())
+            if username_key and username_key not in enabled:
+                enabled.append(username_key)
+
+        disabled: list[str] = []
+        for username in disabled_input:
+            username_key = allowed_lookup.get(str(username).casefold())
+            if username_key and username_key not in disabled:
+                disabled.append(username_key)
+
+        enabled = [username for username in enabled if username not in disabled]
+
+        if not enabled and not disabled and allowed_users:
+            enabled = list(allowed_users)
+
+        for admin_user in admin_users:
+            if admin_user in allowed_users and admin_user not in enabled:
+                enabled.append(admin_user)
+            disabled = [user for user in disabled if user != admin_user]
+
+        return {"enabled": enabled, "disabled": disabled}
+
+    def __read_user_state_raw(self) -> dict[str, Any]:
+        """Read the shared user state JSON document."""
+        if not os.path.exists(self.user_state_file):
+            return {}
+
+        with open(self.user_state_file, "r", encoding="utf-8") as json_file:
+            raw_state = json.load(json_file)
+
+        if not isinstance(raw_state, dict):
+            return {}
+
+        # Accept the original single-domain document if it is already at the
+        # configured shared state-file location.
+        if "telegram" not in raw_state and "web" not in raw_state and (
+            "enabled" in raw_state or "disabled" in raw_state
+        ):
+            return {"telegram": raw_state}
+
+        return raw_state
+
+    def __write_user_state_raw(self, raw_state: dict[str, Any]) -> None:
+        """Write full raw user state document."""
+        with open(self.user_state_file, "w", encoding="utf-8") as json_file:
+            json.dump(raw_state, json_file, indent=4)
+
+    def __get_user_state_for_domain(self, domain: str, allowed_users: list[str], admin_users: list[str]) -> dict[str, list[str]]:
+        """Get normalized state for one domain and persist normalization if required."""
+        raw_state = self.__read_user_state_raw()
+        domain_state = raw_state.get(domain, {}) if isinstance(raw_state, dict) else {}
+        normalized_state = self.__normalize_domain_user_state(
+            state=domain_state if isinstance(domain_state, dict) else {},
+            allowed_users=allowed_users,
+            admin_users=admin_users,
+        )
+
+        if not isinstance(raw_state, dict):
+            raw_state = {}
+        if raw_state.get(domain) != normalized_state:
+            raw_state[domain] = normalized_state
+            self.__write_user_state_raw(raw_state)
+
+        return normalized_state
+
+    def __write_user_state_for_domain(
+        self,
+        domain: str,
+        state: dict[str, list[str]],
+        allowed_users: list[str],
+        admin_users: list[str],
+    ) -> None:
+        """Normalize and persist one domain state while preserving other domains."""
+        raw_state = self.__read_user_state_raw()
+        if not isinstance(raw_state, dict):
+            raw_state = {}
+
+        raw_state[domain] = self.__normalize_domain_user_state(
+            state=state,
+            allowed_users=allowed_users,
+            admin_users=admin_users,
+        )
+        self.__write_user_state_raw(raw_state)
 
     def get_camera_config_state(self) -> dict[str, Any]:
         """Return current camera-related runtime configuration."""

@@ -95,7 +95,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.telegram_chat_nr, 12345)
         self.assertEqual(self.config.admin_users, ['admin_user'])
         self.assertEqual(self.config.allowed_user_ids, {'user1': '67890'})
-        self.assertEqual(self.config.telegram_user_state_file, '/dummy/base/path/telegram_user_state.json')
+        self.assertEqual(self.config.user_state_file, '/dummy/base/path/user_state.json')
         self.assertEqual(self.config.otp_password, 'dummy_password')
         self.assertEqual(self.config.otp_length, 6)
         self.assertEqual(self.config.otp_interval, 30)
@@ -215,12 +215,28 @@ class TestConfiguration(unittest.TestCase):
             self.config._Configuration__get_allowed_user_dict()
 
     @patch('os.path.exists', return_value=False)
-    @patch.object(Configuration, 'write_telegram_user_state')
-    def test_get_telegram_user_state_creates_default_file(self, mock_write_state, mock_exists):
+    @patch('builtins.open', new_callable=mock_open)
+    def test_get_telegram_user_state_creates_default_file(self, mock_file, mock_exists):
         result = self.config.get_telegram_user_state()
 
         self.assertEqual(result, {"enabled": ["user1"], "disabled": []})
-        mock_write_state.assert_called_once_with({"enabled": ["user1"], "disabled": []})
+        mock_file.assert_called_once_with('/dummy/base/path/user_state.json', 'w', encoding='utf-8')
+
+    @patch('os.path.exists', return_value=False)
+    @patch('builtins.open', new_callable=mock_open)
+    def test_initialize_user_state_enables_all_telegram_and_web_users(self, mock_file, mock_exists):
+        self.config.allowed_user_ids = {"telegram_user": "123"}
+        self.config.web_user_dict = {"web_user": "password"}
+
+        state = self.config._Configuration__initialize_user_state()
+
+        written_state = "".join(call.args[0] for call in mock_file().write.call_args_list)
+        self.assertEqual(state["telegram"], {"enabled": ["telegram_user"], "disabled": []})
+        self.assertEqual(state["web"], {"enabled": ["web_user"], "disabled": []})
+        self.assertIn('"telegram"', written_state)
+        self.assertIn('"telegram_user"', written_state)
+        self.assertIn('"web"', written_state)
+        self.assertIn('"web_user"', written_state)
 
     @patch('os.path.exists', return_value=True)
     @patch('builtins.open', new_callable=mock_open, read_data='{"enabled": ["user1"], "disabled": []}')
@@ -239,19 +255,31 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(result, {"enabled": ["admin_user"], "disabled": []})
 
     @patch('os.path.exists', return_value=True)
-    @patch.object(Configuration, 'write_telegram_user_state')
     @patch('builtins.open', new_callable=mock_open, read_data='{"enabled": [], "disabled": []}')
-    def test_get_telegram_user_state_rebuilds_empty_state(self, mock_file, mock_write_state, mock_exists):
+    def test_get_telegram_user_state_rebuilds_empty_state(self, mock_file, mock_exists):
         result = self.config.get_telegram_user_state()
 
         self.assertEqual(result, {"enabled": ["user1"], "disabled": []})
-        mock_write_state.assert_called_once_with({"enabled": ["user1"], "disabled": []})
+        mock_file.assert_any_call('/dummy/base/path/user_state.json', 'w', encoding='utf-8')
 
     @patch('builtins.open', new_callable=mock_open)
     def test_write_telegram_user_state(self, mock_file):
         self.config.write_telegram_user_state({"enabled": ["user1"], "disabled": ["user2"]})
 
-        mock_file.assert_called_with('/dummy/base/path/telegram_user_state.json', 'w', encoding='utf-8')
+        mock_file.assert_called_with('/dummy/base/path/user_state.json', 'w', encoding='utf-8')
+
+    @patch('os.path.exists', return_value=True)
+    @patch('builtins.open', new_callable=mock_open, read_data='{"web": {"enabled": ["user1"], "disabled": ["user2"]}}')
+    def test_get_web_user_state_reads_existing_file(self, mock_file, mock_exists):
+        result = self.config.get_web_user_state()
+
+        self.assertEqual(result, {"enabled": ["user1"], "disabled": ["user2"]})
+
+    @patch('builtins.open', new_callable=mock_open)
+    def test_write_web_user_state(self, mock_file):
+        self.config.write_web_user_state({"enabled": ["user1"], "disabled": ["user2"]})
+
+        mock_file.assert_called_with('/dummy/base/path/user_state.json', 'w', encoding='utf-8')
 
     def test_get_camera_config_state(self):
         result = self.config.get_camera_config_state()

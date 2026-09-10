@@ -1,4 +1,5 @@
 general:
+  user_state_file: "user_state.json" # Shared Telegram and Flask-user activation state, relative to this config.
   admin_users:
     - "user1"
 

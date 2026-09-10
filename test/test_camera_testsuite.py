@@ -420,6 +420,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
                 "iso": self.camera.config.picam_iso,
             },
             headers={"content-type": "application/json"},
+            timeout=20,
         )
         self.assertEqual(self.camera.picam_photo_id, "photo-123")
         self.assertTrue(result)
@@ -445,6 +446,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
                 "iso": self.camera.config.picam_iso,
             },
             headers={"content-type": "application/json"},
+            timeout=20,
         )
 
     @patch('camera.camera.requests')
@@ -477,6 +479,29 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
     @patch('camera.camera.requests')
     @patch('camera.camera.os.path.exists', return_value=True)
     @patch('camera.camera.os.remove')
+    def test_picam_request_download_foto_with_empty_response(self, mock_remove, mock_exists, mock_requests):
+        self.camera.config.picam_url = "http://example.com"
+        self.camera.config.photo_image_path = "/tmp/photo.jpg"
+        self.camera.picam_photo_id = "photo-123"
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b""
+        mock_requests.get.return_value = mock_response
+
+        mock_file = unittest.mock.mock_open()
+        with patch('builtins.open', mock_file):
+            result = self.camera._Camera__picam_request_download_foto()
+
+        self.assertFalse(result)
+        mock_file().write.assert_not_called()
+        self.mock_logger_error.assert_called_with(
+            "PiCam download response does not contain image data"
+        )
+
+    @patch('camera.camera.requests')
+    @patch('camera.camera.os.path.exists', return_value=True)
+    @patch('camera.camera.os.remove')
     def test_picam_request_download_foto(self, mock_remove, mock_exists, mock_requests):
         self.camera.config.picam_url = "http://example.com"
         self.camera.config.photo_image_path = "/tmp/photo.jpg"
@@ -497,6 +522,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         mock_requests.get.assert_called_once_with(
             url="http://example.com",
             params={"photo_id": "photo-123"},
+            timeout=20,
         )
         mock_file.assert_any_call("/tmp/photo.jpg", 'wb')
         mock_file().write.assert_called_once_with(mock_response.content)
@@ -527,6 +553,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         mock_requests.get.assert_called_once_with(
             url="http://example.com/foto/",
             params={"photo_id": "photo-123"},
+            timeout=20,
         )
 
     @patch('camera.camera.requests')
@@ -568,6 +595,7 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         mock_requests.get.assert_called_once_with(
             url="http://example.com",
             params={"photo_id": "photo-123"},
+            timeout=20,
         )
         self.assertFalse(result)
         mock_file.assert_any_call("/tmp/photo.jpg", 'wb')

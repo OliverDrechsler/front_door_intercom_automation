@@ -36,7 +36,10 @@ class ReceivingMessage():
         blink_auth_list: list[str] = ["blink_auth", "Blink_auth", "Blink_Auth", "BLINK_AUTH"]
         enable_list: list[str] = ["enable", "Enable", "ENABLE"]
         disable_list: list[str] = ["disable", "Disable", "DISABLE"]
+        web_enable_list: list[str] = ["web_enable", "Web_enable", "WEB_ENABLE"]
+        web_disable_list: list[str] = ["web_disable", "Web_disable", "WEB_DISABLE"]
         list_user_list: list[str] = ["list_user", "List_user", "List_User", "LIST_USER"]
+        list_web_user_list: list[str] = ["list_web_user", "List_web_user", "List_Web_User", "LIST_WEB_USER"]
         camera_get_list: list[str] = ["camera_get", "Camera_get", "CAMERA_GET"]
         camera_switch_list: list[str] = ["camera_switch", "Camera_switch", "CAMERA_SWITCH"]
         camera_set_list: list[str] = ["camera_set", "Camera_set", "CAMERA_SET"]
@@ -47,7 +50,10 @@ class ReceivingMessage():
         self.blink_auth_command = self.bot.message_handler(commands=blink_auth_list)(self.register_bink_authentication)
         self.enable_command = self.bot.message_handler(commands=enable_list)(self.enable_user)
         self.disable_command = self.bot.message_handler(commands=disable_list)(self.disable_user)
+        self.web_enable_command = self.bot.message_handler(commands=web_enable_list)(self.enable_web_user)
+        self.web_disable_command = self.bot.message_handler(commands=web_disable_list)(self.disable_web_user)
         self.list_user_command = self.bot.message_handler(commands=list_user_list)(self.list_user)
+        self.list_web_user_command = self.bot.message_handler(commands=list_web_user_list)(self.list_web_user)
         self.camera_get_command = self.bot.message_handler(commands=camera_get_list)(self.get_camera_config)
         self.camera_switch_command = self.bot.message_handler(commands=camera_switch_list)(self.switch_camera)
         self.camera_set_command = self.bot.message_handler(commands=camera_set_list)(self.set_camera_config)
@@ -110,7 +116,7 @@ class ReceivingMessage():
         If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
         The camera task contains the chat ID, message, reply flag, and photo flag.
         """
-        self.logger.debug(f"received foto request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             self.__schedule_camera_task(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, photo=True)
@@ -126,7 +132,7 @@ class ReceivingMessage():
         Returns:
             None
         """
-        self.logger.debug(f"received /picam request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             self.__schedule_camera_task(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, picam_photo=True)
@@ -147,7 +153,7 @@ class ReceivingMessage():
         If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
         The camera task contains the chat ID, message, reply flag, and blink_photo flag.
         """
-        self.logger.debug(f"received blink request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             self.__schedule_camera_task(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, blink_photo=True)
@@ -164,39 +170,71 @@ class ReceivingMessage():
         Returns:
             None
         """
-        self.logger.debug(f"received /blink_auth request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             # start new thread for taking a foto
             self.__rcv_blink_auth(message)
 
     def enable_user(self, message: telebot.types.Message) -> None:
         """Enable a configured telegram user via /enable <username>."""
-        self.logger.debug(f"add user message {message}")
+        self.__log_command_received(message)
         self.__set_user_state(message=message, enabled=True)
 
     def disable_user(self, message: telebot.types.Message) -> None:
         """Disable a configured telegram user via /disable <username>."""
-        self.logger.debug(f"disable user message {message}")
+        self.__log_command_received(message)
         self.__set_user_state(message=message, enabled=False)
 
     def list_user(self, message: telebot.types.Message) -> None:
         """Send enabled/disabled configured telegram users."""
-        self.logger.debug(f"list user message {message}")
+        self.__log_command_received(message)
         if not self.__get_allowed(message=message):
             return
 
-        state = self.config.get_telegram_user_state()
+        telegram_state = self.config.get_telegram_user_state()
+        web_state = self.config.get_web_user_state()
+
+        def format_state(title: str, state: dict[str, list[str]]) -> str:
+            enabled_users = state.get("enabled", [])
+            disabled_users = state.get("disabled", [])
+            enabled_text = "\n".join([f"- {username}" for username in enabled_users]) or "- none"
+            disabled_text = "\n".join([f"- {username}" for username in disabled_users]) or "- none"
+            return f"{title}:\nEnabled users:\n{enabled_text}\n\nDisabled users:\n{disabled_text}"
+
+        message_text = (
+            f"{format_state('Telegram users', telegram_state)}\n\n"
+            f"{format_state('Web users', web_state)}"
+        )
+        self.bot.reply_to(message=message, text=message_text)
+
+    def enable_web_user(self, message: telebot.types.Message) -> None:
+        """Enable a configured flask web user via /web_enable <username>."""
+        self.__log_command_received(message)
+        self.__set_web_user_state(message=message, enabled=True)
+
+    def disable_web_user(self, message: telebot.types.Message) -> None:
+        """Disable a configured flask web user via /web_disable <username>."""
+        self.__log_command_received(message)
+        self.__set_web_user_state(message=message, enabled=False)
+
+    def list_web_user(self, message: telebot.types.Message) -> None:
+        """Send enabled/disabled configured flask web users."""
+        self.__log_command_received(message)
+        if not self.__get_allowed(message=message):
+            return
+
+        state = self.config.get_web_user_state()
         enabled_users = state.get("enabled", [])
         disabled_users = state.get("disabled", [])
 
         enabled_text = "\n".join([f"- {username}" for username in enabled_users]) or "- none"
         disabled_text = "\n".join([f"- {username}" for username in disabled_users]) or "- none"
-        message_text = f"Enabled users:\n{enabled_text}\n\nDisabled users:\n{disabled_text}"
+        message_text = f"Enabled web users:\n{enabled_text}\n\nDisabled web users:\n{disabled_text}"
         self.bot.reply_to(message=message, text=message_text)
 
     def send_help(self, message: telebot.types.Message) -> None:
         """Send list of available bot commands."""
-        self.logger.debug(f"help message {message}")
+        self.__log_command_received(message)
         if not self.__get_allowed(message=message):
             return
 
@@ -212,6 +250,9 @@ class ReceivingMessage():
             "/enable <username>\n"
             "/disable <username>\n"
             "/list_user\n"
+            "/web_enable <username>\n"
+            "/web_disable <username>\n"
+            "/list_web_user\n"
             "/camera_get  # shows camera config\n"
             "/camera_switch  # switches active camera between blink and picam\n"
             "/camera_set <section> <option> <on|off>  # changes camera config option\n"
@@ -221,7 +262,7 @@ class ReceivingMessage():
 
     def get_camera_config(self, message: telebot.types.Message) -> None:
         """Send current camera configuration state."""
-        self.logger.debug(f"camera_get message {message}")
+        self.__log_command_received(message)
         if not self.__get_allowed(message=message):
             return
 
@@ -241,7 +282,7 @@ class ReceivingMessage():
 
     def switch_camera(self, message: telebot.types.Message) -> None:
         """Switch default camera type between blink and picam."""
-        self.logger.debug(f"camera_switch message {message}")
+        self.__log_command_received(message)
         if not self.__is_admin(message=message):
             return
 
@@ -256,7 +297,7 @@ class ReceivingMessage():
 
     def set_camera_config(self, message: telebot.types.Message) -> None:
         """Set mutable camera config options via /camera_set <section> <option> <on|off>."""
-        self.logger.debug(f"camera_set message {message}")
+        self.__log_command_received(message)
         if not self.__is_admin(message=message):
             return
 
@@ -316,6 +357,25 @@ class ReceivingMessage():
             return
         future.add_done_callback(self.__log_camera_task_failure)
 
+    def __log_command_received(self, message: telebot.types.Message) -> None:
+        """Log a Telegram command, its value, and sender without exposing secrets."""
+        command_text = message.text if isinstance(message.text, str) else ""
+        command, separator, value = command_text.partition(" ")
+        command = command or "<unknown>"
+        value = value if separator else "<none>"
+        if command.casefold() == "/blink_auth":
+            value = "<redacted>"
+        from_user = getattr(message, "from_user", None)
+        username = getattr(from_user, "username", None) or "<no username>"
+        user_id = getattr(from_user, "id", "<unknown>")
+        self.logger.info(
+            "Received Telegram command %s with value %s from user %s (id=%s)",
+            command,
+            value,
+            username,
+            user_id,
+        )
+
     def __log_camera_task_failure(self, future) -> None:
         try:
             future.result()
@@ -356,7 +416,8 @@ class ReceivingMessage():
         if enabled:
             enabled_users.append(username_key)
         else:
-            if username_key in self.config.admin_users:
+            admin_usernames = {str(admin_user).casefold() for admin_user in self.config.admin_users}
+            if username_key.casefold() in admin_usernames:
                 self.bot.reply_to(message=message, text=f"{username_key} is admin and cannot be disabled")
                 return
             disabled_users.append(username_key)
@@ -373,6 +434,47 @@ class ReceivingMessage():
         admin_users = [str(admin_user) for admin_user in self.config.admin_users]
         self.logger.debug(f"__is_admin {username} in {admin_users}")
         return username in admin_users
+
+    def __set_web_user_state(self, message: telebot.types.Message, enabled: bool) -> None:
+        """
+        Update enabled/disabled status for a configured flask web username.
+        Only configured admins in the configured telegram chat may use this command.
+        """
+        if not self.__is_admin(message=message):
+            return
+
+        command = "web_enable" if enabled else "web_disable"
+        match = re.search(r"^/(web_enable|web_disable)\s+([A-Za-z0-9_]+)$", message.text or "", re.IGNORECASE)
+        if not match:
+            self.bot.reply_to(message=message, text=f"Usage: /{command} <username>")
+            return
+
+        username = match.group(2)
+        allowed_lookup = {
+            str(allowed_username).lower(): str(allowed_username)
+            for allowed_username in self.config.web_user_dict.keys()
+        }
+        username_key = allowed_lookup.get(str(username).lower())
+        if not username_key:
+            self.bot.reply_to(message=message, text=f"Unknown web user: {username}")
+            return
+
+        state = self.config.get_web_user_state()
+        enabled_users = [user for user in state["enabled"] if user != username_key]
+        disabled_users = [user for user in state["disabled"] if user != username_key]
+
+        if enabled:
+            enabled_users.append(username_key)
+        else:
+            admin_usernames = {str(admin_user).casefold() for admin_user in self.config.admin_users}
+            if username_key.casefold() in admin_usernames:
+                self.bot.reply_to(message=message, text=f"{username_key} is admin and cannot be disabled")
+                return
+            disabled_users.append(username_key)
+
+        new_state = {"enabled": enabled_users, "disabled": disabled_users}
+        self.config.write_web_user_state(new_state)
+        self.bot.reply_to(message=message, text=f"web user {username_key} {'enabled' if enabled else 'disabled'}")
 
     def __get_allowed(self, message: telebot.types.Message) -> bool:
         """
