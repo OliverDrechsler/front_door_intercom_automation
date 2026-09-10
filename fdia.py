@@ -31,7 +31,7 @@ format = "%(asctime)s - %(levelname)s - %(name)s - %(threadName)s - %(funcName)s
 
 
 class AnsiLevelFormatter(logging.Formatter):
-    """Color log levels when output is connected to an ANSI-capable terminal."""
+    """Color log levels when ANSI output has been enabled."""
 
     level_colors = {
         "DEBUG": "\033[36m",
@@ -58,11 +58,21 @@ class AnsiLevelFormatter(logging.Formatter):
         return message.replace(f" - {record.levelname} - ", f" - {colored_level} - ", 1)
 
 
-def __supports_ansi_terminal(stream) -> bool:
-    """Return whether a stream is an interactive terminal suitable for ANSI codes."""
+def __should_color_logs(stream) -> bool:
+    """Return whether ANSI log colors should be emitted.
+
+    ``FDIA_LOG_COLOR=always`` is intended for systemd/journald, whose stream
+    is not a TTY but preserves ANSI escape sequences.  ``auto`` (the default)
+    retains the normal terminal-only behavior; ``never`` and ``NO_COLOR``
+    disable colors.
+    """
+    color_mode = os.environ.get("FDIA_LOG_COLOR", "auto").lower()
+    if color_mode == "never" or "NO_COLOR" in os.environ:
+        return False
+    if color_mode == "always":
+        return True
     return (
-        "NO_COLOR" not in os.environ
-        and os.environ.get("TERM", "").lower() != "dumb"
+        os.environ.get("TERM", "").lower() != "dumb"
         and hasattr(stream, "isatty")
         and stream.isatty()
     )
@@ -73,7 +83,7 @@ log_handler.setFormatter(
     AnsiLevelFormatter(
         format,
         datefmt="%Y-%m-%d %H:%M:%S",
-        color=__supports_ansi_terminal(log_handler.stream),
+        color=__should_color_logs(log_handler.stream),
     )
 )
 logging.basicConfig(handlers=[log_handler], level=default_log_level)

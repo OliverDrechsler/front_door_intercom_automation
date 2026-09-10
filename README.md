@@ -546,6 +546,13 @@ to  either `CRITICAL`,`ERROR`,`INFO`,`WARN` or`DEBUG`
 before you start the app.  
 The shell command will be `export LOG_LEVEL=DEBUG && python3 fdia.py`  
 
+The supplied `fdia.service` writes complete DEBUG logs to journald and
+enables ANSI level colors. View them with:
+
+```bash
+journalctl -u fdia.service -f -o cat
+```
+
 In case you want to store it permanently, you can add it in `fdia.py` file  
 and at top of the file (line 22 - after imports)  
 there you'll find the section
