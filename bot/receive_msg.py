@@ -276,8 +276,8 @@ class ReceivingMessage():
             f"blink.image_brightening: {state['blink']['image_brightening']}\n"
             f"picam.enabled: {state['picam']['enabled']}\n"
             f"picam.night_vision: {state['picam']['night_vision']}\n"
-            f"picam.image_brightening: {state['picam']['image_brightening']}"
-            f"web.take_photo_on_door_open_request: {state['web']['take_photo_on_door_open_request']}"
+            f"picam.image_brightening: {state['picam']['image_brightening']}\n"
+            f"web.take_photo_on_door_open_request: {state['web']['take_photo_on_door_open_request']}\n"
             f"telegram.take_photo_on_door_open_request: {state['telegram']['take_photo_on_door_open_request']}"
         )
         self.bot.reply_to(message=message, text=message_text)

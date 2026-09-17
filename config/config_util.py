@@ -293,6 +293,12 @@ class Configuration:
                 "night_vision": self.picam_night_vision,
                 "image_brightening": self.picam_image_brightening,
             },
+            "telegram": {
+                "take_photo_on_door_open_request": self.telegram_take_photo_on_door_open_request,
+            },
+            "web": {
+                "take_photo_on_door_open_request": self.flask_take_photo_on_door_open_request,
+            },
         }
 
     def switch_default_camera_type(self) -> str:
