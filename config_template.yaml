@@ -9,6 +9,7 @@ telegram:
   allowed_user_ids:                        # dict of allowed telegram usernames to user ids
     user1: "123456789"
     user2: "987654321"
+  take_photo_on_door_open_request: True
 
 otp:
   password: "KRSXG5CQIASCIVZQOJCA===="  # base32 encoded password here password: "Base32CodePasswordHere"
@@ -85,3 +86,4 @@ web:
   flask_users:             # list of flask app login user for webpage and/or rest api call
     - WebUser1: "password"
     - WebUser2: "password"
+  take_photo_on_door_open_request: True

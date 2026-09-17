@@ -36,6 +36,7 @@ class TestReceivingMessage(unittest.TestCase):
         self.config.web_user_dict = {"admin_user": "webadminpw", "web_user": "webpw"}
         self.config.get_web_user_state = MagicMock(return_value={"enabled": ["admin_user"], "disabled": ["web_user"]})
         self.config.write_web_user_state = MagicMock()
+        self.config.telegram_take_photo_on_door_open_request = True
 
         self.receiving_message = ReceivingMessage(
             self.shutdown_event,
@@ -390,6 +391,8 @@ class TestReceivingMessage(unittest.TestCase):
             "photo_general": {"default_camera_type": "blink", "enable_detect_daylight": True},
             "blink": {"enabled": True, "night_vision": False, "image_brightening": True},
             "picam": {"enabled": True, "night_vision": True, "image_brightening": False},
+            "telegram": {"take_photo_on_door_open_request": True},
+            "web": {"take_photo_on_door_open_request": True},
         })
 
         self.receiving_message.get_camera_config(mock_message)

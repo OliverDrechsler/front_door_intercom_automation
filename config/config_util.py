@@ -44,6 +44,7 @@ class Configuration:
         self.user_state_file: str = self.__resolve_runtime_path(
             self.config.get("general", {}).get("user_state_file", "user_state.json")
         )
+        self.telegram_take_photo_on_door_open_request: bool = self.config["telegram"]["take_photo_on_door_open_request"]
 
         self.otp_password: str = self.config["otp"]["password"]
         self.otp_length: int = self.config["otp"]["length"]
@@ -96,6 +97,7 @@ class Configuration:
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
         self.flask_session_cookie_secure: bool = self.config["web"].get("session_cookie_secure", False)
         self.flask_trusted_reverse_proxies: list[str] = self.config["web"].get("trusted_reverse_proxies", [])
+        self.flask_take_photo_on_door_open_request: bool = self.config["web"]["take_photo_on_door_open_request"]
 
     def __get_allowed_user_dict(self) -> dict[str, str]:
         """Get configured telegram users as username to user-id mapping."""
@@ -323,6 +325,12 @@ class Configuration:
                 "night_vision": "picam_night_vision",
                 "image_brightening": "picam_image_brightening",
             },
+            "telegram": {
+                "take_photo_on_door_open_request": "telegram_take_photo_on_door_open_request"
+            },
+            "web": {
+                "take_photo_on_door_open_request": "web_take_photo_on_door_open_request"
+            }
         }
         section_key = str(section).strip().lower()
         option_key = str(option).strip().lower()

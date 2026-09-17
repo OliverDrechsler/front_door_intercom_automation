@@ -23,7 +23,8 @@ class TestConfiguration(unittest.TestCase):
             'telegram': {
                 'token': 'dummy_token',
                 'chat_number': 12345,
-                'allowed_user_ids': {'user1': 67890}
+                'allowed_user_ids': {'user1': 67890},
+                'take_photo_on_door_open_request': True
             },
             'otp': {
                 'password': 'dummy_password',
@@ -80,7 +81,8 @@ class TestConfiguration(unittest.TestCase):
                 'flask_secret_key': 'dummy_secret',
                 'browser_session_cookie_lifetime': 3600,
                 'session_cookie_secure': False,
-                'flask_users': [{'user1': 'id1'}, {'user2': 'id2'}]
+                'flask_users': [{'user1': 'id1'}, {'user2': 'id2'}],
+                'take_photo_on_door_open_request': True
             }
         }
         mock_get_base_path.return_value = '/dummy/base/path/'
@@ -93,6 +95,7 @@ class TestConfiguration(unittest.TestCase):
     def test_initialization(self):
         self.assertEqual(self.config.telegram_token, 'dummy_token')
         self.assertEqual(self.config.telegram_chat_nr, 12345)
+        self.assertEqual(self.config.telegram_take_photo_on_door_open_request, True)
         self.assertEqual(self.config.admin_users, ['admin_user'])
         self.assertEqual(self.config.allowed_user_ids, {'user1': '67890'})
         self.assertEqual(self.config.user_state_file, '/dummy/base/path/user_state.json')
@@ -132,6 +135,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.config.flask_browser_session_cookie_lifetime, 3600)
         self.assertFalse(self.config.flask_session_cookie_secure)
         self.assertEqual(self.config.web_user_dict, {'user1': 'id1', 'user2': 'id2'})
+        self.assertEqual(self.config.flask_take_photo_on_door_open_request, True)
 
     @patch('os.getcwd', return_value='/launch/path')
     @patch('os.path.isfile', side_effect=lambda path: path == '/launch/path/config.yaml')

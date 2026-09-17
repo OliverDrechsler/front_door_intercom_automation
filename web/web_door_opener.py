@@ -557,9 +557,10 @@ class WebDoorOpener:
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                      data_text=f"{auth_user} request open door"))
             asyncio.set_event_loop(self.loop)
-            asyncio.run_coroutine_threadsafe(
-                self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
-                self.loop)
+            if self.config.flask_take_photo_on_door_open_request:
+                asyncio.run_coroutine_threadsafe(
+                    self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
+                    self.loop)
             enqueue_duration_ms = round((time.perf_counter() - enqueue_started_at) * 1000, 2)
             handler_duration_ms = round((time.perf_counter() - handler_started_at) * 1000, 2)
             self.app.logger.info(

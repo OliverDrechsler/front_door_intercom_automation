@@ -277,6 +277,8 @@ class ReceivingMessage():
             f"picam.enabled: {state['picam']['enabled']}\n"
             f"picam.night_vision: {state['picam']['night_vision']}\n"
             f"picam.image_brightening: {state['picam']['image_brightening']}"
+            f"web.take_photo_on_door_open_request: {state['web']['take_photo_on_door_open_request']}"
+            f"telegram.take_photo_on_door_open_request: {state['telegram']['take_photo_on_door_open_request']}"
         )
         self.bot.reply_to(message=message, text=message_text)
 
@@ -569,6 +571,10 @@ class ReceivingMessage():
             self.logger.info(msg=message.text + " TOTP code correct")
             self.door_open_task_queue.put(
                 Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message=message))
+            if self.config.telegram_take_photo_on_door_open_request:
+                self.__schedule_camera_task(
+                    Camera_Task(chat_id=message.chat.id, photo=True)
+                )
             self.bot.send_message(chat_id=message.chat.id, text="Code accepted.")
             self.logger.info(msg="Door opened for 5 Sec.")
             return True

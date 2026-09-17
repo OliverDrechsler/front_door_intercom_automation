@@ -25,6 +25,8 @@ class AsyncCameraTestSuite(unittest.IsolatedAsyncioTestCase):
         self.config.picam_url = "http://example.com/foto/"
         self.config.blink_config_file = "/tmp/blink_config.json"
         self.config.photo_image_path = "/tmp/photo.jpg"
+        self.config.telegram_take_photo_on_door_open_request = True
+        self.config.flask_take_photo_on_door_open_request = True
 
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
