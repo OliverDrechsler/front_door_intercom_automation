@@ -80,6 +80,7 @@
 <li class="toctree-l1"><a class="reference internal" href="How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-11-2026-07-21">2.0.11 - Release 2.0.11 (2026-07-21)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-10-2026-06-30">2.0.10 - Release 2.0.10 (2026-06-30)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-9-2026-06-13">2.0.9 - Release 2.0.9 (2026-06-13)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-8-2026-06-13">2.0.8 - Release 2.0.8 (2026-06-13)</a></li>
@@ -89,7 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-3-2026-06-05">2.0.3 - Release 2.0.3 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-2-2026-06-05">2.0.2 - Release 2.0.2 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-1-2026-06-05">2.0.1 - Release 2.0.1 (2026-06-05)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id23">2.0.0 - 2.0.0 (2026-06-03)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id26">2.0.0 - 2.0.0 (2026-06-03)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#breaking-changes">Breaking changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#fixes">Fixes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#features">Features</a></li>
@@ -110,10 +111,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-3-2025-11-25">1.11.3 - Release 1.11.3 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-2-2025-11-25">1.11.2 - Release 1.11.2 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-1-2025-11-25">1.11.1 - Release 1.11.1 (2025-11-25)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id40">1.11 - 1.11 (2025-06-10)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id43">1.10 - 1.10 (2025-05-11)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id46">1.0.9 - 1.0.9 (2025-02-14)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id49">1.0.8 - 1.0.8 (2025-02-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id43">1.11 - 1.11 (2025-06-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id46">1.10 - 1.10 (2025-05-11)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id49">1.0.9 - 1.0.9 (2025-02-14)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id52">1.0.8 - 1.0.8 (2025-02-10)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-7-2025-02-09">1.0.7 - Release 1.0.7 (2025-02-09)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-6-2025-02-02">1.0.6 - Release 1.0.6 (2025-02-02)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-5-2024-11-25">1.0.5 - Release 1.0.5 (2024-11-25)</a></li>
@@ -249,7 +250,7 @@
 <p>If you intentionally run the container as a non-root user, that user must have access to the same numeric group as the mapped GPIO device on the host.</p>
 <p>Check the device owner and group on the Raspberry Pi host:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-l<span class="w"> </span>/dev/gpiomem
-stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#39;</span><span class="w"> </span>/dev/gpiomem
+stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%g'</span><span class="w"> </span>/dev/gpiomem
 </pre></div>
 </div>
 <p>Example for a non-root container:</p>
@@ -257,9 +258,9 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#
 <span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--user<span class="w"> </span><span class="m">1000</span>:1000<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--group-add<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#39;</span><span class="w"> </span>/dev/gpiomem<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--group-add<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%g'</span><span class="w"> </span>/dev/gpiomem<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 </pre></div>
@@ -289,8 +290,8 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#
 <span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>fdia:local
 </pre></div>
@@ -304,8 +305,8 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#
 <span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 </pre></div>
@@ -324,7 +325,7 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#
 <span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 </pre></div>
@@ -339,7 +340,7 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;%g&#
 <span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/mem:/dev/mem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 </pre></div>
@@ -355,7 +356,7 @@ groups
 </pre></div>
 </div>
 <p>If needed, add your host user to the <code class="docutils literal notranslate"><span class="pre">gpio</span></code> group:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>gpio<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$USER</span><span class="s2">&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>gpio<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span>
 </pre></div>
 </div>
 <p>Then log out and log in again.</p>
@@ -405,7 +406,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>fdia:local
 </pre></div>
@@ -417,7 +418,7 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 </pre></div>

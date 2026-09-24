@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-11-2026-07-21">2.0.11 - Release 2.0.11 (2026-07-21)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-10-2026-06-30">2.0.10 - Release 2.0.10 (2026-06-30)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-9-2026-06-13">2.0.9 - Release 2.0.9 (2026-06-13)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-8-2026-06-13">2.0.8 - Release 2.0.8 (2026-06-13)</a></li>
@@ -65,7 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-3-2026-06-05">2.0.3 - Release 2.0.3 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-2-2026-06-05">2.0.2 - Release 2.0.2 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-1-2026-06-05">2.0.1 - Release 2.0.1 (2026-06-05)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id23">2.0.0 - 2.0.0 (2026-06-03)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id26">2.0.0 - 2.0.0 (2026-06-03)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#breaking-changes">Breaking changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#fixes">Fixes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#features">Features</a></li>
@@ -86,10 +87,10 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-3-2025-11-25">1.11.3 - Release 1.11.3 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-2-2025-11-25">1.11.2 - Release 1.11.2 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-1-2025-11-25">1.11.1 - Release 1.11.1 (2025-11-25)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id40">1.11 - 1.11 (2025-06-10)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id43">1.10 - 1.10 (2025-05-11)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id46">1.0.9 - 1.0.9 (2025-02-14)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id49">1.0.8 - 1.0.8 (2025-02-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id43">1.11 - 1.11 (2025-06-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id46">1.10 - 1.10 (2025-05-11)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id49">1.0.9 - 1.0.9 (2025-02-14)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id52">1.0.8 - 1.0.8 (2025-02-10)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7-2025-02-09">1.0.7 - Release 1.0.7 (2025-02-09)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6-2025-02-02">1.0.6 - Release 1.0.6 (2025-02-02)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5-2024-11-25">1.0.5 - Release 1.0.5 (2024-11-25)</a></li>
@@ -296,6 +297,146 @@ message (telebot.types.Message): the message received</p>
 <dt>Returns:</dt><dd><p>None</p>
 </dd>
 </dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.enable_user">
+<span class="sig-name descname"><span class="pre">enable_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.enable_user" title="Link to this definition"></a></dt>
+<dd><p>Enable a configured telegram user via /enable &lt;username&gt;.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.disable_user">
+<span class="sig-name descname"><span class="pre">disable_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.disable_user" title="Link to this definition"></a></dt>
+<dd><p>Disable a configured telegram user via /disable &lt;username&gt;.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.list_user">
+<span class="sig-name descname"><span class="pre">list_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.list_user" title="Link to this definition"></a></dt>
+<dd><p>Send enabled/disabled configured telegram users.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.enable_web_user">
+<span class="sig-name descname"><span class="pre">enable_web_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.enable_web_user" title="Link to this definition"></a></dt>
+<dd><p>Enable a configured flask web user via /web_enable &lt;username&gt;.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.disable_web_user">
+<span class="sig-name descname"><span class="pre">disable_web_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.disable_web_user" title="Link to this definition"></a></dt>
+<dd><p>Disable a configured flask web user via /web_disable &lt;username&gt;.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.list_web_user">
+<span class="sig-name descname"><span class="pre">list_web_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.list_web_user" title="Link to this definition"></a></dt>
+<dd><p>Send enabled/disabled configured flask web users.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.send_help">
+<span class="sig-name descname"><span class="pre">send_help</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.send_help" title="Link to this definition"></a></dt>
+<dd><p>Send list of available bot commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.get_camera_config">
+<span class="sig-name descname"><span class="pre">get_camera_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.get_camera_config" title="Link to this definition"></a></dt>
+<dd><p>Send current camera configuration state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.switch_camera">
+<span class="sig-name descname"><span class="pre">switch_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.switch_camera" title="Link to this definition"></a></dt>
+<dd><p>Switch default camera type between blink and picam.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bot.receive_msg.ReceivingMessage.set_camera_config">
+<span class="sig-name descname"><span class="pre">set_camera_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bot.receive_msg.ReceivingMessage.set_camera_config" title="Link to this definition"></a></dt>
+<dd><p>Set mutable camera config options via /camera_set &lt;section&gt; &lt;option&gt; &lt;on|off&gt;.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>message</strong> (<em>telebot.types.Message</em>)</p>

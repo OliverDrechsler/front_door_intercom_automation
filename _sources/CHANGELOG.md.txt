@@ -1,5 +1,27 @@
 # ChangeLog
 
+# 2.0.11 - Release 2.0.11 (2026-07-21)
+
+### Changes
+- updated library versions (#257)
+
+**Version bump type:** default patch
+
+### Docker Image
+GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
+
+```bash
+docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+```
+
+### CI Build
+Artifacts were produced by CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/29867932745
+
+The attached release assets are the zipped CI artifacts for all successful target builds.
+
+
+
 # 2.0.10 - Release 2.0.10 (2026-06-30)
 
 ### Changes

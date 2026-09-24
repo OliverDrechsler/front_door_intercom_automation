@@ -44,11 +44,11 @@ Opening relais board can be buyed and must just be wired.
     - [Requirements](#requirements)
     - [Code tree structure](#code-tree-structure)
     - [Installation](#installation)
+    - [Docker on Raspberry Pi](#docker-on-raspberry-pi)
     - [Helper tools](#helper-tools)
       - [Encrypt and decrypt a password with base32 for totp](#encrypt-and-decrypt-a-password-with-base32-for-totp)
       - [get a OTP password or verify a OTP via cli](#get-a-otp-password-or-verify-a-otp-via-cli)
     - [System service setup](#system-service-setup)
-    - [Docker on Raspberry Pi](#docker-on-raspberry-pi)
     - [Configuration - config files](#configuration---config-files)
     - [config.yaml - config\_template.yaml](#configyaml---config_templateyaml)
     - [blink\_config.json](#blink_configjson)
@@ -110,6 +110,8 @@ The project offers the following functionality:
 - Multi camera type support - Blink camera or PiCam_API camera photo snapshot and sending on Telegram message request.
 - Automatic camera selection between Blink or PiCam_APi possible.
 - Fallback camera selection if one fails.
+- Admin-controlled activation and deactivation of configured Telegram and flask web users via chat commands.
+- Telegram chat admin-controlled possiblity to change of a few cammera settings see [telegram commands](#telegram-receiving-message-commands-and-interactions)
 - Internal [Flask](https://flask.palletsprojects.com/en/3.0.x/) website to open the front door with the browser using a time-based one-time password.
 - Internal Flask REST-API to open the front door (via time-based one-time password).
 - Possibility to enable / disable Flask Web-UI / REST-API - run without web interface
@@ -368,6 +370,27 @@ Received Telegram chat channel message command to action
 - `/Blink_auth <here your 6 digit security code>` = request to do a blink 2FA / MFA authentication and store blink config  
 - `<time based one time password code>` = validate totp, take a foto send it and open door.
 
+If you configure `general.admin_users`, those Telegram usernames can manage user activation for all configured
+Telegram users:
+
+- `/enable <username>` = activate a configured Telegram user
+- `/disable <username>` = deactivate a configured Telegram user
+- `/camera_get` = show current camera config (active default camera and related options)
+- `/camera_switch` = switch `photo_general.default_camera_type` between `blink` and `picam` (admin only)
+- `/camera_set <section> <option> <on|off>` = update camera options and store in `config.yaml` (admin only)
+  - supported section/option keys:
+    - `photo_general enable_detect_daylight`
+    - `blink enabled`
+    - `blink night_vision`
+    - `blink image_brightening`
+    - `picam enabled`
+    - `picam night_vision`
+    - `picam image_brightening`
+
+The enabled/disabled state is stored in the shared runtime JSON file `user_state.json`.
+You can override the file name or path with `general.user_state_file` in the config.
+The same user state is also used for the Web UI and REST-API login, so disabled users lose access there as well.
+
 
 
 ## Mobile Setup
@@ -522,6 +545,13 @@ You can set the log level via environment variable `LOG_LEVEL`
 to  either `CRITICAL`,`ERROR`,`INFO`,`WARN` or`DEBUG`  
 before you start the app.  
 The shell command will be `export LOG_LEVEL=DEBUG && python3 fdia.py`  
+
+The supplied `fdia.service` writes complete DEBUG logs to journald and
+enables ANSI level colors. View them with:
+
+```bash
+journalctl -u fdia.service -f -o cat
+```
 
 In case you want to store it permanently, you can add it in `fdia.py` file  
 and at top of the file (line 22 - after imports)  

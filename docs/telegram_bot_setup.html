@@ -64,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-11-2026-07-21">2.0.11 - Release 2.0.11 (2026-07-21)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-10-2026-06-30">2.0.10 - Release 2.0.10 (2026-06-30)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-9-2026-06-13">2.0.9 - Release 2.0.9 (2026-06-13)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-8-2026-06-13">2.0.8 - Release 2.0.8 (2026-06-13)</a></li>
@@ -73,7 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-3-2026-06-05">2.0.3 - Release 2.0.3 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-2-2026-06-05">2.0.2 - Release 2.0.2 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-2-0-1-2026-06-05">2.0.1 - Release 2.0.1 (2026-06-05)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id23">2.0.0 - 2.0.0 (2026-06-03)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id26">2.0.0 - 2.0.0 (2026-06-03)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#breaking-changes">Breaking changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#fixes">Fixes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#features">Features</a></li>
@@ -94,10 +95,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-3-2025-11-25">1.11.3 - Release 1.11.3 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-2-2025-11-25">1.11.2 - Release 1.11.2 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-11-1-2025-11-25">1.11.1 - Release 1.11.1 (2025-11-25)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id40">1.11 - 1.11 (2025-06-10)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id43">1.10 - 1.10 (2025-05-11)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id46">1.0.9 - 1.0.9 (2025-02-14)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id49">1.0.8 - 1.0.8 (2025-02-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id43">1.11 - 1.11 (2025-06-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id46">1.10 - 1.10 (2025-05-11)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id49">1.0.9 - 1.0.9 (2025-02-14)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#id52">1.0.8 - 1.0.8 (2025-02-10)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-7-2025-02-09">1.0.7 - Release 1.0.7 (2025-02-09)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-6-2025-02-02">1.0.6 - Release 1.0.6 (2025-02-02)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html#release-1-0-5-2024-11-25">1.0.5 - Release 1.0.5 (2024-11-25)</a></li>
@@ -257,53 +258,53 @@ Go to the group’s info page, select “Administrators,” and add the bot as a
 <p>Send from your mobile phone a message to the telegram chat group where your bot is assigned in.
 Now it time to ask other telegram chat group members to also send a test message to the group so that their from id’s are also visible in the below commands.</p>
 <p>Now run shell command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="s2">&quot;https://api.telegram.org/bot&lt;YOUR_BOT_TOKEN code&gt;/getUpdates&quot;</span> <span class="o">|</span><span class="n">jq</span> <span class="o">-</span><span class="n">r</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="s2">"https://api.telegram.org/bot&lt;YOUR_BOT_TOKEN code&gt;/getUpdates"</span> <span class="o">|</span><span class="n">jq</span> <span class="o">-</span><span class="n">r</span>
 </pre></div>
 </div>
 <p>example output:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-  <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">"ok"</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+  <span class="s2">"result"</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">839666728</span><span class="p">,</span>
-      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1994</span><span class="p">,</span>
-        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
-          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFirstName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFullName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+      <span class="s2">"update_id"</span><span class="p">:</span> <span class="mi">839666728</span><span class="p">,</span>
+      <span class="s2">"message"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"message_id"</span><span class="p">:</span> <span class="mi">1994</span><span class="p">,</span>
+        <span class="s2">"from"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
+          <span class="s2">"is_bot"</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">"first_name"</span><span class="p">:</span> <span class="s2">"MyFirstName"</span><span class="p">,</span>
+          <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"MyFullName"</span><span class="p">,</span>
+          <span class="s2">"language_code"</span><span class="p">:</span> <span class="s2">"de"</span>
         <span class="p">},</span>
-        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
-          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="s2">"chat"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"a_group_title"</span><span class="p">,</span>
+          <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"group"</span><span class="p">,</span>
+          <span class="s2">"all_members_are_administrators"</span><span class="p">:</span> <span class="n">true</span>
         <span class="p">},</span>
-        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
-        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;test text&quot;</span>
+        <span class="s2">"date"</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"test text"</span>
       <span class="p">}</span>
     <span class="p">},</span>
         <span class="p">{</span>
-      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">3456789012</span><span class="p">,</span>
-      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1995</span><span class="p">,</span>
-        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123450000</span><span class="p">,</span>
-          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFirstName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFullName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+      <span class="s2">"update_id"</span><span class="p">:</span> <span class="mi">3456789012</span><span class="p">,</span>
+      <span class="s2">"message"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"message_id"</span><span class="p">:</span> <span class="mi">1995</span><span class="p">,</span>
+        <span class="s2">"from"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="mi">123450000</span><span class="p">,</span>
+          <span class="s2">"is_bot"</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">"first_name"</span><span class="p">:</span> <span class="s2">"OtherUserFirstName"</span><span class="p">,</span>
+          <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"OtherUserFullName"</span><span class="p">,</span>
+          <span class="s2">"language_code"</span><span class="p">:</span> <span class="s2">"de"</span>
         <span class="p">},</span>
-        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
-          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="s2">"chat"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"a_group_title"</span><span class="p">,</span>
+          <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"group"</span><span class="p">,</span>
+          <span class="s2">"all_members_are_administrators"</span><span class="p">:</span> <span class="n">true</span>
         <span class="p">},</span>
-        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
-        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;other user test text&quot;</span>
+        <span class="s2">"date"</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"other user test text"</span>
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">]</span>
@@ -327,48 +328,48 @@ Now it time to ask other telegram chat group members to also send a test message
 <span class="n">Strict</span><span class="o">-</span><span class="n">Transport</span><span class="o">-</span><span class="n">Security</span><span class="p">:</span> <span class="nb">max</span><span class="o">-</span><span class="n">age</span><span class="o">=</span><span class="mi">31536000</span><span class="p">;</span> <span class="n">includeSubDomains</span><span class="p">;</span> <span class="n">preload</span>
 
 <span class="p">{</span>
-  <span class="s2">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-  <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">"ok"</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+  <span class="s2">"result"</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">839666728</span><span class="p">,</span>
-      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1994</span><span class="p">,</span>
-        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
-          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFirstName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;MyFullName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+      <span class="s2">"update_id"</span><span class="p">:</span> <span class="mi">839666728</span><span class="p">,</span>
+      <span class="s2">"message"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"message_id"</span><span class="p">:</span> <span class="mi">1994</span><span class="p">,</span>
+        <span class="s2">"from"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="mi">123456789</span><span class="p">,</span>
+          <span class="s2">"is_bot"</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">"first_name"</span><span class="p">:</span> <span class="s2">"MyFirstName"</span><span class="p">,</span>
+          <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"MyFullName"</span><span class="p">,</span>
+          <span class="s2">"language_code"</span><span class="p">:</span> <span class="s2">"de"</span>
         <span class="p">},</span>
-        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
-          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="s2">"chat"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"a_group_title"</span><span class="p">,</span>
+          <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"group"</span><span class="p">,</span>
+          <span class="s2">"all_members_are_administrators"</span><span class="p">:</span> <span class="n">true</span>
         <span class="p">},</span>
-        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
-        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;test text&quot;</span>
+        <span class="s2">"date"</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"test text"</span>
       <span class="p">}</span>
     <span class="p">},</span>
         <span class="p">{</span>
-      <span class="s2">&quot;update_id&quot;</span><span class="p">:</span> <span class="mi">3456789012</span><span class="p">,</span>
-      <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="mi">1995</span><span class="p">,</span>
-        <span class="s2">&quot;from&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">123450000</span><span class="p">,</span>
-          <span class="s2">&quot;is_bot&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-          <span class="s2">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFirstName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;OtherUserFullName&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;language_code&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+      <span class="s2">"update_id"</span><span class="p">:</span> <span class="mi">3456789012</span><span class="p">,</span>
+      <span class="s2">"message"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"message_id"</span><span class="p">:</span> <span class="mi">1995</span><span class="p">,</span>
+        <span class="s2">"from"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="mi">123450000</span><span class="p">,</span>
+          <span class="s2">"is_bot"</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+          <span class="s2">"first_name"</span><span class="p">:</span> <span class="s2">"OtherUserFirstName"</span><span class="p">,</span>
+          <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"OtherUserFullName"</span><span class="p">,</span>
+          <span class="s2">"language_code"</span><span class="p">:</span> <span class="s2">"de"</span>
         <span class="p">},</span>
-        <span class="s2">&quot;chat&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
-          <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;a_group_title&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;all_members_are_administrators&quot;</span><span class="p">:</span> <span class="n">true</span>
+        <span class="s2">"chat"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"id"</span><span class="p">:</span> <span class="o">-</span><span class="mi">987654321</span><span class="p">,</span>
+          <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"a_group_title"</span><span class="p">,</span>
+          <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"group"</span><span class="p">,</span>
+          <span class="s2">"all_members_are_administrators"</span><span class="p">:</span> <span class="n">true</span>
         <span class="p">},</span>
-        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
-        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;other user test text&quot;</span>
+        <span class="s2">"date"</span><span class="p">:</span> <span class="mi">1721202785</span><span class="p">,</span>
+        <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"other user test text"</span>
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">]</span>
