@@ -19,35 +19,60 @@ from door import bell
 from door.opener import DoorOpener
 from web.web_door_opener import WebDoorOpener
 
-"""Define logging LEVEL"""
-default_log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
-allowed_levels = {'CRITICAL': logging.CRITICAL, 'ERROR': logging.ERROR, 'WARNING': logging.WARNING,
-                  'INFO': logging.INFO, 'DEBUG': logging.DEBUG}
-log_level = allowed_levels.get(default_log_level, logging.INFO)
+# ── Logging ───────────────────────────────────────────────────────────────────
+
+_LOG_FORMAT = "%(asctime)s - %(levelname)s - %(name)s - %(threadName)s - %(funcName)s : %(message)s"
+_ANSI = {
+    "DEBUG": "\033[36m", "INFO": "\033[32m",
+    "WARNING": "\033[33m", "ERROR": "\033[31m", "CRITICAL": "\033[1;31m",
+}
+_RESET = "\033[0m"
 
 
-"""Define code logging"""
-format = "%(asctime)s - %(name)s - %(threadName)s - %(funcName)s : %(message)s"
-logging.basicConfig(format=format, level=default_log_level, datefmt="%Y-%m-%d %H:%M:%S")
-logger: logging.Logger = logging.getLogger(name="fdia")
+class _ColorFormatter(logging.Formatter):
+    """Colores Levelname-Type when color=True."""
 
-allowed_levels = {'critical': logging.CRITICAL, 'error': logging.ERROR, 'warning': logging.WARNING,
-    'info': logging.INFO, 'debug': logging.DEBUG}
-logging_argparse = ArgumentParser(prog=__file__, add_help=True)
-logging_argparse.add_argument("-l", "--log-level", default=f"{logging.getLevelName(default_log_level)}",
-    choices=allowed_levels, help="set log level", )
-logging_args, _ = logging_argparse.parse_known_args(args=sys.argv[1:])
-log_level = allowed_levels.get(logging_args.log_level.lower())
-try:
-    logging.getLogger().setLevel(level=log_level)
-except Exception:
-    logging.error(msg=f"Invalid log level retrieved from command line {logging_args.log_level}")
-    pass
+    def __init__(self, *args, color: bool = False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.color = color
 
-actual_log_level = logging.getLevelName(level=logger.getEffectiveLevel())
-logger.info(msg=f"set logging level to: {actual_log_level}")
-if actual_log_level is not logging.INFO:
-    telebot.logger.setLevel(level=actual_log_level)
+    def format(self, record: logging.LogRecord) -> str:
+        msg = super().format(record)
+        if self.color and (c := _ANSI.get(record.levelname)):
+            msg = msg.replace(f" - {record.levelname} - ",
+                              f" - {c}{record.levelname}{_RESET} - ", 1)
+        return msg
+
+
+def _use_color(stream) -> bool:
+    """auto/always/never via FDIA_LOG_COLOR; NO_COLOR accepted"""
+    mode = os.environ.get("FDIA_LOG_COLOR", "auto").lower()
+    if mode == "never" or "NO_COLOR" in os.environ:
+        return False
+    if mode == "always":
+        return True
+    return os.environ.get("TERM", "").lower() != "dumb" and getattr(stream, "isatty", lambda: False)()
+
+
+_handler = logging.StreamHandler()
+_handler.setFormatter(_ColorFormatter(_LOG_FORMAT, datefmt="%Y-%m-%d %H:%M:%S",
+                                      color=_use_color(_handler.stream)))
+
+_cli = ArgumentParser(add_help=False)
+_cli.add_argument("-l", "--log-level",
+                  default=os.getenv("LOG_LEVEL", "INFO"),
+                  choices=["debug", "info", "warning", "error", "critical"],
+                  type=str.lower)
+_log_level = _cli.parse_known_args()[0].log_level.upper()
+
+logging.basicConfig(handlers=[_handler], level=_log_level)
+logger: logging.Logger = logging.getLogger("fdia")
+logger.info("Log-Level: %s", _log_level)
+
+if _log_level != "INFO":
+    telebot.logger.setLevel(_log_level)
+
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 def __configure_ssl_certificates() -> None:

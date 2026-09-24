@@ -159,19 +159,77 @@ class WebDoorOpener:
         Returns:
             str or None: The authenticated username if successful, None otherwise.
         """
-        configured_password = self.users.get(username)
-        if configured_password is not None and hmac.compare_digest(configured_password, password):
-            self.app.logger.debug("Authentication: Success: User %s authenticated", username)
-            return username
+        authenticated_username = self.__authenticate_web_credentials(username, password)
+        if authenticated_username is not None:
+            self.app.logger.debug("Authentication: Success: User %s authenticated", authenticated_username)
+            return authenticated_username
         self.app.logger.info("Authentication: Failed: User: %s - user or password wrong", username)
-        self.app.logger.debug("Authentication: Failed: User %s used password %s", username, password)
         return None
+
+    @staticmethod
+    def __resolve_username_case_insensitive(username: str | None, usernames) -> str | None:
+        """
+        Returns the configured username matching the provided user name
+        case-insensitively.
+        """
+        if not isinstance(username, str):
+            return None
+
+        username_casefold = username.casefold()
+        for configured_username in usernames:
+            if isinstance(configured_username, str) and configured_username.casefold() == username_casefold:
+                return configured_username
+        return None
+
+    def __authenticate_web_credentials(self, username: str, password: str) -> str | None:
+        """
+        Returns the configured username when username and password are valid.
+        Username matching is case-insensitive.
+        """
+        configured_username = self.__resolve_username_case_insensitive(username, self.users.keys())
+        if configured_username is None:
+            return None
+
+        configured_password = self.users.get(configured_username)
+        if configured_password is None:
+            return None
+
+        state = self.config.get_web_user_state()
+        if configured_username not in state.get("enabled", []):
+            self.app.logger.info("Authentication: Failed: User %s is disabled", configured_username)
+            return None
+
+        if hmac.compare_digest(configured_password, password):
+            return configured_username
+        return None
+
+    def __has_valid_web_credentials(self, username: str, password: str) -> bool:
+        """
+        Verify web credentials using constant-time password comparison.
+        """
+        return self.__authenticate_web_credentials(username, password) is not None
 
     def __get_authenticated_session_user(self) -> str | None:
         """
         Returns the session user when the browser UI is authenticated.
         """
-        return session.get('username')
+        session_username = session.get('username')
+        if session_username is None:
+            return None
+
+        configured_username = self.__resolve_username_case_insensitive(session_username, self.users.keys())
+        if configured_username is None:
+            session.clear()
+            return None
+
+        state = self.config.get_web_user_state()
+        if configured_username not in state.get("enabled", []):
+            session.clear()
+            return None
+
+        if session_username != configured_username:
+            session['username'] = configured_username
+        return configured_username
 
     def __get_authenticated_basic_user(self) -> str | None:
         """
@@ -258,6 +316,13 @@ class WebDoorOpener:
 
         return 'anonymous'
 
+    @staticmethod
+    def __get_login_attempt_username() -> str | None:
+        """Return the username submitted by a browser login request."""
+        if request.endpoint != "login" or request.method != "POST":
+            return None
+        return request.form.get("username") or "<empty>"
+
     def __get_request_remote_ip(self) -> str:
         """
         Get the remote IP address of the request.
@@ -302,9 +367,12 @@ class WebDoorOpener:
 
         auth_started_at = time.perf_counter()
         user = self.__get_request_username()
+        login_attempt_username = self.__get_login_attempt_username()
         auth_duration_ms = round((time.perf_counter() - auth_started_at) * 1000, 2)
 
         self.app.logger.info('Request from: %s User: %s, Method: %s, Path: %s', self.__get_request_remote_ip(), user, request.method, request.path)
+        if login_attempt_username is not None:
+            self.app.logger.info('Login attempt in UI for user: %s', login_attempt_username)
         self.app.logger.debug("")
         self.app.logger.debug("======== HTTP Request: ==========")
         self.app.logger.debug("")
@@ -421,15 +489,20 @@ class WebDoorOpener:
 
             username = request.form['username']
             password = request.form['password']
-            configured_password = self.users.get(username)
-            if configured_password is not None and hmac.compare_digest(configured_password, password):
+            authenticated_username = self.__authenticate_web_credentials(username, password)
+            if authenticated_username is not None:
                 session.clear()
                 session.permanent = True
-                session['username'] = username
+                session['username'] = authenticated_username
                 session['csrf_token'] = secrets.token_urlsafe(32)
                 return redirect(url_for('index'))
             else:
-                return render_template("login_invalid.html", csrf_token=self.__get_or_create_csrf_token())
+                self.app.logger.warning(
+                    "Failed login request for username '%s' from %s",
+                    username,
+                    self.__get_request_remote_ip(),
+                )
+                return render_template("login_invalid.html", csrf_token=self.__get_or_create_csrf_token()), 401
 
         return render_template("login.html", csrf_token=self.__get_or_create_csrf_token())
 
@@ -484,9 +557,10 @@ class WebDoorOpener:
             self.message_task_queue.put(Message_Task(send=True, chat_id=self.config.telegram_chat_nr,
                                                      data_text=f"{auth_user} request open door"))
             asyncio.set_event_loop(self.loop)
-            asyncio.run_coroutine_threadsafe(
-                self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
-                self.loop)
+            if self.config.flask_take_photo_on_door_open_request:
+                asyncio.run_coroutine_threadsafe(
+                    self.camera_task_queue_async.put(Camera_Task(photo=True, chat_id=self.config.telegram_chat_nr)),
+                    self.loop)
             enqueue_duration_ms = round((time.perf_counter() - enqueue_started_at) * 1000, 2)
             handler_duration_ms = round((time.perf_counter() - handler_started_at) * 1000, 2)
             self.app.logger.info(

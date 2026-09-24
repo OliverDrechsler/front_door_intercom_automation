@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import json
 import logging
 import os
 import sys
@@ -36,9 +37,14 @@ class Configuration:
 
         self.bot: telebot.TeleBot = None
 
+        self.admin_users: list[str] = self.config.get("general", {}).get("admin_users", [])
         self.telegram_token: str = self.config["telegram"]["token"]
         self.telegram_chat_nr = self.config["telegram"]["chat_number"]
-        self.allowed_user_ids = self.config["telegram"]["allowed_user_ids"]
+        self.allowed_user_ids = self.__get_allowed_user_dict()
+        self.user_state_file: str = self.__resolve_runtime_path(
+            self.config.get("general", {}).get("user_state_file", "user_state.json")
+        )
+        self.telegram_take_photo_on_door_open_request: bool = self.config["telegram"]["take_photo_on_door_open_request"]
 
         self.otp_password: str = self.config["otp"]["password"]
         self.otp_length: int = self.config["otp"]["length"]
@@ -91,6 +97,258 @@ class Configuration:
         self.flask_browser_session_cookie_lifetime: int = self.config["web"]["browser_session_cookie_lifetime"]
         self.flask_session_cookie_secure: bool = self.config["web"].get("session_cookie_secure", False)
         self.flask_trusted_reverse_proxies: list[str] = self.config["web"].get("trusted_reverse_proxies", [])
+        self.flask_take_photo_on_door_open_request: bool = self.config["web"]["take_photo_on_door_open_request"]
+
+    def __get_allowed_user_dict(self) -> dict[str, str]:
+        """Get configured telegram users as username to user-id mapping."""
+        allowed_user_ids = self.config["telegram"].get("allowed_user_ids", {})
+        if not isinstance(allowed_user_ids, dict):
+            raise YamlReadError("telegram.allowed_user_ids must be a dictionary of username to user id")
+        return {str(username): str(user_id) for username, user_id in allowed_user_ids.items()}
+
+    def get_telegram_user_state(self) -> dict[str, list[str]]:
+        """
+        Load enabled/disabled telegram users from the runtime json file.
+        Missing files are initialized with all configured users enabled.
+        """
+        if not os.path.exists(self.user_state_file):
+            return self.__initialize_user_state()["telegram"]
+        return self.__get_user_state_for_domain(
+            domain="telegram",
+            allowed_users=list(self.allowed_user_ids.keys()),
+            admin_users=self.__get_domain_admin_users(self.allowed_user_ids),
+        )
+
+    def write_telegram_user_state(self, state: dict[str, list[str]]) -> None:
+        """Persist enabled/disabled telegram users into the runtime json file."""
+        self.__write_user_state_for_domain(
+            domain="telegram",
+            state=state,
+            allowed_users=list(self.allowed_user_ids.keys()),
+            admin_users=self.__get_domain_admin_users(self.allowed_user_ids),
+        )
+
+    def get_web_user_state(self) -> dict[str, list[str]]:
+        """Load enabled/disabled web users from the runtime json file."""
+        if not os.path.exists(self.user_state_file):
+            return self.__initialize_user_state()["web"]
+        return self.__get_user_state_for_domain(
+            domain="web",
+            allowed_users=list(self.web_user_dict.keys()),
+            admin_users=self.__get_domain_admin_users(self.web_user_dict),
+        )
+
+    def write_web_user_state(self, state: dict[str, list[str]]) -> None:
+        """Persist enabled/disabled web users into the runtime json file."""
+        self.__write_user_state_for_domain(
+            domain="web",
+            state=state,
+            allowed_users=list(self.web_user_dict.keys()),
+            admin_users=self.__get_domain_admin_users(self.web_user_dict),
+        )
+
+    def __initialize_user_state(self) -> dict[str, dict[str, list[str]]]:
+        """Create and normalize the shared state for all configured user domains."""
+        raw_state = self.__read_user_state_raw()
+        state = {
+            "telegram": self.__normalize_domain_user_state(
+            state=raw_state.get("telegram", {}),
+            allowed_users=list(self.allowed_user_ids.keys()),
+            admin_users=self.__get_domain_admin_users(self.allowed_user_ids),
+            ),
+            "web": self.__normalize_domain_user_state(
+            state=raw_state.get("web", {}),
+            allowed_users=list(self.web_user_dict.keys()),
+            admin_users=self.__get_domain_admin_users(self.web_user_dict),
+            ),
+        }
+        self.__write_user_state_raw(state)
+        return state
+
+    def __get_domain_admin_users(self, users: dict[str, Any]) -> list[str]:
+        """Return configured admin names using the domain's canonical casing."""
+        users_by_casefold = {str(username).casefold(): str(username) for username in users}
+        return [
+            users_by_casefold[admin_user.casefold()]
+            for admin_user in map(str, self.admin_users)
+            if admin_user.casefold() in users_by_casefold
+        ]
+
+    def __normalize_domain_user_state(
+        self,
+        state: dict[str, Any],
+        allowed_users: list[str],
+        admin_users: list[str],
+    ) -> dict[str, list[str]]:
+        """Normalize enabled/disabled user state for one domain."""
+        allowed_lookup = {str(username).casefold(): str(username) for username in allowed_users}
+
+        enabled_input = state.get("enabled", []) if isinstance(state, dict) else []
+        disabled_input = state.get("disabled", []) if isinstance(state, dict) else []
+        if not isinstance(enabled_input, list):
+            enabled_input = []
+        if not isinstance(disabled_input, list):
+            disabled_input = []
+
+        enabled: list[str] = []
+        for username in enabled_input:
+            username_key = allowed_lookup.get(str(username).casefold())
+            if username_key and username_key not in enabled:
+                enabled.append(username_key)
+
+        disabled: list[str] = []
+        for username in disabled_input:
+            username_key = allowed_lookup.get(str(username).casefold())
+            if username_key and username_key not in disabled:
+                disabled.append(username_key)
+
+        enabled = [username for username in enabled if username not in disabled]
+
+        if not enabled and not disabled and allowed_users:
+            enabled = list(allowed_users)
+
+        for admin_user in admin_users:
+            if admin_user in allowed_users and admin_user not in enabled:
+                enabled.append(admin_user)
+            disabled = [user for user in disabled if user != admin_user]
+
+        return {"enabled": enabled, "disabled": disabled}
+
+    def __read_user_state_raw(self) -> dict[str, Any]:
+        """Read the shared user state JSON document."""
+        if not os.path.exists(self.user_state_file):
+            return {}
+
+        with open(self.user_state_file, "r", encoding="utf-8") as json_file:
+            raw_state = json.load(json_file)
+
+        if not isinstance(raw_state, dict):
+            return {}
+
+        # Accept the original single-domain document if it is already at the
+        # configured shared state-file location.
+        if "telegram" not in raw_state and "web" not in raw_state and (
+            "enabled" in raw_state or "disabled" in raw_state
+        ):
+            return {"telegram": raw_state}
+
+        return raw_state
+
+    def __write_user_state_raw(self, raw_state: dict[str, Any]) -> None:
+        """Write full raw user state document."""
+        with open(self.user_state_file, "w", encoding="utf-8") as json_file:
+            json.dump(raw_state, json_file, indent=4)
+
+    def __get_user_state_for_domain(self, domain: str, allowed_users: list[str], admin_users: list[str]) -> dict[str, list[str]]:
+        """Get normalized state for one domain and persist normalization if required."""
+        raw_state = self.__read_user_state_raw()
+        domain_state = raw_state.get(domain, {}) if isinstance(raw_state, dict) else {}
+        normalized_state = self.__normalize_domain_user_state(
+            state=domain_state if isinstance(domain_state, dict) else {},
+            allowed_users=allowed_users,
+            admin_users=admin_users,
+        )
+
+        if not isinstance(raw_state, dict):
+            raw_state = {}
+        if raw_state.get(domain) != normalized_state:
+            raw_state[domain] = normalized_state
+            self.__write_user_state_raw(raw_state)
+
+        return normalized_state
+
+    def __write_user_state_for_domain(
+        self,
+        domain: str,
+        state: dict[str, list[str]],
+        allowed_users: list[str],
+        admin_users: list[str],
+    ) -> None:
+        """Normalize and persist one domain state while preserving other domains."""
+        raw_state = self.__read_user_state_raw()
+        if not isinstance(raw_state, dict):
+            raw_state = {}
+
+        raw_state[domain] = self.__normalize_domain_user_state(
+            state=state,
+            allowed_users=allowed_users,
+            admin_users=admin_users,
+        )
+        self.__write_user_state_raw(raw_state)
+
+    def get_camera_config_state(self) -> dict[str, Any]:
+        """Return current camera-related runtime configuration."""
+        return {
+            "photo_general": {
+                "default_camera_type": self.default_camera_type.value.lower(),
+                "enable_detect_daylight": self.enable_detect_daylight,
+            },
+            "blink": {
+                "enabled": self.blink_enabled,
+                "night_vision": self.blink_night_vision,
+                "image_brightening": self.blink_image_brightening,
+            },
+            "picam": {
+                "enabled": self.picam_enabled,
+                "night_vision": self.picam_night_vision,
+                "image_brightening": self.picam_image_brightening,
+            },
+            "telegram": {
+                "take_photo_on_door_open_request": self.telegram_take_photo_on_door_open_request,
+            },
+            "web": {
+                "take_photo_on_door_open_request": self.flask_take_photo_on_door_open_request,
+            },
+        }
+
+    def switch_default_camera_type(self) -> str:
+        """Toggle default camera type between blink and picam and persist the config."""
+        new_camera_type = "picam" if self.default_camera_type == DefaultCam.BLINK else "blink"
+        return self.set_default_camera_type(new_camera_type)
+
+    def set_default_camera_type(self, camera_type: str) -> str:
+        """Set photo_general.default_camera_type to blink or picam and persist the config."""
+        normalized_camera_type = str(camera_type).strip().lower()
+        if normalized_camera_type not in ("blink", "picam"):
+            raise ValueError("default_camera_type must be blink or picam")
+
+        self.config["photo_general"]["default_camera_type"] = normalized_camera_type
+        self.default_camera_type = DefaultCam(normalized_camera_type.upper())
+        self.__write_full_yaml_config()
+        return normalized_camera_type
+
+    def set_camera_bool_option(self, section: str, option: str, value: bool) -> bool:
+        """Set a camera-related bool option and persist the config."""
+        allowed_options: dict[str, dict[str, str]] = {
+            "photo_general": {"enable_detect_daylight": "enable_detect_daylight"},
+            "blink": {
+                "enabled": "blink_enabled",
+                "night_vision": "blink_night_vision",
+                "image_brightening": "blink_image_brightening",
+            },
+            "picam": {
+                "enabled": "picam_enabled",
+                "night_vision": "picam_night_vision",
+                "image_brightening": "picam_image_brightening",
+            },
+            "telegram": {
+                "take_photo_on_door_open_request": "telegram_take_photo_on_door_open_request"
+            },
+            "web": {
+                "take_photo_on_door_open_request": "flask_take_photo_on_door_open_request"
+            }
+        }
+        section_key = str(section).strip().lower()
+        option_key = str(option).strip().lower()
+        section_mapping = allowed_options.get(section_key)
+        if section_mapping is None or option_key not in section_mapping:
+            raise ValueError(f"unsupported camera option: {section}.{option}")
+
+        bool_value = bool(value)
+        self.config[section_key][option_key] = bool_value
+        setattr(self, section_mapping[option_key], bool_value)
+        self.__write_full_yaml_config()
+        return bool_value
 
     def __get_web_user_dict(self) -> dict:
         """Get user dict from list of yaml telegram.list
@@ -219,7 +477,14 @@ class Configuration:
         target_config_file = self.config_file
         if target_config_file.endswith("config_template.yaml"):
             target_config_file = os.path.join(self.base_path, "config.yaml")
+        self.config["otp"]["password"] = self.__base32_encode_totp_password(new_password)
+        self.__write_full_yaml_config(target_config_file=target_config_file)
 
-        with open(target_config_file, "w") as yaml_file:
-            self.config["otp"]["password"] = self.__base32_encode_totp_password(new_password)
-            yaml.dump(self.config, yaml_file, default_flow_style=False)
+    def __write_full_yaml_config(self, target_config_file: str | None = None) -> None:
+        """Persist the complete in-memory yaml configuration to disk."""
+        target_file = target_config_file or self.config_file
+        if target_file.endswith("config_template.yaml"):
+            target_file = os.path.join(self.base_path, "config.yaml")
+
+        with open(target_file, "w") as yaml_file:
+            yaml.dump(self.config, yaml_file, default_flow_style=False, sort_keys=False)

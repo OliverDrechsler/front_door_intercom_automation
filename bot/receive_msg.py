@@ -34,10 +34,30 @@ class ReceivingMessage():
         blink_list: list[str] = ["blink", "Blink", "BLINK"]
         picam_list: list[str] = ["picam", "Picam", "PICAM", "PiCam"]
         blink_auth_list: list[str] = ["blink_auth", "Blink_auth", "Blink_Auth", "BLINK_AUTH"]
+        enable_list: list[str] = ["enable", "Enable", "ENABLE"]
+        disable_list: list[str] = ["disable", "Disable", "DISABLE"]
+        web_enable_list: list[str] = ["web_enable", "Web_enable", "WEB_ENABLE"]
+        web_disable_list: list[str] = ["web_disable", "Web_disable", "WEB_DISABLE"]
+        list_user_list: list[str] = ["list_user", "List_user", "List_User", "LIST_USER"]
+        list_web_user_list: list[str] = ["list_web_user", "List_web_user", "List_Web_User", "LIST_WEB_USER"]
+        camera_get_list: list[str] = ["camera_get", "Camera_get", "CAMERA_GET"]
+        camera_switch_list: list[str] = ["camera_switch", "Camera_switch", "CAMERA_SWITCH"]
+        camera_set_list: list[str] = ["camera_set", "Camera_set", "CAMERA_SET"]
+        help_list: list[str] = ["help", "Help", "HELP"]
         self.foto_command = self.bot.message_handler(commands=foto_list)(self.take_foto)
         self.blink_command = self.bot.message_handler(commands=blink_list)(self.take_blink_foto)
         self.picam_command = self.bot.message_handler(commands=picam_list)(self.take_picam_foto)
         self.blink_auth_command = self.bot.message_handler(commands=blink_auth_list)(self.register_bink_authentication)
+        self.enable_command = self.bot.message_handler(commands=enable_list)(self.enable_user)
+        self.disable_command = self.bot.message_handler(commands=disable_list)(self.disable_user)
+        self.web_enable_command = self.bot.message_handler(commands=web_enable_list)(self.enable_web_user)
+        self.web_disable_command = self.bot.message_handler(commands=web_disable_list)(self.disable_web_user)
+        self.list_user_command = self.bot.message_handler(commands=list_user_list)(self.list_user)
+        self.list_web_user_command = self.bot.message_handler(commands=list_web_user_list)(self.list_web_user)
+        self.camera_get_command = self.bot.message_handler(commands=camera_get_list)(self.get_camera_config)
+        self.camera_switch_command = self.bot.message_handler(commands=camera_switch_list)(self.switch_camera)
+        self.camera_set_command = self.bot.message_handler(commands=camera_set_list)(self.set_camera_config)
+        self.help_command = self.bot.message_handler(commands=help_list)(self.send_help)
         self.message_request = self.bot.message_handler(func=lambda message: message.content_type == "text")(
             self.receive_any_msg_text)
 
@@ -96,7 +116,7 @@ class ReceivingMessage():
         If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
         The camera task contains the chat ID, message, reply flag, and photo flag.
         """
-        self.logger.debug(f"received foto request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             self.__schedule_camera_task(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, photo=True)
@@ -112,7 +132,7 @@ class ReceivingMessage():
         Returns:
             None
         """
-        self.logger.debug(f"received /picam request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             self.__schedule_camera_task(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, picam_photo=True)
@@ -133,7 +153,7 @@ class ReceivingMessage():
         If the conditions are met, it sets the event loop to the current loop and puts a camera task into the camera task queue.
         The camera task contains the chat ID, message, reply flag, and blink_photo flag.
         """
-        self.logger.debug(f"received blink request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             self.__schedule_camera_task(
                 Camera_Task(chat_id=message.chat.id, message=message, reply=True, blink_photo=True)
@@ -150,10 +170,168 @@ class ReceivingMessage():
         Returns:
             None
         """
-        self.logger.debug(f"received /blink_auth request with message {message}")
+        self.__log_command_received(message)
         if self.__get_allowed(message=message):
             # start new thread for taking a foto
             self.__rcv_blink_auth(message)
+
+    def enable_user(self, message: telebot.types.Message) -> None:
+        """Enable a configured telegram user via /enable <username>."""
+        self.__log_command_received(message)
+        self.__set_user_state(message=message, enabled=True)
+
+    def disable_user(self, message: telebot.types.Message) -> None:
+        """Disable a configured telegram user via /disable <username>."""
+        self.__log_command_received(message)
+        self.__set_user_state(message=message, enabled=False)
+
+    def list_user(self, message: telebot.types.Message) -> None:
+        """Send enabled/disabled configured telegram users."""
+        self.__log_command_received(message)
+        if not self.__get_allowed(message=message):
+            return
+
+        telegram_state = self.config.get_telegram_user_state()
+        web_state = self.config.get_web_user_state()
+
+        def format_state(title: str, state: dict[str, list[str]]) -> str:
+            enabled_users = state.get("enabled", [])
+            disabled_users = state.get("disabled", [])
+            enabled_text = "\n".join([f"- {username}" for username in enabled_users]) or "- none"
+            disabled_text = "\n".join([f"- {username}" for username in disabled_users]) or "- none"
+            return f"{title}:\nEnabled users:\n{enabled_text}\n\nDisabled users:\n{disabled_text}"
+
+        message_text = (
+            f"{format_state('Telegram users', telegram_state)}\n\n"
+            f"{format_state('Web users', web_state)}"
+        )
+        self.bot.reply_to(message=message, text=message_text)
+
+    def enable_web_user(self, message: telebot.types.Message) -> None:
+        """Enable a configured flask web user via /web_enable <username>."""
+        self.__log_command_received(message)
+        self.__set_web_user_state(message=message, enabled=True)
+
+    def disable_web_user(self, message: telebot.types.Message) -> None:
+        """Disable a configured flask web user via /web_disable <username>."""
+        self.__log_command_received(message)
+        self.__set_web_user_state(message=message, enabled=False)
+
+    def list_web_user(self, message: telebot.types.Message) -> None:
+        """Send enabled/disabled configured flask web users."""
+        self.__log_command_received(message)
+        if not self.__get_allowed(message=message):
+            return
+
+        state = self.config.get_web_user_state()
+        enabled_users = state.get("enabled", [])
+        disabled_users = state.get("disabled", [])
+
+        enabled_text = "\n".join([f"- {username}" for username in enabled_users]) or "- none"
+        disabled_text = "\n".join([f"- {username}" for username in disabled_users]) or "- none"
+        message_text = f"Enabled web users:\n{enabled_text}\n\nDisabled web users:\n{disabled_text}"
+        self.bot.reply_to(message=message, text=message_text)
+
+    def send_help(self, message: telebot.types.Message) -> None:
+        """Send list of available bot commands."""
+        self.__log_command_received(message)
+        if not self.__get_allowed(message=message):
+            return
+
+        help_text = (
+            "Available commands:\n"
+            "\n"
+            "<send only code to open>\n"
+            "\n"
+            "/foto   # take from default camera a foto\n"
+            "/blink  # takes a blink camera foto\n"
+            "/picam. # takes a picam camera foto\n"
+            "/blink_auth <token>  # authenticates required blink 2FA again with given code\n"
+            "/enable <username>\n"
+            "/disable <username>\n"
+            "/list_user\n"
+            "/web_enable <username>\n"
+            "/web_disable <username>\n"
+            "/list_web_user\n"
+            "/camera_get  # shows camera config\n"
+            "/camera_switch  # switches active camera between blink and picam\n"
+            "/camera_set <section> <option> <on|off>  # changes camera config option\n"
+            "/help  # this help\n"
+        )
+        self.bot.send_message(chat_id=message.chat.id, text=help_text)
+
+    def get_camera_config(self, message: telebot.types.Message) -> None:
+        """Send current camera configuration state."""
+        self.__log_command_received(message)
+        if not self.__get_allowed(message=message):
+            return
+
+        state = self.config.get_camera_config_state()
+        message_text = (
+            "Camera config:\n"
+            f"photo_general.default_camera_type: {state['photo_general']['default_camera_type']}\n"
+            f"photo_general.enable_detect_daylight: {state['photo_general']['enable_detect_daylight']}\n"
+            f"blink.enabled: {state['blink']['enabled']}\n"
+            f"blink.night_vision: {state['blink']['night_vision']}\n"
+            f"blink.image_brightening: {state['blink']['image_brightening']}\n"
+            f"picam.enabled: {state['picam']['enabled']}\n"
+            f"picam.night_vision: {state['picam']['night_vision']}\n"
+            f"picam.image_brightening: {state['picam']['image_brightening']}\n"
+            f"web.take_photo_on_door_open_request: {state['web']['take_photo_on_door_open_request']}\n"
+            f"telegram.take_photo_on_door_open_request: {state['telegram']['take_photo_on_door_open_request']}"
+        )
+        self.bot.reply_to(message=message, text=message_text)
+
+    def switch_camera(self, message: telebot.types.Message) -> None:
+        """Switch default camera type between blink and picam."""
+        self.__log_command_received(message)
+        if not self.__is_admin(message=message):
+            return
+
+        try:
+            new_type = self.config.switch_default_camera_type()
+        except Exception as err:
+            self.logger.error("switch camera failed: %s", err)
+            self.bot.reply_to(message=message, text="Failed to switch camera")
+            return
+
+        self.bot.reply_to(message=message, text=f"default_camera_type switched to {new_type}")
+
+    def set_camera_config(self, message: telebot.types.Message) -> None:
+        """Set mutable camera config options via /camera_set <section> <option> <on|off>."""
+        self.__log_command_received(message)
+        if not self.__is_admin(message=message):
+            return
+
+        match = re.search(
+            r"^/camera_set\s+([A-Za-z_]+)\s+([A-Za-z_]+)\s+(on|off|true|false|1|0)$",
+            message.text or "",
+            re.IGNORECASE,
+        )
+        if not match:
+            self.bot.reply_to(message=message, text="Usage: /camera_set <section> <option> <on|off>")
+            return
+
+        section = match.group(1).lower()
+        option = match.group(2).lower()
+        value_raw = match.group(3).lower()
+        bool_value = value_raw in ("on", "true", "1")
+
+        if section == "photo_general" and option == "default_camera_type":
+            self.bot.reply_to(message=message, text="Use /camera_switch for default_camera_type")
+            return
+
+        try:
+            self.config.set_camera_bool_option(section=section, option=option, value=bool_value)
+        except ValueError:
+            self.bot.reply_to(message=message, text=f"Unsupported option {section}.{option}")
+            return
+        except Exception as err:
+            self.logger.error("camera_set failed: %s", err)
+            self.bot.reply_to(message=message, text="Failed to write config")
+            return
+
+        self.bot.reply_to(message=message, text=f"{section}.{option} set to {bool_value}")
 
     def __rcv_blink_auth(self, message: telebot.types.Message) -> None:
         self.logger.debug(f"received blink token with message {message}")
@@ -181,11 +359,124 @@ class ReceivingMessage():
             return
         future.add_done_callback(self.__log_camera_task_failure)
 
+    def __log_command_received(self, message: telebot.types.Message) -> None:
+        """Log a Telegram command, its value, and sender without exposing secrets."""
+        command_text = message.text if isinstance(message.text, str) else ""
+        command, separator, value = command_text.partition(" ")
+        command = command or "<unknown>"
+        value = value if separator else "<none>"
+        if command.casefold() == "/blink_auth":
+            value = "<redacted>"
+        from_user = getattr(message, "from_user", None)
+        username = getattr(from_user, "username", None) or "<no username>"
+        user_id = getattr(from_user, "id", "<unknown>")
+        self.logger.info(
+            "Received Telegram command %s with value %s from user %s (id=%s)",
+            command,
+            value,
+            username,
+            user_id,
+        )
+
     def __log_camera_task_failure(self, future) -> None:
         try:
             future.result()
         except Exception as err:
             self.logger.error("Error scheduling camera task: %s", err)
+
+    def __set_user_state(self, message: telebot.types.Message, enabled: bool) -> None:
+        """
+        Update enabled/disabled status for a configured telegram username.
+        Only configured admins in the configured chat may use this command.
+        """
+        self.logger.debug("__set_user_state")
+        if not self.__is_admin(message=message):
+            self.logger.debug("__set_user_state not admin")
+            return
+
+        match = re.search(r"^/(enable|disable)\s+([A-Za-z0-9_]+)$", message.text or "", re.IGNORECASE)
+        if not match:
+            self.logger.debug("__set_user_state not regex match")
+            command = "enable" if enabled else "disable"
+            self.bot.reply_to(message=message, text=f"Usage: /{command} <username>")
+            return
+
+        username = match.group(2)
+        allowed_lookup = {
+            str(allowed_username).lower(): str(allowed_username)
+            for allowed_username in self.config.allowed_user_ids
+        }
+        username_key = allowed_lookup.get(str(username).lower())
+        if not username_key:
+            self.logger.debug("__set_user_state user not in allowed")
+            return
+
+        state = self.config.get_telegram_user_state()
+        enabled_users = [user for user in state["enabled"] if user != username_key]
+        disabled_users = [user for user in state["disabled"] if user != username_key]
+
+        if enabled:
+            enabled_users.append(username_key)
+        else:
+            admin_usernames = {str(admin_user).casefold() for admin_user in self.config.admin_users}
+            if username_key.casefold() in admin_usernames:
+                self.bot.reply_to(message=message, text=f"{username_key} is admin and cannot be disabled")
+                return
+            disabled_users.append(username_key)
+
+        new_state = {"enabled": enabled_users, "disabled": disabled_users}
+        self.config.write_telegram_user_state(new_state)
+        self.bot.reply_to(message=message, text=f"{username_key} {'enabled' if enabled else 'disabled'}")
+
+    def __is_admin(self, message: telebot.types.Message) -> bool:
+        """Return True when the telegram user may manage enable/disable commands."""
+        if str(message.chat.id) != str(self.config.telegram_chat_nr):
+            return False
+        username = self.__get_username_for_user_id(message=message)
+        admin_users = [str(admin_user) for admin_user in self.config.admin_users]
+        self.logger.debug(f"__is_admin {username} in {admin_users}")
+        return username in admin_users
+
+    def __set_web_user_state(self, message: telebot.types.Message, enabled: bool) -> None:
+        """
+        Update enabled/disabled status for a configured flask web username.
+        Only configured admins in the configured telegram chat may use this command.
+        """
+        if not self.__is_admin(message=message):
+            return
+
+        command = "web_enable" if enabled else "web_disable"
+        match = re.search(r"^/(web_enable|web_disable)\s+([A-Za-z0-9_]+)$", message.text or "", re.IGNORECASE)
+        if not match:
+            self.bot.reply_to(message=message, text=f"Usage: /{command} <username>")
+            return
+
+        username = match.group(2)
+        allowed_lookup = {
+            str(allowed_username).lower(): str(allowed_username)
+            for allowed_username in self.config.web_user_dict.keys()
+        }
+        username_key = allowed_lookup.get(str(username).lower())
+        if not username_key:
+            self.bot.reply_to(message=message, text=f"Unknown web user: {username}")
+            return
+
+        state = self.config.get_web_user_state()
+        enabled_users = [user for user in state["enabled"] if user != username_key]
+        disabled_users = [user for user in state["disabled"] if user != username_key]
+
+        if enabled:
+            enabled_users.append(username_key)
+        else:
+            admin_usernames = {str(admin_user).casefold() for admin_user in self.config.admin_users}
+            if username_key.casefold() in admin_usernames:
+                self.bot.reply_to(message=message, text=f"{username_key} is admin and cannot be disabled")
+                return
+            disabled_users.append(username_key)
+
+        new_state = {"enabled": enabled_users, "disabled": disabled_users}
+        self.config.write_web_user_state(new_state)
+        self.bot.reply_to(message=message, text=f"web user {username_key} {'enabled' if enabled else 'disabled'}")
 
     def __get_allowed(self, message: telebot.types.Message) -> bool:
         """
@@ -212,10 +503,30 @@ class ReceivingMessage():
         Returns:
             bool: True if the user is allowed, False otherwise.
         """
-        allowed_user_ids = {str(user_id) for user_id in self.config.allowed_user_ids}
-        if str(message.from_user.id) in allowed_user_ids:
+        username = self.__get_username_for_user_id(message=message)
+        if username is None:
+            return False
+
+        state = self.config.get_telegram_user_state()
+        if username in state.get("disabled", []):
+            return False
+        if username in state.get("enabled", []):
             return True
         return False
+
+    def __get_username_for_user_id(self, message: telebot.types.Message) -> str | None:
+        """Return configured username for the telegram user id in the message."""
+        message_user_id = str(message.from_user.id)
+        for username, user_id in self.config.allowed_user_ids.items():
+            if str(user_id) == message_user_id:
+                return username
+        return None
+
+    def __get_message_username(self, message: telebot.types.Message) -> str:
+        """Return telegram username without leading @."""
+        username = getattr(message.from_user, "username", "") or ""
+        self.logger.debug(f"__get_message_username {username}")
+        return username.removeprefix("@")
 
     def __validate_msg_text_has_code(self, message: telebot.types.Message) -> bool:
         """
@@ -260,6 +571,10 @@ class ReceivingMessage():
             self.logger.info(msg=message.text + " TOTP code correct")
             self.door_open_task_queue.put(
                 Open_Door_Task(open=True, reply=True, chat_id=self.config.telegram_chat_nr, message=message))
+            if self.config.telegram_take_photo_on_door_open_request:
+                self.__schedule_camera_task(
+                    Camera_Task(chat_id=message.chat.id, photo=True)
+                )
             self.bot.send_message(chat_id=message.chat.id, text="Code accepted.")
             self.logger.info(msg="Door opened for 5 Sec.")
             return True

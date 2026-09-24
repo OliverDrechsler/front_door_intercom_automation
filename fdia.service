@@ -7,6 +7,10 @@ After=network-online.target
 [Service]
 #Type=simple
 ExecStart=/usr/local/bin/front_door_intercom_automation/.venv/bin/python3 /usr/local/bin/front_door_intercom_automation/fdia.py
+StandardOutput=journal
+StandardError=journal
+Environment="LOG_LEVEL=DEBUG"
+Environment="FDIA_LOG_COLOR=always"
 
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process

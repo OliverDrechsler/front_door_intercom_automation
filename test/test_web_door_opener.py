@@ -1,4 +1,5 @@
 import unittest
+import hmac
 from unittest.mock import patch, MagicMock
 from base64 import b64encode
 from web.web_door_opener import WebDoorOpener
@@ -13,6 +14,8 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         cls.mock_config = MagicMock()
         cls.mock_config.flask_secret_key = 'test_secret_key'
         cls.mock_config.web_user_dict = {'testuser': 'testpassword'}
+        cls.mock_config.get_telegram_user_state = MagicMock(return_value={"enabled": ["testuser"], "disabled": ["disableduser"]})
+        cls.mock_config.get_web_user_state = MagicMock(return_value={"enabled": ["testuser"], "disabled": ["disableduser"]})
         cls.mock_config.otp_password = 'base32secret3232'
         cls.mock_config.otp_length = 6
         cls.mock_config.hash_type = 'sha1'
@@ -55,6 +58,11 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         # Clear session data for each test
         # Create a fresh test client for each test to isolate sessions
         self.client = self.web_door_opener.app.test_client()
+        self.web_door_opener.users = {'testuser': 'testpassword'}
+        self.web_door_opener.config.web_user_dict = {'testuser': 'testpassword', 'disableduser': 'testpassword'}
+        self.web_door_opener.config.get_web_user_state = MagicMock(
+            return_value={"enabled": ["testuser"], "disabled": ["disableduser"]}
+        )
 
     def _get_csrf_token(self):
         self.client.get('/login')
@@ -64,7 +72,16 @@ class WebDoorOpenerTestCase(unittest.TestCase):
     def test_verify_password(self):
         self.web_door_opener.users = {'testuser': 'testpassword'}
         self.assertTrue(self.web_door_opener.verify_password('testuser', 'testpassword'))
+        self.assertTrue(self.web_door_opener.verify_password('TestUser', 'testpassword'))
         self.assertFalse(self.web_door_opener.verify_password('testuser', 'wrongpassword'))
+
+    def test_verify_password_accepts_flask_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.get_web_user_state = MagicMock(
+            return_value={"enabled": [], "disabled": ["disableduser"]}
+        )
+
+        self.assertIsNone(self.web_door_opener.verify_password('disableduser', 'testpassword'))
 
     def test_login_get(self):
         self.web_door_opener.browsers = ["werkzeug"]
@@ -82,15 +99,86 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         })
         self.assertEqual(302, response.status_code)  # Redirects to index
 
-    def test_login_post_failure(self):
+    def test_login_post_success_with_case_insensitive_username(self):
+        self.web_door_opener.users = {'testuser': 'testpassword'}
         csrf_token = self._get_csrf_token()
         response = self.client.post('/login', data={
-            'username': 'testuser',
-            'password': 'wrongpassword',
+            'username': 'TestUser',
+            'password': 'testpassword',
             'csrf_token': csrf_token,
         })
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(302, response.status_code)
+        with self.client.session_transaction() as session:
+            self.assertEqual('testuser', session['username'])
+
+    def test_login_post_uses_compare_digest(self):
+        csrf_token = self._get_csrf_token()
+
+        with patch('web.web_door_opener.hmac.compare_digest', wraps=hmac.compare_digest) as mock_compare_digest:
+            response = self.client.post('/login', data={
+                'username': 'testuser',
+                'password': 'testpassword',
+                'csrf_token': csrf_token,
+            })
+
+        self.assertEqual(302, response.status_code)
+        mock_compare_digest.assert_called()
+
+    def test_login_post_failure(self):
+        csrf_token = self._get_csrf_token()
+        with patch.object(self.web_door_opener.app.logger, 'warning') as mock_warning:
+            response = self.client.post('/login', data={
+                'username': 'testuser',
+                'password': 'wrongpassword',
+                'csrf_token': csrf_token,
+            })
+        self.assertEqual(response.status_code, 401)
         self.assertIn(b'Invalid credentials, please try again.', response.data)
+        self.assertTrue(any(
+            "Failed login request" in str(call)
+            for call in mock_warning.call_args_list
+        ))
+
+    def test_login_post_failure_logs_attempted_username(self):
+        csrf_token = self._get_csrf_token()
+        with patch.object(self.web_door_opener.app.logger, 'info') as mock_info:
+            response = self.client.post('/login', data={
+                'username': 'unknown-user',
+                'password': 'wrongpassword',
+                'csrf_token': csrf_token,
+            })
+
+        self.assertEqual(response.status_code, 401)
+        self.assertTrue(any(
+            call.args == ('Login attempt in UI for user: %s', 'unknown-user')
+            for call in mock_info.call_args_list
+        ))
+
+    def test_login_post_success_for_flask_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.get_web_user_state = MagicMock(
+            return_value={"enabled": ["disableduser"], "disabled": []}
+        )
+        csrf_token = self._get_csrf_token()
+        response = self.client.post('/login', data={
+            'username': 'disableduser',
+            'password': 'testpassword',
+            'csrf_token': csrf_token,
+        })
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_post_rejects_disabled_flask_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.get_web_user_state = MagicMock(
+            return_value={"enabled": [], "disabled": ["disableduser"]}
+        )
+        csrf_token = self._get_csrf_token()
+        response = self.client.post('/login', data={
+            'username': 'disableduser',
+            'password': 'testpassword',
+            'csrf_token': csrf_token,
+        })
+        self.assertEqual(response.status_code, 401)
 
     def test_login_post_missing_csrf_fails(self):
         response = self.client.post('/login', data={
@@ -137,6 +225,22 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         
         auth_header = {
             'Authorization': 'Basic ' + b64encode(b'testuser:testpassword').decode('utf-8')
+        }
+        response = self.client.post('/open', headers=auth_header, json={'totp': '123456'})
+        self.assertEqual(201, response.status_code)
+        self.assertIn(b'TOTP is valid! Opening!', response.data)
+
+    @patch('pyotp.TOTP.verify', return_value=True)
+    def test_open_success_with_basic_auth_case_insensitive_username(self, mock_verify):
+        self.web_door_opener.users = {'testuser': 'testpassword'}
+
+        async def async_put(item):
+            return item
+
+        self.web_door_opener.camera_task_queue_async.put = MagicMock(side_effect=lambda item: async_put(item))
+
+        auth_header = {
+            'Authorization': 'Basic ' + b64encode(b'TestUser:testpassword').decode('utf-8')
         }
         response = self.client.post('/open', headers=auth_header, json={'totp': '123456'})
         self.assertEqual(201, response.status_code)
@@ -220,6 +324,27 @@ class WebDoorOpenerTestCase(unittest.TestCase):
         })
         self.assertEqual(401, response.status_code)
         self.assertIn(b'Unauthorized', response.data)
+
+    def test_open_with_basic_auth_accepts_flask_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.get_web_user_state = MagicMock(
+            return_value={"enabled": ["disableduser"], "disabled": []}
+        )
+        with patch('pyotp.TOTP.verify', return_value=True):
+            response = self.client.post('/open', headers={
+                'Authorization': 'Basic ' + b64encode(b'disableduser:testpassword').decode('utf-8')
+            }, json={'totp': '123456'})
+        self.assertEqual(201, response.status_code)
+
+    def test_open_with_basic_auth_rejects_disabled_flask_user(self):
+        self.web_door_opener.users = {'disableduser': 'testpassword'}
+        self.web_door_opener.config.get_web_user_state = MagicMock(
+            return_value={"enabled": [], "disabled": ["disableduser"]}
+        )
+        response = self.client.post('/open', headers={
+            'Authorization': 'Basic ' + b64encode(b'disableduser:testpassword').decode('utf-8')
+        }, json={'totp': '123456'})
+        self.assertEqual(401, response.status_code)
 
     def test_login_response_contains_security_headers(self):
         response = self.client.get('/login')
