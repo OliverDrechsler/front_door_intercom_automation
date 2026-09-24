@@ -321,6 +321,20 @@ class TestConfiguration(unittest.TestCase):
         self.assertFalse(self.config.config["blink"]["night_vision"])
         mock_write.assert_called_once()
 
+    @patch.object(Configuration, '_Configuration__write_full_yaml_config')
+    def test_set_web_photo_option_updates_runtime_state(self, mock_write):
+        result = self.config.set_camera_bool_option(
+            "web", "take_photo_on_door_open_request", False
+        )
+
+        self.assertFalse(result)
+        self.assertFalse(self.config.flask_take_photo_on_door_open_request)
+        self.assertFalse(
+            self.config.get_camera_config_state()["web"]["take_photo_on_door_open_request"]
+        )
+        self.assertFalse(self.config.config["web"]["take_photo_on_door_open_request"])
+        mock_write.assert_called_once()
+
     def test_set_camera_bool_option_invalid(self):
         with self.assertRaises(ValueError):
             self.config.set_camera_bool_option("blink", "unsupported", True)

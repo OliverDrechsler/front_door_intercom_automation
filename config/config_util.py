@@ -335,7 +335,7 @@ class Configuration:
                 "take_photo_on_door_open_request": "telegram_take_photo_on_door_open_request"
             },
             "web": {
-                "take_photo_on_door_open_request": "web_take_photo_on_door_open_request"
+                "take_photo_on_door_open_request": "flask_take_photo_on_door_open_request"
             }
         }
         section_key = str(section).strip().lower()
