@@ -575,7 +575,6 @@ class ReceivingMessage():
                 self.__schedule_camera_task(
                     Camera_Task(chat_id=message.chat.id, photo=True)
                 )
-            self.bot.send_message(chat_id=message.chat.id, text="Code accepted.")
             self.logger.info(msg="Door opened for 5 Sec.")
             return True
         else:
