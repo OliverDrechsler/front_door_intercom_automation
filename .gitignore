@@ -32,3 +32,4 @@ docs/_sources/*
 .envrc
 .venv/*
 .python-version
+.env
