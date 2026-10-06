@@ -1,5 +1,27 @@
 # ChangeLog
 
+# 2.1.1 - Release 2.1.1 (2026-10-06)
+
+### Changes
+- fix/remove_unneeded_bot_code_accepted_reply: savepoint (#260)
+
+**Version bump type:** patch
+
+### Docker Image
+GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
+
+```bash
+docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+```
+
+### CI Build
+Artifacts were produced by CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37463195611
+
+The attached release assets are the zipped CI artifacts for all successful target builds.
+
+
+
 # 2.1.0 - Release 2.1.0 (2026-09-24)
 
 ### Changes
