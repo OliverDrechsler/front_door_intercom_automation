@@ -129,7 +129,7 @@ The project offers the following functionality:
 | Notification (channel) | ✅ via Telegram group | ✅ via Telegram group | ✅Blink App | ✅❌ Telegram but no HW module -> no detection |  
 | Multi user notification | ✅ | ✅ | ❌ dependend on Account | ✅ |  
 | Multi user door opening | ✅ | ✅ | ❌ | ❌ |  
-| GDPR data storage | ✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed | ❌ Camaera Internet / Cloud exposed | ✅ no data Exposure |  
+| GDPR data storage | ❗️ no Internet facing data/nor Camaera exposure; **Door photo exposure to Telegram chat group - archival dependend on personal deletion interval** | ❗️ **Blink Camera is by default to Amazon cloud exposed** - further Door photo exposure to Telegram chat group archival dependend on personal deletion interval | ❌ **Blink Camaera to Amazon Cloud exposed** | ✅ no data Exposure |  
 | possible local usage without Internet (door opening only) | ✅ | ✅opening - ❌ no camera snapshot | ❌ | ✅ |  
 
 ## Get started
