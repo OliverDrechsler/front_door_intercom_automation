@@ -1,6 +1,6 @@
 # Building Binary Artifacts and Docker Images
 
-This guide describes how to build the supported binary targets and the Docker image defined by the project `Dockerfile`. The commands follow `.github/workflows/ci.yml`.
+This guide describes how to build the supported binary targets and the Docker image defined by the project `Dockerfile`.
 
 ## Binary Build Prerequisites
 
