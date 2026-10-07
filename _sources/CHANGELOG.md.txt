@@ -1,5 +1,18 @@
 # ChangeLog
 
+## 2.1.6 - Release 2.1.6 (2026-10-07)
+
+#### Changes
+- updated_gh_pages_changelog_indentation
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37642555065
+
+
+
 ## 2.1.5 - Release 2.1.5 (2026-10-07)
 
 #### Changes
