@@ -622,7 +622,9 @@ Check folder `.github`
 
 ### Build binaries and Docker image
 
-For step-by-step instructions to build Windows, Linux x86_64, Linux ARMv7, Linux ARM64 and macOS binaries, upload GitHub Actions artifacts, or build a Docker image without publishing it to a registry, see [Building Binary Artifacts and Docker Images](docs/build_artifacts.md).
+For step-by-step instructions to build Windows, Linux x86_64, Linux ARMv7, Linux ARM64 and macOS binaries  
+or build a Docker image without publishing it to a registry,  
+see [Building Binary Artifacts and Docker Images](docs/build_artifacts.md).
 
 ## ChangeLog
 

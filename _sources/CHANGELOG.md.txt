@@ -1,5 +1,18 @@
 # ChangeLog
 
+## 2.1.10 - Release 2.1.10 (2026-10-07)
+
+#### Changes
+- updated readme
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37645181311
+
+
+
 ## 2.1.9 - Release 2.1.9 (2026-10-07)
 
 #### Changes
