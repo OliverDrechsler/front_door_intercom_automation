@@ -127,8 +127,8 @@ The project offers the following functionality:
 | Open Door  | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais) | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais) | ❌ |❌ |  
 | detect door bell ring | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board) | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board) | ✅ | ❌ |  
 | Notification (channel) | ✅ via Telegram group | ✅ via Telegram group | ✅Blink App | ✅❌ Telegram but no HW module -> no detection |  
-| Multi user notification | ✅ | ✅ | ❌ dependend on Account | ✅ |  
-| Multi user door opening | ✅ | ✅ | ❌ | ❌ |  
+| Multi user notification | ✅ | ✅ | ❌ dependend on Account (sharing) | ✅ |  
+| Multi user door opening | ✅ | ✅ | ❌ dependend on Account (sharing) | ❌ |  
 | GDPR data storage | ❗️ no Internet facing data/nor Camaera exposure; **Door photo exposure to Telegram chat group - archival dependend on personal deletion interval** | ❗️ **Blink Camera is by default to Amazon cloud exposed** - further Door photo exposure to Telegram chat group archival dependend on personal deletion interval | ❌ **Blink Camaera to Amazon Cloud exposed** | ✅ no data Exposure |  
 | possible local usage without Internet (door opening only) | ✅ | ✅opening - ❌ no camera snapshot | ❌ | ✅ |  
 
