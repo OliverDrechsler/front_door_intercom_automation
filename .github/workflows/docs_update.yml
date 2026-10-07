@@ -47,7 +47,21 @@ jobs:
         run: |
           echo "# ChangeLog" > CHANGELOG.md
           echo "" >> CHANGELOG.md
-          gh api repos/${{ github.repository }}/releases?per_page=50 --jq '.[] | select(.draft==false and .prerelease==false) | "# " + .tag_name + " - " + (.name // .tag_name) + " (" + (.published_at | split("T")[0]) + ")\n\n" + (.body // "") + "\n\n"' >> CHANGELOG.md
+          gh api repos/${{ github.repository }}/releases?per_page=50 --jq '.[] | select(.draft==false and .prerelease==false) | "## " + .tag_name + " - " + (.name // .tag_name) + " (" + (.published_at | split("T")[0]) + ")\n\n" + (.body // "") + "\n\n"' >> CHANGELOG.md
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("CHANGELOG.md")
+          lines = path.read_text().splitlines()
+          adjusted = []
+          for line in lines:
+              if line.startswith("#") and line != "# ChangeLog" and " - " not in line:
+                  level = len(line) - len(line.lstrip("#"))
+                  if level < 6 and line[level:level + 1] == " ":
+                      line = "#" + line
+              adjusted.append(line)
+          path.write_text("\n".join(adjusted) + "\n")
+          PY
 
       - name: Build HTML
         run: |
