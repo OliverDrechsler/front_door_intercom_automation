@@ -10,7 +10,6 @@ This document explains how to run the FDIA Docker container on a Raspberry Pi wi
   - [Prepare configuration files](#prepare-configuration-files)
   - [Build the container locally](#build-the-container-locally)
   - [Start the container from a local image](#start-the-container-from-a-local-image)
-  - [Start the container from GHCR](#start-the-container-from-ghcr)
   - [Recommended volume mappings](#recommended-volume-mappings)
   - [Optional fallback with /dev/mem](#optional-fallback-with-devmem)
   - [Host permission notes](#host-permission-notes)
@@ -18,6 +17,10 @@ This document explains how to run the FDIA Docker container on a Raspberry Pi wi
   - [Logs](#logs)
   - [Update the container](#update-the-container)
   - [Troubleshooting](#troubleshooting)
+    - [Error: GPIO device access is not available](#error-gpio-device-access-is-not-available)
+    - [Error: GPIO device exists but is not readable and writable inside the container](#error-gpio-device-exists-but-is-not-readable-and-writable-inside-the-container)
+    - [Container starts but door opener or bell detection does not work](#container-starts-but-door-opener-or-bell-detection-does-not-work)
+    - [Blink config file not found](#blink-config-file-not-found)
   - [Recommendation](#recommendation)
 
 ## Purpose
@@ -126,7 +129,7 @@ If Blink is used, also provide your `blink_config.json`.
 From the project root:
 
 ```bash
-docker build -t fdia:local .
+docker build --file Dockerfile --tag fdia:local .
 ```
 
 ## Start the container from a local image
@@ -143,24 +146,6 @@ docker run -d \
   -e TZ=Europe/Berlin \
   fdia:local
 ```
-
-## Start the container from GHCR
-
-If the image was published by GitHub Actions, use the package from GHCR.
-
-Example:
-
-```bash
-docker run -d \
-  --name fdia \
-  --restart unless-stopped \
-  --device /dev/gpiomem:/dev/gpiomem \
-  -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
-  -v "$(pwd)/blink_config.json:/app/blink_config.json:rw" \
-  -e TZ=Europe/Berlin \
-  ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
 If you do not use Blink, remove the `blink_config.json` volume mapping.
 
 ## Recommended volume mappings
@@ -178,7 +163,7 @@ docker run -d \
   --device /dev/gpiomem:/dev/gpiomem \
   -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
   -e TZ=Europe/Berlin \
-  ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+  fdia:local
 ```
 
 ## Optional fallback with /dev/mem
@@ -195,7 +180,7 @@ docker run -d \
   --device /dev/mem:/dev/mem \
   -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
   -e TZ=Europe/Berlin \
-  ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+  fdia:local
 ```
 
 ## Host permission notes
@@ -278,19 +263,6 @@ docker run -d \
   fdia:local
 ```
 
-For an image from GHCR:
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-docker rm -f fdia
-docker run -d \
-  --name fdia \
-  --restart unless-stopped \
-  --device /dev/gpiomem:/dev/gpiomem \
-  -v "$(pwd)/config.yaml:/app/config.yaml:ro" \
-  -e TZ=Europe/Berlin \
-  ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
 
 ## Troubleshooting
 
