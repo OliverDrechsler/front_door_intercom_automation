@@ -4,6 +4,7 @@ updates:
   directory: "/"
   exclude-paths:
     - "test/**"
+    - "requirements_licenses.txt"
   schedule:
     interval: daily
     time: "04:00"
