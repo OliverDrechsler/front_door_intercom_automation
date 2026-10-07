@@ -1,5 +1,18 @@
 # ChangeLog
 
+# 2.1.4 - Release 2.1.4 (2026-10-07)
+
+### Changes
+- fix dependabot error
+
+**Version bump type:** patch
+
+### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37639961756
+
+
+
 # 2.1.3 - Release 2.1.3 (2026-10-07)
 
 ### Changes
