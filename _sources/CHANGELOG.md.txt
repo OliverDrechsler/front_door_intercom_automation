@@ -1,5 +1,18 @@
 # ChangeLog
 
+## 2.1.11 - Release 2.1.11 (2026-10-07)
+
+#### Changes
+- updated readme
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37647150692
+
+
+
 ## 2.1.10 - Release 2.1.10 (2026-10-07)
 
 #### Changes
@@ -585,21 +598,5 @@ fix camera  PiCam_API download filename
 - multi threading 
 - using pyOTP instead passlib 
 - detecting Pi Hardware native
-
-
-## v0.0.5 - Release 0.0.5 -  and below uses and supports (2022-04-18)
-
-### Changes
-- python below 3.8 and therefore older OS'es
-- telepot library
-- blinkpy library below 0.20.0
-
-By default older version are not recommended to use because of vulnerabilities.
-Use always latest version.
-
-
-### Previous Python Version releases
-
-**If you want use a release which works with python below 3.8 take a look at [0.0.5](https://github.com/OliverDrechsler/front_door_intercom_automation/releases/tag/v0.0.5)** 
 
 
