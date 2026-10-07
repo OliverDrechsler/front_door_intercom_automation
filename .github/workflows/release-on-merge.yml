@@ -119,51 +119,49 @@ jobs:
             echo "tag_exists=false" >> "${GITHUB_OUTPUT}"
           fi
 
-      - name: Download CI artifacts
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          RUN_ID: ${{ github.event.workflow_run.id }}
-        run: |
-          mkdir -p release-artifacts
-          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" > release-artifacts/artifacts.json
-
-          ARTIFACT_COUNT=$(jq '.artifacts | length' release-artifacts/artifacts.json)
-          if [ "${ARTIFACT_COUNT}" -eq 0 ]; then
-            echo "No CI artifacts found for workflow run ${RUN_ID}" >&2
-            exit 1
-          fi
-
-          jq -r '.artifacts[] | [.id, .name] | @tsv' release-artifacts/artifacts.json | while IFS=$'\t' read -r artifact_id artifact_name; do
-            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "release-artifacts/${artifact_name}.zip"
-          done
+      # - name: Download CI artifacts
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #     RUN_ID: ${{ github.event.workflow_run.id }}
+      #   run: |
+      #     mkdir -p release-artifacts
+      #     gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" > release-artifacts/artifacts.json
+      #
+      #     ARTIFACT_COUNT=$(jq '.artifacts | length' release-artifacts/artifacts.json)
+      #     if [ "${ARTIFACT_COUNT}" -eq 0 ]; then
+      #       echo "No CI artifacts found for workflow run ${RUN_ID}" >&2
+      #       exit 1
+      #     fi
+      #
+      #     jq -r '.artifacts[] | [.id, .name] | @tsv' release-artifacts/artifacts.json | while IFS=$'\t' read -r artifact_id artifact_name; do
+      #       gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "release-artifacts/${artifact_name}.zip"
+      #     done
 
       - name: Write release body
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
-          IMAGE_REPOSITORY="$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
-          IMAGE_NAME="ghcr.io/${IMAGE_REPOSITORY}"
-          PACKAGE_NAME="$(basename "${IMAGE_REPOSITORY}")"
-          PACKAGE_URL="https://github.com/${GITHUB_REPOSITORY}/pkgs/container/${PACKAGE_NAME}"
+          # IMAGE_REPOSITORY="$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
+          # IMAGE_NAME="ghcr.io/${IMAGE_REPOSITORY}"
+          # PACKAGE_NAME="$(basename "${IMAGE_REPOSITORY}")"
+          # PACKAGE_URL="https://github.com/${GITHUB_REPOSITORY}/pkgs/container/${PACKAGE_NAME}"
 
           {
             echo "### Changes"
             echo "${{ steps.notes.outputs.notes }}"
             echo
             echo "**Version bump type:** ${{ steps.next_tag.outputs.bump_type }}"
-            echo
-            echo "### Docker Image"
-            echo "GitHub Container Registry package: ${PACKAGE_URL}"
-            echo
-            echo '```bash'
-            echo "docker pull ${IMAGE_NAME}:latest"
-            echo '```'
+            # echo
+            # echo "### Docker Image"
+            # echo "GitHub Container Registry package: ${PACKAGE_URL}"
+            # echo
+            # echo '```bash'
+            # echo "docker pull ${IMAGE_NAME}:latest"
+            # echo '```'
             echo
             echo "### CI Build"
-            echo "Artifacts were produced by CI workflow run:"
+            echo "CI workflow run:"
             echo "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}"
-            echo
-            echo "The attached release assets are the zipped CI artifacts for all successful target builds."
           } > release-body.md
 
       - name: Create or update GitHub Release
@@ -177,9 +175,9 @@ jobs:
             gh release create "${TAG}" --repo "${GITHUB_REPOSITORY}" --title "Release ${TAG}" --notes-file release-body.md
           fi
 
-      - name: Upload release assets
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          TAG: ${{ steps.next_tag.outputs.next_tag }}
-        run: |
-          gh release upload "${TAG}" release-artifacts/*.zip --repo "${GITHUB_REPOSITORY}" --clobber
+      # - name: Upload release assets
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #     TAG: ${{ steps.next_tag.outputs.next_tag }}
+      #   run: |
+      #     gh release upload "${TAG}" release-artifacts/*.zip --repo "${GITHUB_REPOSITORY}" --clobber
