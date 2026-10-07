@@ -2,8 +2,6 @@
 
 This guide describes how to build the supported binary targets and the Docker image defined by the project `Dockerfile`. The commands follow `.github/workflows/ci.yml`.
 
-> **Note:** The binary build jobs and their artifact uploads are currently commented out in the CI workflow. The project documents licensing considerations for the `pyTelegramBotAPI` dependency; see the [GPLv2 dependency note](../README.md#note-on-the-gplv2-dependency-pytelegrambotapi) before distributing binaries or container images. The Docker CI job builds the image but does not publish it.
-
 ## Binary Build Prerequisites
 
 - Check out the repository and run commands from its root directory.
