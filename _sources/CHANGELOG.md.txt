@@ -1,5 +1,44 @@
 # ChangeLog
 
+## 2.1.9 - Release 2.1.9 (2026-10-07)
+
+#### Changes
+- Bump click from 8.4.2 to 8.5.0 (#265)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37643309914
+
+
+
+## 2.1.8 - Release 2.1.8 (2026-10-07)
+
+#### Changes
+- Bump pytelegrambotapi from 4.36.0 to 4.37.0 (#264)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37643267329
+
+
+
+## 2.1.7 - Release 2.1.7 (2026-10-07)
+
+#### Changes
+- Update zipp requirement from >=3.23.0 to >=4.1.1 (#263)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37643175987
+
+
+
 ## 2.1.6 - Release 2.1.6 (2026-10-07)
 
 #### Changes

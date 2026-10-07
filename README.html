@@ -715,6 +715,7 @@ Another possibility is to setup a VPN Tunnel in your ISP router. Activate this t
 </pre></div>
 </div>
 <p>Here you can specify multiple users which are allowed to access the Web page and REST-API.</p>
+<p>The configured web passwords are compared directly with the credentials supplied at login; they are not stored as password hashes. Password hashes such as bcrypt or Argon2 are deliberately not used here because verifying a password requires recalculating the hash with a deliberately high computational cost on every login or API request. On a Raspberry Pi 1 B+ this can cause a significant performance impact and increase response times. This is a performance trade-off: configured passwords should therefore be kept in a protected configuration file, and the Web-UI/API should only be reached through a trusted network or VPN. Base64 in the Basic Authentication header is encoding, not encryption.</p>
 <p>For TLS cert encryption it’s recommend to use a NGINX reverse proxy with TLS cert configuration.
 See sample Docker container project here <a class="reference external" href="https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt">https://github.com/bh42/docker-nginx-reverseproxy-letsencrypt</a><br />
 <strong>Important: I do not recommend to expose the Web-UI to the internet! It is not hardend nor pentested nor from security safe - it is just a proof of concept</strong><br />
