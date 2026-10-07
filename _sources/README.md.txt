@@ -83,9 +83,11 @@ Opening relais board can be buyed and must just be wired.
     - [Hints](#hints)
     - [How to run unit-tests](#how-to-run-unit-tests)
     - [GiHub actions pipelines](#gihub-actions-pipelines)
+    - [Build binaries and Docker image](#build-binaries-and-docker-image)
   - [ChangeLog](#changelog)
   - [Author info](#author-info)
   - [License](#license)
+    - [Note on the GPLv2 dependency (pyTelegramBotAPI)](#note-on-the-gplv2-dependency-pytelegrambotapi)
   - [Security](#security)
   - [Contribution](#contribution)
   - [Local Development Workflow](#local-development-workflow)
@@ -124,10 +126,10 @@ The project offers the following functionality:
 |---|---|---|---|---|
 | Open Door  | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais) | ✅ with build HW module [Door opener board with relais:](#door-opener-board-with-relais) | ❌ |❌ |  
 | detect door bell ring | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board) | ✅ with build Hw module [Door bell detection board](#door-bell-detection-board) | ✅ | ❌ |  
-| Notification (channel) | ✅ via Telegram group | ✅ via Telegram group | ✅Blink App | ✅❌ Telegram but no HW module -> no detection |  
-| Multi user notification | ✅ | ✅ | ❌ dependend on Account | ✅ |  
-| Multi user door opening | ✅ | ✅ | ❌ | ❌ |  
-| GDPR data storage | ✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval | ✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed | ❌ Camaera Internet / Cloud exposed | ✅ no data Exposure |  
+| Notification (channel) | ✅ via Telegram group | ✅ via Telegram group | ✅Blink App | ❗️ Telegram but no HW module -> no detection |  
+| Multi user notification | ✅ | ✅ | ❌ dependend on Account (sharing) | ✅ |  
+| Multi user door opening | ✅ | ✅ | ❌ dependend on Account (sharing) | ❌ |  
+| GDPR data storage | ❗️ no Internet facing data/nor Camaera exposure; **Door photo exposure to Telegram chat group - archival dependend on personal deletion interval** | ❗️ **Blink Camera is by default to Amazon cloud exposed** - further Door photo exposure to Telegram chat group archival dependend on personal deletion interval | ❌ **Blink Camaera to Amazon Cloud exposed** | ✅ no data Exposure |  
 | possible local usage without Internet (door opening only) | ✅ | ✅opening - ❌ no camera snapshot | ❌ | ✅ |  
 
 ## Get started
@@ -616,6 +618,10 @@ Check folder `.github`
 - `workflows/codeql-analysis.yml` CodeQL analysis pipeline
 - `workflows/docs_update.yml`  build GitHub page pipeline 
 
+### Build binaries and Docker image
+
+For step-by-step instructions to build Windows, Linux x86_64, Linux ARMv7, Linux ARM64 and macOS binaries, upload GitHub Actions artifacts, or build a Docker image without publishing it to a registry, see [Building Binary Artifacts and Docker Images](docs/build_artifacts.md).
+
 ## ChangeLog
 
 see CHANGELOG file [CHANGELOG](CHANGELOG.md)
@@ -655,13 +661,33 @@ I'm Oliver Drechsler and a Java and Python developer.
 
 
 ## License
-This Software is licenced under MIT see [license file of this project](LICENSE).  
-  
-Why is there no GPLv2 dependency as I understand it? 
-pyTelegramBotAPI published under GPLv2, but it is used as a shared library which is linked dynamic.
-Further only source code is distributed and python code is compiled during runtime (JIT) on user system, therefore it is no distribution.
-For more details see [Fundamental aspects of copyleft in GPL](https://www.opensourcelms.de/gpl-teil-1.html) and read section **7. Libraries**  
 
+The source code of this project is licensed under the [MIT License](LICENSE).
+
+### Note on the GPLv2 dependency (pyTelegramBotAPI)
+
+This project depends on [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI),
+which is licensed under GPLv2. This project is nevertheless published under MIT, for the following reasons:
+
+- **No GPL code is distributed by this project.** This repository contains only
+  the project's own source code. pyTelegramBotAPI is not copied, bundled or
+  modified here. It is merely listed as a dependency (`requirements.txt`) and is
+  installed by the user from PyPI.
+- **No binaries or container images are provided.** This project does not
+  distribute any packages, executables or Docker images that contain the library.
+  The GPLv2 obligations (sections 2 and 3) are triggered by distributing the
+  library or works containing it. Combining the software with the library on
+  one's own system is not a distribution.
+- **The library keeps its own license.** pyTelegramBotAPI remains under GPLv2,
+  and its terms apply to anyone who obtains or redistributes it.
+- **Redistribution is the redistributor's responsibility.** If you redistribute
+  this software together with pyTelegramBotAPI (e.g. as a bundled binary or a
+  container image), the combined work must comply with GPLv2 terms. The MIT
+  license of this project is compatible with this.
+
+This reflects the maintainer's understanding and is not legal advice. Whether
+importing a GPL library creates a derivative work is debated; the FSF takes a
+stricter view.
 
 
 Dependcies to other projects and libraries listed here [requirements_licenses.txt](requirements_licenses.txt).  

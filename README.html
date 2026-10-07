@@ -108,11 +108,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#hints">Hints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-run-unit-tests">How to run unit-tests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gihub-actions-pipelines">GiHub actions pipelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-binaries-and-docker-image">Build binaries and Docker image</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#changelog">ChangeLog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#author-info">Author info</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#note-on-the-gplv2-dependency-pytelegrambotapi">Note on the GPLv2 dependency (pyTelegramBotAPI)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#security">Security</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contribution">Contribution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#local-development-workflow">Local Development Workflow</a></li>
@@ -129,6 +133,7 @@
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_OTP_App_on_mobile_phone.html">How to setup OTP App on mobile phone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/How_to_setup_Shortcut_to_open_door.html">How to setup Apple IOS Shortcuts App to open door</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">ChangeLog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-1-2-2026-10-06">2.1.2 - Release 2.1.2 (2026-10-06)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-1-1-2026-10-06">2.1.1 - Release 2.1.1 (2026-10-06)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-1-0-2026-09-24">2.1.0 - Release 2.1.0 (2026-09-24)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-11-2026-07-21">2.0.11 - Release 2.0.11 (2026-07-21)</a></li>
@@ -141,7 +146,7 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-3-2026-06-05">2.0.3 - Release 2.0.3 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-2-2026-06-05">2.0.2 - Release 2.0.2 (2026-06-05)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-2-0-1-2026-06-05">2.0.1 - Release 2.0.1 (2026-06-05)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id32">2.0.0 - 2.0.0 (2026-06-03)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id13">2.0.0 - 2.0.0 (2026-06-03)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#breaking-changes">Breaking changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#fixes">Fixes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#features">Features</a></li>
@@ -162,10 +167,10 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-3-2025-11-25">1.11.3 - Release 1.11.3 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-2-2025-11-25">1.11.2 - Release 1.11.2 (2025-11-25)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-11-1-2025-11-25">1.11.1 - Release 1.11.1 (2025-11-25)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id49">1.11 - 1.11 (2025-06-10)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id52">1.10 - 1.10 (2025-05-11)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id55">1.0.9 - 1.0.9 (2025-02-14)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id58">1.0.8 - 1.0.8 (2025-02-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id30">1.11 - 1.11 (2025-06-10)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id33">1.10 - 1.10 (2025-05-11)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id36">1.0.9 - 1.0.9 (2025-02-14)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#id39">1.0.8 - 1.0.8 (2025-02-10)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-7-2025-02-09">1.0.7 - Release 1.0.7 (2025-02-09)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-6-2025-02-02">1.0.6 - Release 1.0.6 (2025-02-02)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html#release-1-0-5-2024-11-25">1.0.5 - Release 1.0.5 (2024-11-25)</a></li>
@@ -323,11 +328,16 @@ Opening relais board can be buyed and must just be wired.</p>
 <li><p><a class="reference internal" href="#hints"><span class="xref myst">Hints</span></a></p></li>
 <li><p><a class="reference internal" href="#how-to-run-unit-tests"><span class="xref myst">How to run unit-tests</span></a></p></li>
 <li><p><a class="reference internal" href="#gihub-actions-pipelines"><span class="xref myst">GiHub actions pipelines</span></a></p></li>
+<li><p><a class="reference internal" href="#build-binaries-and-docker-image"><span class="xref myst">Build binaries and Docker image</span></a></p></li>
 </ul>
 </li>
 <li><p><a class="reference internal" href="#changelog"><span class="xref myst">ChangeLog</span></a></p></li>
 <li><p><a class="reference internal" href="#author-info"><span class="xref myst">Author info</span></a></p></li>
-<li><p><a class="reference internal" href="#license"><span class="xref myst">License</span></a></p></li>
+<li><p><a class="reference internal" href="#license"><span class="xref myst">License</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#note-on-the-gplv2-dependency-pytelegrambotapi"><span class="xref myst">Note on the GPLv2 dependency (pyTelegramBotAPI)</span></a></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="#security"><span class="xref myst">Security</span></a></p></li>
 <li><p><a class="reference internal" href="#contribution"><span class="xref myst">Contribution</span></a></p></li>
 <li><p><a class="reference internal" href="#local-development-workflow"><span class="xref myst">Local Development Workflow</span></a></p></li>
@@ -393,24 +403,24 @@ The project offers the following functionality:</p>
 <td><p>✅ via Telegram group</p></td>
 <td><p>✅ via Telegram group</p></td>
 <td><p>✅Blink App</p></td>
-<td><p>✅❌ Telegram but no HW module -&gt; no detection</p></td>
+<td><p>❗️ Telegram but no HW module -&gt; no detection</p></td>
 </tr>
 <tr class="row-odd"><td><p>Multi user notification</p></td>
 <td><p>✅</p></td>
 <td><p>✅</p></td>
-<td><p>❌ dependend on Account</p></td>
+<td><p>❌ dependend on Account (sharing)</p></td>
 <td><p>✅</p></td>
 </tr>
 <tr class="row-even"><td><p>Multi user door opening</p></td>
 <td><p>✅</p></td>
 <td><p>✅</p></td>
-<td><p>❌</p></td>
+<td><p>❌ dependend on Account (sharing)</p></td>
 <td><p>❌</p></td>
 </tr>
 <tr class="row-odd"><td><p>GDPR data storage</p></td>
-<td><p>✅ no Internet facing data/nor Camaera exposure; Telegram chat group archival dependend on personal deletion interval</p></td>
-<td><p>✅Telegram chat group archival dependend on personal deletion interval - Cemera internet/clodu exposed</p></td>
-<td><p>❌ Camaera Internet / Cloud exposed</p></td>
+<td><p>❗️ no Internet facing data/nor Camaera exposure; <strong>Door photo exposure to Telegram chat group - archival dependend on personal deletion interval</strong></p></td>
+<td><p>❗️ <strong>Blink Camera is by default to Amazon cloud exposed</strong> - further Door photo exposure to Telegram chat group archival dependend on personal deletion interval</p></td>
+<td><p>❌ <strong>Blink Camaera to Amazon Cloud exposed</strong></p></td>
 <td><p>✅ no data Exposure</p></td>
 </tr>
 <tr class="row-even"><td><p>possible local usage without Internet (door opening only)</p></td>
@@ -925,6 +935,10 @@ make<span class="w"> </span>test-cov
 <li><p><code class="docutils literal notranslate"><span class="pre">workflows/docs_update.yml</span></code>  build GitHub page pipeline</p></li>
 </ul>
 </section>
+<section id="build-binaries-and-docker-image">
+<h3>Build binaries and Docker image<a class="headerlink" href="#build-binaries-and-docker-image" title="Link to this heading"></a></h3>
+<p>For step-by-step instructions to build Windows, Linux x86_64, Linux ARMv7, Linux ARM64 and macOS binaries, upload GitHub Actions artifacts, or build a Docker image without publishing it to a registry, see <span class="xref myst">Building Binary Artifacts and Docker Images</span>.</p>
+</section>
 </section>
 <section id="changelog">
 <h2>ChangeLog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h2>
@@ -968,11 +982,31 @@ make<span class="w"> </span>test-cov
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
-<p>This Software is licenced under MIT see <a class="reference internal" href="LICENSE.html"><span class="doc std std-doc">license file of this project</span></a>.</p>
-<p>Why is there no GPLv2 dependency as I understand it?
-pyTelegramBotAPI published under GPLv2, but it is used as a shared library which is linked dynamic.
-Further only source code is distributed and python code is compiled during runtime (JIT) on user system, therefore it is no distribution.
-For more details see <a class="reference external" href="https://www.opensourcelms.de/gpl-teil-1.html">Fundamental aspects of copyleft in GPL</a> and read section <strong>7. Libraries</strong></p>
+<p>The source code of this project is licensed under the <a class="reference internal" href="LICENSE.html"><span class="doc std std-doc">MIT License</span></a>.</p>
+<section id="note-on-the-gplv2-dependency-pytelegrambotapi">
+<h3>Note on the GPLv2 dependency (pyTelegramBotAPI)<a class="headerlink" href="#note-on-the-gplv2-dependency-pytelegrambotapi" title="Link to this heading"></a></h3>
+<p>This project depends on <a class="reference external" href="https://github.com/eternnoir/pyTelegramBotAPI">pyTelegramBotAPI</a>,
+which is licensed under GPLv2. This project is nevertheless published under MIT, for the following reasons:</p>
+<ul class="simple">
+<li><p><strong>No GPL code is distributed by this project.</strong> This repository contains only
+the project’s own source code. pyTelegramBotAPI is not copied, bundled or
+modified here. It is merely listed as a dependency (<code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>) and is
+installed by the user from PyPI.</p></li>
+<li><p><strong>No binaries or container images are provided.</strong> This project does not
+distribute any packages, executables or Docker images that contain the library.
+The GPLv2 obligations (sections 2 and 3) are triggered by distributing the
+library or works containing it. Combining the software with the library on
+one’s own system is not a distribution.</p></li>
+<li><p><strong>The library keeps its own license.</strong> pyTelegramBotAPI remains under GPLv2,
+and its terms apply to anyone who obtains or redistributes it.</p></li>
+<li><p><strong>Redistribution is the redistributor’s responsibility.</strong> If you redistribute
+this software together with pyTelegramBotAPI (e.g. as a bundled binary or a
+container image), the combined work must comply with GPLv2 terms. The MIT
+license of this project is compatible with this.</p></li>
+</ul>
+<p>This reflects the maintainer’s understanding and is not legal advice. Whether
+importing a GPL library creates a derivative work is debated; the FSF takes a
+stricter view.</p>
 <p>Dependcies to other projects and libraries listed here <a class="reference internal" href="#requirements_licenses.txt"><span class="xref myst">requirements_licenses.txt</span></a>.<br />
 It is create with <a class="reference external" href="https://github.com/FHPythonUtils/LicenseCheck">licensecheck</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">licensecheck</span>
@@ -982,6 +1016,7 @@ It is create with <a class="reference external" href="https://github.com/FHPytho
 <p>Hint for licensecheck:<br />
 In case you receive a traceback error
 check for line comments in requirements.txt and remove them temporary.</p>
+</section>
 </section>
 <section id="security">
 <h2>Security<a class="headerlink" href="#security" title="Link to this heading"></a></h2>

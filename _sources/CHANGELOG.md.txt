@@ -1,24 +1,20 @@
 # ChangeLog
 
+# 2.1.2 - Release 2.1.2 (2026-10-06)
+
+### Changes
+- updated gitignore
+
+**Version bump type:** default patch
+
+
+
 # 2.1.1 - Release 2.1.1 (2026-10-06)
 
 ### Changes
 - fix/remove_unneeded_bot_code_accepted_reply: savepoint (#260)
 
 **Version bump type:** patch
-
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37463195611
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
@@ -30,18 +26,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** minor
 
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/36053725584
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
@@ -52,19 +36,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** default patch
 
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/29867932745
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
-
 
 
 # 2.0.10 - Release 2.0.10 (2026-06-30)
@@ -73,19 +44,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 - Update blinkpy version to 0.25.7 (#256)
 
 **Version bump type:** default patch
-
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/28470190776
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
@@ -96,19 +54,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** default patch
 
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27478072313
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
-
 
 
 # 2.0.8 - Release 2.0.8 (2026-06-13)
@@ -117,19 +62,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 - fix gh release
 
 **Version bump type:** patch
-
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27477788626
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
@@ -140,19 +72,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** default patch
 
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27476217487
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
-
 
 
 # 2.0.5 - Release 2.0.5 (2026-06-12)
@@ -162,18 +81,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** default patch
 
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27442204727
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
@@ -184,18 +91,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** default patch
 
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27043480624
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
@@ -206,18 +101,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** patch
 
-### Docker Image
-GitHub Container Registry package: https://github.com/OliverDrechsler/front_door_intercom_automation/pkgs/container/front_door_intercom_automation
-
-```bash
-docker pull ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-```
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27042816300
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
@@ -227,13 +110,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 - include codeql-config-yml
 
 **Version bump type:** default patch
-
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27042013472
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
-
 
 
 # 2.0.1 - Release 2.0.1 (2026-06-05)
@@ -245,11 +121,6 @@ The attached release assets are the zipped CI artifacts for all successful targe
 
 **Version bump type:** patch
 
-### CI Build
-Artifacts were produced by CI workflow run:
-https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/27041827089
-
-The attached release assets are the zipped CI artifacts for all successful target builds.
 
 
 
