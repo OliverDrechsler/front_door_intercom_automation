@@ -62,12 +62,12 @@ Opening relais board can be buyed and must just be wired.
     - [Telegram receiving message commands and interactions](#telegram-receiving-message-commands-and-interactions)
   - [Mobile Setup](#mobile-setup)
     - [Mobile Apps](#mobile-apps)
-    - [Telegram on mobile phone](#telegram-on-mobile-phone)
-    - [OTP App on mobile phone - How to setup](#otp-app-on-mobile-phone---how-to-setup)
+      - [Telegram on mobile phone](#telegram-on-mobile-phone)
+      - [OTP App on mobile phone - How to setup](#otp-app-on-mobile-phone---how-to-setup)
       - [Telegram and OTP App - mobile usage](#telegram-and-otp-app---mobile-usage)
-    - [Apple IOS Shortcuts App - How to automate door opening](#apple-ios-shortcuts-app---how-to-automate-door-opening)
+      - [Apple IOS FDIA-App - Proof of Conecpt](#apple-ios-fdia-app---proof-of-conecpt)
+      - [Apple IOS Shortcuts App - How to automate door opening](#apple-ios-shortcuts-app---how-to-automate-door-opening)
   - [Web UI \& REST-API usage](#web-ui--rest-api-usage)
-  - [Apple IOS FDIA-App - Proof of Conecpt](#apple-ios-fdia-app---proof-of-conecpt)
   - [Hardware Circuits](#hardware-circuits)
     - [Door bell detection](#door-bell-detection)
       - [required HW parts](#required-hw-parts)
@@ -400,14 +400,17 @@ The same user state is also used for the Web UI and REST-API login, so disabled 
 Install on your Mobile following Apps and set it up.
 
 ### Mobile Apps
+
 * [Telegram Messagenger for free in AppStore](https://apps.apple.com/de/app/telegram-messenger/id686449807) 
 * [OTP Auth App for free in AppStore](https://apps.apple.com/de/app/otp-auth/id659877384)
 * [Apple IOS Shortcuts for REST API automation](https://support.apple.com/de-de/guide/shortcuts/welcome/ios)
+* checkout out here for more detail on IOS developed Application [FDIA-IOS-App](https://github.com/OliverDrechsler/FDIA_IOS_App)
 
-### Telegram on mobile phone
+#### Telegram on mobile phone
+
 Please do it by yourself or consult google.
 
-### OTP App on mobile phone - How to setup
+#### OTP App on mobile phone - How to setup
 
 Provide configure same OTP config in OTP Auth App like in `config.yaml` defined.  
 
@@ -426,7 +429,11 @@ and than send the otp door open code to the REST-API.
 Do not expose the Flask Web-UI or REST-API to the internet!   
 VPN Tunnel activation can also be automated like the REST-API call in IOS Shotcut App.
 
-### Apple IOS Shortcuts App - How to automate door opening
+#### Apple IOS FDIA-App - Proof of Conecpt
+
+checkout out here for more detail on IOS developed Application [FDIA-IOS-App](https://github.com/OliverDrechsler/FDIA_IOS_App)
+
+#### Apple IOS Shortcuts App - How to automate door opening
 
 Follow this guide [For setup Apple IOS Shortcuts App to open door](docs/How_to_setup_Shortcut_to_open_door.md)  
 This can only connect to Flask Web REST-API.  
@@ -473,10 +480,6 @@ curl -X POST http://127.0.0.1:<FLASK_WEB_PORT>/open \
      -d '{"totp": "<YOUR_TOTP_CODE>"}'
 ```
 The `<BASE64_ENCODED_CREDENTIALS>` is `username:password` encoded base64 string.
-
-
-## Apple IOS FDIA-App - Proof of Conecpt
-checkout out here for more detail on IOS developed Application [FDIA-IOS-App](https://github.com/OliverDrechsler/FDIA_IOS_App)
 
 ## Hardware Circuits
 
