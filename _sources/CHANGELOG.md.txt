@@ -1,5 +1,31 @@
 # ChangeLog
 
+## 2.1.13 - Release 2.1.13 (2026-10-07)
+
+#### Changes
+- Bump werkzeug from 3.1.8 to 3.1.9 (#266)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37648567554
+
+
+
+## 2.1.12 - Release 2.1.12 (2026-10-07)
+
+#### Changes
+- updated readme
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/37648448415
+
+
+
 ## 2.1.11 - Release 2.1.11 (2026-10-07)
 
 #### Changes
@@ -569,34 +595,5 @@ fix camera  PiCam_API download filename
   - Update pyTelegramBotAPI from 4.21.0 to 4.22.0.
   - Update aiohttp from 3.9.5 to 3.10.1.
 
-
-
-## 1.0.1 - Release 1.0.1 (2024-07-31)
-
-### Changes
-- **changed license from GPLv2 to MIT**
-- added more unit tests
-- updated docu
-- updated flask settings,
-- refactor bell.py
-- migrated from GPIOZero to Rui.GPIO library
-* Fix/camera door bell web UI by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/173
-
-
-**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.0...1.0.1
-
-
-## 1.0.0 - Release 1.0.0  - CODE REFACTORED - DOCU UPDATED (2024-07-18)
-
-### Changes
-- New version with new feature like:
-  python 3.10, 3.11, 3.12 support (deprecated 3.9 and below)
-- WebApp, with browser page and rest api for opening 
-- migrated to pyTelegramBotAPI 
-- updated blinkpy to asyncio 
-- daylight and night vision detect to choose camera 
-- multi threading 
-- using pyOTP instead passlib 
-- detecting Pi Hardware native
 
 
