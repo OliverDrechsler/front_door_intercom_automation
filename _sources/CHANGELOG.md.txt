@@ -1,5 +1,18 @@
 # ChangeLog
 
+## 2.1.14 - Release 2.1.14 (2026-10-14)
+
+#### Changes
+- Bump aiohttp from 3.14.3 to 3.14.5 (#268)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/38624780985
+
+
+
 ## 2.1.13 - Release 2.1.13 (2026-10-07)
 
 #### Changes
@@ -577,23 +590,5 @@ https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/3
 
 ### Changes
 fix camera  PiCam_API download filename
-
-
-## 1.0.2 - Release 1.0.2 (2024-08-05)
-
-### Changes
-- add: door bell gpio button bouncer time
-- add: enable option for door bell detection
-- add: enable option for door opening relais board
-- add: enable option for flask web ui and rest-api
-- refactor: web log messages
-- refactor fdia.service
-- updated: README.md
-- updated: How_to_install_fresh_RPi_with_Code.md
-- bump: version updates for:
-  - Update requests from 2.32.2 to 2.32.3
-  - Update pyTelegramBotAPI from 4.21.0 to 4.22.0.
-  - Update aiohttp from 3.9.5 to 3.10.1.
-
 
 
