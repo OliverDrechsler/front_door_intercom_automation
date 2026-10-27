@@ -60,7 +60,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#prepare-configuration-files">Prepare configuration files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build-the-container-locally">Build the container locally</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#start-the-container-from-a-local-image">Start the container from a local image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#start-the-container-from-ghcr">Start the container from GHCR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#recommended-volume-mappings">Recommended volume mappings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-fallback-with-dev-mem">Optional fallback with /dev/mem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#host-permission-notes">Host permission notes</a></li>
@@ -129,14 +128,20 @@
 <li><p><a class="reference internal" href="#prepare-configuration-files"><span class="xref myst">Prepare configuration files</span></a></p></li>
 <li><p><a class="reference internal" href="#build-the-container-locally"><span class="xref myst">Build the container locally</span></a></p></li>
 <li><p><a class="reference internal" href="#start-the-container-from-a-local-image"><span class="xref myst">Start the container from a local image</span></a></p></li>
-<li><p><a class="reference internal" href="#start-the-container-from-ghcr"><span class="xref myst">Start the container from GHCR</span></a></p></li>
 <li><p><a class="reference internal" href="#recommended-volume-mappings"><span class="xref myst">Recommended volume mappings</span></a></p></li>
 <li><p><a class="reference internal" href="#optional-fallback-with-devmem"><span class="xref myst">Optional fallback with /dev/mem</span></a></p></li>
 <li><p><a class="reference internal" href="#host-permission-notes"><span class="xref myst">Host permission notes</span></a></p></li>
 <li><p><a class="reference internal" href="#container-behavior"><span class="xref myst">Container behavior</span></a></p></li>
 <li><p><a class="reference internal" href="#logs"><span class="xref myst">Logs</span></a></p></li>
 <li><p><a class="reference internal" href="#update-the-container"><span class="xref myst">Update the container</span></a></p></li>
-<li><p><a class="reference internal" href="#troubleshooting"><span class="xref myst">Troubleshooting</span></a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting"><span class="xref myst">Troubleshooting</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#error-gpio-device-access-is-not-available"><span class="xref myst">Error: GPIO device access is not available</span></a></p></li>
+<li><p><a class="reference internal" href="#error-gpio-device-exists-but-is-not-readable-and-writable-inside-the-container"><span class="xref myst">Error: GPIO device exists but is not readable and writable inside the container</span></a></p></li>
+<li><p><a class="reference internal" href="#container-starts-but-door-opener-or-bell-detection-does-not-work"><span class="xref myst">Container starts but door opener or bell detection does not work</span></a></p></li>
+<li><p><a class="reference internal" href="#blink-config-file-not-found"><span class="xref myst">Blink config file not found</span></a></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="#recommendation"><span class="xref myst">Recommendation</span></a></p></li>
 </ul>
 </li>
@@ -235,7 +240,7 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%g'</spa
 <section id="build-the-container-locally">
 <h2>Build the container locally<a class="headerlink" href="#build-the-container-locally" title="Link to this heading"></a></h2>
 <p>From the project root:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>fdia:local<span class="w"> </span>.
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--file<span class="w"> </span>Dockerfile<span class="w"> </span>--tag<span class="w"> </span>fdia:local<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -250,21 +255,6 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%g'</spa
 <span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>fdia:local
-</pre></div>
-</div>
-</section>
-<section id="start-the-container-from-ghcr">
-<h2>Start the container from GHCR<a class="headerlink" href="#start-the-container-from-ghcr" title="Link to this heading"></a></h2>
-<p>If the image was published by GitHub Actions, use the package from GHCR.</p>
-<p>Example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/blink_config.json:/app/blink_config.json:rw"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 </pre></div>
 </div>
 <p>If you do not use Blink, remove the <code class="docutils literal notranslate"><span class="pre">blink_config.json</span></code> volume mapping.</p>
@@ -283,7 +273,7 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%g'</spa
 <span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+<span class="w">  </span>fdia:local
 </pre></div>
 </div>
 </section>
@@ -298,7 +288,7 @@ stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%g'</spa
 <span class="w">  </span>--device<span class="w"> </span>/dev/mem:/dev/mem<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
+<span class="w">  </span>fdia:local
 </pre></div>
 </div>
 </section>
@@ -365,18 +355,6 @@ docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </sp
 <span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>fdia:local
-</pre></div>
-</div>
-<p>For an image from GHCR:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
-docker<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>fdia
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="w"> </span>fdia<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--restart<span class="w"> </span>unless-stopped<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--device<span class="w"> </span>/dev/gpiomem:/dev/gpiomem<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/app/config.yaml:ro"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="nv">TZ</span><span class="o">=</span>Europe/Berlin<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>ghcr.io/oliverdrechsler/front_door_intercom_automation:latest
 </pre></div>
 </div>
 </section>
