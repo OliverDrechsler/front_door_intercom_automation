@@ -1,5 +1,31 @@
 # ChangeLog
 
+## 2.1.16 - Release 2.1.16 (2026-10-26)
+
+#### Changes
+- Update zipp requirement from >=4.1.1 to >=4.1.2 (#271)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/40286103230
+
+
+
+## 2.1.15 - Release 2.1.15 (2026-10-26)
+
+#### Changes
+- Bump certifi from 2026.7.22 to 2026.10.19 (#270)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/40286075643
+
+
+
 ## 2.1.14 - Release 2.1.14 (2026-10-14)
 
 #### Changes
@@ -575,20 +601,5 @@ https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/3
 
 
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.4...1.0.5
-
-
-## 1.0.4 - Release 1.0.4 (2024-08-22)
-
-### Changes
-- bumped lib versions
-- updated doc readme.md
-- added unit tests for tools scripts
-- translated static web-ui page from german to english
-
-
-## 1.0.3 - Release 1.0.3 (2024-08-06)
-
-### Changes
-fix camera  PiCam_API download filename
 
 
