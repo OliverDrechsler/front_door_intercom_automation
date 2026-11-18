@@ -1,5 +1,34 @@
 # ChangeLog
 
+## 2.1.20 - Release 2.1.20 (2026-11-17)
+
+#### Changes
+- Bump pytest-asyncio from 1.4.1.post1 to 1.5.0 (#275)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/44200763100
+
+
+
+## 2.1.19 - Release 2.1.19 (2026-11-17)
+
+#### Changes
+- bump libs
+- Bump pytest-asyncio from 1.4.1 to 1.4.1.post1 (#273)
+- Bump click from 8.5.0 to 8.5.1 (#274)
+- Update ci.yml (#276)
+
+**Version bump type:** default patch
+
+#### CI Build
+CI workflow run:
+https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/44200655402
+
+
+
 ## 2.1.18 - Release 2.1.18 (2026-10-27)
 
 #### Changes
@@ -566,28 +595,5 @@ https://github.com/OliverDrechsler/front_door_intercom_automation/actions/runs/3
 
 
 **Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.8...1.0.9
-
-
-## 1.0.8 - 1.0.8 (2025-02-10)
-
-### What's Changed
-#### 🏕 Features
-* Scheduled weekly dependency update for week 06 by @pyup-bot in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/206
-* fix image_brightness config variable and added image contrast enhancement by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/207
-
-
-**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.7...1.0.8
-
-
-## 1.0.7 - Release 1.0.7 (2025-02-09)
-
-<!-- Release notes generated using configuration in .github/release.yml at master -->
-
-### What's Changed
-#### 🏕 Features
-- added adjust image for picam snapshots at night  by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205
-- added unit tests for camera.py  by @OliverDrechsler in https://github.com/OliverDrechsler/front_door_intercom_automation/pull/205
-
-**Full Changelog**: https://github.com/OliverDrechsler/front_door_intercom_automation/compare/1.0.6...1.0.7
 
 
